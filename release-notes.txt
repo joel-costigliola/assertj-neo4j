@@ -1,0 +1,26 @@
+1.1 release notes (2013-02-12) 
+------------------------------
+
+New features : 
+- github#5 : DateTime and LocalDateTime equals comparison with a precision level 
+
+Example :
+DateTime dateTime1 = new DateTime(2000, 1, 1, 23, 59, 59, 999);
+DateTime dateTime2 = new DateTime(2000, 1, 1, 00, 00, 00, 000);
+assertThat(dateTime1).isEqualToIgnoringHours(dateTime2);
+
+
+1.0.1 release notes (2013-02-12) 
+--------------------------------
+
+Bug :
+- github#6 : NoSuchMethodError when fest-assert-core jar was before fest-joda-time-assert on classpath and an assertion failed.
+
+1.0 release notes (2012-12-27) 
+------------------------------
+
+New features :
+- github#1 : Assertions for Joda Time types 
+
+Improvement :
+- github#3 : add string based DateTime/LocalDateTime assertions  
