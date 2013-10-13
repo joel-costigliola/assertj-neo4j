@@ -12,27 +12,31 @@
  */
 package org.assertj.neo4j.api;
 
+import org.junit.Test;
 import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.PropertyContainer;
+
+import static junit.framework.Assert.assertNotNull;
+import static junit.framework.Assert.assertSame;
+import static org.assertj.neo4j.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
 
 /**
- * The entry point for all Neo4j assertions.
+ * Tests for <code>{@link org.assertj.neo4j.api.Assertions#assertThat(org.neo4j.graphdb.Node)}</code>
  * 
- * @author Joel Costigliola
  * @author Florent Biville
  */
-public class Assertions {
+public class Assertions_assertThat_with_Node_Test {
 
-  public static PropertyContainerAssert assertThat(PropertyContainer propertyContainer) {
-    return new PropertyContainerAssert(propertyContainer);
+  @Test
+  public void should_create_Assert() {
+    NodeAssert nodeAssert = assertThat(mock(Node.class));
+    assertNotNull(nodeAssert);
   }
 
-  public static NodeAssert assertThat(Node node) {
-    return new NodeAssert(node);
-  }
-
-  /** Creates a new </code>{@link Assertions}</code>. */
-  protected Assertions() {
-    // empty
+  @Test
+  public void should_pass_actual() {
+    Node node = mock(Node.class);
+    NodeAssert nodeAssert = assertThat(node);
+    assertSame(node, nodeAssert.getActual());
   }
 }
