@@ -14,6 +14,7 @@ package org.assertj.neo4j.api;
 
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.PropertyContainer;
+import org.neo4j.graphdb.Relationship;
 
 /**
  * The entry point for all Neo4j assertions.
@@ -29,6 +30,10 @@ public class Assertions {
 
   public static NodeAssert assertThat(Node node) {
     return new NodeAssert(node);
+  }
+
+  public static RelationshipAssert assertThat(Relationship relationship) {
+    return new RelationshipAssert(relationship);
   }
 
   /** Creates a new </code>{@link Assertions}</code>. */
