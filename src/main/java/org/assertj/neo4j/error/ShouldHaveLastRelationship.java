@@ -20,30 +20,20 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Path;
 import org.neo4j.graphdb.Relationship;
 
-public class ShouldHaveEndNode extends BasicErrorMessageFactory {
+public class ShouldHaveLastRelationship extends BasicErrorMessageFactory {
 
   /**
-   * Creates a new </code>{@link org.assertj.neo4j.error.ShouldHaveEndNode}</code>.
-   * 
-   * @param actual the actual value in the failed assertion.
-   * @param endNode the end node used in the failed assertion to compare the actual label value to.
-   * @return the created {@code ErrorMessageFactory}.
-   */
-  public static ErrorMessageFactory shouldHaveEndNode(Relationship actual, Node endNode) {
-    return new ShouldHaveEndNode(actual, endNode, StandardComparisonStrategy.instance());
-  }
-  /**
-   * Creates a new </code>{@link org.assertj.neo4j.error.ShouldHaveEndNode}</code>.
+   * Creates a new </code>{@link org.assertj.neo4j.error.ShouldHaveLastRelationship}</code>.
    *
-   * @param actual the actual value in the failed assertion.
-   * @param endNode the end node used in the failed assertion to compare the actual label value to.
+   * @param path the actual value in the failed assertion.
+   * @param lastRelationship the last relationship used in the failed assertion to compare the actual label value to.
    * @return the created {@code ErrorMessageFactory}.
    */
-  public static ErrorMessageFactory shouldHaveEndNode(Path actual, Node endNode) {
-    return new ShouldHaveEndNode(actual, endNode, StandardComparisonStrategy.instance());
+  public static ErrorMessageFactory shouldHaveLastRelationship(Path path, Relationship lastRelationship) {
+    return new ShouldHaveLastRelationship(path, lastRelationship, StandardComparisonStrategy.instance());
   }
 
-  private ShouldHaveEndNode(Object actual, Node other, ComparisonStrategy comparisonStrategy) {
+  private ShouldHaveLastRelationship(Path actual, Relationship other, ComparisonStrategy comparisonStrategy) {
     super("\nExpecting:\n  <%s>\nto end with node:\n  <%s>\n%s", actual, other, comparisonStrategy);
   }
 }

@@ -17,6 +17,7 @@ import org.assertj.core.error.ErrorMessageFactory;
 import org.assertj.core.internal.ComparisonStrategy;
 import org.assertj.core.internal.StandardComparisonStrategy;
 import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Path;
 import org.neo4j.graphdb.Relationship;
 
 public class ShouldHaveStartNode extends BasicErrorMessageFactory {
@@ -32,7 +33,18 @@ public class ShouldHaveStartNode extends BasicErrorMessageFactory {
     return new ShouldHaveStartNode(actual, startNode, StandardComparisonStrategy.instance());
   }
 
-  private ShouldHaveStartNode(Relationship actual, Node other, ComparisonStrategy comparisonStrategy) {
+  /**
+   * Creates a new </code>{@link org.assertj.neo4j.error.ShouldHaveStartNode}</code>.
+   *
+   * @param actual the actual value in the failed assertion.
+   * @param startNode the start node used in the failed assertion to compare the actual label value to.
+   * @return the created {@code ErrorMessageFactory}.
+   */
+  public static ErrorMessageFactory shouldHaveStartNode(Path actual, Node startNode) {
+    return new ShouldHaveStartNode(actual, startNode, StandardComparisonStrategy.instance());
+  }
+
+  private ShouldHaveStartNode(Object actual, Node other, ComparisonStrategy comparisonStrategy) {
     super("\nExpecting:\n  <%s>\nto start with node:\n  <%s>\n%s", actual, other, comparisonStrategy);
   }
 }

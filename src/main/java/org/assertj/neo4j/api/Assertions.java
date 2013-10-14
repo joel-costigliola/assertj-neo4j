@@ -13,6 +13,7 @@
 package org.assertj.neo4j.api;
 
 import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.Path;
 import org.neo4j.graphdb.PropertyContainer;
 import org.neo4j.graphdb.Relationship;
 
@@ -34,6 +35,10 @@ public class Assertions {
 
   public static RelationshipAssert assertThat(Relationship relationship) {
     return new RelationshipAssert(relationship);
+  }
+
+  public static PathAssert assertThat(Path path) {
+    return new PathAssert(path);
   }
 
   /** Creates a new </code>{@link Assertions}</code>. */
