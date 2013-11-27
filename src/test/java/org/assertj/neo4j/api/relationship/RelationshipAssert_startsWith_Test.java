@@ -34,7 +34,7 @@ public class RelationshipAssert_startsWith_Test {
   private Relationship relationship = mock(Relationship.class);
 
   @Test
-  public void should_pass_hasStart_if_relationship_starts_with_node() {
+  public void should_pass_startsWith_if_relationship_starts_with_node() {
     Node node = mock(Node.class);
     given_relationship_starts_with_node(node);
 
@@ -42,7 +42,7 @@ public class RelationshipAssert_startsWith_Test {
   }
 
   @Test
-  public void should_fail_hasStart_if_relationship_is_null() {
+  public void should_fail_startsWith_if_relationship_is_null() {
     expectedException.expect(AssertionError.class);
     expectedException.expectMessage("Expecting actual not to be null");
 
@@ -50,7 +50,7 @@ public class RelationshipAssert_startsWith_Test {
   }
 
   @Test
-  public void should_fail_hasStart_if_relationship_start_node_is_null() {
+  public void should_fail_startsWith_if_relationship_start_node_is_null() {
     expectedException.expect(IllegalStateException.class);
     expectedException.expectMessage("The actual start node should not be null");
 
@@ -58,7 +58,7 @@ public class RelationshipAssert_startsWith_Test {
   }
 
   @Test
-  public void should_fail_hasStart_if_passed_start_node_is_null() {
+  public void should_fail_startsWith_if_passed_start_node_is_null() {
     given_relationship_starts_with_node(mock(Node.class));
 
     expectedException.expect(IllegalArgumentException.class);
@@ -68,7 +68,7 @@ public class RelationshipAssert_startsWith_Test {
   }
 
   @Test
-  public void should_fail_hasStart_if_relationship_does_NOT_start_with_passed_node() {
+  public void should_fail_startsWith_if_relationship_does_NOT_start_with_passed_node() {
     given_relationship_starts_with_node(mock(Node.class));
 
     expectedException.expect(AssertionError.class);

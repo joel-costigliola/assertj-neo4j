@@ -50,7 +50,7 @@ public class RelationshipAssert extends AbstractAssert<RelationshipAssert, Relat
    * // [...] creation of homerNode, doughnutNode
    * Relationship love = homerNode.createRelationshipTo(doughnutNode, DynamicRelationshipType.withName(&quot;LOVES&quot;));
    * 
-   * assertThat(love).hasStart(homerNode);
+   * assertThat(love).startsWith(homerNode);
    * </pre>
    * 
    * If the <code>node</code> is {@code null}, an {@link IllegalArgumentException} is thrown.
@@ -62,7 +62,7 @@ public class RelationshipAssert extends AbstractAssert<RelationshipAssert, Relat
    * @throws IllegalArgumentException if <code>node</code> is {@code null}.
    * @throws AssertionError if the actual {@link org.neo4j.graphdb.Relationship} does not start with the given node
    */
-  public RelationshipAssert hasStart(Node node) {
+  public RelationshipAssert startsWith(Node node) {
     Objects.instance().assertNotNull(info, actual);
 
     Node actualStartNode = actual.getStartNode();
@@ -86,7 +86,7 @@ public class RelationshipAssert extends AbstractAssert<RelationshipAssert, Relat
    * // [...] creation of homerNode, doughnutNode
    * Relationship love = homerNode.createRelationshipTo(doughnutNode, DynamicRelationshipType.withName(&quot;LOVES&quot;));
    * 
-   * assertThat(love).hasEnd(doughnutNode);
+   * assertThat(love).endsWith(doughnutNode);
    * </pre>
    * 
    * If the <code>node</code> is {@code null}, an {@link IllegalArgumentException} is thrown.
@@ -98,7 +98,7 @@ public class RelationshipAssert extends AbstractAssert<RelationshipAssert, Relat
    * @throws IllegalArgumentException if <code>node</code> is {@code null}.
    * @throws AssertionError if the actual {@link org.neo4j.graphdb.Relationship} does not end with the given node
    */
-  public RelationshipAssert hasEnd(Node node) {
+  public RelationshipAssert endsWith(Node node) {
     Objects.instance().assertNotNull(info, actual);
 
     Node actualEndNode = actual.getEndNode();
@@ -122,8 +122,8 @@ public class RelationshipAssert extends AbstractAssert<RelationshipAssert, Relat
    * // [...] creation of homerNode, doughnutNode
    * Relationship love = homerNode.createRelationshipTo(doughnutNode, DynamicRelationshipType.withName(&quot;LOVES&quot;));
    * 
-   * assertThat(love).hasStartOrEnd(homerNode);
-   * assertThat(love).hasStartOrEnd(doughnutNode);
+   * assertThat(love).linksTo(homerNode);
+   * assertThat(love).linksTo(doughnutNode);
    * </pre>
    * 
    * If the <code>node</code> is {@code null}, an {@link IllegalArgumentException} is thrown.
@@ -136,7 +136,7 @@ public class RelationshipAssert extends AbstractAssert<RelationshipAssert, Relat
    * @throws AssertionError if the actual {@link org.neo4j.graphdb.Relationship} does not start neither end with the
    *           given node
    */
-  public RelationshipAssert hasStartOrEnd(Node node) {
+  public RelationshipAssert linksTo(Node node) {
     Objects.instance().assertNotNull(info, actual);
 
     Node actualStartNode = actual.getStartNode();
