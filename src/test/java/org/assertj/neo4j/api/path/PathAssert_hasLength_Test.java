@@ -12,15 +12,15 @@
  */
 package org.assertj.neo4j.api.path;
 
+import static org.assertj.neo4j.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Path;
-
-import static org.assertj.neo4j.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * Checks <code>{@link org.assertj.neo4j.api.PathAssert#hasLength(int)}</code> behavior.
@@ -36,48 +36,38 @@ public class PathAssert_hasLength_Test {
   @Test
   public void should_pass_hasLength_if_path_has_length() {
     Node node = mock(Node.class);
-    given_path_has_length(node);
+    given_path_of_length(1);
 
-    assertThat(path).hasLength(node);
+    assertThat(path).hasLength(1);
   }
 
   @Test
-  public void should_fail_hasLength_if_relationship_is_null() {
+  public void should_fail_hasLength_if_path_is_null() {
     expectedException.expect(AssertionError.class);
     expectedException.expectMessage("Expecting actual not to be null");
 
-    assertThat((Path) null).hasLength(mock(Node.class));
+    assertThat((Path) null).hasLength(0);
   }
 
   @Test
-  public void should_fail_hasLength_if_relationship_end_node_is_null() {
-    expectedException.expect(IllegalStateException.class);
-    expectedException.expectMessage("The actual end node should not be null");
-
-    assertThat(path).hasLength(mock(Node.class));
-  }
-
-  @Test
-  public void should_fail_hasLength_if_passed_end_node_is_null() {
-    given_path_has_length(mock(Node.class));
-
+  public void should_fail_hasLength_if_passed_length_is_negative() {
     expectedException.expect(IllegalArgumentException.class);
-    expectedException.expectMessage("The end node to look for should not be null");
+    expectedException.expectMessage("The path length to compare against should be positive");
 
-    assertThat(path).hasLength((Node) null);
+    assertThat(path).hasLength(-1);
   }
 
   @Test
-  public void should_fail_hasLength_if_relationship_does_NOT_start_with_passed_node() {
-    given_path_has_length(mock(Node.class));
+  public void should_fail_hasLength_if_path_has_a_different_length() {
+    given_path_of_length(1);
 
     expectedException.expect(AssertionError.class);
 
-    assertThat(path).hasLength(mock(Node.class));
+    assertThat(path).hasLength(2);
   }
 
-  private void given_path_has_length(Node node) {
-    when(path.endNode()).thenReturn(node);
+  private void given_path_of_length(int length) {
+    when(path.length()).thenReturn(length);
   }
 
 }
