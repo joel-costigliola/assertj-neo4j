@@ -23,11 +23,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * Checks <code>{@link org.assertj.neo4j.api.RelationshipAssert#hasEnd(org.neo4j.graphdb.Node)}</code> behavior.
+ * Checks <code>{@link org.assertj.neo4j.api.RelationshipAssert#endsWith(org.neo4j.graphdb.Node)}</code> behavior.
  * 
  * @author Florent Biville
  */
-public class RelationshipAssert_hasEnd_Test {
+public class RelationshipAssert_endsWith_Test {
 
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
@@ -38,7 +38,7 @@ public class RelationshipAssert_hasEnd_Test {
     Node node = mock(Node.class);
     given_relationship_ends_with_node(node);
 
-    assertThat(relationship).hasEnd(node);
+    assertThat(relationship).endsWith(node);
   }
 
   @Test
@@ -46,7 +46,7 @@ public class RelationshipAssert_hasEnd_Test {
     expectedException.expect(AssertionError.class);
     expectedException.expectMessage("Expecting actual not to be null");
 
-    assertThat((Relationship) null).hasEnd(mock(Node.class));
+    assertThat((Relationship) null).endsWith(mock(Node.class));
   }
 
   @Test
@@ -54,7 +54,7 @@ public class RelationshipAssert_hasEnd_Test {
     expectedException.expect(IllegalStateException.class);
     expectedException.expectMessage("The actual end node should not be null");
 
-    assertThat(relationship).hasEnd(mock(Node.class));
+    assertThat(relationship).endsWith(mock(Node.class));
   }
 
   @Test
@@ -64,7 +64,7 @@ public class RelationshipAssert_hasEnd_Test {
     expectedException.expect(IllegalArgumentException.class);
     expectedException.expectMessage("The end node to look for should not be null");
 
-    assertThat(relationship).hasEnd((Node) null);
+    assertThat(relationship).endsWith((Node) null);
   }
 
   @Test
@@ -73,7 +73,7 @@ public class RelationshipAssert_hasEnd_Test {
 
     expectedException.expect(AssertionError.class);
 
-    assertThat(relationship).hasEnd(mock(Node.class));
+    assertThat(relationship).endsWith(mock(Node.class));
   }
 
   private void given_relationship_ends_with_node(Node node) {

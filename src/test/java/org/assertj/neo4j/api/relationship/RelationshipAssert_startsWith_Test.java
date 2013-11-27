@@ -23,11 +23,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * Checks <code>{@link org.assertj.neo4j.api.RelationshipAssert#hasStart(org.neo4j.graphdb.Node)}</code> behavior.
+ * Checks <code>{@link org.assertj.neo4j.api.RelationshipAssert#startsWith(org.neo4j.graphdb.Node)}</code> behavior.
  * 
  * @author Florent Biville
  */
-public class RelationshipAssert_hasStart_Test {
+public class RelationshipAssert_startsWith_Test {
 
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
@@ -38,7 +38,7 @@ public class RelationshipAssert_hasStart_Test {
     Node node = mock(Node.class);
     given_relationship_starts_with_node(node);
 
-    assertThat(relationship).hasStart(node);
+    assertThat(relationship).startsWith(node);
   }
 
   @Test
@@ -46,7 +46,7 @@ public class RelationshipAssert_hasStart_Test {
     expectedException.expect(AssertionError.class);
     expectedException.expectMessage("Expecting actual not to be null");
 
-    assertThat((Relationship) null).hasStart(mock(Node.class));
+    assertThat((Relationship) null).startsWith(mock(Node.class));
   }
 
   @Test
@@ -54,7 +54,7 @@ public class RelationshipAssert_hasStart_Test {
     expectedException.expect(IllegalStateException.class);
     expectedException.expectMessage("The actual start node should not be null");
 
-    assertThat(relationship).hasStart(mock(Node.class));
+    assertThat(relationship).startsWith(mock(Node.class));
   }
 
   @Test
@@ -64,7 +64,7 @@ public class RelationshipAssert_hasStart_Test {
     expectedException.expect(IllegalArgumentException.class);
     expectedException.expectMessage("The start node to look for should not be null");
 
-    assertThat(relationship).hasStart((Node) null);
+    assertThat(relationship).startsWith((Node) null);
   }
 
   @Test
@@ -73,7 +73,7 @@ public class RelationshipAssert_hasStart_Test {
 
     expectedException.expect(AssertionError.class);
 
-    assertThat(relationship).hasStart(mock(Node.class));
+    assertThat(relationship).startsWith(mock(Node.class));
   }
 
   private void given_relationship_starts_with_node(Node node) {

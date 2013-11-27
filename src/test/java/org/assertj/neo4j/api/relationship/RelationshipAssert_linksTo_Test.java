@@ -23,11 +23,11 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * Checks <code>{@link org.assertj.neo4j.api.RelationshipAssert#hasStartOrEnd(org.neo4j.graphdb.Node)}</code> behavior.
+ * Checks <code>{@link org.assertj.neo4j.api.RelationshipAssert#linksTo(org.neo4j.graphdb.Node)}</code> behavior.
  * 
  * @author Florent Biville
  */
-public class RelationshipAssert_hasStartOrEnd_Test {
+public class RelationshipAssert_linksTo_Test {
 
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
@@ -39,7 +39,7 @@ public class RelationshipAssert_hasStartOrEnd_Test {
     given_relationship_starts_with_node(node);
     given_relationship_ends_with_node(mock(Node.class));
 
-    assertThat(relationship).hasStartOrEnd(node);
+    assertThat(relationship).linksTo(node);
   }
 
   @Test
@@ -48,7 +48,7 @@ public class RelationshipAssert_hasStartOrEnd_Test {
     given_relationship_starts_with_node(mock(Node.class));
     given_relationship_ends_with_node(node);
 
-    assertThat(relationship).hasStartOrEnd(node);
+    assertThat(relationship).linksTo(node);
   }
 
   @Test
@@ -56,7 +56,7 @@ public class RelationshipAssert_hasStartOrEnd_Test {
     expectedException.expect(AssertionError.class);
     expectedException.expectMessage("Expecting actual not to be null");
 
-    assertThat((Relationship) null).hasStartOrEnd(mock(Node.class));
+    assertThat((Relationship) null).linksTo(mock(Node.class));
   }
 
   @Test
@@ -66,7 +66,7 @@ public class RelationshipAssert_hasStartOrEnd_Test {
     expectedException.expect(IllegalStateException.class);
     expectedException.expectMessage("The actual start node should not be null");
 
-    assertThat(relationship).hasStartOrEnd(mock(Node.class));
+    assertThat(relationship).linksTo(mock(Node.class));
   }
 
   @Test
@@ -76,7 +76,7 @@ public class RelationshipAssert_hasStartOrEnd_Test {
     expectedException.expect(IllegalStateException.class);
     expectedException.expectMessage("The actual end node should not be null");
 
-    assertThat(relationship).hasStartOrEnd(mock(Node.class));
+    assertThat(relationship).linksTo(mock(Node.class));
   }
 
   @Test
@@ -87,7 +87,7 @@ public class RelationshipAssert_hasStartOrEnd_Test {
     expectedException.expect(IllegalArgumentException.class);
     expectedException.expectMessage("The node to look for should not be null");
 
-    assertThat(relationship).hasStartOrEnd((Node) null);
+    assertThat(relationship).linksTo((Node) null);
   }
 
   @Test
@@ -97,7 +97,7 @@ public class RelationshipAssert_hasStartOrEnd_Test {
 
     expectedException.expect(AssertionError.class);
 
-    assertThat(relationship).hasStartOrEnd(mock(Node.class));
+    assertThat(relationship).linksTo(mock(Node.class));
   }
 
   private void given_relationship_starts_with_node(Node node) {
