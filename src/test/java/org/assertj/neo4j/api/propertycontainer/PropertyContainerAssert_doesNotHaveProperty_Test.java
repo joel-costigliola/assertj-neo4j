@@ -27,7 +27,7 @@ import static org.mockito.Mockito.when;
  * 
  * @author Florent Biville
  */
-public class PropertyContainerAssert_hasNotProperty_key_value_Test {
+public class PropertyContainerAssert_doesNotHaveProperty_Test {
 
   @Rule
   public ExpectedException expectedException = none();
@@ -35,14 +35,28 @@ public class PropertyContainerAssert_hasNotProperty_key_value_Test {
   private PropertyContainer propertyContainer = mock(PropertyContainer.class);
 
   @Test
-  public void should_pass_hasNotProperty_when_property_container_contains_key_but_NOT_value() {
+  public void should_pass_when_property_container_does_not_have_key_and_value() {
+    given_property_container_with_key_and_value("firstName", "Emil Eifrem");
+
+    assertThat(propertyContainer).doesNotHaveProperty("name", "Peter Neubauer");
+  }
+
+  @Test
+  public void should_pass_when_property_container_has_key_but_NOT_value() {
     given_property_container_with_key_and_value("name", "Emil Eifrem");
 
     assertThat(propertyContainer).doesNotHaveProperty("name", "Peter Neubauer");
   }
 
   @Test
-  public void should_fail_hasNotProperty_when_given_property_key_is_null() {
+  public void should_pass_when_property_container_has_value_but_NOT_key() {
+    given_property_container_with_key_and_value("name", "Emil Eifrem");
+
+    assertThat(propertyContainer).doesNotHaveProperty("firstName", "Emil Eifrem");
+  }
+
+  @Test
+  public void should_fail_when_given_property_key_is_null() {
     expectedException.expect(IllegalArgumentException.class);
     expectedException.expectMessage("The key to look for should not be null");
 
@@ -52,7 +66,7 @@ public class PropertyContainerAssert_hasNotProperty_key_value_Test {
   }
 
   @Test
-  public void should_fail_hasNotProperty_when_given_property_value_is_null() {
+  public void should_fail_when_given_property_value_is_null() {
     expectedException.expect(IllegalArgumentException.class);
     expectedException.expectMessage("The value to look for should not be null");
 
@@ -62,7 +76,7 @@ public class PropertyContainerAssert_hasNotProperty_key_value_Test {
   }
 
   @Test
-  public void should_fail_hasNotProperty_when_property_container_contains_key_AND_value() {
+  public void should_fail_when_property_container_has_key_AND_value() {
     expectedException.expect(AssertionError.class);
 
     given_property_container_with_key_and_value("name", "Emil Eifrem");

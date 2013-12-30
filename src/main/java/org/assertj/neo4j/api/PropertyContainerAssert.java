@@ -68,10 +68,8 @@ public class PropertyContainerAssert extends AbstractAssert<PropertyContainerAss
   public PropertyContainerAssert hasPropertyKey(String key) {
     Objects.instance().assertNotNull(info, actual);
 
-    if (key == null) {
-      throw nullKeyException();
-    }
-    if (!actual.hasProperty(key)) {
+      checkPropertyKeyIsNotNull(key);
+      if (!actual.hasProperty(key)) {
       throw Failures.instance().failure(info, shouldHavePropertyKey(actual, key));
     }
     return this;
@@ -112,9 +110,7 @@ public class PropertyContainerAssert extends AbstractAssert<PropertyContainerAss
   public PropertyContainerAssert hasProperty(String key, Object value) {
     hasPropertyKey(key);
 
-    if (value == null) {
-      throw nullValueException();
-    }
+    checkPropertyValueIsNotNull(value);
     if (!value.equals(actual.getProperty(key, null))) {
       throw Failures.instance().failure(info, shouldHaveProperty(actual, key, value));
     }
@@ -152,9 +148,7 @@ public class PropertyContainerAssert extends AbstractAssert<PropertyContainerAss
   public PropertyContainerAssert doesNotHavePropertyKey(String key) {
     Objects.instance().assertNotNull(info, actual);
 
-    if (key == null) {
-      throw nullKeyException();
-    }
+    checkPropertyKeyIsNotNull(key);
     if (actual.hasProperty(key)) {
       throw Failures.instance().failure(info, shouldNotHavePropertyKey(actual, key));
     }
@@ -172,12 +166,14 @@ public class PropertyContainerAssert extends AbstractAssert<PropertyContainerAss
    * node.setProperty(&quot;firstName&quot;, &quot;Homer&quot;);
    *
    * assertThat(node).doesNotHaveProperty(&quot;firstName&quot;, &quot;Bart&quot;);
+   * assertThat(node).doesNotHaveProperty(&quot;lastName&quot;, &quot;Homer&quot;);
    *
    * // it also works with relationships:
    * Relationship relationship = homer.createRelationshipTo(donut, DynamicRelationshipType.withName(&quot;LOVES&quot;));
    * relationship.setProperty(&quot;firstName&quot;, &quot;Homer&quot;);
    *
    * assertThat(relationship).doesNotHaveProperty(&quot;firstName&quot;, &quot;Bart&quot;);
+   * assertThat(relationship).doesNotHaveProperty(&quot;lastName&quot;, &quot;Homer&quot;);
    *
    * </pre>
    * 
@@ -194,23 +190,26 @@ public class PropertyContainerAssert extends AbstractAssert<PropertyContainerAss
    * @throws AssertionError if the actual {@link PropertyContainer} has a property with given key and value.
    */
   public PropertyContainerAssert doesNotHaveProperty(String key, Object value) {
-      //FIXME
-    hasPropertyKey(key);
+    Objects.instance().assertNotNull(info, actual);
 
-    if (value == null) {
-      throw nullValueException();
-    }
-    if (value.equals(actual.getProperty(key, null))) {
+    checkPropertyKeyIsNotNull(key);
+    checkPropertyValueIsNotNull(value);
+    if (actual.hasProperty(key) && value.equals(actual.getProperty(key, null))) {
       throw Failures.instance().failure(info, shouldNotHaveProperty(actual, key, value));
     }
     return this;
   }
 
-  private IllegalArgumentException nullKeyException() {
-    return new IllegalArgumentException("The key to look for should not be null");
+  private static void checkPropertyValueIsNotNull(Object value) {
+    if (value == null) {
+        throw new IllegalArgumentException("The value to look for should not be null");
+    }
   }
 
-  private IllegalArgumentException nullValueException() {
-    return new IllegalArgumentException("The value to look for should not be null");
+  private static void checkPropertyKeyIsNotNull(String key) {
+    if (key == null) {
+        throw new IllegalArgumentException("The key to look for should not be null");
+    }
   }
+
 }
