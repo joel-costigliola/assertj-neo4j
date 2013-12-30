@@ -1,14 +1,14 @@
 /**
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
- * 
- * Copyright 2013-2013 the original author or authors.
+ *
+ * Copyright 2013-2014 the original author or authors.
  */
 package org.assertj.neo4j.api;
 
@@ -38,16 +38,16 @@ public class NodeAssert extends AbstractAssert<NodeAssert, Node> {
   }
 
   /**
-   * Verifies that the actual {@link org.neo4j.graphdb.Node} contains the given label name<br/>
+   * Verifies that the actual {@link org.neo4j.graphdb.Node} has the given label name<br/>
    * <p>
    * Example:
    * 
    * <pre>
    * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
-   * Node actual = graph.createNode();
-   * actual.addLabel(DynamicLabel.label(&quot;DOUGHNUT_LOVER&quot;));
+   * Node node = graph.createNode();
+   * node.addLabel(DynamicLabel.label(&quot;DOUGHNUT_LOVER&quot;));
    * 
-   * assertThat(actual).hasLabel(&quot;DOUGHNUT_LOVER&quot;);
+   * assertThat(node).hasLabel(&quot;DOUGHNUT_LOVER&quot;);
    * </pre>
    * 
    * If the <code>labelValue</code> is {@code null}, an {@link IllegalArgumentException} is thrown.
@@ -72,16 +72,16 @@ public class NodeAssert extends AbstractAssert<NodeAssert, Node> {
   }
 
   /**
-   * Verifies that the actual {@link org.neo4j.graphdb.Node} does NOT contain the given label name<br/>
+   * Verifies that the actual {@link org.neo4j.graphdb.Node} does NOT have the given label name<br/>
    * <p>
    * Example:
    * 
    * <pre>
    * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
-   * Node actual = graph.createNode();
-   * actual.addLabel(DynamicLabel.label(&quot;DOUGHNUT_LOVER&quot;));
+   * Node node = graph.createNode();
+   * node.addLabel(DynamicLabel.label(&quot;DOUGHNUT_LOVER&quot;));
    * 
-   * assertThat(actual).hasNotLabel(&quot;FRUIT_LOVER&quot;);
+   * assertThat(node).doesNotHaveLabel(&quot;FRUIT_LOVER&quot;);
    * </pre>
    * 
    * If the <code>labelValue</code> is {@code null}, an {@link IllegalArgumentException} is thrown.
@@ -93,7 +93,7 @@ public class NodeAssert extends AbstractAssert<NodeAssert, Node> {
    * @throws IllegalArgumentException if <code>labelValue</code> is {@code null}.
    * @throws AssertionError if the actual {@link org.neo4j.graphdb.Node} does contain the given label
    */
-  public NodeAssert hasNotLabel(String labelValue) {
+  public NodeAssert doesNotHaveLabel(String labelValue) {
     Objects.instance().assertNotNull(info, actual);
 
     if (labelValue == null) {
@@ -106,17 +106,17 @@ public class NodeAssert extends AbstractAssert<NodeAssert, Node> {
   }
 
   /**
-   * Verifies that the actual {@link org.neo4j.graphdb.Node} contains the given label<br/>
+   * Verifies that the actual {@link org.neo4j.graphdb.Node} has the given label<br/>
    * <p>
    * Example:
    * 
    * <pre>
    * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
-   * Node actual = graph.createNode();
+   * Node node = graph.createNode();
    * Label doughnutLover = DynamicLabel.label(&quot;DOUGHNUT_LOVER&quot;);
-   * actual.addLabel(doughnutLover);
+   * node.addLabel(doughnutLover);
    * 
-   * assertThat(actual).hasLabel(doughnutLover);
+   * assertThat(node).hasLabel(doughnutLover);
    * </pre>
    * 
    * If the <code>label</code> is {@code null}, an {@link IllegalArgumentException} is thrown.
@@ -141,16 +141,16 @@ public class NodeAssert extends AbstractAssert<NodeAssert, Node> {
   }
 
   /**
-   * Verifies that the actual {@link org.neo4j.graphdb.Node} does NOT contain the given label<br/>
+   * Verifies that the actual {@link org.neo4j.graphdb.Node} does NOT have the given label<br/>
    * <p>
    * Example:
    * 
    * <pre>
    * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
-   * Node actual = graph.createNode();
-   * actual.addLabel(DynamicLabel.label(&quot;DOUGHNUT_LOVER&quot;));
+   * Node node = graph.createNode();
+   * node.addLabel(DynamicLabel.label(&quot;DOUGHNUT_LOVER&quot;));
    * 
-   * assertThat(actual).hasNotLabel(DynamicLabel.label(&quot;FRUIT_LOVER&quot;));
+   * assertThat(node).doesNotHaveLabel(DynamicLabel.label(&quot;FRUIT_LOVER&quot;));
    * </pre>
    * 
    * If the <code>label</code> is {@code null}, an {@link IllegalArgumentException} is thrown.
@@ -162,7 +162,7 @@ public class NodeAssert extends AbstractAssert<NodeAssert, Node> {
    * @throws IllegalArgumentException if <code>label</code> is {@code null}.
    * @throws AssertionError if the actual {@link org.neo4j.graphdb.Node} does contain the given label
    */
-  public NodeAssert hasNotLabel(Label label) {
+  public NodeAssert doesNotHaveLabel(Label label) {
     Objects.instance().assertNotNull(info, actual);
 
     if (label == null) {

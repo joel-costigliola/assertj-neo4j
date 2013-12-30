@@ -1,20 +1,20 @@
 /**
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
- * 
- * Copyright 2013-2013 the original author or authors.
+ *
+ * Copyright 2013-2014 the original author or authors.
  */
 package org.assertj.neo4j.api;
 
-import static org.assertj.neo4j.error.ShouldHaveEndNode.shouldHaveEndNode;
-import static org.assertj.neo4j.error.ShouldHaveLastRelationship.shouldHaveLastRelationship;
-import static org.assertj.neo4j.error.ShouldHaveStartNode.shouldHaveStartNode;
+import static org.assertj.neo4j.error.ShouldEndWithNode.shouldEndWithNode;
+import static org.assertj.neo4j.error.ShouldEndWithRelationship.shouldHaveLastRelationship;
+import static org.assertj.neo4j.error.ShouldStartWithNode.shouldStartWithNode;
 
 import org.assertj.core.api.IterableAssert;
 import org.assertj.core.internal.Failures;
@@ -50,21 +50,21 @@ public class PathAssert extends IterableAssert<PropertyContainer> {
    * // [...]
    * Relationship love = homerNode.createRelationshipTo(doughnutNode, DynamicRelationshipType.withName(&quot;LOVES&quot;));
    * // PathExpander bellyExpander = [...]
-   * Path veryShortPath = GraphAlgoFactory.shortestPath(bellyExpander, 2).findSinglePath(homerNode, doughnutNode);
+   * Path homerToDoughnutPath = GraphAlgoFactory.shortestPath(bellyExpander, 2).findSinglePath(homerNode, doughnutNode);
    * 
-   * assertThat(veryShortPath).startsWith(homerNode);
+   * assertThat(homerToDoughnutPath).startsWithNode(homerNode);
    * </pre>
    * 
    * If the <code>node</code> is {@code null}, an {@link IllegalArgumentException} is thrown.
    * <p>
    * 
-   * @param node the node from which the actual {@link org.neo4j.graphdb.Path} may start from
+   * @param node the expected start node of the actual {@link org.neo4j.graphdb.Path}
    * @return this {@link NodeAssert} for assertions chaining
    * 
    * @throws IllegalArgumentException if <code>node</code> is {@code null}.
    * @throws AssertionError if the actual {@link org.neo4j.graphdb.Path} does not start with the given node
    */
-  public PathAssert hasStart(Node node) {
+  public PathAssert startsWithNode(Node node) {
     Objects.instance().assertNotNull(info, actual);
 
     Path actualPath = getActual();
@@ -78,7 +78,7 @@ public class PathAssert extends IterableAssert<PropertyContainer> {
     }
 
     if (!actualStart.equals(node)) {
-      throw Failures.instance().failure(info, shouldHaveStartNode(actualPath, node));
+      throw Failures.instance().failure(info, shouldStartWithNode(actualPath, node));
     }
     return this;
   }
@@ -93,21 +93,21 @@ public class PathAssert extends IterableAssert<PropertyContainer> {
    * // [...]
    * Relationship love = homerNode.createRelationshipTo(doughnutNode, DynamicRelationshipType.withName(&quot;LOVES&quot;));
    * // PathExpander bellyExpander = [...]
-   * Path veryShortPath = GraphAlgoFactory.shortestPath(bellyExpander, 2).findSinglePath(homerNode, doughnutNode);
+   * Path homerToDoughnutPath = GraphAlgoFactory.shortestPath(bellyExpander, 2).findSinglePath(homerNode, doughnutNode);
    * 
-   * assertThat(veryShortPath).endsWith(doughnutNode);
+   * assertThat(homerToDoughnutPath).endsWithNode(doughnutNode);
    * </pre>
    * 
    * If the <code>node</code> is {@code null}, an {@link IllegalArgumentException} is thrown.
    * <p>
    * 
-   * @param node the node from which the actual {@link org.neo4j.graphdb.Path} may end to
+   * @param node the expected end node of the actual {@link org.neo4j.graphdb.Path}
    * @return this {@link NodeAssert} for assertions chaining
    * 
    * @throws IllegalArgumentException if <code>node</code> is {@code null}.
    * @throws AssertionError if the actual {@link org.neo4j.graphdb.Path} does not end with the given node
    */
-  public PathAssert hasEnd(Node node) {
+  public PathAssert endsWithNode(Node node) {
     Objects.instance().assertNotNull(info, actual);
 
     Path actualPath = getActual();
@@ -121,7 +121,7 @@ public class PathAssert extends IterableAssert<PropertyContainer> {
     }
 
     if (!actualEnd.equals(node)) {
-      throw Failures.instance().failure(info, shouldHaveEndNode(actualPath, node));
+      throw Failures.instance().failure(info, shouldEndWithNode(actualPath, node));
     }
     return this;
   }
@@ -136,21 +136,21 @@ public class PathAssert extends IterableAssert<PropertyContainer> {
    * // [...]
    * Relationship love = homerNode.createRelationshipTo(doughnutNode, DynamicRelationshipType.withName(&quot;LOVES&quot;));
    * // PathExpander bellyExpander = [...]
-   * Path veryShortPath = GraphAlgoFactory.shortestPath(bellyExpander, 2).findSinglePath(homerNode, doughnutNode);
+   * Path homerToDoughnutPath = GraphAlgoFactory.shortestPath(bellyExpander, 2).findSinglePath(homerNode, doughnutNode);
    * 
-   * assertThat(veryShortPath).hasLastRelationship(love);
+   * assertThat(homerToDoughnutPath).endsWithRelationship(love);
    * </pre>
    * 
    * If the <code>node</code> is {@code null}, an {@link IllegalArgumentException} is thrown.
    * <p>
    * 
-   * @param relationship the relationship from which the actual {@link org.neo4j.graphdb.Path} may contain last
+   * @param relationship the expected last relationship of the actual {@link org.neo4j.graphdb.Path}
    * @return this {@link NodeAssert} for assertions chaining
    * 
    * @throws IllegalArgumentException if <code>relationship</code> is {@code null}.
    * @throws AssertionError if the actual {@link org.neo4j.graphdb.Path} does not contain this relationship last
    */
-  public PathAssert hasLastRelationship(Relationship relationship) {
+  public PathAssert endsWithRelationship(Relationship relationship) {
     Objects.instance().assertNotNull(info, actual);
 
     Path actualPath = getActual();
@@ -179,9 +179,9 @@ public class PathAssert extends IterableAssert<PropertyContainer> {
    * // [...]
    * Relationship love = homerNode.createRelationshipTo(doughnutNode, DynamicRelationshipType.withName(&quot;LOVES&quot;));
    * // PathExpander bellyExpander = [...]
-   * Path veryShortPath = GraphAlgoFactory.shortestPath(bellyExpander, 2).findSinglePath(homerNode, doughnutNode);
+   * Path homerToDoughnutPath = GraphAlgoFactory.shortestPath(bellyExpander, 2).findSinglePath(homerNode, doughnutNode);
    * 
-   * assertThat(veryShortPath).hasLength(1);
+   * assertThat(homerToDoughnutPath).hasLength(1);
    * </pre>
    * 
    * If the <code>length</code> is strictly negative, an {@link IllegalArgumentException} is thrown.

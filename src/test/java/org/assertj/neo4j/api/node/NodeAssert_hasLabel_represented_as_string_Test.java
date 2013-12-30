@@ -1,14 +1,14 @@
 /**
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
- * 
- * Copyright 2013-2013 the original author or authors.
+ *
+ * Copyright 2013-2014 the original author or authors.
  */
 package org.assertj.neo4j.api.node;
 
@@ -31,7 +31,7 @@ import static org.mockito.Mockito.when;
  * 
  * @author Florent Biville
  */
-public class NodeAssert_hasLabel_string_Test {
+public class NodeAssert_hasLabel_represented_as_string_Test {
 
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
@@ -39,14 +39,14 @@ public class NodeAssert_hasLabel_string_Test {
   private Node node = mock(Node.class);
 
   @Test
-  public void should_pass_hasLabel_if_node_has_label() {
+  public void should_pass_if_node_has_label() {
     given_node_with_label("MAMMAL");
 
     assertThat(node).hasLabel("MAMMAL");
   }
 
   @Test
-  public void should_fail_hasLabel_if_node_is_null() {
+  public void should_fail_if_node_is_null() {
     expectedException.expect(AssertionError.class);
     expectedException.expectMessage("Expecting actual not to be null");
 
@@ -54,14 +54,14 @@ public class NodeAssert_hasLabel_string_Test {
   }
 
   @Test
-  public void should_fail_hasLabel_if_label_value_is_null() {
+  public void should_fail_if_label_value_is_null() {
     expectedException.expect(IllegalArgumentException.class);
 
     assertThat(node).hasLabel((String) null);
   }
 
   @Test
-  public void should_fail_hasLabel_if_node_does_NOT_have_label() {
+  public void should_fail_if_node_does_NOT_have_label() {
     expectedException.expect(AssertionError.class);
 
     given_node_with_label("REPTILE");

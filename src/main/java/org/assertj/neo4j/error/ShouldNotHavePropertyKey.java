@@ -1,40 +1,36 @@
 /**
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
- * 
- * Copyright 2013-2013 the original author or authors.
+ *
+ * Copyright 2013-2014 the original author or authors.
  */
 package org.assertj.neo4j.error;
 
 import org.assertj.core.error.BasicErrorMessageFactory;
 import org.assertj.core.error.ErrorMessageFactory;
-import org.assertj.core.internal.ComparisonStrategy;
 import org.assertj.core.internal.StandardComparisonStrategy;
 import org.neo4j.graphdb.PropertyContainer;
 
-public class ShouldNotHavePropertyWithValue extends BasicErrorMessageFactory {
+public class ShouldNotHavePropertyKey extends BasicErrorMessageFactory {
 
   /**
-   * Creates a new </code>{@link org.assertj.neo4j.error.ShouldNotHavePropertyWithValue}</code>.
+   * Creates a new </code>{@link ShouldNotHavePropertyKey}</code>.
    * 
    * @param actual the actual value in the failed assertion.
    * @param key the key used in the failed assertion to compare the actual property key to.
-   * @param value the value used in the failed assertion to compare the actual property value to.
    * @return the created {@code ErrorMessageFactory}.
    */
-  public static ErrorMessageFactory shouldNotHavePropertyWithValue(PropertyContainer actual, String key, Object value) {
-    return new ShouldNotHavePropertyWithValue(actual, key, value, StandardComparisonStrategy.instance());
+  public static ErrorMessageFactory shouldNotHavePropertyKey(PropertyContainer actual, String key) {
+    return new ShouldNotHavePropertyKey(actual, key);
   }
 
-  private ShouldNotHavePropertyWithValue(PropertyContainer actual, String key, Object value,
-      ComparisonStrategy comparisonStrategy) {
-    super("\nExpecting:\n  <%s>\nto contain property key:\n  <%s>\nbut a property value DIFFERENT from:\n  <%s>\n%s",
-        actual, key, value, comparisonStrategy);
+  private ShouldNotHavePropertyKey(PropertyContainer actual, String other) {
+    super("\nExpecting:\n  <%s>\nnot to have property key:\n  <%s>\n%s", actual, other, StandardComparisonStrategy.instance());
   }
 }
