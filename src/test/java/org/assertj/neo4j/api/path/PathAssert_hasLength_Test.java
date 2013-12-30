@@ -12,15 +12,14 @@
  */
 package org.assertj.neo4j.api.path;
 
-import static org.assertj.neo4j.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Path;
+
+import static org.assertj.neo4j.api.Assertions.assertThat;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * Checks <code>{@link org.assertj.neo4j.api.PathAssert#hasLength(int)}</code> behavior.
@@ -34,14 +33,14 @@ public class PathAssert_hasLength_Test {
   private Path path = mock(Path.class);
 
   @Test
-  public void should_pass_hasLength_if_path_has_length() {
+  public void should_pass_if_path_has_length() {
     given_path_of_length(1);
 
     assertThat(path).hasLength(1);
   }
 
   @Test
-  public void should_fail_hasLength_if_path_is_null() {
+  public void should_fail_if_path_is_null() {
     expectedException.expect(AssertionError.class);
     expectedException.expectMessage("Expecting actual not to be null");
 
@@ -49,7 +48,7 @@ public class PathAssert_hasLength_Test {
   }
 
   @Test
-  public void should_fail_hasLength_if_given_length_is_negative() {
+  public void should_fail_if_given_length_is_negative() {
     expectedException.expect(IllegalArgumentException.class);
     expectedException.expectMessage("The path length to compare against should be positive");
 
@@ -57,7 +56,7 @@ public class PathAssert_hasLength_Test {
   }
 
   @Test
-  public void should_fail_hasLength_if_path_has_a_different_length() {
+  public void should_fail_if_path_has_a_different_length() {
     given_path_of_length(1);
 
     expectedException.expect(AssertionError.class);

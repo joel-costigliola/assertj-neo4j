@@ -34,7 +34,7 @@ public class PathAssert_endsWithNode_Test {
   private Path path = mock(Path.class);
 
   @Test
-  public void should_pass_if_relationship_ends_with_node() {
+  public void should_pass_if_path_ends_with_node() {
     Node node = mock(Node.class);
     given_path_ends_with_node(node);
 
@@ -42,7 +42,7 @@ public class PathAssert_endsWithNode_Test {
   }
 
   @Test
-  public void should_fail_if_relationship_is_null() {
+  public void should_fail_if_path_is_null() {
     expectedException.expect(AssertionError.class);
     expectedException.expectMessage("Expecting actual not to be null");
 
@@ -50,7 +50,7 @@ public class PathAssert_endsWithNode_Test {
   }
 
   @Test
-  public void should_fail_if_relationship_end_node_is_null() {
+  public void should_fail_if_path_end_node_is_null() {
     expectedException.expect(IllegalStateException.class);
     expectedException.expectMessage("The actual end node should not be null");
 
@@ -68,7 +68,7 @@ public class PathAssert_endsWithNode_Test {
   }
 
   @Test
-  public void should_fail_if_relationship_does_NOT_start_with_given_node() {
+  public void should_fail_if_path_does_NOT_end_with_given_node() {
     given_path_ends_with_node(mock(Node.class));
 
     expectedException.expect(AssertionError.class);

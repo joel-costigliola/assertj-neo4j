@@ -68,9 +68,10 @@ public class NodeAssert_hasLabel_Test {
     assertThat(node).hasLabel(DynamicLabel.label("MAMMAL"));
   }
 
+  @SuppressWarnings("unchecked")
   private void given_node_with_label(String value) {
-    ResourceIterable labels = mock(ResourceIterable.class);
-    ResourceIterator iterator = mock(ResourceIterator.class);
+    ResourceIterable<Label> labels = mock(ResourceIterable.class);
+    ResourceIterator<Label> iterator = mock(ResourceIterator.class);
     Label label = DynamicLabel.label(value);
     when(iterator.next()).thenReturn(label);
     when(iterator.hasNext()).thenReturn(true, false);

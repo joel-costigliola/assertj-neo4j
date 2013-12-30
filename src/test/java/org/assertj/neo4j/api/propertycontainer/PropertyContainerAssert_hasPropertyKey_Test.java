@@ -42,7 +42,7 @@ public class PropertyContainerAssert_hasPropertyKey_Test {
   }
 
   @Test
-  public void should_fail_when_actual_is_null() {
+  public void should_fail_when_given_property_container_is_null() {
     expectedException.expect(AssertionError.class);
     expectedException.expectMessage("Expecting actual not to be null");
 

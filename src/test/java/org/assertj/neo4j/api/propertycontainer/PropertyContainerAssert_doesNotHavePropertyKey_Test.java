@@ -36,7 +36,7 @@ public class PropertyContainerAssert_doesNotHavePropertyKey_Test {
 
   @Test
   public void should_pass_if_property_container_does_NOT_have_key() {
-    assertThat(propertyContainer).doesNotHavePropertyKey("monkeykey");
+    assertThat(propertyContainer).doesNotHavePropertyKey("key");
   }
 
   @Test
@@ -44,7 +44,7 @@ public class PropertyContainerAssert_doesNotHavePropertyKey_Test {
     expectedException.expect(AssertionError.class);
     expectedException.expectMessage("Expecting actual not to be null");
 
-    assertThat((PropertyContainer) null).doesNotHavePropertyKey("monkeykey");
+    assertThat((PropertyContainer) null).doesNotHavePropertyKey("key");
   }
 
   @Test

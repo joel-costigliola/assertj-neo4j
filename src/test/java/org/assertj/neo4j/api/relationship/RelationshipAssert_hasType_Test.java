@@ -36,7 +36,7 @@ public class RelationshipAssert_hasType_Test {
   private Relationship relationship = mock(Relationship.class);
 
   @Test
-  public void should_pass_hasType_if_relationship_has_type() {
+  public void should_pass_if_relationship_has_type() {
     RelationshipType relationshipType = DynamicRelationshipType.withName("LINKS");
 
     given_relationship_has_type(relationshipType);
@@ -45,7 +45,7 @@ public class RelationshipAssert_hasType_Test {
   }
 
   @Test
-  public void should_fail_hasType_if_relationship_is_null() {
+  public void should_fail_if_relationship_is_null() {
     expectedException.expect(AssertionError.class);
     expectedException.expectMessage("Expecting actual not to be null");
 
@@ -53,7 +53,7 @@ public class RelationshipAssert_hasType_Test {
   }
 
   @Test
-  public void should_fail_hasType_if_relationship_type_is_null() {
+  public void should_fail_if_relationship_type_is_null() {
     expectedException.expect(IllegalStateException.class);
     expectedException.expectMessage("The actual relationship type should not be null");
 
@@ -61,7 +61,7 @@ public class RelationshipAssert_hasType_Test {
   }
 
   @Test
-  public void should_fail_hasType_if_given_relationship_type_is_null() {
+  public void should_fail_if_given_relationship_type_is_null() {
     expectedException.expect(IllegalArgumentException.class);
     expectedException.expectMessage("The relationship type to look for should not be null");
 
@@ -71,7 +71,7 @@ public class RelationshipAssert_hasType_Test {
   }
 
   @Test
-  public void should_fail_hasType_if_relationship_does_NOT_have_given_type() {
+  public void should_fail_if_relationship_does_NOT_have_given_type() {
     expectedException.expect(AssertionError.class);
 
     given_relationship_has_type(mock(RelationshipType.class));
