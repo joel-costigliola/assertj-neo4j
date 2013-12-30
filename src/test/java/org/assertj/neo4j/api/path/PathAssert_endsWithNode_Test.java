@@ -64,7 +64,7 @@ public class PathAssert_endsWithNode_Test {
     expectedException.expect(IllegalArgumentException.class);
     expectedException.expectMessage("The end node to look for should not be null");
 
-    assertThat(path).endsWithNode((Node) null);
+    assertThat(path).endsWithNode(null);
   }
 
   @Test

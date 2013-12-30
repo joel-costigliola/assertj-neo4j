@@ -15,10 +15,8 @@ package org.assertj.neo4j.error;
 
 import org.assertj.core.error.BasicErrorMessageFactory;
 import org.assertj.core.error.ErrorMessageFactory;
-import org.assertj.core.internal.ComparisonStrategy;
 import org.assertj.core.internal.StandardComparisonStrategy;
 import org.neo4j.graphdb.Path;
-import org.neo4j.graphdb.Relationship;
 
 public class ShouldHaveLength extends BasicErrorMessageFactory {
 
@@ -30,10 +28,10 @@ public class ShouldHaveLength extends BasicErrorMessageFactory {
     * @return the created {@code ErrorMessageFactory}.
     */
    public static ErrorMessageFactory shouldHaveLength(Path path, int length) {
-     return new ShouldHaveLength(path, length, StandardComparisonStrategy.instance());
+     return new ShouldHaveLength(path, length);
    }
    
-   private ShouldHaveLength(Path actual, int length, ComparisonStrategy comparisonStrategy) {
-      super("\nExpecting:\n  <%s>\nto have length:\n  <%s>\n%s", actual, length, comparisonStrategy);
+   private ShouldHaveLength(Path actual, int length) {
+      super("\nExpecting:\n  <%s>\nto have length:\n  <%s>\n%s", actual, length, StandardComparisonStrategy.instance());
    }
 }

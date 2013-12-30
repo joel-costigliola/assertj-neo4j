@@ -14,7 +14,6 @@ package org.assertj.neo4j.error;
 
 import org.assertj.core.error.BasicErrorMessageFactory;
 import org.assertj.core.error.ErrorMessageFactory;
-import org.assertj.core.internal.ComparisonStrategy;
 import org.assertj.core.internal.StandardComparisonStrategy;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Path;
@@ -30,7 +29,7 @@ public class ShouldStartWithNode extends BasicErrorMessageFactory {
    * @return the created {@code ErrorMessageFactory}.
    */
   public static ErrorMessageFactory shouldStartWithNode(Relationship actual, Node startNode) {
-    return new ShouldStartWithNode(actual, startNode, StandardComparisonStrategy.instance());
+    return new ShouldStartWithNode(actual, startNode);
   }
 
   /**
@@ -41,10 +40,10 @@ public class ShouldStartWithNode extends BasicErrorMessageFactory {
    * @return the created {@code ErrorMessageFactory}.
    */
   public static ErrorMessageFactory shouldStartWithNode(Path actual, Node startNode) {
-    return new ShouldStartWithNode(actual, startNode, StandardComparisonStrategy.instance());
+    return new ShouldStartWithNode(actual, startNode);
   }
 
-  private ShouldStartWithNode(Object actual, Node other, ComparisonStrategy comparisonStrategy) {
-    super("\nExpecting:\n  <%s>\nto start with node:\n  <%s>\n%s", actual, other, comparisonStrategy);
+  private ShouldStartWithNode(Object actual, Node other) {
+    super("\nExpecting:\n  <%s>\nto start with node:\n  <%s>\n%s", actual, other, StandardComparisonStrategy.instance());
   }
 }

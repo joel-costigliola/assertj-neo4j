@@ -67,7 +67,7 @@ public class RelationshipAssert_hasType_Test {
 
     given_relationship_has_type(mock(RelationshipType.class));
 
-    assertThat(relationship).hasType((RelationshipType) null);
+    assertThat(relationship).hasType(null);
   }
 
   @Test

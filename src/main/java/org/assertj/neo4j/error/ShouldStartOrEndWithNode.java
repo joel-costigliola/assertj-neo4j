@@ -14,7 +14,6 @@ package org.assertj.neo4j.error;
 
 import org.assertj.core.error.BasicErrorMessageFactory;
 import org.assertj.core.error.ErrorMessageFactory;
-import org.assertj.core.internal.ComparisonStrategy;
 import org.assertj.core.internal.StandardComparisonStrategy;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
@@ -29,10 +28,10 @@ public class ShouldStartOrEndWithNode extends BasicErrorMessageFactory {
    * @return the created {@code ErrorMessageFactory}.
    */
   public static ErrorMessageFactory shouldStartOrEndWithNode(Relationship actual, Node node) {
-    return new ShouldStartOrEndWithNode(actual, node, StandardComparisonStrategy.instance());
+    return new ShouldStartOrEndWithNode(actual, node);
   }
 
-  private ShouldStartOrEndWithNode(Relationship actual, Node other, ComparisonStrategy comparisonStrategy) {
-    super("\nExpecting:\n  <%s>\nto either start or end with node:\n  <%s>\n%s", actual, other, comparisonStrategy);
+  private ShouldStartOrEndWithNode(Relationship actual, Node other) {
+    super("\nExpecting:\n  <%s>\nto either start or end with node:\n  <%s>\n%s", actual, other, StandardComparisonStrategy.instance());
   }
 }

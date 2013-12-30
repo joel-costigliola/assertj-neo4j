@@ -14,7 +14,6 @@ package org.assertj.neo4j.error;
 
 import org.assertj.core.error.BasicErrorMessageFactory;
 import org.assertj.core.error.ErrorMessageFactory;
-import org.assertj.core.internal.ComparisonStrategy;
 import org.assertj.core.internal.StandardComparisonStrategy;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
@@ -29,10 +28,10 @@ public class ShouldHaveRelationshipType extends BasicErrorMessageFactory {
    * @return the created {@code ErrorMessageFactory}.
    */
   public static ErrorMessageFactory shouldHaveRelationshipType(Relationship actual, RelationshipType relationshipType) {
-    return new ShouldHaveRelationshipType(actual, relationshipType, StandardComparisonStrategy.instance());
+    return new ShouldHaveRelationshipType(actual, relationshipType);
   }
 
-  private ShouldHaveRelationshipType(Relationship actual, RelationshipType other, ComparisonStrategy comparisonStrategy) {
-    super("\nExpecting:\n  <%s>\nto have type:\n  <%s>\n%s", actual, other, comparisonStrategy);
+  private ShouldHaveRelationshipType(Relationship actual, RelationshipType other) {
+    super("\nExpecting:\n  <%s>\nto have type:\n  <%s>\n%s", actual, other, StandardComparisonStrategy.instance());
   }
 }

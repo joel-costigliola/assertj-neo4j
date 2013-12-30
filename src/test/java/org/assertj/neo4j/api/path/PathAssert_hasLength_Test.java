@@ -35,7 +35,6 @@ public class PathAssert_hasLength_Test {
 
   @Test
   public void should_pass_hasLength_if_path_has_length() {
-    Node node = mock(Node.class);
     given_path_of_length(1);
 
     assertThat(path).hasLength(1);
