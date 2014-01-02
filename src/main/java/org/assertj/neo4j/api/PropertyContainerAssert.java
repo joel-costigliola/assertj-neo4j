@@ -27,10 +27,10 @@ import static org.assertj.neo4j.error.ShouldNotHaveProperty.shouldNotHavePropert
  * 
  * @author Florent Biville
  */
-public class PropertyContainerAssert extends AbstractAssert<PropertyContainerAssert, PropertyContainer> {
+public class PropertyContainerAssert<A extends AbstractAssert<A, T>, T extends PropertyContainer> extends AbstractAssert<A, T> {
 
-  protected PropertyContainerAssert(PropertyContainer actual) {
-    super(actual, PropertyContainerAssert.class);
+  protected PropertyContainerAssert(T actual, Class<? extends A> assertClass) {
+    super(actual, assertClass);
   }
 
   public PropertyContainer getActual() {

@@ -30,7 +30,7 @@ import org.neo4j.graphdb.RelationshipType;
  * 
  * @author Florent Biville
  */
-public class RelationshipAssert extends AbstractAssert<RelationshipAssert, Relationship> {
+public class RelationshipAssert extends PropertyContainerAssert<RelationshipAssert, Relationship> {
 
   protected RelationshipAssert(Relationship actual) {
     super(actual, RelationshipAssert.class);

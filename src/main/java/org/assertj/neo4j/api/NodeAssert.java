@@ -27,7 +27,7 @@ import static org.assertj.neo4j.error.ShouldNotHaveLabel.shouldNotHaveLabel;
  * 
  * @author Florent Biville
  */
-public class NodeAssert extends AbstractAssert<NodeAssert, Node> {
+public class NodeAssert extends PropertyContainerAssert<NodeAssert, Node> {
 
   protected NodeAssert(Node actual) {
     super(actual, NodeAssert.class);

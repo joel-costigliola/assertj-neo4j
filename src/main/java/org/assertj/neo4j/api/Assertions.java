@@ -25,8 +25,9 @@ import org.neo4j.graphdb.Relationship;
  */
 public class Assertions {
 
+  @SuppressWarnings("unchecked")
   public static PropertyContainerAssert assertThat(PropertyContainer propertyContainer) {
-    return new PropertyContainerAssert(propertyContainer);
+    return new PropertyContainerAssert(propertyContainer, PropertyContainerAssert.class);
   }
 
   public static NodeAssert assertThat(Node node) {
