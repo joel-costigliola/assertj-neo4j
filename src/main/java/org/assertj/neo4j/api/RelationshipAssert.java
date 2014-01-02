@@ -187,7 +187,7 @@ public class RelationshipAssert extends PropertyContainerAssert<RelationshipAsse
       throw new IllegalArgumentException("The relationship type to look for should not be null");
     }
 
-    if (!actualType.equals(relationshipType)) {
+    if (!actualType.name().equals(relationshipType.name())) {
       throw Failures.instance().failure(info, shouldHaveRelationshipType(actual, relationshipType));
     }
     return this;
