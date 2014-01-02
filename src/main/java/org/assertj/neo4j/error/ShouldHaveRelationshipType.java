@@ -24,14 +24,28 @@ public class ShouldHaveRelationshipType extends BasicErrorMessageFactory {
    * Creates a new </code>{@link org.assertj.neo4j.error.ShouldHaveRelationshipType}</code>.
    * 
    * @param actual the actual value in the failed assertion.
-   * @param relationshipType the start node used in the failed assertion to compare the actual label value to.
+   * @param relationshipType the relationship type used in the failed assertion to compare the actual relationship type to.
    * @return the created {@code ErrorMessageFactory}.
    */
   public static ErrorMessageFactory shouldHaveRelationshipType(Relationship actual, RelationshipType relationshipType) {
     return new ShouldHaveRelationshipType(actual, relationshipType);
   }
+  /**
+   * Creates a new </code>{@link org.assertj.neo4j.error.ShouldHaveRelationshipType}</code>.
+   *
+   * @param actual the actual value in the failed assertion.
+   * @param relationshipTypeName the relationship type name used in the failed assertion to compare the actual relationship type name to.
+   * @return the created {@code ErrorMessageFactory}.
+   */
+  public static ErrorMessageFactory shouldHaveRelationshipType(Relationship actual, String relationshipTypeName) {
+    return new ShouldHaveRelationshipType(actual, relationshipTypeName);
+  }
+
+  private ShouldHaveRelationshipType(Relationship actual, String other) {
+    super("\nExpecting:\n  <%s>\nto have type:\n  <%s>\n%s", actual, other, StandardComparisonStrategy.instance());
+  }
 
   private ShouldHaveRelationshipType(Relationship actual, RelationshipType other) {
-    super("\nExpecting:\n  <%s>\nto have type:\n  <%s>\n%s", actual, other, StandardComparisonStrategy.instance());
+    this(actual, other.name());
   }
 }

@@ -29,19 +29,17 @@ import static org.mockito.Mockito.when;
  * 
  * @author Florent Biville
  */
-public class RelationshipAssert_hasType_Test {
+public class RelationshipAssert_hasType_represented_as_string_Test {
 
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
   private Relationship relationship = mock(Relationship.class);
 
   @Test
-  public void should_pass_if_relationship_has_type() {
-    RelationshipType relationshipType = DynamicRelationshipType.withName("LINKS");
+  public void should_pass_if_relationship_has_type_name() {
+    given_relationship_has_type_name("LINKS");
 
-    given_relationship_has_type(relationshipType);
-
-    assertThat(relationship).hasType(relationshipType);
+    assertThat(relationship).hasType("LINKS");
   }
 
   @Test
@@ -49,39 +47,38 @@ public class RelationshipAssert_hasType_Test {
     expectedException.expect(AssertionError.class);
     expectedException.expectMessage("Expecting actual not to be null");
 
-    assertThat((Relationship) null).hasType(mock(RelationshipType.class));
+    assertThat((Relationship) null).hasType("LINKS");
   }
 
   @Test
-  public void should_fail_if_relationship_type_is_null() {
+  public void should_fail_if_relationship_type_name_is_null() {
     expectedException.expect(IllegalStateException.class);
     expectedException.expectMessage("The actual relationship type should not be null");
 
-    assertThat(relationship).hasType(mock(RelationshipType.class));
+    assertThat(relationship).hasType("LINKS");
   }
 
   @Test
-  public void should_fail_if_given_relationship_type_is_null() {
+  public void should_fail_if_given_relationship_type_name_is_null() {
     expectedException.expect(IllegalArgumentException.class);
     expectedException.expectMessage("The relationship type to look for should not be null");
 
-    given_relationship_has_type(mock(RelationshipType.class));
+    given_relationship_has_type_name("LINKS");
 
-    assertThat(relationship).hasType((RelationshipType)null);
+    assertThat(relationship).hasType((String)null);
   }
 
   @Test
-  public void should_fail_if_relationship_does_not_have_any_type_name() {
-    expectedException.expect(IllegalStateException.class);
-    expectedException.expectMessage("The actual relationship type name should not be null");
+  public void should_fail_if_relationship_does_NOT_have_given_type_name() {
+    expectedException.expect(AssertionError.class);
 
-    given_relationship_has_type(mock(RelationshipType.class));
+    given_relationship_has_type_name("CONNECTS");
 
-    assertThat(relationship).hasType(DynamicRelationshipType.withName("FOLLOWS"));
+    assertThat(relationship).hasType("LINKS");
   }
 
-  private void given_relationship_has_type(RelationshipType type) {
-    when(relationship.getType()).thenReturn(type);
+  private void given_relationship_has_type_name(String type) {
+    when(relationship.getType()).thenReturn(DynamicRelationshipType.withName(type));
   }
 
 }

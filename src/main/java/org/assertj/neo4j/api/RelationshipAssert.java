@@ -166,7 +166,7 @@ public class RelationshipAssert extends PropertyContainerAssert<RelationshipAsse
    * assertThat(love).hasType(loveType);
    * </pre>
    * 
-   * If the <code>node</code> is {@code null}, an {@link IllegalArgumentException} is thrown.
+   * If the <code>relationshipType</code> is {@code null}, an {@link IllegalArgumentException} is thrown.
    * <p>
    * 
    * @param relationshipType a {@link org.neo4j.graphdb.Relationship} type
@@ -179,39 +179,74 @@ public class RelationshipAssert extends PropertyContainerAssert<RelationshipAsse
     Objects.instance().assertNotNull(info, actual);
 
     RelationshipType actualType = actual.getType();
-    if (actualType == null) {
-      throw new IllegalStateException("The actual relationship type should not be null");
-    }
+    checkTypeIsNotNull(actualType);
 
     if (relationshipType == null) {
       throw new IllegalArgumentException("The relationship type to look for should not be null");
     }
 
-    if (!actualType.name().equals(relationshipType.name())) {
-      throw Failures.instance().failure(info, shouldHaveRelationshipType(actual, relationshipType));
+    hasType(relationshipType.name());
+    return this;
+  }
+
+    /**
+   * Verifies that the actual {@link org.neo4j.graphdb.Relationship} has the given type name<br/>
+   * <p>
+   * Example:
+   *
+   * <pre>
+   * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
+   * // [...] creation of homerNode, doughnutNode
+   * RelationshipType loveType = DynamicRelationshipType.withName(&quot;LOVES&quot;);
+   * Relationship love = homerNode.createRelationshipTo(doughnutNode, loveType);
+   *
+   * assertThat(love).hasType(&quot;LOVES&quot;);
+   * </pre>
+   *
+   * If the <code>relationshipTypeName</code> is {@code null}, an {@link IllegalArgumentException} is thrown.
+   * <p>
+   *
+   * @param relationshipTypeName a {@link org.neo4j.graphdb.Relationship} type name
+   * @return this {@link RelationshipAssert} for assertions chaining
+   *
+   * @throws IllegalArgumentException if <code>relationshipTypeName</code> is {@code null}.
+   * @throws AssertionError if the actual {@link org.neo4j.graphdb.Relationship} does not have the given type name
+   */
+  public RelationshipAssert hasType(String relationshipTypeName) {
+    Objects.instance().assertNotNull(info, actual);
+
+    RelationshipType actualType = actual.getType();
+    checkTypeNameIsNotNull(actualType);
+
+    if (relationshipTypeName == null) {
+      throw new IllegalArgumentException("The relationship type to look for should not be null");
+    }
+
+    if (!actualType.name().equals(relationshipTypeName)) {
+      throw Failures.instance().failure(info, shouldHaveRelationshipType(actual, relationshipTypeName));
     }
     return this;
   }
 
-  /**
+    /**
    * Verifies that the actual {@link org.neo4j.graphdb.Relationship} does not have the given type<br/>
    * <p>
    * Example:
-   * 
+   *
    * <pre>
    * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
    * // [...] creation of homerNode, doughnutNode
    * Relationship love = homerNode.createRelationshipTo(doughnutNode, DynamicRelationshipType.withName(&quot;LOVES&quot;));
-   * 
+   *
    * assertThat(love).doesNotHaveType(DynamicRelationshipType.withName(&quot;HATES&quot;));
    * </pre>
-   * 
+   *
    * If the <code>node</code> is {@code null}, an {@link IllegalArgumentException} is thrown.
    * <p>
-   * 
+   *
    * @param relationshipType a {@link org.neo4j.graphdb.Relationship} type
    * @return this {@link RelationshipAssert} for assertions chaining
-   * 
+   *
    * @throws IllegalArgumentException if <code>relationshipType</code> is {@code null}.
    * @throws AssertionError if the actual {@link org.neo4j.graphdb.Relationship} has the given type
    */
@@ -219,9 +254,7 @@ public class RelationshipAssert extends PropertyContainerAssert<RelationshipAsse
     Objects.instance().assertNotNull(info, actual);
 
     RelationshipType actualType = actual.getType();
-    if (actualType == null) {
-      throw new IllegalStateException("The actual relationship type should not be null");
-    }
+    checkTypeIsNotNull(actualType);
 
     if (relationshipType == null) {
       throw new IllegalArgumentException("The relationship type to look for should not be null");
@@ -242,6 +275,19 @@ public class RelationshipAssert extends PropertyContainerAssert<RelationshipAsse
   private static void checkArgumentNode(Node node, String errorMessage) {
     if (node == null) {
       throw new IllegalArgumentException(errorMessage);
+    }
+  }
+
+  private static void checkTypeNameIsNotNull(RelationshipType actualType) {
+    checkTypeIsNotNull(actualType);
+    if (actualType.name() == null) {
+      throw new IllegalStateException("The actual relationship type name should not be null");
+    }
+  }
+
+  private static void checkTypeIsNotNull(RelationshipType actualType) {
+    if (actualType == null) {
+      throw new IllegalStateException("The actual relationship type should not be null");
     }
   }
 }
