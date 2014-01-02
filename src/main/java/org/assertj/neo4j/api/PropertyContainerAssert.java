@@ -27,13 +27,13 @@ import static org.assertj.neo4j.error.ShouldNotHaveProperty.shouldNotHavePropert
  * 
  * @author Florent Biville
  */
-public class PropertyContainerAssert<A extends AbstractAssert<A, T>, T extends PropertyContainer> extends AbstractAssert<A, T> {
+public class PropertyContainerAssert<A extends PropertyContainerAssert<A, T>, T extends PropertyContainer> extends AbstractAssert<A, T> {
 
   protected PropertyContainerAssert(T actual, Class<? extends A> assertClass) {
     super(actual, assertClass);
   }
 
-  public PropertyContainer getActual() {
+  public T getActual() {
     return actual;
   }
 
@@ -65,14 +65,14 @@ public class PropertyContainerAssert<A extends AbstractAssert<A, T>, T extends P
    * @throws IllegalArgumentException if <code>key</code> is {@code null}.
    * @throws AssertionError if the actual {@link PropertyContainer} does not have a property with the given key.
    */
-  public PropertyContainerAssert hasPropertyKey(String key) {
+  public A hasPropertyKey(String key) {
     Objects.instance().assertNotNull(info, actual);
 
       checkPropertyKeyIsNotNull(key);
       if (!actual.hasProperty(key)) {
       throw Failures.instance().failure(info, shouldHavePropertyKey(actual, key));
     }
-    return this;
+    return myself;
   }
 
   /**
@@ -107,14 +107,14 @@ public class PropertyContainerAssert<A extends AbstractAssert<A, T>, T extends P
    * @throws IllegalArgumentException if <code>value</code> is {@code null}.
    * @throws AssertionError if the actual {@link PropertyContainer} does not have a property with given key and value.
    */
-  public PropertyContainerAssert hasProperty(String key, Object value) {
+  public A hasProperty(String key, Object value) {
     hasPropertyKey(key);
 
     checkPropertyValueIsNotNull(value);
     if (!value.equals(actual.getProperty(key, null))) {
       throw Failures.instance().failure(info, shouldHaveProperty(actual, key, value));
     }
-    return this;
+    return myself;
   }
 
   /**
@@ -145,14 +145,14 @@ public class PropertyContainerAssert<A extends AbstractAssert<A, T>, T extends P
    * @throws IllegalArgumentException if <code>key</code> is {@code null}.
    * @throws AssertionError if the actual {@link PropertyContainer} has a property with given key.
    */
-  public PropertyContainerAssert doesNotHavePropertyKey(String key) {
+  public A doesNotHavePropertyKey(String key) {
     Objects.instance().assertNotNull(info, actual);
 
     checkPropertyKeyIsNotNull(key);
     if (actual.hasProperty(key)) {
       throw Failures.instance().failure(info, shouldNotHavePropertyKey(actual, key));
     }
-    return this;
+    return myself;
   }
 
   /**
@@ -189,7 +189,7 @@ public class PropertyContainerAssert<A extends AbstractAssert<A, T>, T extends P
    * @throws IllegalArgumentException if <code>value</code> is {@code null}.
    * @throws AssertionError if the actual {@link PropertyContainer} has a property with given key and value.
    */
-  public PropertyContainerAssert doesNotHaveProperty(String key, Object value) {
+  public A doesNotHaveProperty(String key, Object value) {
     Objects.instance().assertNotNull(info, actual);
 
     checkPropertyKeyIsNotNull(key);
@@ -197,7 +197,7 @@ public class PropertyContainerAssert<A extends AbstractAssert<A, T>, T extends P
     if (actual.hasProperty(key) && value.equals(actual.getProperty(key, null))) {
       throw Failures.instance().failure(info, shouldNotHaveProperty(actual, key, value));
     }
-    return this;
+    return myself;
   }
 
   private static void checkPropertyValueIsNotNull(Object value) {
