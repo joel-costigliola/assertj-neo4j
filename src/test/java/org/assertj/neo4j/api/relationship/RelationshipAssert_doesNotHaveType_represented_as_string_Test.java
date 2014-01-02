@@ -29,15 +29,15 @@ import static org.mockito.Mockito.when;
  * 
  * @author Florent Biville
  */
-public class RelationshipAssert_doesNotHaveType_Test {
+public class RelationshipAssert_doesNotHaveType_represented_as_string_Test {
 
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
   private Relationship relationship = mock(Relationship.class);
 
   @Test
-  public void should_pass_if_relationship_has_not_given_type() {
-    given_relationship_has_type(DynamicRelationshipType.withName("LINKS"));
+  public void should_pass_if_relationship_has_not_given_type_name() {
+    given_relationship_has_type_name("LINKS");
 
     assertThat(relationship).doesNotHaveType(DynamicRelationshipType.withName("UNLINKS"));
   }
@@ -51,7 +51,7 @@ public class RelationshipAssert_doesNotHaveType_Test {
   }
 
   @Test
-  public void should_fail_if_relationship_type_is_null() {
+  public void should_fail_if_relationship_type_name_is_null() {
     expectedException.expect(IllegalStateException.class);
     expectedException.expectMessage("The actual relationship type should not be null");
 
@@ -59,27 +59,26 @@ public class RelationshipAssert_doesNotHaveType_Test {
   }
 
   @Test
-  public void should_fail_if_given_relationship_type_is_null() {
+  public void should_fail_if_given_relationship_type_name_is_null() {
     expectedException.expect(IllegalArgumentException.class);
     expectedException.expectMessage("The relationship type to look for should not be null");
 
-    given_relationship_has_type(mock(RelationshipType.class));
+    given_relationship_has_type_name("LINKS");
 
-    assertThat(relationship).doesNotHaveType((RelationshipType)null);
+    assertThat(relationship).doesNotHaveType((String)null);
   }
 
   @Test
-  public void should_fail_if_relationship_has_given_type() {
+  public void should_fail_if_relationship_has_given_type_name() {
     expectedException.expect(AssertionError.class);
 
-    DynamicRelationshipType relationshipType = DynamicRelationshipType.withName("FOLLOWS");
-    given_relationship_has_type(relationshipType);
+    given_relationship_has_type_name("LINKS");
 
-    assertThat(relationship).doesNotHaveType(relationshipType);
+    assertThat(relationship).doesNotHaveType("LINKS");
   }
 
-  private void given_relationship_has_type(RelationshipType type) {
-    when(relationship.getType()).thenReturn(type);
+  private void given_relationship_has_type_name(String name) {
+    when(relationship.getType()).thenReturn(DynamicRelationshipType.withName(name));
   }
 
 }

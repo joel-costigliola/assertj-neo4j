@@ -185,8 +185,7 @@ public class RelationshipAssert extends PropertyContainerAssert<RelationshipAsse
       throw new IllegalArgumentException("The relationship type to look for should not be null");
     }
 
-    hasType(relationshipType.name());
-    return this;
+    return hasType(relationshipType.name());
   }
 
     /**
@@ -260,8 +259,43 @@ public class RelationshipAssert extends PropertyContainerAssert<RelationshipAsse
       throw new IllegalArgumentException("The relationship type to look for should not be null");
     }
 
-    if (actualType.equals(relationshipType)) {
-      throw Failures.instance().failure(info, shouldNotHaveRelationshipType(actual, relationshipType));
+    return doesNotHaveType(relationshipType.name());
+  }
+
+  /**
+   * Verifies that the actual {@link org.neo4j.graphdb.Relationship} does not have the given type name<br/>
+   * <p>
+   * Example:
+   *
+   * <pre>
+   * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
+   * // [...] creation of homerNode, doughnutNode
+   * Relationship love = homerNode.createRelationshipTo(doughnutNode, DynamicRelationshipType.withName(&quot;LOVES&quot;));
+   *
+   * assertThat(love).doesNotHaveType(&quot;HATES&quot;);
+   * </pre>
+   *
+   * If the <code>node</code> is {@code null}, an {@link IllegalArgumentException} is thrown.
+   * <p>
+   *
+   * @param relationshipTypeName a {@link org.neo4j.graphdb.Relationship} type
+   * @return this {@link RelationshipAssert} for assertions chaining
+   *
+   * @throws IllegalArgumentException if <code>relationshipTypeName</code> is {@code null}.
+   * @throws AssertionError if the actual {@link org.neo4j.graphdb.Relationship} has the given type
+   */
+  public RelationshipAssert doesNotHaveType(String relationshipTypeName) {
+    Objects.instance().assertNotNull(info, actual);
+
+    RelationshipType actualType = actual.getType();
+    checkTypeNameIsNotNull(actualType);
+
+    if (relationshipTypeName == null) {
+      throw new IllegalArgumentException("The relationship type to look for should not be null");
+    }
+
+    if (actualType.name().equals(relationshipTypeName)) {
+      throw Failures.instance().failure(info, shouldNotHaveRelationshipType(actual, relationshipTypeName));
     }
     return this;
   }
