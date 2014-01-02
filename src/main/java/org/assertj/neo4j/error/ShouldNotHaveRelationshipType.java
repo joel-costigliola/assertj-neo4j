@@ -22,17 +22,6 @@ public class ShouldNotHaveRelationshipType extends BasicErrorMessageFactory {
 
   /**
    * Creates a new </code>{@link org.assertj.neo4j.error.ShouldNotHaveRelationshipType}</code>.
-   * 
-   * @param actual the actual value in the failed assertion.
-   * @param relationshipType the relationship type used in the failed assertion to compare the actual relationship type to.
-   * @return the created {@code ErrorMessageFactory}.
-   */
-  public static ErrorMessageFactory shouldNotHaveRelationshipType(Relationship actual, RelationshipType relationshipType) {
-    return new ShouldNotHaveRelationshipType(actual, relationshipType);
-  }
-
-  /**
-   * Creates a new </code>{@link org.assertj.neo4j.error.ShouldNotHaveRelationshipType}</code>.
    *
    * @param actual the actual value in the failed assertion.
    * @param relationshipType the relationship type name used in the failed assertion to compare the actual relationship type name to.
@@ -40,10 +29,6 @@ public class ShouldNotHaveRelationshipType extends BasicErrorMessageFactory {
    */
   public static ErrorMessageFactory shouldNotHaveRelationshipType(Relationship actual, String relationshipType) {
     return new ShouldNotHaveRelationshipType(actual, relationshipType);
-  }
-
-  private ShouldNotHaveRelationshipType(Relationship actual, RelationshipType other) {
-    this(actual, other.name());
   }
 
   private ShouldNotHaveRelationshipType(Relationship actual, String other) {
