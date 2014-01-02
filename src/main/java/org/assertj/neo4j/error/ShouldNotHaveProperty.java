@@ -32,7 +32,7 @@ public class ShouldNotHaveProperty extends BasicErrorMessageFactory {
   }
 
   private ShouldNotHaveProperty(PropertyContainer actual, String key, Object value) {
-    super("\nExpecting:\n  <%s>\nto have property with key:\n  <%s>\nand value:\n  <%s>\nbut could not find such property %s.",
+    super("\nExpecting:\n  <%s>\nnot to have property with key:\n  <%s>\nand value:\n  <%s>\nbut actually found such property %s",
         actual, key, value, StandardComparisonStrategy.instance());
   }
 }
