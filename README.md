@@ -3,7 +3,7 @@ AssertJ assertions for Neo4j 2+
 
 Provides assertions like AssertJ for [Neo4j](http://www.neo4j.org/) 2 or higher.
 
-This module have been written by **Florent Biville**, big thanks to him! Great Work!
+This module has been written by **Florent Biville**, big thanks to him! Great Work!
 
 * [Quick start](#quickstart)
 * [Latest news](#news)
