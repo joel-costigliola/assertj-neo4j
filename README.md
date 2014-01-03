@@ -95,6 +95,6 @@ assertThat("hello world").startsWith("hello");
 
 Thanks for your interest, check our [contributor's guidelines](CONTRIBUTING.md).
 
-Again, huge thanks to **Floren Biville** for **assertj-neo4j 1.0.0**.
+Again, huge thanks to **Florent Biville** for **assertj-neo4j 1.0.0**.
 
 
