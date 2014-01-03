@@ -1,9 +1,9 @@
-AssertJ assertions for Neo4J 2+
+AssertJ assertions for Neo4j 2+
 ===============================
 
 Provides assertions like AssertJ for [Neo4j](http://www.neo4j.org/) 2 or higher.
 
-This module have been written by **Florent Biville**, big thanks to him ! Great Work !
+This module have been written by **Florent Biville**, big thanks to him! Great Work!
 
 * [Quick start](#quickstart)
 * [Latest news](#news)
@@ -36,7 +36,7 @@ Some examples from [PathAssertionExamples](https://github.com/joel-costigliola/a
 ```java
 import static org.assertj.neo4j.api.Assertions.assertThat;
 
-// initialization ommited for brevity ...
+// initialization omitted for brevity ...
 Path bulmaToMasterRoshiPath = dragonBallGraph.findShortestPathBetween("Bulma", "Master Roshi");
 
 Node bulmaNode = dragonBallGraph.findCharacter("Bulma");
@@ -78,7 +78,7 @@ You will have to make two static import : one for `Assertions.assertThat` to get
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.neo4j.api.Assertions.assertThat;
 
-// initialization ommited for brevity ...
+// initialization omitted for brevity ...
 Node firstDisciple = ...;
 
 // assertThat comes from org.assertj.neo4j.api.Assertions.assertThat static import
