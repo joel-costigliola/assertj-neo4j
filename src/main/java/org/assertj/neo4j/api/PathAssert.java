@@ -59,7 +59,7 @@ public class PathAssert extends IterableAssert<PropertyContainer> {
    * <p>
    * 
    * @param node the expected start node of the actual {@link org.neo4j.graphdb.Path}
-   * @return this {@link NodeAssert} for assertions chaining
+   * @return this {@link org.assertj.neo4j.api.PathAssert} for assertions chaining
    * 
    * @throws IllegalArgumentException if <code>node</code> is {@code null}.
    * @throws AssertionError if the actual {@link org.neo4j.graphdb.Path} does not start with the given node
@@ -102,7 +102,7 @@ public class PathAssert extends IterableAssert<PropertyContainer> {
    * <p>
    * 
    * @param node the expected end node of the actual {@link org.neo4j.graphdb.Path}
-   * @return this {@link NodeAssert} for assertions chaining
+   * @return this {@link org.assertj.neo4j.api.PathAssert} for assertions chaining
    * 
    * @throws IllegalArgumentException if <code>node</code> is {@code null}.
    * @throws AssertionError if the actual {@link org.neo4j.graphdb.Path} does not end with the given node
@@ -145,7 +145,7 @@ public class PathAssert extends IterableAssert<PropertyContainer> {
    * <p>
    * 
    * @param relationship the expected last relationship of the actual {@link org.neo4j.graphdb.Path}
-   * @return this {@link NodeAssert} for assertions chaining
+   * @return this {@link org.assertj.neo4j.api.PathAssert} for assertions chaining
    * 
    * @throws IllegalArgumentException if <code>relationship</code> is {@code null}.
    * @throws AssertionError if the actual {@link org.neo4j.graphdb.Path} does not contain this relationship last
@@ -188,7 +188,7 @@ public class PathAssert extends IterableAssert<PropertyContainer> {
    * <p>
    * 
    * @param length the expected length of the {@link org.neo4j.graphdb.Path}
-   * @return this {@link NodeAssert} for assertions chaining
+   * @return this {@link org.assertj.neo4j.api.PathAssert} for assertions chaining
    * 
    * @throws IllegalArgumentException if <code>length</code> is strictly negative.
    * @throws AssertionError if the actual {@link org.neo4j.graphdb.Path} has a different length
