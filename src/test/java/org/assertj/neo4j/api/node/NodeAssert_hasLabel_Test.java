@@ -15,11 +15,7 @@ package org.assertj.neo4j.api.node;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.neo4j.graphdb.DynamicLabel;
-import org.neo4j.graphdb.Label;
-import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.ResourceIterable;
-import org.neo4j.graphdb.ResourceIterator;
+import org.neo4j.graphdb.*;
 
 import static org.assertj.neo4j.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;

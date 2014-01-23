@@ -12,11 +12,6 @@
  */
 package org.assertj.neo4j.api;
 
-import static org.assertj.neo4j.error.ShouldHaveRelationshipType.shouldHaveRelationshipType;
-import static org.assertj.neo4j.error.ShouldStartOrEndWithNode.shouldStartOrEndWithNode;
-import static org.assertj.neo4j.error.ShouldNotHaveRelationshipType.shouldNotHaveRelationshipType;
-
-import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.internal.Failures;
 import org.assertj.core.internal.Objects;
 import org.assertj.neo4j.error.ShouldEndWithNode;
@@ -24,6 +19,10 @@ import org.assertj.neo4j.error.ShouldStartWithNode;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
+
+import static org.assertj.neo4j.error.ShouldHaveRelationshipType.shouldHaveRelationshipType;
+import static org.assertj.neo4j.error.ShouldNotHaveRelationshipType.shouldNotHaveRelationshipType;
+import static org.assertj.neo4j.error.ShouldStartOrEndWithNode.shouldStartOrEndWithNode;
 
 /**
  * Assertions for Neo4J {@link org.neo4j.graphdb.Relationship}

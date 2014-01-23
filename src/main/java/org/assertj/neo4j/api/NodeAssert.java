@@ -12,7 +12,6 @@
  */
 package org.assertj.neo4j.api;
 
-import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.internal.Failures;
 import org.assertj.core.internal.Objects;
 import org.neo4j.graphdb.Label;

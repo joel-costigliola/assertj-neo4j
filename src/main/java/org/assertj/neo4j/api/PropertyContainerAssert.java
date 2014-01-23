@@ -17,10 +17,10 @@ import org.assertj.core.internal.Failures;
 import org.assertj.core.internal.Objects;
 import org.neo4j.graphdb.PropertyContainer;
 
-import static org.assertj.neo4j.error.ShouldHavePropertyKey.shouldHavePropertyKey;
 import static org.assertj.neo4j.error.ShouldHaveProperty.shouldHaveProperty;
-import static org.assertj.neo4j.error.ShouldNotHavePropertyKey.shouldNotHavePropertyKey;
+import static org.assertj.neo4j.error.ShouldHavePropertyKey.shouldHavePropertyKey;
 import static org.assertj.neo4j.error.ShouldNotHaveProperty.shouldNotHaveProperty;
+import static org.assertj.neo4j.error.ShouldNotHavePropertyKey.shouldNotHavePropertyKey;
 
 /**
  * Assertions for Neo4J {@link PropertyContainer}

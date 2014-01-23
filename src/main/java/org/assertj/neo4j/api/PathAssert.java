@@ -12,10 +12,6 @@
  */
 package org.assertj.neo4j.api;
 
-import static org.assertj.neo4j.error.ShouldEndWithNode.shouldEndWithNode;
-import static org.assertj.neo4j.error.ShouldEndWithRelationship.shouldHaveLastRelationship;
-import static org.assertj.neo4j.error.ShouldStartWithNode.shouldStartWithNode;
-
 import org.assertj.core.api.IterableAssert;
 import org.assertj.core.internal.Failures;
 import org.assertj.core.internal.Objects;
@@ -24,6 +20,10 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Path;
 import org.neo4j.graphdb.PropertyContainer;
 import org.neo4j.graphdb.Relationship;
+
+import static org.assertj.neo4j.error.ShouldEndWithNode.shouldEndWithNode;
+import static org.assertj.neo4j.error.ShouldEndWithRelationship.shouldHaveLastRelationship;
+import static org.assertj.neo4j.error.ShouldStartWithNode.shouldStartWithNode;
 
 /**
  * Assertions for Neo4J {@link org.neo4j.graphdb.Path}
