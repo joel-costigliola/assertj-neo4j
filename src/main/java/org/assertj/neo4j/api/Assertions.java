@@ -12,6 +12,7 @@
  */
 package org.assertj.neo4j.api;
 
+import org.neo4j.cypher.javacompat.ExecutionResult;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Path;
 import org.neo4j.graphdb.PropertyContainer;
@@ -19,7 +20,7 @@ import org.neo4j.graphdb.Relationship;
 
 /**
  * The entry point for all Neo4j assertions.
- * 
+ *
  * @author Joel Costigliola
  * @author Florent Biville
  */
@@ -42,7 +43,13 @@ public class Assertions {
     return new PathAssert(path);
   }
 
-  /** Creates a new </code>{@link Assertions}</code>. */
+  public static ExecutionResultAssert assertThat(ExecutionResult executionResult) {
+    return new ExecutionResultAssert(executionResult);
+  }
+
+  /**
+   * Creates a new </code>{@link Assertions}</code>.
+   */
   protected Assertions() {
     // empty
   }
