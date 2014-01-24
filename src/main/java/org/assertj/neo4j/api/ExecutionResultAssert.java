@@ -76,6 +76,7 @@ public class ExecutionResultAssert extends AbstractAssert<ExecutionResultAssert,
   private static int sizeOf(ResourceIterator<Map<String, Object>> iterator) {
     int count = 0;
     while (iterator.hasNext()) {
+      iterator.next();
       count++;
     }
     return count;
