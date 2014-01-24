@@ -38,6 +38,7 @@ public class ExecutionResultAssert extends AbstractAssert<ExecutionResultAssert,
 
   /**
    * Verifies that the execution result row count equals the given one<br/>
+   * This consumes the whole iterator and therefore <strong>cannot be chained</strong>.
    * <p>
    * Example:
    *
