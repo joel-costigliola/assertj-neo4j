@@ -12,24 +12,33 @@
  */
 package org.assertj.neo4j.api;
 
-import org.assertj.core.api.AbstractAssert;
-import org.assertj.core.error.ShouldHaveSize;
+import org.assertj.core.api.IterableAssert;
 import org.assertj.core.internal.Failures;
 import org.assertj.core.internal.Objects;
+import org.assertj.neo4j.error.ShouldHaveRowAtIndex;
 import org.neo4j.cypher.javacompat.ExecutionResult;
 import org.neo4j.graphdb.ResourceIterator;
 
 import java.util.Map;
+import java.util.Set;
+
+import static java.util.Arrays.asList;
+import static org.assertj.neo4j.error.ShouldContainColumnNames.shouldContainColumnNames;
 
 /**
  * Assertions for Neo4J {@link org.neo4j.cypher.javacompat.ExecutionResult}
  *
  * @author Florent Biville
  */
-public class ExecutionResultAssert extends AbstractAssert<ExecutionResultAssert, ExecutionResult> {
+public class ExecutionResultAssert extends IterableAssert<Map<String, Object>> {
+
+  private final ExecutionResult actual;
+  private Integer previousRowIndex = null;
 
   protected ExecutionResultAssert(ExecutionResult actual) {
-    super(actual, ExecutionResultAssert.class);
+    super(actual);
+    this.actual = actual;
+
   }
 
   public ExecutionResult getActual() {
@@ -37,49 +46,102 @@ public class ExecutionResultAssert extends AbstractAssert<ExecutionResultAssert,
   }
 
   /**
-   * Verifies that the execution result row count equals the given one<br/>
-   * This consumes the whole iterator and therefore <strong>cannot be chained</strong>.
+   * Verifies that the row specified at the given index of the actual {@link org.neo4j.cypher.javacompat.ExecutionResult}
+   * contains the specified column names.<br/>
+   *
+   * <strong>Warning: </strong>If you plan to chain this assertion, be sure that chained calls specify row indices in increasing order!<br />
+   *
    * <p>
    * Example:
    *
    * <pre>
    * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
+   * ExecutionEngine singletonExecutionEngine = new ExecutionEngine(graph);
    * // [...]
-   * ExecutionResult simpsonQueryResult = myExecutionEngine.execute("MATCH (s:SIMPSON) RETURN s");
+   * ExecutionResult result = singletonExecutionEngine.execute(&quot;MATCH (p:PEOPLE {firstName : 'Emil'}) RETURN p AS people&quot;);
+   * assertThat(result)
+   *  .rowContainsColumns(0, &quot;people&quot;)
+   *  .rowContainsColumns(1, &quot;people&quot;);
    *
-   * // true story! http://upload.wikimedia.org/wikipedia/commons/a/ad/Simpson_familt_tree.PNG
-   * assertThat(simpsonQueryResult).hasSize(42);
    * </pre>
    *
-   * If the <code>rowCount</code> is strictly negative, an {@link IllegalArgumentException} is thrown.
+   * If any of the <code>key</code> or <code>value</code> is {@code null}, an {@link IllegalArgumentException} is
+   * thrown.
    * <p>
    *
-   * @param rowCount the expected row count of the {@link org.neo4j.cypher.javacompat.ExecutionResult} wrapper
-   * @return this {@link org.assertj.neo4j.api.ExecutionResultAssert} for assertions chaining
+   * @param rowIndex the position of the row to verify in the actual {@link org.neo4j.cypher.javacompat.ExecutionResult}
+   * @param columnNames the column names contained in the specified row
+   * @return this {@link PropertyContainerAssert} for assertions chaining
    *
-   * @throws IllegalArgumentException if <code>length</code> is strictly negative.
-   * @throws AssertionError if the actual {@link org.neo4j.graphdb.Path} has a different length
+   * @throws IllegalArgumentException if <code>rowIndex</code> is strictly negative.
+   * @throws IllegalArgumentException if <code>columnNames</code> is empty.
+   * @throws IllegalArgumentException if <code>rowIndex</code> is smaller than the one given in the previous chained call.
+   *
+   * @throws AssertionError if the actual {@link org.neo4j.cypher.javacompat.ExecutionResult} row does not contain the given column names.
    */
-  public ExecutionResultAssert hasSize(int rowCount) {
+  public ExecutionResultAssert rowContainsColumns(int rowIndex, String... columnNames) {
     Objects.instance().assertNotNull(info, actual);
 
-    if (rowCount < 0) {
-      throw new IllegalArgumentException("The execution result row count to compare against should be positive.");
+    if (rowIndex < 0) {
+      throw new IllegalArgumentException("The execution result row index should be positive.");
     }
 
-    int actualSize = sizeOf(actual.iterator());
-    if (actualSize != rowCount) {
-      throw Failures.instance().failure(info, ShouldHaveSize.shouldHaveSize(actual, actualSize, rowCount));
+    if (previousRowIndex != null && rowIndex <= previousRowIndex) {
+      throw new IllegalArgumentException(String.format("\nSubsequent calls should specify index in **increasing** order." +
+        "\n  Previous call specified index: <%d>" +
+        "\n  Current call specifies index: <%d>" +
+        "\nCurrent call index should be larger than the previous one.",
+        previousRowIndex,
+        rowIndex
+      ));
     }
+
+    if (columnNames == null || columnNames.length == 0) {
+      throw new IllegalArgumentException("There should be at least one column name to verify");
+    }
+
+    SearchResult searchResult = search(rowIndex);
+    Map<String, Object> row = searchResult.getRow();
+    int rowCount = searchResult.getCount();
+    if (rowIndex >= rowCount ) {
+      throw Failures.instance().failure(info, ShouldHaveRowAtIndex.shouldHaveRowAtIndex(actual, rowIndex, rowCount));
+    }
+
+    Set<String> actualColumnNames = row.keySet();
+    if (!actualColumnNames.containsAll(asList(columnNames))) {
+      throw Failures.instance().failure(info, shouldContainColumnNames(actual, rowIndex, row, columnNames));
+    }
+
+    previousRowIndex = rowIndex;
     return this;
   }
 
-  private static int sizeOf(ResourceIterator<Map<String, Object>> iterator) {
-    int count = 0;
-    while (iterator.hasNext()) {
-      iterator.next();
-      count++;
+  private SearchResult search(int rowIndex) {
+    ResourceIterator<Map<String, Object>> rowIterator = actual.iterator();
+    int visitedRowCount = previousRowIndex == null ? 0 : 1 + previousRowIndex;
+    Map<String, Object> row = null;
+    while (rowIterator.hasNext() && visitedRowCount < rowIndex + 1) {
+      row = rowIterator.next();
+      visitedRowCount++;
     }
-    return count;
+    return new SearchResult(visitedRowCount, row);
+  }
+
+  private class SearchResult {
+    private final int count;
+    private final Map<String,Object> row;
+
+    public SearchResult(int count, Map<String, Object> row) {
+      this.count = count;
+      this.row = row;
+    }
+
+    public int getCount() {
+      return count;
+    }
+
+    public Map<String, Object> getRow() {
+      return row;
+    }
   }
 }
