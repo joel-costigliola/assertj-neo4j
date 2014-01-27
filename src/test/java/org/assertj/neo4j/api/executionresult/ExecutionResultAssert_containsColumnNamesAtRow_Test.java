@@ -12,24 +12,24 @@
  */
 package org.assertj.neo4j.api.executionresult;
 
+import static org.assertj.neo4j.api.Assertions.assertThat;
+import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
+import static org.mockito.Mockito.mock;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.neo4j.cypher.javacompat.ExecutionResult;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.assertj.neo4j.api.Assertions.assertThat;
-import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
-import static org.mockito.Mockito.mock;
-
 /**
- * Checks <code>{@link org.assertj.neo4j.api.ExecutionResultAssert#rowContainsColumns(int, String...)}</code> behavior.
+ * Checks <code>{@link org.assertj.neo4j.api.ExecutionResultAssert#containsColumnNamesAtRow(int, String...)}</code> behavior.
  *
  * @author Florent Biville
  */
-public class ExecutionResultAssert_rowContainsColumns_Test {
+public class ExecutionResultAssert_containsColumnNamesAtRow_Test {
 
   @Rule
   public ExpectedException exception = ExpectedException.none();
@@ -44,7 +44,7 @@ public class ExecutionResultAssert_rowContainsColumns_Test {
     //noinspection unchecked
     utils.given_execution_result_yields_rows(1, firstRow);
 
-    assertThat(executionResult).rowContainsColumns(0, "firstName", "lastName");
+    assertThat(executionResult).containsColumnNamesAtRow(0, "firstName", "lastName");
   }
 
   @Test
@@ -56,8 +56,8 @@ public class ExecutionResultAssert_rowContainsColumns_Test {
     utils.given_execution_result_yields_rows_with_chained_calls(2, 2, row, row);
 
     assertThat(executionResult)
-      .rowContainsColumns(0, "firstName", "lastName")
-      .rowContainsColumns(1, "firstName", "lastName");
+      .containsColumnNamesAtRow(0, "firstName", "lastName")
+      .containsColumnNamesAtRow(1, "firstName", "lastName");
   }
 
   @Test
@@ -65,7 +65,7 @@ public class ExecutionResultAssert_rowContainsColumns_Test {
     exception.expect(IllegalArgumentException.class);
     exception.expectMessage("The execution result row index should be positive.");
 
-    assertThat(executionResult).rowContainsColumns(-1, "firstName", "lastName");
+    assertThat(executionResult).containsColumnNamesAtRow(-1, "firstName", "lastName");
   }
 
   @Test
@@ -73,7 +73,7 @@ public class ExecutionResultAssert_rowContainsColumns_Test {
     exception.expect(IllegalArgumentException.class);
     exception.expectMessage("There should be at least one column name to verify");
 
-    assertThat(executionResult).rowContainsColumns(2);
+    assertThat(executionResult).containsColumnNamesAtRow(2);
   }
 
   @Test
@@ -91,8 +91,8 @@ public class ExecutionResultAssert_rowContainsColumns_Test {
     utils.given_execution_result_yields_rows_with_chained_calls(2, 2, row, row);
 
     assertThat(executionResult)
-      .rowContainsColumns(1, "firstName", "lastName")
-      .rowContainsColumns(0, "firstName", "lastName");
+      .containsColumnNamesAtRow(1, "firstName", "lastName")
+      .containsColumnNamesAtRow(0, "firstName", "lastName");
   }
 
   @Test
@@ -103,7 +103,7 @@ public class ExecutionResultAssert_rowContainsColumns_Test {
 
     utils.given_execution_result_yields_row_count(2);
 
-    assertThat(executionResult).rowContainsColumns(2, "firstName", "lastName");
+    assertThat(executionResult).containsColumnNamesAtRow(2, "firstName", "lastName");
   }
 
   @Test
@@ -118,6 +118,6 @@ public class ExecutionResultAssert_rowContainsColumns_Test {
 
     utils.given_execution_result_yields_row_count(2);
 
-    assertThat(executionResult).rowContainsColumns(1, "firstName", "lastName");
+    assertThat(executionResult).containsColumnNamesAtRow(1, "firstName", "lastName");
   }
 }

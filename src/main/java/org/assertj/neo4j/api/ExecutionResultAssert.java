@@ -60,8 +60,8 @@ public class ExecutionResultAssert extends IterableAssert<Map<String, Object>> {
    * // [...]
    * ExecutionResult result = singletonExecutionEngine.execute(&quot;MATCH (p:PEOPLE {firstName : 'Emil'}) RETURN p AS people&quot;);
    * assertThat(result)
-   *  .rowContainsColumns(0, &quot;people&quot;)
-   *  .rowContainsColumns(1, &quot;people&quot;);
+   *  .containsColumnNamesAtRow(0, &quot;people&quot;)
+   *  .containsColumnNamesAtRow(1, &quot;people&quot;);
    *
    * </pre>
    *
@@ -79,7 +79,7 @@ public class ExecutionResultAssert extends IterableAssert<Map<String, Object>> {
    *
    * @throws AssertionError if the actual {@link org.neo4j.cypher.javacompat.ExecutionResult} row does not contain the given column names.
    */
-  public ExecutionResultAssert rowContainsColumns(int rowIndex, String... columnNames) {
+  public ExecutionResultAssert containsColumnNamesAtRow(int rowIndex, String... columnNames) {
     Objects.instance().assertNotNull(info, actual);
 
     if (rowIndex < 0) {
@@ -103,7 +103,7 @@ public class ExecutionResultAssert extends IterableAssert<Map<String, Object>> {
     SearchResult searchResult = search(rowIndex);
     Map<String, Object> row = searchResult.getRow();
     int rowCount = searchResult.getCount();
-    if (rowIndex >= rowCount ) {
+    if (rowIndex >= rowCount) {
       throw Failures.instance().failure(info, ShouldHaveRowAtIndex.shouldHaveRowAtIndex(actual, rowIndex, rowCount));
     }
 

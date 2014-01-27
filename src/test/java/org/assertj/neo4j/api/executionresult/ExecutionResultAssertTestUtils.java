@@ -72,13 +72,13 @@ class ExecutionResultAssertTestUtils {
    *
    *  1 initial call of hasNext (true) + 5 subsequent calls (4 true and 1 false)
    *    assertThat(executionResult)
-   *      .rowContainsColumns(0, "foo", "bar") // calls hasNext for element 0 and 1
-   *      .rowContainsColumns(1, "foo", "bar") // calls hasNext for element 1 and 2
-   *      .rowContainsColumns(2, "foo", "bar") // calls hasNext for element 2 and 3
+   *      .containsColumnNamesAtRow(0, "foo", "bar") // calls hasNext for element 0 and 1
+   *      .containsColumnNamesAtRow(1, "foo", "bar") // calls hasNext for element 1 and 2
+   *      .containsColumnNamesAtRow(2, "foo", "bar") // calls hasNext for element 2 and 3
    *
    *  1 initial call of hasNext (true) + 3 subsequent calls (2 true and 1 false)
    *    assertThat(executionResult)
-   *      .rowContainsColumns(2, "foo", "bar") // calls hasNext for element 0, 1, 2 and 3
+   *      .containsColumnNamesAtRow(2, "foo", "bar") // calls hasNext for element 0, 1, 2 and 3
    */
   private static int subsequentHasNextCallCount(int rowCount, int chainedCallCount) {
     return chainedCallCount - 1 + rowCount;
