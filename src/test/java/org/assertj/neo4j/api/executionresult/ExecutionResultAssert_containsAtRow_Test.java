@@ -20,16 +20,17 @@ import org.neo4j.cypher.javacompat.ExecutionResult;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.assertj.core.data.MapEntry.entry;
 import static org.assertj.neo4j.api.Assertions.assertThat;
 import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
 import static org.mockito.Mockito.mock;
 
 /**
- * Checks <code>{@link org.assertj.neo4j.api.ExecutionResultAssert#containsColumnNamesAtRow(int, String...)}</code> behavior.
+ * Checks <code>{@link org.assertj.neo4j.api.ExecutionResultAssert#containsAtRow(int, org.assertj.core.data.MapEntry...)}</code> behavior.
  *
  * @author Florent Biville
  */
-public class ExecutionResultAssert_containsColumnNamesAtRow_Test {
+public class ExecutionResultAssert_containsAtRow_Test {
 
   @Rule
   public ExpectedException exception = ExpectedException.none();
@@ -37,18 +38,18 @@ public class ExecutionResultAssert_containsColumnNamesAtRow_Test {
   private ExecutionResultAssertTestUtils utils = new ExecutionResultAssertTestUtils(executionResult);
 
   @Test
-  public void should_pass_if_given_row_contains_columns() {
+  public void should_pass_if_row_contains_entries() {
     Map<String, Object> firstRow = new HashMap<>();
     firstRow.put("firstName", "Florent");
     firstRow.put("lastName", "Biville");
     //noinspection unchecked
     utils.given_execution_result_yields_rows(firstRow);
 
-    assertThat(executionResult).containsColumnNamesAtRow(0, "firstName", "lastName");
+    assertThat(executionResult).containsAtRow(0, entry("firstName", "Florent"), entry("lastName", "Biville"));
   }
 
   @Test
-  public void should_pass_if_given_rows_contain_columns() {
+  public void should_pass_if_given_rows_contain_entries() {
     Map<String, Object> row = new HashMap<>();
     row.put("firstName", "Florent");
     row.put("lastName", "Biville");
@@ -56,24 +57,24 @@ public class ExecutionResultAssert_containsColumnNamesAtRow_Test {
     utils.given_execution_result_yields_rows_with_chained_calls(2, row, row);
 
     assertThat(executionResult)
-      .containsColumnNamesAtRow(0, "firstName", "lastName")
-      .containsColumnNamesAtRow(1, "firstName", "lastName");
+      .containsAtRow(0, entry("firstName", "Florent"))
+      .containsAtRow(1, entry("lastName", "Biville"));
   }
 
   @Test
-  public void should_fail_if_given_row_index_is_strictly_negative() {
+  public void should_fail_if_row_index_is_strictly_negative() {
     exception.expect(IllegalArgumentException.class);
     exception.expectMessage("The execution result row index should be positive.");
 
-    assertThat(executionResult).containsColumnNamesAtRow(-1, "firstName", "lastName");
+    assertThat(executionResult).containsAtRow(-1, entry("firstName", "Florent"));
   }
 
   @Test
-  public void should_fail_if_no_column_names_is_specified() {
+  public void should_fail_if_no_entry_is_specified() {
     exception.expect(IllegalArgumentException.class);
-    exception.expectMessage("There should be at least one column name to verify.");
+    exception.expectMessage("There should be at least one entry to verify.");
 
-    assertThat(executionResult).containsColumnNamesAtRow(2);
+    assertThat(executionResult).containsAtRow(0);
   }
 
   @Test
@@ -84,7 +85,7 @@ public class ExecutionResultAssert_containsColumnNamesAtRow_Test {
 
     utils.given_execution_result_yields_row_count(2);
 
-    assertThat(executionResult).containsColumnNamesAtRow(2, "firstName", "lastName");
+    assertThat(executionResult).containsAtRow(2, entry("firstName", "Florent"));
   }
 
   @Test
@@ -102,22 +103,44 @@ public class ExecutionResultAssert_containsColumnNamesAtRow_Test {
     utils.given_execution_result_yields_rows_with_chained_calls(2, row, row);
 
     assertThat(executionResult)
-      .containsColumnNamesAtRow(1, "firstName", "lastName")
-      .containsColumnNamesAtRow(0, "firstName", "lastName");
+      .containsAtRow(1, entry("firstName", "Florent"))
+      .containsAtRow(0, entry("lastName", "Biville"));
   }
 
   @Test
-  public void should_fail_if_row_does_not_contain_given_column_names() {
+  public void should_fail_if_row_does_not_contain_column_name() {
     exception.expect(AssertionError.class);
     exception.expectMessage("with row at index:\n" +
       "  <1>\n" +
-      "to contain column names\n" +
-      "  <['firstName', 'lastName']>\n" +
-      "but row actually contains\n" +
-      "  <{}>");
+      "to contain\n" +
+      "  <[MapEntry[key='firstName', value='Florent']]>\n" +
+      "while row actually contains\n" +
+      "  <{}>\n" +
+      "could not find\n" +
+      "  <[MapEntry[key='firstName', value='Florent']]>");
 
     utils.given_execution_result_yields_row_count(2);
 
-    assertThat(executionResult).containsColumnNamesAtRow(1, "firstName", "lastName");
+    assertThat(executionResult).containsAtRow(1, entry("firstName", "Florent"));
+  }
+
+  @Test
+  public void should_fail_if_row_does_not_contain_value() {
+    exception.expect(AssertionError.class);
+    exception.expectMessage("with row at index:\n" +
+      "  <0>\n" +
+      "to contain\n" +
+      "  <[MapEntry[key='firstName', value='Florent']]>\n" +
+      "while row actually contains\n" +
+      "  <{'firstName'='Peter'}>\n" +
+      "could not find\n" +
+      "  <[MapEntry[key='firstName', value='Florent']]>");
+
+    Map<String, Object> firstRow = new HashMap<>();
+    firstRow.put("firstName", "Peter");
+    //noinspection unchecked
+    utils.given_execution_result_yields_rows(firstRow);
+
+    assertThat(executionResult).containsAtRow(0, entry("firstName", "Florent"));
   }
 }

@@ -36,22 +36,21 @@ class ExecutionResultAssertTestUtils {
       rows[i] = new HashMap<>();
     }
 
-    given_execution_result_yields_rows(rowCount, rows);
+    given_execution_result_yields_rows(rows);
   }
 
   @SuppressWarnings("unchecked")
-  public void given_execution_result_yields_rows(int rowCount, Map<String, Object>... resultRows) {
-    given_execution_result_yields_rows_with_chained_calls(rowCount, 1, resultRows);
+  public void given_execution_result_yields_rows(Map<String, Object>... resultRows) {
+    given_execution_result_yields_rows_with_chained_calls(1, resultRows);
   }
 
   @SuppressWarnings("unchecked")
-  public void given_execution_result_yields_rows_with_chained_calls(int rowCount, int chainedCallCount, Map<String, Object>... resultRows) {
-    checkRowCoherence(rowCount, resultRows);
-
+  public void given_execution_result_yields_rows_with_chained_calls(int chainedCallCount, Map<String, Object>... resultRows) {
     ResourceIterator<Map<String,Object>> iterator = executionResult.iterator();
 
+    int rowCount = resultRows.length;
     when(iterator.hasNext()).thenReturn(Boolean.TRUE, subsequentHasNextReturnValues(rowCount, chainedCallCount));
-    when(iterator.next()).thenReturn(resultRows[0], copyOfRange(resultRows, 1, resultRows.length));
+    when(iterator.next()).thenReturn(resultRows[0], copyOfRange(resultRows, 1, rowCount));
   }
 
   private static Boolean[] subsequentHasNextReturnValues(int rowCount, int chainedCallCount) {
@@ -84,12 +83,4 @@ class ExecutionResultAssertTestUtils {
     return chainedCallCount - 1 + rowCount;
   }
 
-  private static void checkRowCoherence(int rowCount, Map<String, Object>[] resultRows) {
-    if (rowCount <= 0) {
-      throw new IllegalArgumentException("Expected to return at least 1 row");
-    }
-    if (resultRows.length != rowCount) {
-      throw new IllegalArgumentException("Expect result size to be coherent with actual returned rows");
-    }
-  }
 }

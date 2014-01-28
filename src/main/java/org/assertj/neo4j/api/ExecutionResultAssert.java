@@ -13,17 +13,22 @@
 package org.assertj.neo4j.api;
 
 import org.assertj.core.api.IterableAssert;
+import org.assertj.core.data.MapEntry;
 import org.assertj.core.internal.Failures;
 import org.assertj.core.internal.Objects;
 import org.assertj.neo4j.error.ShouldHaveRowAtIndex;
 import org.neo4j.cypher.javacompat.ExecutionResult;
 import org.neo4j.graphdb.ResourceIterator;
 
+import java.util.Collection;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
 import static java.util.Arrays.asList;
+import static org.assertj.core.util.Objects.areEqual;
 import static org.assertj.neo4j.error.ShouldContainColumnNames.shouldContainColumnNames;
+import static org.assertj.neo4j.error.ShouldContainEntries.shouldContainEntries;
 
 /**
  * Assertions for Neo4J {@link org.neo4j.cypher.javacompat.ExecutionResult}
@@ -82,38 +87,82 @@ public class ExecutionResultAssert extends IterableAssert<Map<String, Object>> {
   public ExecutionResultAssert containsColumnNamesAtRow(int rowIndex, String... columnNames) {
     Objects.instance().assertNotNull(info, actual);
 
-    if (rowIndex < 0) {
-      throw new IllegalArgumentException("The execution result row index should be positive.");
-    }
-
-    if (previousRowIndex != null && rowIndex <= previousRowIndex) {
-      throw new IllegalArgumentException(String.format("\nSubsequent calls should specify index in **increasing** order." +
-        "\n  Previous call specified index: <%d>" +
-        "\n  Current call specifies index: <%d>" +
-        "\nCurrent call index should be larger than the previous one.",
-        previousRowIndex,
-        rowIndex
-      ));
-    }
+    checkIndexAccess(rowIndex, previousRowIndex);
 
     if (columnNames == null || columnNames.length == 0) {
-      throw new IllegalArgumentException("There should be at least one column name to verify");
+      throw new IllegalArgumentException("There should be at least one column name to verify.");
     }
 
     SearchResult searchResult = search(rowIndex);
-    Map<String, Object> row = searchResult.getRow();
-    int rowCount = searchResult.getCount();
-    if (rowIndex >= rowCount) {
-      throw Failures.instance().failure(info, ShouldHaveRowAtIndex.shouldHaveRowAtIndex(actual, rowIndex, rowCount));
-    }
+    checkIndexInBound(rowIndex, searchResult.getCount());
 
+    Map<String, Object> row = searchResult.getRow();
     Set<String> actualColumnNames = row.keySet();
     if (!actualColumnNames.containsAll(asList(columnNames))) {
       throw Failures.instance().failure(info, shouldContainColumnNames(actual, rowIndex, row, columnNames));
     }
 
-    previousRowIndex = rowIndex;
     return this;
+  }
+
+  public ExecutionResultAssert containsAtRow(int rowIndex, MapEntry... entries) {
+    Objects.instance().assertNotNull(info, actual);
+
+    checkIndexAccess(rowIndex, previousRowIndex);
+
+    if (entries == null || entries.length == 0) {
+      throw new IllegalArgumentException("There should be at least one entry to verify.");
+    }
+
+    SearchResult searchResult = search(rowIndex);
+    checkIndexInBound(rowIndex, searchResult.getCount());
+
+    Map<String, Object> row = searchResult.getRow();
+    Collection<MapEntry> notFoundInRow = computeNotFoundInRow(row, entries);
+    if (!notFoundInRow.isEmpty()) {
+      throw Failures.instance().failure(info, shouldContainEntries(actual, rowIndex, row, entries, notFoundInRow));
+    }
+
+    return this;
+
+  }
+
+  private Collection<MapEntry> computeNotFoundInRow(Map<String, Object> row, MapEntry[] entries) {
+    Collection<MapEntry> notFound = new LinkedList<>();
+    for (MapEntry entry : entries) {
+      if (!containsEntry(row, entry)) {
+        notFound.add(entry);
+      }
+    }
+    return notFound;
+  }
+
+  // FIXME? this is quite a duplication with Maps.containsEntry
+  private boolean containsEntry(Map<String, Object> row, MapEntry entry) {
+    if (entry == null) {
+      throw new NullPointerException("Entries to look for should not be null");
+    }
+
+    Object entryKey = entry.key;
+    return row.containsKey(entryKey) && areEqual(row.get(entryKey), entry.value);
+
+  }
+
+  private static void checkIndexAccess(int rowIndex, Integer previousIndex) {
+    if (rowIndex < 0) {
+      throw new IllegalArgumentException("The execution result row index should be positive.");
+    }
+
+    if (previousIndex != null && rowIndex <= previousIndex) {
+      throw new IllegalArgumentException(String.format("\nSubsequent %s assertion calls should specify index in **increasing** order." +
+        "\n  Previous call specified index: <%d>" +
+        "\n  Current call specifies index: <%d>" +
+        "\nCurrent call index should be larger than the previous one.",
+        ExecutionResultAssert.class.getSimpleName(),
+        previousIndex,
+        rowIndex
+      ));
+    }
   }
 
   private SearchResult search(int rowIndex) {
@@ -124,7 +173,15 @@ public class ExecutionResultAssert extends IterableAssert<Map<String, Object>> {
       row = rowIterator.next();
       visitedRowCount++;
     }
+
+    previousRowIndex = rowIndex;
     return new SearchResult(visitedRowCount, row);
+  }
+
+  private void checkIndexInBound(int rowIndex, int rowCount) {
+    if (rowIndex >= rowCount) {
+      throw Failures.instance().failure(info, ShouldHaveRowAtIndex.shouldHaveRowAtIndex(actual, rowIndex, rowCount));
+    }
   }
 
   private class SearchResult {
