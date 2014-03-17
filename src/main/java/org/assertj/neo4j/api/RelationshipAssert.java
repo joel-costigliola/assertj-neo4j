@@ -1,13 +1,13 @@
 /**
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- *
+ * 
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
- *
+ * 
  * Copyright 2013-2014 the original author or authors.
  */
 package org.assertj.neo4j.api;
@@ -187,26 +187,26 @@ public class RelationshipAssert extends PropertyContainerAssert<RelationshipAsse
     return hasType(relationshipType.name());
   }
 
-    /**
+  /**
    * Verifies that the actual {@link org.neo4j.graphdb.Relationship} has the given type name<br/>
    * <p>
    * Example:
-   *
+   * 
    * <pre>
    * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
    * // [...] creation of homerNode, doughnutNode
    * RelationshipType loveType = DynamicRelationshipType.withName(&quot;LOVES&quot;);
    * Relationship love = homerNode.createRelationshipTo(doughnutNode, loveType);
-   *
+   * 
    * assertThat(love).hasType(&quot;LOVES&quot;);
    * </pre>
-   *
+   * 
    * If the <code>relationshipTypeName</code> is {@code null}, an {@link IllegalArgumentException} is thrown.
    * <p>
-   *
+   * 
    * @param relationshipTypeName a {@link org.neo4j.graphdb.Relationship} type name
    * @return this {@link RelationshipAssert} for assertions chaining
-   *
+   * 
    * @throws IllegalArgumentException if <code>relationshipTypeName</code> is {@code null}.
    * @throws AssertionError if the actual {@link org.neo4j.graphdb.Relationship} does not have the given type name
    */
@@ -226,25 +226,25 @@ public class RelationshipAssert extends PropertyContainerAssert<RelationshipAsse
     return this;
   }
 
-    /**
+  /**
    * Verifies that the actual {@link org.neo4j.graphdb.Relationship} does not have the given type<br/>
    * <p>
    * Example:
-   *
+   * 
    * <pre>
    * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
    * // [...] creation of homerNode, doughnutNode
    * Relationship love = homerNode.createRelationshipTo(doughnutNode, DynamicRelationshipType.withName(&quot;LOVES&quot;));
-   *
+   * 
    * assertThat(love).doesNotHaveType(DynamicRelationshipType.withName(&quot;HATES&quot;));
    * </pre>
-   *
+   * 
    * If the <code>node</code> is {@code null}, an {@link IllegalArgumentException} is thrown.
    * <p>
-   *
+   * 
    * @param relationshipType a {@link org.neo4j.graphdb.Relationship} type
    * @return this {@link RelationshipAssert} for assertions chaining
-   *
+   * 
    * @throws IllegalArgumentException if <code>relationshipType</code> is {@code null}.
    * @throws AssertionError if the actual {@link org.neo4j.graphdb.Relationship} has the given type
    */
@@ -265,21 +265,21 @@ public class RelationshipAssert extends PropertyContainerAssert<RelationshipAsse
    * Verifies that the actual {@link org.neo4j.graphdb.Relationship} does not have the given type name<br/>
    * <p>
    * Example:
-   *
+   * 
    * <pre>
    * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
    * // [...] creation of homerNode, doughnutNode
    * Relationship love = homerNode.createRelationshipTo(doughnutNode, DynamicRelationshipType.withName(&quot;LOVES&quot;));
-   *
+   * 
    * assertThat(love).doesNotHaveType(&quot;HATES&quot;);
    * </pre>
-   *
+   * 
    * If the <code>node</code> is {@code null}, an {@link IllegalArgumentException} is thrown.
    * <p>
-   *
+   * 
    * @param relationshipTypeName a {@link org.neo4j.graphdb.Relationship} type
    * @return this {@link RelationshipAssert} for assertions chaining
-   *
+   * 
    * @throws IllegalArgumentException if <code>relationshipTypeName</code> is {@code null}.
    * @throws AssertionError if the actual {@link org.neo4j.graphdb.Relationship} has the given type
    */
