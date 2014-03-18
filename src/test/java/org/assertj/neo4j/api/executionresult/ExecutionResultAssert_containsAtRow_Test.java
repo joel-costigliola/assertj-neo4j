@@ -65,7 +65,7 @@ public class ExecutionResultAssert_containsAtRow_Test {
   @Test
   public void should_fail_if_row_index_is_strictly_negative() {
     exception.expect(IllegalArgumentException.class);
-    exception.expectMessage("The execution result row index should be positive.");
+    exception.expectMessage("The specified row index should be positive, but was <-1>.");
 
     assertThat(executionResult).containsAtRow(-1, entry("firstName", "Florent"));
   }

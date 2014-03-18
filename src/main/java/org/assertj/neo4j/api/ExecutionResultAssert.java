@@ -16,7 +16,6 @@ import org.assertj.core.api.IterableAssert;
 import org.assertj.core.data.MapEntry;
 import org.assertj.core.internal.Failures;
 import org.assertj.core.internal.Objects;
-import org.assertj.neo4j.error.ShouldHaveRowAtIndex;
 import org.neo4j.cypher.javacompat.ExecutionResult;
 import org.neo4j.graphdb.ResourceIterator;
 
@@ -27,6 +26,8 @@ import java.util.Set;
 
 import static java.util.Arrays.asList;
 import static org.assertj.core.util.Objects.areEqual;
+import static org.assertj.neo4j.api.SearchErrorHelper.checkIndexAccess;
+import static org.assertj.neo4j.api.SearchErrorHelper.checkIndexInBound;
 import static org.assertj.neo4j.error.ShouldContainColumnNames.shouldContainColumnNames;
 import static org.assertj.neo4j.error.ShouldContainEntries.shouldContainEntries;
 
@@ -36,6 +37,11 @@ import static org.assertj.neo4j.error.ShouldContainEntries.shouldContainEntries;
  * @author Florent Biville
  */
 public class ExecutionResultAssert extends IterableAssert<Map<String, Object>> {
+
+  static final String SUBSEQUENT_CALL_ERROR_MESSAGE = "\nSubsequent %s assertion calls should specify index in **increasing** order."
+      + "\n  Previous call specified index: <%d>"
+      + "\n  Current call specifies index: <%d>"
+      + "\nCurrent call index should be larger than the previous one.";
 
   private final ExecutionResult actual;
   private Integer previousRowIndex = null;
@@ -52,7 +58,7 @@ public class ExecutionResultAssert extends IterableAssert<Map<String, Object>> {
 
   /**
    * Verifies that the row specified at the given index of the actual
-   * {@link org.neo4j.cypher.javacompat.ExecutionResult} contains the specified column names.<br/>
+   * {@link org.neo4j.cypher.javacompat.ExecutionResult} contains the specified column names<br/>
    * 
    * <strong>Warning: </strong>If you plan to chain this assertion, be sure that chained calls specify row indices in
    * increasing order!<br />
@@ -69,8 +75,7 @@ public class ExecutionResultAssert extends IterableAssert<Map<String, Object>> {
    * 
    * </pre>
    * 
-   * If any of the <code>key</code> or <code>value</code> is {@code null}, an {@link IllegalArgumentException} is
-   * thrown.
+   * If no column names are specified, an {@link java.lang.IllegalArgumentException} is thrown.
    * <p>
    * 
    * @param rowIndex the position of the row to verify in the actual {@link org.neo4j.cypher.javacompat.ExecutionResult}
@@ -88,16 +93,16 @@ public class ExecutionResultAssert extends IterableAssert<Map<String, Object>> {
   public ExecutionResultAssert containsColumnNamesAtRow(int rowIndex, String... columnNames) {
     Objects.instance().assertNotNull(info, actual);
 
-    checkIndexAccess(rowIndex, previousRowIndex);
+    checkIndexAccess(rowIndex, previousRowIndex, this.getClass());
 
     if (columnNames == null || columnNames.length == 0) {
       throw new IllegalArgumentException("There should be at least one column name to verify.");
     }
 
-    SearchResult searchResult = search(rowIndex);
-    checkIndexInBound(rowIndex, searchResult.getCount());
+    SearchResultRow<Map<String, Object>> searchResult = search(rowIndex);
+    checkIndexInBound(rowIndex, searchResult.getVisitedLines(), info, actual);
 
-    Map<String, Object> row = searchResult.getRow();
+    Map<String, Object> row = searchResult.getValue();
     Set<String> actualColumnNames = row.keySet();
     if (!actualColumnNames.containsAll(asList(columnNames))) {
       throw Failures.instance().failure(info, shouldContainColumnNames(actual, rowIndex, row, columnNames));
@@ -106,19 +111,53 @@ public class ExecutionResultAssert extends IterableAssert<Map<String, Object>> {
     return this;
   }
 
+  /**
+   * Verifies that the row specified at the given index of the actual
+   * {@link org.neo4j.cypher.javacompat.ExecutionResult} contains the specified entries<br/>
+   * 
+   * <strong>Warning: </strong>If you plan to chain this assertion, be sure that chained calls specify row indices in
+   * increasing order!<br />
+   * 
+   * <p>
+   * Example:
+   * 
+   * <pre>
+   * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
+   * ExecutionEngine singletonExecutionEngine = new ExecutionEngine(graph);
+   * // [...]
+   * ExecutionResult result = singletonExecutionEngine.execute(&quot;MATCH (p:PEOPLE {firstName : 'Emil'}) RETURN p AS people&quot;);
+   * assertThat(result).containsAtRow(0, MapEntry.entry(&quot;firstName&quot;, &quot;Emil&quot;));
+   * 
+   * </pre>
+   * 
+   * If any of the entry specified is {@code null}, an {@link IllegalArgumentException} is thrown.
+   * <p>
+   * 
+   * @param rowIndex the position of the row to verify in the actual {@link org.neo4j.cypher.javacompat.ExecutionResult}
+   * @param entries the entries contained in the specified row
+   * @return this {@link PropertyContainerAssert} for assertions chaining
+   * 
+   * @throws IllegalArgumentException if <code>rowIndex</code> is strictly negative.
+   * @throws IllegalArgumentException if <code>entries</code> is empty.
+   * @throws IllegalArgumentException if <code>rowIndex</code> is smaller than the one given in the previous chained
+   *           call.
+   * 
+   * @throws AssertionError if the actual {@link org.neo4j.cypher.javacompat.ExecutionResult} row does not contain the
+   *           given column names.
+   */
   public ExecutionResultAssert containsAtRow(int rowIndex, MapEntry... entries) {
     Objects.instance().assertNotNull(info, actual);
 
-    checkIndexAccess(rowIndex, previousRowIndex);
+    checkIndexAccess(rowIndex, previousRowIndex, this.getClass());
 
     if (entries == null || entries.length == 0) {
       throw new IllegalArgumentException("There should be at least one entry to verify.");
     }
 
-    SearchResult searchResult = search(rowIndex);
-    checkIndexInBound(rowIndex, searchResult.getCount());
+    SearchResultRow<Map<String, Object>> searchResult = search(rowIndex);
+    checkIndexInBound(rowIndex, searchResult.getVisitedLines(), info, actual);
 
-    Map<String, Object> row = searchResult.getRow();
+    Map<String, Object> row = searchResult.getValue();
     Collection<MapEntry> notFoundInRow = computeNotFoundInRow(row, entries);
     if (!notFoundInRow.isEmpty()) {
       throw Failures.instance().failure(info, shouldContainEntries(actual, rowIndex, row, entries, notFoundInRow));
@@ -149,21 +188,7 @@ public class ExecutionResultAssert extends IterableAssert<Map<String, Object>> {
 
   }
 
-  private static void checkIndexAccess(int rowIndex, Integer previousIndex) {
-    if (rowIndex < 0) {
-      throw new IllegalArgumentException("The execution result row index should be positive.");
-    }
-
-    if (previousIndex != null && rowIndex <= previousIndex) {
-      throw new IllegalArgumentException(String.format(
-          "\nSubsequent %s assertion calls should specify index in **increasing** order."
-              + "\n  Previous call specified index: <%d>" + "\n  Current call specifies index: <%d>"
-              + "\nCurrent call index should be larger than the previous one.",
-          ExecutionResultAssert.class.getSimpleName(), previousIndex, rowIndex));
-    }
-  }
-
-  private SearchResult search(int rowIndex) {
+  private SearchResultRow<Map<String, Object>> search(int rowIndex) {
     ResourceIterator<Map<String, Object>> rowIterator = actual.iterator();
     int visitedRowCount = previousRowIndex == null ? 0 : 1 + previousRowIndex;
     Map<String, Object> row = null;
@@ -173,30 +198,7 @@ public class ExecutionResultAssert extends IterableAssert<Map<String, Object>> {
     }
 
     previousRowIndex = rowIndex;
-    return new SearchResult(visitedRowCount, row);
+    return new SearchResultRow<Map<String, Object>>(visitedRowCount, row);
   }
 
-  private void checkIndexInBound(int rowIndex, int rowCount) {
-    if (rowIndex >= rowCount) {
-      throw Failures.instance().failure(info, ShouldHaveRowAtIndex.shouldHaveRowAtIndex(actual, rowIndex, rowCount));
-    }
-  }
-
-  private class SearchResult {
-    private final int count;
-    private final Map<String, Object> row;
-
-    public SearchResult(int count, Map<String, Object> row) {
-      this.count = count;
-      this.row = row;
-    }
-
-    public int getCount() {
-      return count;
-    }
-
-    public Map<String, Object> getRow() {
-      return row;
-    }
-  }
 }

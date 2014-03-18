@@ -27,11 +27,11 @@ public class ShouldHaveRowAtIndex extends BasicErrorMessageFactory {
    * @param resultSize the size of the actual execution result.
    * @return the created {@code ErrorMessageFactory}.
    */
-  public static ErrorMessageFactory shouldHaveRowAtIndex(ExecutionResult actual, int rowIndex, int resultSize) {
+  public static ErrorMessageFactory shouldHaveRowAtIndex(Object actual, int rowIndex, int resultSize) {
     return new ShouldHaveRowAtIndex(actual, rowIndex, resultSize);
   }
 
-  private ShouldHaveRowAtIndex(ExecutionResult actual, int givenIndex, int actualSize) {
+  private ShouldHaveRowAtIndex(Object actual, int givenIndex, int actualSize) {
     super("\nExpecting:\n  <%s>\nto include row at index:  <%s>\nbut has size:  <%s>", actual, givenIndex, actualSize,
         StandardComparisonStrategy.instance());
   }
