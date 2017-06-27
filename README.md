@@ -1,9 +1,9 @@
-AssertJ assertions for Neo4j 2+
+AssertJ assertions for Neo4j 3+
 ===============================
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.assertj/assertj-neo4j/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.assertj/assertj-neo4j)
 
-Provides assertions like AssertJ for [Neo4j](http://www.neo4j.org/) 2 or higher.
+Provides assertions like AssertJ for [Neo4j](http://www.neo4j.org/) 3 or higher.
 
 This module has been written by **Florent Biville**, big thanks to him! Great Work!
 
