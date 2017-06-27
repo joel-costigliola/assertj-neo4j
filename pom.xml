@@ -10,7 +10,7 @@
   <parent>
     <groupId>org.assertj</groupId>
     <artifactId>assertj-parent-pom</artifactId>
-    <version>1.2.3-SNAPSHOT</version>
+    <version>2.1.6</version>
   </parent>
   
   <scm>
@@ -28,13 +28,12 @@
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
-      <version>1.5.0</version>
+      <version>3.8.0</version>
     </dependency>
     <dependency>
       <groupId>org.neo4j</groupId>
       <artifactId>neo4j</artifactId>
-      <scope>provided</scope>
-      <version>[2.0.0,)</version>
+      <version>3.0.0</version>
     </dependency>
     <!-- test dependencies -->
     <dependency>
@@ -45,7 +44,6 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-core</artifactId>
-      <version>1.9.5</version>
       <scope>test</scope>
     </dependency>
   </dependencies>
@@ -62,7 +60,7 @@
           <properties>
             <!-- Values to be substituted in template -->
             <inceptionYear>2013</inceptionYear>
-            <currentYear>2014</currentYear>
+            <currentYear>2017</currentYear>
           </properties>
           <strictCheck>true</strictCheck>
           <includes>
@@ -77,50 +75,6 @@
             </goals>
           </execution>
         </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.1</version>
-        <configuration>
-          <source>1.7</source>
-          <target>1.7</target>
-          <encoding>${project.build.sourceEncoding}</encoding>
-        </configuration>
-      </plugin>
-      <plugin>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>animal-sniffer-maven-plugin</artifactId>
-        <version>1.9</version>
-        <configuration>
-          <signature>
-            <groupId>org.codehaus.mojo.signature</groupId>
-            <artifactId>java17</artifactId>
-            <version>1.0</version>
-          </signature>
-        </configuration>
-        <executions>
-          <execution>
-            <id>Check JRE 1.7 API compatibility</id>
-            <phase>test</phase>
-            <goals>
-              <goal>check</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-
-      <!-- generate jacoco report -->
-      <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
-      </plugin>
-      <!-- to get jacoco report we need to set argLine in surefire, without this snippet the jacoco argLine is lost -->
-      <plugin>
-        <artifactId>maven-surefire-plugin</artifactId>
-        <configuration>
-          <argLine>${argLine}</argLine>
-        </configuration>
       </plugin>
     </plugins>
   </build>
