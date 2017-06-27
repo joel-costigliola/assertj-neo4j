@@ -1,31 +1,28 @@
 /**
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
- * 
- * Copyright 2013-2014 the original author or authors.
+ *
+ * Copyright 2013-2017 the original author or authors.
  */
 package org.assertj.neo4j.api.executionresult;
 
-import org.neo4j.cypher.javacompat.ExecutionResult;
-import org.neo4j.graphdb.ResourceIterator;
-
 import java.util.HashMap;
 import java.util.Map;
-
+import org.neo4j.graphdb.Result;
 import static java.util.Arrays.copyOfRange;
 import static org.mockito.Mockito.when;
 
-class ExecutionResultAssertTestUtils {
+class ResultAssertTestUtils {
 
-  private ExecutionResult executionResult;
+  private Result executionResult;
 
-  public ExecutionResultAssertTestUtils(ExecutionResult executionResult) {
+  public ResultAssertTestUtils(Result executionResult) {
     this.executionResult = executionResult;
   }
 
@@ -47,11 +44,10 @@ class ExecutionResultAssertTestUtils {
   @SuppressWarnings("unchecked")
   public void given_execution_result_yields_rows_with_chained_calls(int chainedCallCount,
       Map<String, Object>... resultRows) {
-    ResourceIterator<Map<String, Object>> iterator = executionResult.iterator();
 
     int rowCount = resultRows.length;
-    when(iterator.hasNext()).thenReturn(Boolean.TRUE, subsequentHasNextReturnValues(rowCount, chainedCallCount));
-    when(iterator.next()).thenReturn(resultRows[0], copyOfRange(resultRows, 1, rowCount));
+    when(executionResult.hasNext()).thenReturn(Boolean.TRUE, subsequentHasNextReturnValues(rowCount, chainedCallCount));
+    when(executionResult.next()).thenReturn(resultRows[0], copyOfRange(resultRows, 1, rowCount));
   }
 
   private static Boolean[] subsequentHasNextReturnValues(int rowCount, int chainedCallCount) {

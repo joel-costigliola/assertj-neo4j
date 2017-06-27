@@ -1,21 +1,22 @@
 /**
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
  * the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
- * 
- * Copyright 2013-2014 the original author or authors.
+ *
+ * Copyright 2013-2017 the original author or authors.
  */
 package org.assertj.neo4j.api.executionresult;
 
+import org.assertj.neo4j.api.ResultAssert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.neo4j.cypher.javacompat.ExecutionResult;
+import org.neo4j.graphdb.Result;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,17 +28,17 @@ import static org.mockito.Mockito.mock;
 
 /**
  * Checks
- * <code>{@link org.assertj.neo4j.api.ExecutionResultAssert#containsAtRow(int, org.assertj.core.data.MapEntry...)}</code>
+ * <code>{@link ResultAssert#containsAtRow(int, org.assertj.core.data.MapEntry...)}</code>
  * behavior.
  * 
  * @author Florent Biville
  */
-public class ExecutionResultAssert_containsAtRow_Test {
+public class ResultAssert_containsAtRow_Test {
 
   @Rule
   public ExpectedException exception = ExpectedException.none();
-  private ExecutionResult executionResult = mock(ExecutionResult.class, RETURNS_DEEP_STUBS);
-  private ExecutionResultAssertTestUtils utils = new ExecutionResultAssertTestUtils(executionResult);
+  private Result executionResult = mock(Result.class, RETURNS_DEEP_STUBS);
+  private ResultAssertTestUtils utils = new ResultAssertTestUtils(executionResult);
 
   @Test
   public void should_pass_if_row_contains_entries() {
@@ -92,7 +93,7 @@ public class ExecutionResultAssert_containsAtRow_Test {
   public void should_fail_if_given_row_index_is_not_specified_in_increasing_order() {
     exception.expect(IllegalArgumentException.class);
     exception
-        .expectMessage("Subsequent ExecutionResultAssert assertion calls should specify index in **increasing** order.\n"
+        .expectMessage("Subsequent ResultAssert assertion calls should specify index in **increasing** order.\n"
             + "  Previous call specified index: <1>\n"
             + "  Current call specifies index: <0>\n"
             + "Current call index should be larger than the previous one.");
@@ -111,8 +112,8 @@ public class ExecutionResultAssert_containsAtRow_Test {
   public void should_fail_if_row_does_not_contain_column_name() {
     exception.expect(AssertionError.class);
     exception.expectMessage("with row at index:\n" + "  <1>\n" + "to contain\n"
-        + "  <[MapEntry[key='firstName', value='Florent']]>\n" + "while row actually contains\n" + "  <{}>\n"
-        + "could not find\n" + "  <[MapEntry[key='firstName', value='Florent']]>");
+        + "  <[MapEntry[key=\"firstName\", value=\"Florent\"]]>\n" + "while row actually contains\n" + "  <{}>\n"
+        + "could not find\n" + "  <[MapEntry[key=\"firstName\", value=\"Florent\"]]>");
 
     utils.given_execution_result_yields_row_count(2);
 
@@ -122,9 +123,14 @@ public class ExecutionResultAssert_containsAtRow_Test {
   @Test
   public void should_fail_if_row_does_not_contain_value() {
     exception.expect(AssertionError.class);
-    exception.expectMessage("with row at index:\n" + "  <0>\n" + "to contain\n"
-        + "  <[MapEntry[key='firstName', value='Florent']]>\n" + "while row actually contains\n"
-        + "  <{'firstName'='Peter'}>\n" + "could not find\n" + "  <[MapEntry[key='firstName', value='Florent']]>");
+    exception.expectMessage("with row at index:\n"
+        + "  <0>\n"
+        + "to contain\n"
+        + "  <[MapEntry[key=\"firstName\", value=\"Florent\"]]>\n"
+        + "while row actually contains\n"
+        + "  <{\"firstName\"=\"Peter\"}>\n"
+        + "could not find\n"
+        + "  <[MapEntry[key=\"firstName\", value=\"Florent\"]]>");
 
     Map<String, Object> firstRow = new HashMap<>();
     firstRow.put("firstName", "Peter");

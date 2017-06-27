@@ -8,7 +8,7 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
  * specific language governing permissions and limitations under the License.
  *
- * Copyright 2013-2014 the original author or authors.
+ * Copyright 2013-2017 the original author or authors.
  */
 package org.assertj.neo4j.api.resourceiterator;
 
@@ -72,12 +72,12 @@ public class ResourceIteratorAssert_containsAtRow_Test {
   @Test
   public void should_fail_if_given_row_does_not_contain_value() {
     expectedException.expect(AssertionError.class);
-    expectedException.expectMessage("with row at index:\n" +
-        "  <0>\n" +
-        "to contain\n" +
-        "  <'biville'>\n" +
-        "while row actually contains\n" +
-        "  <'florent'>"
+    expectedException.expectMessage("with row at index:\n"
+        + "  <0>\n"
+        + "to contain\n"
+        + "  <\"biville\">\n"
+        + "while row actually contains\n"
+        + "  <\"florent\">"
     );
 
     ResourceIterator<String> resourceIterator = mock(ResourceIterator.class);
