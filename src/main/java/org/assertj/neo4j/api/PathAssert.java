@@ -23,6 +23,7 @@ import org.neo4j.graphdb.Relationship;
 
 import static org.assertj.neo4j.error.ShouldEndWithNode.shouldEndWithNode;
 import static org.assertj.neo4j.error.ShouldEndWithRelationship.shouldHaveLastRelationship;
+import static org.assertj.neo4j.error.ShouldNotStartWithNode.shouldNotStartWithNode;
 import static org.assertj.neo4j.error.ShouldStartWithNode.shouldStartWithNode;
 
 /**
@@ -79,6 +80,49 @@ public class PathAssert extends IterableAssert<PropertyContainer> {
 
     if (!actualStart.equals(node)) {
       throw Failures.instance().failure(info, shouldStartWithNode(actualPath, node));
+    }
+    return this;
+  }
+
+  /**
+   * Verifies that the actual {@link org.neo4j.graphdb.Path} does not start with the given node<br/>
+   * <p>
+   * Example:
+   *
+   * <pre>
+   * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
+   * // [...]
+   * Relationship love = homerNode.createRelationshipTo(doughnutNode, DynamicRelationshipType.withName(&quot;LOVES&quot;));
+   * // [...]
+   * // PathExpander bellyExpander = [...]
+   * Path homerToDoughnutPath = GraphAlgoFactory.shortestPath(bellyExpander, 2).findSinglePath(homerNode, doughnutNode);
+   *
+   * assertThat(homerToDoughnutPath).doesNotStartWith(healthyPersonNode);
+   * </pre>
+   *
+   * If the <code>node</code> is {@code null}, an {@link IllegalArgumentException} is thrown.
+   * <p>
+   *
+   * @param node the expected start node of the actual {@link org.neo4j.graphdb.Path}
+   * @return this {@link org.assertj.neo4j.api.PathAssert} for assertions chaining
+   *
+   * @throws IllegalArgumentException if <code>node</code> is {@code null}.
+   * @throws AssertionError if the actual {@link org.neo4j.graphdb.Path} starts with the given node
+   */
+  public PathAssert doesNotStartWith(Node node) {
+    Objects.instance().assertNotNull(info, actual);
+
+    Path actualPath = getActual();
+    Node actualStart = actualPath.startNode();
+    if (actualStart == null) {
+      throw new IllegalStateException("The actual start node should not be null");
+    }
+
+    if (node == null) {
+      throw new IllegalArgumentException("The start node to look for should not be null");
+    }
+    if (actualStart.equals(node)) {
+      throw Failures.instance().failure(info, shouldNotStartWithNode(actualPath, node));
     }
     return this;
   }
