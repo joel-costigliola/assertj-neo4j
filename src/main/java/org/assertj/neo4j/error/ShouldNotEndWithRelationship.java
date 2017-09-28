@@ -16,23 +16,24 @@ import org.assertj.core.error.BasicErrorMessageFactory;
 import org.assertj.core.error.ErrorMessageFactory;
 import org.assertj.core.internal.ComparisonStrategy;
 import org.assertj.core.internal.StandardComparisonStrategy;
+
 import org.neo4j.graphdb.Path;
 import org.neo4j.graphdb.Relationship;
 
-public class ShouldEndWithRelationship extends BasicErrorMessageFactory {
+public class ShouldNotEndWithRelationship extends BasicErrorMessageFactory {
 
   /**
-   * Creates a new </code>{@link ShouldEndWithRelationship}</code>.
-   * 
+   * Creates a new </code>{@link ShouldNotEndWithRelationship}</code>.
+   *
    * @param path the actual value in the failed assertion.
    * @param lastRelationship the last relationship used in the failed assertion to compare the actual label value to.
    * @return the created {@code ErrorMessageFactory}.
    */
-  public static ErrorMessageFactory shouldEndWithRelationship(Path path, Relationship lastRelationship) {
-    return new ShouldEndWithRelationship(path, lastRelationship, StandardComparisonStrategy.instance());
+  public static ErrorMessageFactory shouldNotEndWithRelationship(Path path, Relationship lastRelationship) {
+    return new ShouldNotEndWithRelationship(path, lastRelationship, StandardComparisonStrategy.instance());
   }
 
-  private ShouldEndWithRelationship(Path actual, Relationship other, ComparisonStrategy comparisonStrategy) {
-    super("\nExpecting:\n  <%s>\nto end with relationship:\n  <%s>\n%s", actual, other, comparisonStrategy);
+  private ShouldNotEndWithRelationship(Path actual, Relationship other, ComparisonStrategy comparisonStrategy) {
+    super("\nExpecting:\n  <%s>\nto not end with relationship:\n  <%s>\n%s", actual, other, comparisonStrategy);
   }
 }

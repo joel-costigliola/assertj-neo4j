@@ -22,8 +22,9 @@ import org.neo4j.graphdb.PropertyContainer;
 import org.neo4j.graphdb.Relationship;
 
 import static org.assertj.neo4j.error.ShouldEndWithNode.shouldEndWithNode;
-import static org.assertj.neo4j.error.ShouldEndWithRelationship.shouldHaveLastRelationship;
+import static org.assertj.neo4j.error.ShouldEndWithRelationship.shouldEndWithRelationship;
 import static org.assertj.neo4j.error.ShouldNotEndWithNode.shouldNotEndWithNode;
+import static org.assertj.neo4j.error.ShouldNotEndWithRelationship.shouldNotEndWithRelationship;
 import static org.assertj.neo4j.error.ShouldNotStartWithNode.shouldNotStartWithNode;
 import static org.assertj.neo4j.error.ShouldStartWithNode.shouldStartWithNode;
 
@@ -71,7 +72,7 @@ public class PathAssert extends IterableAssert<PropertyContainer> {
 
     Path actualPath = getActual();
     Node actualStart = actualPath.startNode();
-    checkNullStarts(actualStart, node);
+    checkNullStartNodes(actualStart, node);
 
     if (!actualStart.equals(node)) {
       throw Failures.instance().failure(info, shouldStartWithNode(actualPath, node));
@@ -109,7 +110,7 @@ public class PathAssert extends IterableAssert<PropertyContainer> {
 
     Path actualPath = getActual();
     Node actualStart = actualPath.startNode();
-    checkNullStarts(actualStart, node);
+    checkNullStartNodes(actualStart, node);
     if (actualStart.equals(node)) {
       throw Failures.instance().failure(info, shouldNotStartWithNode(actualPath, node));
     }
@@ -145,7 +146,7 @@ public class PathAssert extends IterableAssert<PropertyContainer> {
 
     Path actualPath = getActual();
     Node actualEnd = actualPath.endNode();
-    checkNullEnds(actualEnd, node);
+    checkNullEndNodes(actualEnd, node);
 
     if (!actualEnd.equals(node)) {
       throw Failures.instance().failure(info, shouldEndWithNode(actualPath, node));
@@ -182,7 +183,7 @@ public class PathAssert extends IterableAssert<PropertyContainer> {
 
     Path actualPath = getActual();
     Node actualEnd = actualPath.endNode();
-    checkNullEnds(actualEnd, node);
+    checkNullEndNodes(actualEnd, node);
 
     if (actualEnd.equals(node)) {
       throw Failures.instance().failure(info, shouldNotEndWithNode(actualPath, node));
@@ -219,16 +220,47 @@ public class PathAssert extends IterableAssert<PropertyContainer> {
 
     Path actualPath = getActual();
     Relationship actualLastRelationship = actualPath.lastRelationship();
-    if (actualLastRelationship == null) {
-      throw new IllegalStateException("The actual last relationship should not be null");
-    }
-
-    if (relationship == null) {
-      throw new IllegalArgumentException("The last relationship to look for should not be null");
-    }
+    checkNullEndRelationships(actualLastRelationship, relationship);
 
     if (!actualLastRelationship.equals(relationship)) {
-      throw Failures.instance().failure(info, shouldHaveLastRelationship(actualPath, relationship));
+      throw Failures.instance().failure(info, shouldEndWithRelationship(actualPath, relationship));
+    }
+    return this;
+  }
+
+  /**
+   * Verifies that the given relationship is not the last one of the actual {@link org.neo4j.graphdb.Path}<br/>
+   * <p>
+   * Example:
+   *
+   * <pre>
+   * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
+   * // [...]
+   * Relationship love = homerNode.createRelationshipTo(doughnutNode, DynamicRelationshipType.withName(&quot;LOVES&quot;));
+   * // PathExpander bellyExpander = [...]
+   * Path homerToDoughnutPath = GraphAlgoFactory.shortestPath(bellyExpander, 2).findSinglePath(homerNode, doughnutNode);
+   *
+   * assertThat(homerToDoughnutPath).doesNotEndWithRelationship(hate);
+   * </pre>
+   *
+   * If the <code>node</code> is {@code null}, an {@link IllegalArgumentException} is thrown.
+   * <p>
+   *
+   * @param relationship the expected last relationship of the actual {@link org.neo4j.graphdb.Path}
+   * @return this {@link org.assertj.neo4j.api.PathAssert} for assertions chaining
+   *
+   * @throws IllegalArgumentException if <code>relationship</code> is {@code null}.
+   * @throws AssertionError if the actual {@link org.neo4j.graphdb.Path} ends with this relationship
+   */
+  public PathAssert doesNotEndWithRelationship(Relationship relationship) {
+    Objects.instance().assertNotNull(info, actual);
+
+    Path actualPath = getActual();
+    Relationship actualLastRelationship = actualPath.lastRelationship();
+    checkNullEndRelationships(actualLastRelationship, relationship);
+
+    if (actualLastRelationship.equals(relationship)) {
+      throw Failures.instance().failure(info, shouldNotEndWithRelationship(actualPath, relationship));
     }
     return this;
   }
@@ -271,7 +303,7 @@ public class PathAssert extends IterableAssert<PropertyContainer> {
     return this;
   }
 
-  private static void checkNullStarts(Node actualStart, Node expectedStart) {
+  private static void checkNullStartNodes(Node actualStart, Node expectedStart) {
     if (actualStart == null) {
       throw new IllegalStateException("The actual start node should not be null");
     }
@@ -281,13 +313,23 @@ public class PathAssert extends IterableAssert<PropertyContainer> {
     }
   }
 
-  private static void checkNullEnds(Node actualEnd, Node expectedEnd) {
+  private static void checkNullEndNodes(Node actualEnd, Node expectedEnd) {
     if (actualEnd == null) {
       throw new IllegalStateException("The actual end node should not be null");
     }
 
     if (expectedEnd == null) {
       throw new IllegalArgumentException("The end node to look for should not be null");
+    }
+  }
+
+  private static void checkNullEndRelationships(Relationship actualEnd, Relationship expectedEnd) {
+    if (actualEnd == null) {
+      throw new IllegalStateException("The actual last relationship should not be null");
+    }
+
+    if (expectedEnd == null) {
+      throw new IllegalArgumentException("The last relationship to look for should not be null");
     }
   }
 }
