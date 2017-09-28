@@ -12,11 +12,13 @@
  */
 package org.assertj.neo4j.api.relationship;
 
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
+import org.neo4j.graphdb.RelationshipType;
 
 import static org.assertj.neo4j.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -33,6 +35,12 @@ public class RelationshipAssert_startsOrEndsWithNode_Test {
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
   private Relationship relationship = mock(Relationship.class);
+
+  @Before
+  public void prepare() throws Exception {
+    when(relationship.getId()).thenReturn(42L);
+    when(relationship.getType()).thenReturn(RelationshipType.withName("SOME_TYPE"));
+  }
 
   @Test
   public void should_pass_if_relationship_starts_with_node() {
@@ -97,6 +105,8 @@ public class RelationshipAssert_startsOrEndsWithNode_Test {
     given_relationship_ends_with_node(mock(Node.class));
 
     expectedException.expect(AssertionError.class);
+    expectedException.expectMessage(
+        String.format("Expecting relationship with ID: 42 and type: SOME_TYPE%nto either start or end with node:"));
 
     assertThat(relationship).startsOrEndsWithNode(mock(Node.class));
   }
