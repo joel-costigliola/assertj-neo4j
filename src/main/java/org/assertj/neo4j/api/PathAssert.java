@@ -23,6 +23,7 @@ import org.neo4j.graphdb.Relationship;
 
 import static org.assertj.neo4j.error.ShouldEndWithNode.shouldEndWithNode;
 import static org.assertj.neo4j.error.ShouldEndWithRelationship.shouldHaveLastRelationship;
+import static org.assertj.neo4j.error.ShouldNotEndWithNode.shouldNotEndWithNode;
 import static org.assertj.neo4j.error.ShouldNotStartWithNode.shouldNotStartWithNode;
 import static org.assertj.neo4j.error.ShouldStartWithNode.shouldStartWithNode;
 
@@ -70,13 +71,7 @@ public class PathAssert extends IterableAssert<PropertyContainer> {
 
     Path actualPath = getActual();
     Node actualStart = actualPath.startNode();
-    if (actualStart == null) {
-      throw new IllegalStateException("The actual start node should not be null");
-    }
-
-    if (node == null) {
-      throw new IllegalArgumentException("The start node to look for should not be null");
-    }
+    checkNullStarts(actualStart, node);
 
     if (!actualStart.equals(node)) {
       throw Failures.instance().failure(info, shouldStartWithNode(actualPath, node));
@@ -114,13 +109,7 @@ public class PathAssert extends IterableAssert<PropertyContainer> {
 
     Path actualPath = getActual();
     Node actualStart = actualPath.startNode();
-    if (actualStart == null) {
-      throw new IllegalStateException("The actual start node should not be null");
-    }
-
-    if (node == null) {
-      throw new IllegalArgumentException("The start node to look for should not be null");
-    }
+    checkNullStarts(actualStart, node);
     if (actualStart.equals(node)) {
       throw Failures.instance().failure(info, shouldNotStartWithNode(actualPath, node));
     }
@@ -156,16 +145,47 @@ public class PathAssert extends IterableAssert<PropertyContainer> {
 
     Path actualPath = getActual();
     Node actualEnd = actualPath.endNode();
-    if (actualEnd == null) {
-      throw new IllegalStateException("The actual end node should not be null");
-    }
-
-    if (node == null) {
-      throw new IllegalArgumentException("The end node to look for should not be null");
-    }
+    checkNullEnds(actualEnd, node);
 
     if (!actualEnd.equals(node)) {
       throw Failures.instance().failure(info, shouldEndWithNode(actualPath, node));
+    }
+    return this;
+  }
+
+  /**
+   * Verifies that the given node is not the last one of the actual {@link org.neo4j.graphdb.Path}<br/>
+   * <p>
+   * Example:
+   *
+   * <pre>
+   * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
+   * // [...]
+   * Relationship love = homerNode.createRelationshipTo(doughnutNode, DynamicRelationshipType.withName(&quot;LOVES&quot;));
+   * // PathExpander bellyExpander = [...]
+   * Path homerToDoughnutPath = GraphAlgoFactory.shortestPath(bellyExpander, 2).findSinglePath(homerNode, doughnutNode);
+   *
+   * assertThat(homerToDoughnutPath).doesNotEndWithNode(saladNode);
+   * </pre>
+   *
+   * If the <code>node</code> is {@code null}, an {@link IllegalArgumentException} is thrown.
+   * <p>
+   *
+   * @param node the expected last node of the actual {@link org.neo4j.graphdb.Path}
+   * @return this {@link org.assertj.neo4j.api.PathAssert} for assertions chaining
+   *
+   * @throws IllegalArgumentException if <code>node</code> is {@code null}.
+   * @throws AssertionError if the actual {@link org.neo4j.graphdb.Path} ends with this node
+   */
+  public PathAssert doesNotEndWithNode(Node node) {
+    Objects.instance().assertNotNull(info, actual);
+
+    Path actualPath = getActual();
+    Node actualEnd = actualPath.endNode();
+    checkNullEnds(actualEnd, node);
+
+    if (actualEnd.equals(node)) {
+      throw Failures.instance().failure(info, shouldNotEndWithNode(actualPath, node));
     }
     return this;
   }
@@ -251,4 +271,23 @@ public class PathAssert extends IterableAssert<PropertyContainer> {
     return this;
   }
 
+  private static void checkNullStarts(Node actualStart, Node expectedStart) {
+    if (actualStart == null) {
+      throw new IllegalStateException("The actual start node should not be null");
+    }
+
+    if (expectedStart == null) {
+      throw new IllegalArgumentException("The start node to look for should not be null");
+    }
+  }
+
+  private static void checkNullEnds(Node actualEnd, Node expectedEnd) {
+    if (actualEnd == null) {
+      throw new IllegalStateException("The actual end node should not be null");
+    }
+
+    if (expectedEnd == null) {
+      throw new IllegalArgumentException("The end node to look for should not be null");
+    }
+  }
 }
