@@ -116,6 +116,15 @@
               </execution>
             </executions>
           </plugin>
+          <plugin>
+            <groupId>com.mycila</groupId>
+            <artifactId>license-maven-plugin</artifactId>
+            <configuration>
+              <properties>
+                <inceptionYear>2013</inceptionYear>
+              </properties>
+            </configuration>
+          </plugin>
         </plugins>
       </build>
     </profile>
