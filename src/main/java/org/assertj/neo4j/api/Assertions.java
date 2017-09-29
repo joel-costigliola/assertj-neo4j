@@ -12,17 +12,15 @@
  */
 package org.assertj.neo4j.api;
 
-
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Path;
 import org.neo4j.graphdb.PropertyContainer;
 import org.neo4j.graphdb.Relationship;
-import org.neo4j.graphdb.ResourceIterator;
 import org.neo4j.graphdb.Result;
 
 /**
  * The entry point for all Neo4j assertions.
- * 
+ *
  * @author Joel Costigliola
  * @author Florent Biville
  */
@@ -45,12 +43,8 @@ public class Assertions {
     return new PathAssert(path);
   }
 
-  public static ResultAssert assertThat(Result executionResult) {
-    return new ResultAssert(executionResult);
-  }
-
-  public static <T> ResourceIteratorAssert assertThat(ResourceIterator<T> resourceIterator) {
-    return new ResourceIteratorAssert(resourceIterator);
+  public static ResultAssert assertThat(Result result) {
+    return new ResultAssert(result);
   }
 
   /**

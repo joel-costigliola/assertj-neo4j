@@ -13,17 +13,16 @@
 package org.assertj.neo4j.api;
 
 import org.junit.Test;
+
 import org.neo4j.graphdb.Result;
 
 import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertSame;
 import static org.assertj.neo4j.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 
 /**
- * Tests for
- * <code>{@link org.assertj.neo4j.api.Assertions#assertThat(org.neo4j.graphdb.Result)}</code>
- * 
+ * Tests for <code>{@link Assertions#assertThat(Result)}</code>
+ *
  * @author Florent Biville
  */
 public class Assertions_assertThat_with_Result_Test {
@@ -32,12 +31,5 @@ public class Assertions_assertThat_with_Result_Test {
   public void should_create_Assert() {
     ResultAssert resultAssert = assertThat(mock(Result.class));
     assertNotNull(resultAssert);
-  }
-
-  @Test
-  public void should_pass_actual() {
-    Result executionResult = mock(Result.class);
-    ResultAssert resultAssert = assertThat(executionResult);
-    assertSame(executionResult, resultAssert.getActual());
   }
 }
