@@ -20,7 +20,9 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
 
+import static org.assertj.neo4j.error.ShouldEndWithNode.shouldEndWithNode;
 import static org.assertj.neo4j.error.ShouldHaveRelationshipType.shouldHaveRelationshipType;
+import static org.assertj.neo4j.error.ShouldNotEndWithNode.shouldNotEndWithNode;
 import static org.assertj.neo4j.error.ShouldNotHaveRelationshipType.shouldNotHaveRelationshipType;
 import static org.assertj.neo4j.error.ShouldNotStartWithNode.shouldNotStartWithNode;
 import static org.assertj.neo4j.error.ShouldStartOrEndWithNode.shouldStartOrEndWithNode;
@@ -144,7 +146,21 @@ public class RelationshipAssert extends PropertyContainerAssert<RelationshipAsse
     checkArgumentNode(node, "The end node to look for should not be null");
 
     if (!actualEndNode.equals(node)) {
-      throw Failures.instance().failure(info, ShouldEndWithNode.shouldEndWithNode(actual, node));
+      throw Failures.instance().failure(info, shouldEndWithNode(actual, node));
+    }
+    return this;
+  }
+
+  public RelationshipAssert doesNotEndWithNode(Node node) {
+    Objects.instance().assertNotNull(info, actual);
+
+    Node actualEndNode = actual.getEndNode();
+
+    checkActualRelationshipNode(actualEndNode, "The actual end node should not be null");
+    checkArgumentNode(node, "The end node to look for should not be null");
+
+    if (actualEndNode.equals(node)) {
+      throw Failures.instance().failure(info, shouldNotEndWithNode(actual, node));
     }
     return this;
   }
