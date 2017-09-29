@@ -15,14 +15,16 @@ package org.assertj.neo4j.api;
 import org.assertj.core.internal.Failures;
 import org.assertj.core.internal.Objects;
 import org.assertj.neo4j.error.ShouldEndWithNode;
-import org.assertj.neo4j.error.ShouldStartWithNode;
+
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
 
 import static org.assertj.neo4j.error.ShouldHaveRelationshipType.shouldHaveRelationshipType;
 import static org.assertj.neo4j.error.ShouldNotHaveRelationshipType.shouldNotHaveRelationshipType;
+import static org.assertj.neo4j.error.ShouldNotStartWithNode.shouldNotStartWithNode;
 import static org.assertj.neo4j.error.ShouldStartOrEndWithNode.shouldStartOrEndWithNode;
+import static org.assertj.neo4j.error.ShouldStartWithNode.shouldStartWithNode;
 
 /**
  * Assertions for Neo4J {@link org.neo4j.graphdb.Relationship}
@@ -70,7 +72,43 @@ public class RelationshipAssert extends PropertyContainerAssert<RelationshipAsse
     checkArgumentNode(node, "The start node to look for should not be null");
 
     if (!actualStartNode.equals(node)) {
-      throw Failures.instance().failure(info, ShouldStartWithNode.shouldStartWithNode(actual, node));
+      throw Failures.instance().failure(info, shouldStartWithNode(actual, node));
+    }
+    return this;
+  }
+
+  /**
+   * Verifies that the actual {@link org.neo4j.graphdb.Relationship} does not start with the given node<br/>
+   * <p>
+   * Example:
+   *
+   * <pre>
+   * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
+   * // [...] creation of homerNode, doughnutNode
+   * Relationship love = homerNode.createRelationshipTo(doughnutNode, DynamicRelationshipType.withName(&quot;LOVES&quot;));
+   *
+   * assertThat(love).doesNotStartWithNode(healthyPersonNode);
+   * </pre>
+   *
+   * If the <code>node</code> is {@code null}, an {@link IllegalArgumentException} is thrown.
+   * <p>
+   *
+   * @param node the expected start node of the actual {@link org.neo4j.graphdb.Relationship}
+   * @return this {@link RelationshipAssert} for assertions chaining
+   *
+   * @throws IllegalArgumentException if <code>node</code> is {@code null}.
+   * @throws AssertionError if the actual {@link org.neo4j.graphdb.Relationship} starts with the given node
+   */
+  public RelationshipAssert doesNotStartWithNode(Node node) {
+    Objects.instance().assertNotNull(info, actual);
+
+    Node actualStartNode = actual.getStartNode();
+
+    checkActualRelationshipNode(actualStartNode, "The actual start node should not be null");
+    checkArgumentNode(node, "The start node to look for should not be null");
+
+    if (actualStartNode.equals(node)) {
+      throw Failures.instance().failure(info, shouldNotStartWithNode(actual, node));
     }
     return this;
   }
