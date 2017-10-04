@@ -24,7 +24,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * Checks <code>{@link org.assertj.neo4j.api.PathAssert#doesNotStartWith(Node)}</code> behavior.
+ * Checks <code>{@link org.assertj.neo4j.api.PathAssert#doesNotStartWithNode(Node)}</code> behavior.
  *
  * @author Florent Biville
  */
@@ -43,7 +43,7 @@ public class PathAssert_doesNotStartWithNode_Test {
     Node node = mock(Node.class);
     given_path_starts_with_node(node);
 
-    assertThat(path).doesNotStartWith(node);
+    assertThat(path).doesNotStartWithNode(node);
   }
 
   @Test
@@ -51,7 +51,7 @@ public class PathAssert_doesNotStartWithNode_Test {
     expectedException.expect(AssertionError.class);
     expectedException.expectMessage("Expecting actual not to be null");
 
-    assertThat((Path) null).doesNotStartWith(mock(Node.class));
+    assertThat((Path) null).doesNotStartWithNode(mock(Node.class));
   }
 
   @Test
@@ -59,7 +59,7 @@ public class PathAssert_doesNotStartWithNode_Test {
     expectedException.expect(IllegalStateException.class);
     expectedException.expectMessage("The actual start node should not be null");
 
-    assertThat(path).doesNotStartWith(mock(Node.class));
+    assertThat(path).doesNotStartWithNode(mock(Node.class));
   }
 
   @Test
@@ -69,14 +69,14 @@ public class PathAssert_doesNotStartWithNode_Test {
     expectedException.expect(IllegalArgumentException.class);
     expectedException.expectMessage("The start node to look for should not be null");
 
-    assertThat(path).doesNotStartWith(null);
+    assertThat(path).doesNotStartWithNode(null);
   }
 
   @Test
   public void should_pass_if_path_does_not_start_with_given_node() {
     given_path_starts_with_node(mock(Node.class));
 
-    assertThat(path).doesNotStartWith(mock(Node.class));
+    assertThat(path).doesNotStartWithNode(mock(Node.class));
   }
 
   private void given_path_starts_with_node(Node node) {

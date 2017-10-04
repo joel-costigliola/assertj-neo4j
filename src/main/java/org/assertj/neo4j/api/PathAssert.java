@@ -93,7 +93,7 @@ public class PathAssert extends IterableAssert<PropertyContainer> {
    * // PathExpander bellyExpander = [...]
    * Path homerToDoughnutPath = GraphAlgoFactory.shortestPath(bellyExpander, 2).findSinglePath(homerNode, doughnutNode);
    *
-   * assertThat(homerToDoughnutPath).doesNotStartWith(healthyPersonNode);
+   * assertThat(homerToDoughnutPath).doesNotStartWithNode(healthyPersonNode);
    * </pre>
    *
    * If the <code>node</code> is {@code null}, an {@link IllegalArgumentException} is thrown.
@@ -105,7 +105,7 @@ public class PathAssert extends IterableAssert<PropertyContainer> {
    * @throws IllegalArgumentException if <code>node</code> is {@code null}.
    * @throws AssertionError if the actual {@link org.neo4j.graphdb.Path} starts with the given node
    */
-  public PathAssert doesNotStartWith(Node node) {
+  public PathAssert doesNotStartWithNode(Node node) {
     Objects.instance().assertNotNull(info, actual);
 
     Path actualPath = getActual();
