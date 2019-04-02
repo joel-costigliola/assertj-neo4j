@@ -48,7 +48,7 @@ public class Assertions {
     return new ResultAssert(result);
   }
 
-  public static <T extends PropertyContainer> IndexAssert assertThat(Index<T> index) { return new IndexAssert(index); }
+  public static <T extends PropertyContainer> IndexAssert<T> assertThat(Index<T> index) { return new IndexAssert(index); }
 
   /**
    * Creates a new </code>{@link Assertions}</code>.
