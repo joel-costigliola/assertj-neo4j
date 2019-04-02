@@ -14,6 +14,9 @@ package org.assertj.neo4j.api;
 
 import org.assertj.core.api.IterableAssert;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.neo4j.graphdb.Result;
@@ -21,6 +24,11 @@ import org.neo4j.graphdb.Result;
 public class ResultAssert extends IterableAssert<Map<String, Object>> {
 
   public ResultAssert(Result result) {
-    super(result);
+    super(convertToIterable(result));
+  }
+  private static Iterable<Map<String, Object>> convertToIterable (Iterator<Map<String, Object>> iterator) {
+    List<Map<String, Object>> result = new ArrayList<>();
+    iterator.forEachRemaining(result::add);
+    return result;
   }
 }

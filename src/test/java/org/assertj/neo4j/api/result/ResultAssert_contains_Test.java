@@ -14,9 +14,10 @@ package org.assertj.neo4j.api.result;
 
 import org.junit.Test;
 
+import java.util.Collections;
 import java.util.NoSuchElementException;
 
-import org.neo4j.graphdb.Result;
+import org.neo4j.graphdb.*;
 
 import static org.assertj.core.util.Maps.newHashMap;
 import static org.assertj.neo4j.api.Assertions.assertThat;
@@ -34,18 +35,13 @@ public class ResultAssert_contains_Test {
    * This class basically makes sure <code>{@link IterableAssert}</code> is the superclass under the hood
    * while keeping the code coverage high enough.
    */
-
-  private Result result = mock(Result.class);
-
   @Test
   public void should_contain_expected_rows() {
-    when(result.hasNext()).thenReturn(true, false);
-    when(result.next())
-        .thenReturn(newHashMap("foo", "fighters"))
-        .thenThrow(new NoSuchElementException("nope nope nope"));
+    Result result = new TestResult(Collections.singletonList(newHashMap("foo", "fighters")));
 
     assertThat(result)
         .contains(newHashMap("foo", "fighters"))
         .doesNotContain(newHashMap("fou", "rire"));
   }
+
 }
