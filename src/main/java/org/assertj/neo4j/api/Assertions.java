@@ -17,6 +17,7 @@ import org.neo4j.graphdb.Path;
 import org.neo4j.graphdb.PropertyContainer;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.Result;
+import org.neo4j.graphdb.index.Index;
 
 /**
  * The entry point for all Neo4j assertions.
@@ -46,6 +47,8 @@ public class Assertions {
   public static ResultAssert assertThat(Result result) {
     return new ResultAssert(result);
   }
+
+  public static <T extends PropertyContainer> IndexAssert assertThat(Index<T> index) { return new IndexAssert(index); }
 
   /**
    * Creates a new </code>{@link Assertions}</code>.
