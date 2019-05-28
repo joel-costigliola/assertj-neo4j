@@ -27,11 +27,11 @@ public class ShouldHaveLabel extends BasicErrorMessageFactory {
    * @param labelValue the key used in the failed assertion to compare the actual label value to.
    * @return the created {@code ErrorMessageFactory}.
    */
-  public static ErrorMessageFactory shouldHaveLabel(Node actual, String labelValue) {
+  public static ErrorMessageFactory shouldHaveLabel(Object actual, String labelValue) {
     return new ShouldHaveLabel(actual, labelValue, StandardComparisonStrategy.instance());
   }
 
-  private ShouldHaveLabel(Node actual, String other, ComparisonStrategy comparisonStrategy) {
+  private ShouldHaveLabel(Object actual, String other, ComparisonStrategy comparisonStrategy) {
     super("\nExpecting:\n  <%s>\nto have label:\n  <%s>\n%s", actual, other, comparisonStrategy);
   }
 }
