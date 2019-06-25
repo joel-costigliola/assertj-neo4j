@@ -17,6 +17,7 @@ import org.neo4j.graphdb.Path;
 import org.neo4j.graphdb.PropertyContainer;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.Result;
+import org.neo4j.graphdb.schema.ConstraintDefinition;
 import org.neo4j.graphdb.schema.IndexDefinition;
 
 /**
@@ -46,6 +47,10 @@ public class Assertions {
 
   public static ResultAssert assertThat(Result result) {
     return new ResultAssert(result);
+  }
+
+  public static ConstraintDefinitionAssert assertThat(ConstraintDefinition constraintDefinition) {
+    return new ConstraintDefinitionAssert(constraintDefinition);
   }
 
   public static IndexDefinitionAssert assertThat(IndexDefinition indexDefinition) {
