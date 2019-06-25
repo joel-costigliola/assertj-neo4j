@@ -14,7 +14,6 @@ package org.assertj.neo4j.api;
 
 import org.junit.Test;
 import org.neo4j.graphdb.schema.ConstraintDefinition;
-import org.neo4j.graphdb.schema.IndexDefinition;
 
 import static org.assertj.neo4j.api.Assertions.assertThat;
 import static org.junit.Assert.assertNotNull;

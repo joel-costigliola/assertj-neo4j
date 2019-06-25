@@ -14,8 +14,8 @@ package org.assertj.neo4j.error;
 
 import org.assertj.core.error.BasicErrorMessageFactory;
 import org.assertj.core.error.ErrorMessageFactory;
+import org.assertj.core.internal.ComparisonStrategy;
 import org.assertj.core.internal.StandardComparisonStrategy;
-import org.neo4j.graphdb.Node;
 
 public class ShouldNotHaveLabel extends BasicErrorMessageFactory {
 
@@ -26,11 +26,11 @@ public class ShouldNotHaveLabel extends BasicErrorMessageFactory {
    * @param labelValue the key used in the failed assertion to compare the actual label value to.
    * @return the created {@code ErrorMessageFactory}.
    */
-  public static ErrorMessageFactory shouldNotHaveLabel(Node actual, String labelValue) {
-    return new ShouldNotHaveLabel(actual, labelValue);
+  public static ErrorMessageFactory shouldNotHaveLabel(Object actual, String labelValue) {
+    return new ShouldNotHaveLabel(actual, labelValue, StandardComparisonStrategy.instance());
   }
 
-  private ShouldNotHaveLabel(Node actual, String other) {
+  private ShouldNotHaveLabel(Object actual, String other, ComparisonStrategy comparisonStrategy) {
     super("\nExpecting:\n  <%s>\nnot to have label:\n  <%s>\n%s", actual, other, StandardComparisonStrategy.instance());
   }
 }
