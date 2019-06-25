@@ -15,14 +15,14 @@ package org.assertj.neo4j.api;
 import org.junit.Test;
 import org.neo4j.graphdb.Path;
 
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.assertSame;
 import static org.assertj.neo4j.api.Assertions.assertThat;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.mock;
 
 /**
  * Tests for <code>{@link Assertions#assertThat(org.neo4j.graphdb.Path)}</code>
- * 
+ *
  * @author Florent Biville
  */
 public class Assertions_assertThat_with_Path_Test {

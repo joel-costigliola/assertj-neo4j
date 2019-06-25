@@ -14,8 +14,6 @@ package org.assertj.neo4j.api;
 
 import org.assertj.core.internal.Failures;
 import org.assertj.core.internal.Objects;
-import org.assertj.neo4j.error.ShouldEndWithNode;
-
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
@@ -30,7 +28,7 @@ import static org.assertj.neo4j.error.ShouldStartWithNode.shouldStartWithNode;
 
 /**
  * Assertions for Neo4J {@link org.neo4j.graphdb.Relationship}
- * 
+ *
  * @author Florent Biville
  */
 public class RelationshipAssert extends PropertyContainerAssert<RelationshipAssert, Relationship> {
@@ -47,21 +45,21 @@ public class RelationshipAssert extends PropertyContainerAssert<RelationshipAsse
    * Verifies that the actual {@link org.neo4j.graphdb.Relationship} starts with the given node<br/>
    * <p>
    * Example:
-   * 
+   *
    * <pre>
    * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
    * // [...] creation of homerNode, doughnutNode
-   * Relationship love = homerNode.createRelationshipTo(doughnutNode, DynamicRelationshipType.withName(&quot;LOVES&quot;));
-   * 
+   * Relationship love = homerNode.createRelationshipTo(doughnutNode, RelationshipType.withName(&quot;LOVES&quot;));
+   *
    * assertThat(love).startsWithNode(homerNode);
    * </pre>
-   * 
+   *
    * If the <code>node</code> is {@code null}, an {@link IllegalArgumentException} is thrown.
    * <p>
-   * 
+   *
    * @param node the expected start node of the actual {@link org.neo4j.graphdb.Relationship}
    * @return this {@link RelationshipAssert} for assertions chaining
-   * 
+   *
    * @throws IllegalArgumentException if <code>node</code> is {@code null}.
    * @throws AssertionError if the actual {@link org.neo4j.graphdb.Relationship} does not start with the given node
    */
@@ -87,7 +85,7 @@ public class RelationshipAssert extends PropertyContainerAssert<RelationshipAsse
    * <pre>
    * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
    * // [...] creation of homerNode, doughnutNode
-   * Relationship love = homerNode.createRelationshipTo(doughnutNode, DynamicRelationshipType.withName(&quot;LOVES&quot;));
+   * Relationship love = homerNode.createRelationshipTo(doughnutNode, RelationshipType.withName(&quot;LOVES&quot;));
    *
    * assertThat(love).doesNotStartWithNode(healthyPersonNode);
    * </pre>
@@ -119,21 +117,21 @@ public class RelationshipAssert extends PropertyContainerAssert<RelationshipAsse
    * Verifies that the actual {@link org.neo4j.graphdb.Relationship} ends with the given node<br/>
    * <p>
    * Example:
-   * 
+   *
    * <pre>
    * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
    * // [...] creation of homerNode, doughnutNode
-   * Relationship love = homerNode.createRelationshipTo(doughnutNode, DynamicRelationshipType.withName(&quot;LOVES&quot;));
-   * 
+   * Relationship love = homerNode.createRelationshipTo(doughnutNode, RelationshipType.withName(&quot;LOVES&quot;));
+   *
    * assertThat(love).endsWithNode(doughnutNode);
    * </pre>
-   * 
+   *
    * If the <code>node</code> is {@code null}, an {@link IllegalArgumentException} is thrown.
    * <p>
-   * 
+   *
    * @param node the expected end node of the actual {@link org.neo4j.graphdb.Relationship}
    * @return this {@link RelationshipAssert} for assertions chaining
-   * 
+   *
    * @throws IllegalArgumentException if <code>node</code> is {@code null}.
    * @throws AssertionError if the actual {@link org.neo4j.graphdb.Relationship} does not end with the given node
    */
@@ -169,22 +167,22 @@ public class RelationshipAssert extends PropertyContainerAssert<RelationshipAsse
    * Verifies that the actual {@link org.neo4j.graphdb.Relationship} either starts or ends with the given node<br/>
    * <p>
    * Example:
-   * 
+   *
    * <pre>
    * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
    * // [...] creation of homerNode, doughnutNode
-   * Relationship love = homerNode.createRelationshipTo(doughnutNode, DynamicRelationshipType.withName(&quot;LOVES&quot;));
-   * 
+   * Relationship love = homerNode.createRelationshipTo(doughnutNode, RelationshipType.withName(&quot;LOVES&quot;));
+   *
    * assertThat(love).startsOrEndsWithNode(homerNode);
    * assertThat(love).startsOrEndsWithNode(doughnutNode);
    * </pre>
-   * 
+   *
    * If the <code>node</code> is {@code null}, an {@link IllegalArgumentException} is thrown.
    * <p>
-   * 
+   *
    * @param node the expected start or end node of the actual {@link org.neo4j.graphdb.Relationship}
    * @return this {@link RelationshipAssert} for assertions chaining
-   * 
+   *
    * @throws IllegalArgumentException if <code>node</code> is {@code null}.
    * @throws AssertionError if the actual {@link org.neo4j.graphdb.Relationship} does not start neither end with the
    *           given node
@@ -209,22 +207,22 @@ public class RelationshipAssert extends PropertyContainerAssert<RelationshipAsse
    * Verifies that the actual {@link org.neo4j.graphdb.Relationship} has the given type<br/>
    * <p>
    * Example:
-   * 
+   *
    * <pre>
    * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
    * // [...] creation of homerNode, doughnutNode
-   * RelationshipType loveType = DynamicRelationshipType.withName(&quot;LOVES&quot;);
+   * RelationshipType loveType = RelationshipType.withName(&quot;LOVES&quot;);
    * Relationship love = homerNode.createRelationshipTo(doughnutNode, loveType);
-   * 
+   *
    * assertThat(love).hasType(loveType);
    * </pre>
-   * 
+   *
    * If the <code>relationshipType</code> is {@code null}, an {@link IllegalArgumentException} is thrown.
    * <p>
-   * 
+   *
    * @param relationshipType a {@link org.neo4j.graphdb.Relationship} type
    * @return this {@link RelationshipAssert} for assertions chaining
-   * 
+   *
    * @throws IllegalArgumentException if <code>relationshipType</code> is {@code null}.
    * @throws AssertionError if the actual {@link org.neo4j.graphdb.Relationship} does not have the given type
    */
@@ -245,22 +243,22 @@ public class RelationshipAssert extends PropertyContainerAssert<RelationshipAsse
    * Verifies that the actual {@link org.neo4j.graphdb.Relationship} has the given type name<br/>
    * <p>
    * Example:
-   * 
+   *
    * <pre>
    * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
    * // [...] creation of homerNode, doughnutNode
-   * RelationshipType loveType = DynamicRelationshipType.withName(&quot;LOVES&quot;);
+   * RelationshipType loveType = RelationshipType.withName(&quot;LOVES&quot;);
    * Relationship love = homerNode.createRelationshipTo(doughnutNode, loveType);
-   * 
+   *
    * assertThat(love).hasType(&quot;LOVES&quot;);
    * </pre>
-   * 
+   *
    * If the <code>relationshipTypeName</code> is {@code null}, an {@link IllegalArgumentException} is thrown.
    * <p>
-   * 
+   *
    * @param relationshipTypeName a {@link org.neo4j.graphdb.Relationship} type name
    * @return this {@link RelationshipAssert} for assertions chaining
-   * 
+   *
    * @throws IllegalArgumentException if <code>relationshipTypeName</code> is {@code null}.
    * @throws AssertionError if the actual {@link org.neo4j.graphdb.Relationship} does not have the given type name
    */
@@ -284,21 +282,21 @@ public class RelationshipAssert extends PropertyContainerAssert<RelationshipAsse
    * Verifies that the actual {@link org.neo4j.graphdb.Relationship} does not have the given type<br/>
    * <p>
    * Example:
-   * 
+   *
    * <pre>
    * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
    * // [...] creation of homerNode, doughnutNode
-   * Relationship love = homerNode.createRelationshipTo(doughnutNode, DynamicRelationshipType.withName(&quot;LOVES&quot;));
-   * 
-   * assertThat(love).doesNotHaveType(DynamicRelationshipType.withName(&quot;HATES&quot;));
+   * Relationship love = homerNode.createRelationshipTo(doughnutNode, RelationshipType.withName(&quot;LOVES&quot;));
+   *
+   * assertThat(love).doesNotHaveType(RelationshipType.withName(&quot;HATES&quot;));
    * </pre>
-   * 
+   *
    * If the <code>node</code> is {@code null}, an {@link IllegalArgumentException} is thrown.
    * <p>
-   * 
+   *
    * @param relationshipType a {@link org.neo4j.graphdb.Relationship} type
    * @return this {@link RelationshipAssert} for assertions chaining
-   * 
+   *
    * @throws IllegalArgumentException if <code>relationshipType</code> is {@code null}.
    * @throws AssertionError if the actual {@link org.neo4j.graphdb.Relationship} has the given type
    */
@@ -319,21 +317,21 @@ public class RelationshipAssert extends PropertyContainerAssert<RelationshipAsse
    * Verifies that the actual {@link org.neo4j.graphdb.Relationship} does not have the given type name<br/>
    * <p>
    * Example:
-   * 
+   *
    * <pre>
    * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
    * // [...] creation of homerNode, doughnutNode
-   * Relationship love = homerNode.createRelationshipTo(doughnutNode, DynamicRelationshipType.withName(&quot;LOVES&quot;));
-   * 
+   * Relationship love = homerNode.createRelationshipTo(doughnutNode, RelationshipType.withName(&quot;LOVES&quot;));
+   *
    * assertThat(love).doesNotHaveType(&quot;HATES&quot;);
    * </pre>
-   * 
+   *
    * If the <code>node</code> is {@code null}, an {@link IllegalArgumentException} is thrown.
    * <p>
-   * 
+   *
    * @param relationshipTypeName a {@link org.neo4j.graphdb.Relationship} type
    * @return this {@link RelationshipAssert} for assertions chaining
-   * 
+   *
    * @throws IllegalArgumentException if <code>relationshipTypeName</code> is {@code null}.
    * @throws AssertionError if the actual {@link org.neo4j.graphdb.Relationship} has the given type
    */

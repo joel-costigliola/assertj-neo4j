@@ -13,11 +13,10 @@
 package org.assertj.neo4j.api;
 
 import org.junit.Test;
-
 import org.neo4j.graphdb.Result;
 
-import static junit.framework.Assert.assertNotNull;
 import static org.assertj.neo4j.api.Assertions.assertThat;
+import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 
 /**

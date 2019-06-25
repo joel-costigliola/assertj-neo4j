@@ -15,7 +15,6 @@ package org.assertj.neo4j.api.relationship;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.neo4j.graphdb.DynamicRelationshipType;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
 
@@ -40,7 +39,7 @@ public class RelationshipAssert_doesNotHaveType_represented_as_string_Test {
   public void should_pass_if_relationship_has_not_given_type_name() {
     given_relationship_has_type_name("LINKS");
 
-    assertThat(relationship).doesNotHaveType(DynamicRelationshipType.withName("UNLINKS"));
+    assertThat(relationship).doesNotHaveType(RelationshipType.withName("UNLINKS"));
   }
 
   @Test
@@ -79,7 +78,7 @@ public class RelationshipAssert_doesNotHaveType_represented_as_string_Test {
   }
 
   private void given_relationship_has_type_name(String name) {
-    when(relationship.getType()).thenReturn(DynamicRelationshipType.withName(name));
+    when(relationship.getType()).thenReturn(RelationshipType.withName(name));
   }
 
 }

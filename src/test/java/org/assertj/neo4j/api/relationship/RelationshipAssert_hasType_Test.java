@@ -15,7 +15,6 @@ package org.assertj.neo4j.api.relationship;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.neo4j.graphdb.DynamicRelationshipType;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
 
@@ -37,7 +36,7 @@ public class RelationshipAssert_hasType_Test {
 
   @Test
   public void should_pass_if_relationship_has_type() {
-    RelationshipType relationshipType = DynamicRelationshipType.withName("LINKS");
+    RelationshipType relationshipType = RelationshipType.withName("LINKS");
 
     given_relationship_has_type(relationshipType);
 
@@ -77,7 +76,7 @@ public class RelationshipAssert_hasType_Test {
 
     given_relationship_has_type(mock(RelationshipType.class));
 
-    assertThat(relationship).hasType(DynamicRelationshipType.withName("FOLLOWS"));
+    assertThat(relationship).hasType(RelationshipType.withName("FOLLOWS"));
   }
 
   private void given_relationship_has_type(RelationshipType type) {

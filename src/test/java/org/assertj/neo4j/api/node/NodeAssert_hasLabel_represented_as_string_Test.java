@@ -15,7 +15,12 @@ package org.assertj.neo4j.api.node;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.neo4j.graphdb.*;
+import org.neo4j.graphdb.GraphDatabaseService;
+import org.neo4j.graphdb.Label;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.ResourceIterable;
+import org.neo4j.graphdb.ResourceIterator;
+import org.neo4j.graphdb.Transaction;
 
 import static org.assertj.neo4j.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -68,7 +73,7 @@ public class NodeAssert_hasLabel_represented_as_string_Test {
   private void given_node_with_label(String label) {
     ResourceIterable<Label> labels = mock(ResourceIterable.class);
     ResourceIterator<Label> iterator = mock(ResourceIterator.class);
-    when(iterator.next()).thenReturn(DynamicLabel.label(label));
+    when(iterator.next()).thenReturn(Label.label(label));
     when(iterator.hasNext()).thenReturn(true, false);
     when(labels.iterator()).thenReturn(iterator);
     when(node.getLabels()).thenReturn(labels);

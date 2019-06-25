@@ -12,7 +12,12 @@
  */
 package org.assertj.neo4j.api.result;
 
-import org.neo4j.graphdb.*;
+import org.neo4j.graphdb.ExecutionPlanDescription;
+import org.neo4j.graphdb.Notification;
+import org.neo4j.graphdb.QueryExecutionType;
+import org.neo4j.graphdb.QueryStatistics;
+import org.neo4j.graphdb.ResourceIterator;
+import org.neo4j.graphdb.Result;
 
 import java.io.PrintWriter;
 import java.util.Collection;

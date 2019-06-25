@@ -15,7 +15,6 @@ package org.assertj.neo4j.api.path;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-
 import org.neo4j.graphdb.Path;
 import org.neo4j.graphdb.Relationship;
 

@@ -51,7 +51,7 @@ public class PropertyContainerAssert<A extends PropertyContainerAssert<A, T>, T 
    * assertThat(node).hasPropertyKey(&quot;firstName&quot;);
    * 
    * // it also works with relationships:
-   * Relationship relationship = homer.createRelationshipTo(donut, DynamicRelationshipType.withName(&quot;LOVES&quot;));
+   * Relationship relationship = homer.createRelationshipTo(donut, RelationshipType.withName(&quot;LOVES&quot;));
    * relationship.setProperty(&quot;firstName&quot;, &quot;Homer&quot;);
    * 
    * assertThat(relationship).hasPropertyKey(&quot;firstName&quot;);
@@ -123,7 +123,7 @@ public class PropertyContainerAssert<A extends PropertyContainerAssert<A, T>, T 
    * assertThat(node).doesNotHavePropertyKey(&quot;lastName&quot;);
    * 
    * // it also works with relationships:
-   * Relationship relationship = homer.createRelationshipTo(donut, DynamicRelationshipType.withName(&quot;LOVES&quot;));
+   * Relationship relationship = homer.createRelationshipTo(donut, RelationshipType.withName(&quot;LOVES&quot;));
    * relationship.setProperty(&quot;firstName&quot;, &quot;Homer&quot;);
    * 
    * assertThat(relationship).doesNotHavePropertyKey(&quot;lastName&quot;);
@@ -162,7 +162,7 @@ public class PropertyContainerAssert<A extends PropertyContainerAssert<A, T>, T 
    * assertThat(node).doesNotHaveProperty(&quot;lastName&quot;, &quot;Homer&quot;);
    * 
    * // it also works with relationships:
-   * Relationship relationship = homer.createRelationshipTo(donut, DynamicRelationshipType.withName(&quot;LOVES&quot;));
+   * Relationship relationship = homer.createRelationshipTo(donut, RelationshipType.withName(&quot;LOVES&quot;));
    * relationship.setProperty(&quot;firstName&quot;, &quot;Homer&quot;);
    * 
    * assertThat(relationship).doesNotHaveProperty(&quot;firstName&quot;, &quot;Bart&quot;);

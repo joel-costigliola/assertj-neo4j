@@ -15,8 +15,8 @@ package org.assertj.neo4j.api.relationship;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.neo4j.graphdb.DynamicRelationshipType;
 import org.neo4j.graphdb.Relationship;
+import org.neo4j.graphdb.RelationshipType;
 
 import static org.assertj.neo4j.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -77,7 +77,7 @@ public class RelationshipAssert_hasType_represented_as_string_Test {
   }
 
   private void given_relationship_has_type_name(String type) {
-    when(relationship.getType()).thenReturn(DynamicRelationshipType.withName(type));
+    when(relationship.getType()).thenReturn(RelationshipType.withName(type));
   }
 
 }

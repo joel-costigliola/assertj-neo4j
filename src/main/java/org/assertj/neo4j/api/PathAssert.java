@@ -51,7 +51,7 @@ public class PathAssert extends IterableAssert<PropertyContainer> {
    * <pre>
    * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
    * // [...]
-   * Relationship love = homerNode.createRelationshipTo(doughnutNode, DynamicRelationshipType.withName(&quot;LOVES&quot;));
+   * Relationship love = homerNode.createRelationshipTo(doughnutNode, RelationshipType.withName(&quot;LOVES&quot;));
    * // PathExpander bellyExpander = [...]
    * Path homerToDoughnutPath = GraphAlgoFactory.shortestPath(bellyExpander, 2).findSinglePath(homerNode, doughnutNode);
    * 
@@ -88,7 +88,7 @@ public class PathAssert extends IterableAssert<PropertyContainer> {
    * <pre>
    * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
    * // [...]
-   * Relationship love = homerNode.createRelationshipTo(doughnutNode, DynamicRelationshipType.withName(&quot;LOVES&quot;));
+   * Relationship love = homerNode.createRelationshipTo(doughnutNode, RelationshipType.withName(&quot;LOVES&quot;));
    * // [...]
    * // PathExpander bellyExpander = [...]
    * Path homerToDoughnutPath = GraphAlgoFactory.shortestPath(bellyExpander, 2).findSinglePath(homerNode, doughnutNode);
@@ -125,7 +125,7 @@ public class PathAssert extends IterableAssert<PropertyContainer> {
    * <pre>
    * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
    * // [...]
-   * Relationship love = homerNode.createRelationshipTo(doughnutNode, DynamicRelationshipType.withName(&quot;LOVES&quot;));
+   * Relationship love = homerNode.createRelationshipTo(doughnutNode, RelationshipType.withName(&quot;LOVES&quot;));
    * // PathExpander bellyExpander = [...]
    * Path homerToDoughnutPath = GraphAlgoFactory.shortestPath(bellyExpander, 2).findSinglePath(homerNode, doughnutNode);
    * 
@@ -162,7 +162,7 @@ public class PathAssert extends IterableAssert<PropertyContainer> {
    * <pre>
    * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
    * // [...]
-   * Relationship love = homerNode.createRelationshipTo(doughnutNode, DynamicRelationshipType.withName(&quot;LOVES&quot;));
+   * Relationship love = homerNode.createRelationshipTo(doughnutNode, RelationshipType.withName(&quot;LOVES&quot;));
    * // PathExpander bellyExpander = [...]
    * Path homerToDoughnutPath = GraphAlgoFactory.shortestPath(bellyExpander, 2).findSinglePath(homerNode, doughnutNode);
    *
@@ -199,7 +199,7 @@ public class PathAssert extends IterableAssert<PropertyContainer> {
    * <pre>
    * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
    * // [...]
-   * Relationship love = homerNode.createRelationshipTo(doughnutNode, DynamicRelationshipType.withName(&quot;LOVES&quot;));
+   * Relationship love = homerNode.createRelationshipTo(doughnutNode, RelationshipType.withName(&quot;LOVES&quot;));
    * // PathExpander bellyExpander = [...]
    * Path homerToDoughnutPath = GraphAlgoFactory.shortestPath(bellyExpander, 2).findSinglePath(homerNode, doughnutNode);
    * 
@@ -236,7 +236,7 @@ public class PathAssert extends IterableAssert<PropertyContainer> {
    * <pre>
    * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
    * // [...]
-   * Relationship love = homerNode.createRelationshipTo(doughnutNode, DynamicRelationshipType.withName(&quot;LOVES&quot;));
+   * Relationship love = homerNode.createRelationshipTo(doughnutNode, RelationshipType.withName(&quot;LOVES&quot;));
    * // PathExpander bellyExpander = [...]
    * Path homerToDoughnutPath = GraphAlgoFactory.shortestPath(bellyExpander, 2).findSinglePath(homerNode, doughnutNode);
    *
@@ -273,7 +273,7 @@ public class PathAssert extends IterableAssert<PropertyContainer> {
    * <pre>
    * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
    * // [...]
-   * Relationship love = homerNode.createRelationshipTo(doughnutNode, DynamicRelationshipType.withName(&quot;LOVES&quot;));
+   * Relationship love = homerNode.createRelationshipTo(doughnutNode, RelationshipType.withName(&quot;LOVES&quot;));
    * // PathExpander bellyExpander = [...]
    * Path homerToDoughnutPath = GraphAlgoFactory.shortestPath(bellyExpander, 2).findSinglePath(homerNode, doughnutNode);
    * 

@@ -15,7 +15,10 @@ package org.assertj.neo4j.api.node;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
-import org.neo4j.graphdb.*;
+import org.neo4j.graphdb.Label;
+import org.neo4j.graphdb.Node;
+import org.neo4j.graphdb.ResourceIterable;
+import org.neo4j.graphdb.ResourceIterator;
 
 import static org.assertj.neo4j.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -37,7 +40,7 @@ public class NodeAssert_hasLabel_Test {
   public void should_pass_if_node_has_label() {
     given_node_with_label("MAMMAL");
 
-    assertThat(node).hasLabel(DynamicLabel.label("MAMMAL"));
+    assertThat(node).hasLabel(Label.label("MAMMAL"));
   }
 
   @Test
@@ -45,7 +48,7 @@ public class NodeAssert_hasLabel_Test {
     expectedException.expect(AssertionError.class);
     expectedException.expectMessage("Expecting actual not to be null");
 
-    assertThat((Node) null).hasLabel(DynamicLabel.label("LABEL"));
+    assertThat((Node) null).hasLabel(Label.label("LABEL"));
   }
 
   @Test
@@ -61,14 +64,14 @@ public class NodeAssert_hasLabel_Test {
 
     given_node_with_label("REPTILE");
 
-    assertThat(node).hasLabel(DynamicLabel.label("MAMMAL"));
+    assertThat(node).hasLabel(Label.label("MAMMAL"));
   }
 
   @SuppressWarnings("unchecked")
   private void given_node_with_label(String value) {
     ResourceIterable<Label> labels = mock(ResourceIterable.class);
     ResourceIterator<Label> iterator = mock(ResourceIterator.class);
-    Label label = DynamicLabel.label(value);
+    Label label = Label.label(value);
     when(iterator.next()).thenReturn(label);
     when(iterator.hasNext()).thenReturn(true, false);
     when(labels.iterator()).thenReturn(iterator);

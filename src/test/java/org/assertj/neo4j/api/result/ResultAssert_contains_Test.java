@@ -13,16 +13,12 @@
 package org.assertj.neo4j.api.result;
 
 import org.junit.Test;
+import org.neo4j.graphdb.Result;
 
 import java.util.Collections;
-import java.util.NoSuchElementException;
-
-import org.neo4j.graphdb.*;
 
 import static org.assertj.core.util.Maps.newHashMap;
 import static org.assertj.neo4j.api.Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 /**
  * Checks <code>{@link org.assertj.neo4j.api.ResultAssert#contains(Object[])}</code> behavior.

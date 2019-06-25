@@ -17,6 +17,7 @@ import org.assertj.core.internal.Objects;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Transaction;
+
 import static org.assertj.neo4j.error.ShouldHaveLabel.shouldHaveLabel;
 import static org.assertj.neo4j.error.ShouldNotHaveLabel.shouldNotHaveLabel;
 
@@ -43,7 +44,7 @@ public class NodeAssert extends PropertyContainerAssert<NodeAssert, Node> {
    * <pre>
    * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
    * Node node = graph.createNode();
-   * node.addLabel(DynamicLabel.label(&quot;DOUGHNUT_LOVER&quot;));
+   * node.addLabel(Label.label(&quot;DOUGHNUT_LOVER&quot;));
    * 
    * assertThat(node).hasLabel(&quot;DOUGHNUT_LOVER&quot;);
    * </pre>
@@ -77,7 +78,7 @@ public class NodeAssert extends PropertyContainerAssert<NodeAssert, Node> {
    * <pre>
    * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
    * Node node = graph.createNode();
-   * node.addLabel(DynamicLabel.label(&quot;DOUGHNUT_LOVER&quot;));
+   * node.addLabel(Label.label(&quot;DOUGHNUT_LOVER&quot;));
    * 
    * assertThat(node).doesNotHaveLabel(&quot;FRUIT_LOVER&quot;);
    * </pre>
@@ -111,7 +112,7 @@ public class NodeAssert extends PropertyContainerAssert<NodeAssert, Node> {
    * <pre>
    * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
    * Node node = graph.createNode();
-   * Label doughnutLover = DynamicLabel.label(&quot;DOUGHNUT_LOVER&quot;);
+   * Label doughnutLover = Label.label(&quot;DOUGHNUT_LOVER&quot;);
    * node.addLabel(doughnutLover);
    * 
    * assertThat(node).hasLabel(doughnutLover);
@@ -146,9 +147,9 @@ public class NodeAssert extends PropertyContainerAssert<NodeAssert, Node> {
    * <pre>
    * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
    * Node node = graph.createNode();
-   * node.addLabel(DynamicLabel.label(&quot;DOUGHNUT_LOVER&quot;));
+   * node.addLabel(Label.label(&quot;DOUGHNUT_LOVER&quot;));
    * 
-   * assertThat(node).doesNotHaveLabel(DynamicLabel.label(&quot;FRUIT_LOVER&quot;));
+   * assertThat(node).doesNotHaveLabel(Label.label(&quot;FRUIT_LOVER&quot;));
    * </pre>
    * 
    * If the <code>label</code> is {@code null}, an {@link IllegalArgumentException} is thrown.

@@ -16,7 +16,6 @@ import org.assertj.core.error.BasicErrorMessageFactory;
 import org.assertj.core.error.ErrorMessageFactory;
 import org.assertj.core.internal.ComparisonStrategy;
 import org.assertj.core.internal.StandardComparisonStrategy;
-import org.neo4j.graphdb.Node;
 
 public class ShouldHaveLabel extends BasicErrorMessageFactory {
 

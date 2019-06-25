@@ -24,6 +24,11 @@
     <system>github</system>
     <url>https://github.com/joel-costigliola/assertj-neo4j/issues</url>
   </issueManagement>
+
+  <properties>
+    <maven.compiler.showDeprecation>true</maven.compiler.showDeprecation>
+    <maven.compiler.showWarnings>true</maven.compiler.showWarnings>
+  </properties>
   
   <dependencies>
     <dependency>

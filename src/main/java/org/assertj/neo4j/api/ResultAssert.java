@@ -13,13 +13,12 @@
 package org.assertj.neo4j.api;
 
 import org.assertj.core.api.IterableAssert;
+import org.neo4j.graphdb.Result;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import org.neo4j.graphdb.Result;
 
 public class ResultAssert extends IterableAssert<Map<String, Object>> {
 
