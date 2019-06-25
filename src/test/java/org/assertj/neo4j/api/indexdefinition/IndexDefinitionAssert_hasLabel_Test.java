@@ -43,11 +43,11 @@ public class IndexDefinitionAssert_hasLabel_Test {
   }
 
   @Test
-  public void should_fail_if_index_definition_has_not_expected_label() {
-    given_index_definition_with_label("Captain America");
+  public void should_fail_if_index_definition_is_null(){
     expectedException.expect(AssertionError.class);
+    expectedException.expectMessage("Expecting actual not to be null");
 
-    assertThat(indexDefinition).hasLabel(Label.label("Black Widow"));
+    assertThat((IndexDefinition) null).hasLabel(Label.label("Thor"));
   }
 
   @Test
@@ -56,7 +56,15 @@ public class IndexDefinitionAssert_hasLabel_Test {
     expectedException.expect(IllegalArgumentException.class);
     expectedException.expectMessage("The label to look for should not be null");
 
-    assertThat(indexDefinition).hasLabel(null);
+    assertThat(indexDefinition).hasLabel((Label) null);
+  }
+
+  @Test
+  public void should_fail_if_index_definition_has_not_expected_label() {
+    given_index_definition_with_label("Captain America");
+    expectedException.expect(AssertionError.class);
+
+    assertThat(indexDefinition).hasLabel(Label.label("Black Widow"));
   }
 
   private void given_index_definition_with_label(String value) {
