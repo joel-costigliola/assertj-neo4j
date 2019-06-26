@@ -25,9 +25,12 @@ public class ResultAssert extends IterableAssert<Map<String, Object>> {
   public ResultAssert(Result result) {
     super(convertToIterable(result));
   }
-  private static Iterable<Map<String, Object>> convertToIterable (Iterator<Map<String, Object>> iterator) {
+
+  private static Iterable<Map<String, Object>> convertToIterable(Iterator<Map<String, Object>> iterator) {
     List<Map<String, Object>> result = new ArrayList<>();
-    iterator.forEachRemaining(result::add);
+    for (Iterator<Map<String, Object>> rows = iterator; rows.hasNext(); ) {
+      result.add(rows.next());
+    }
     return result;
   }
 }
