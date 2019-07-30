@@ -38,7 +38,7 @@ public class ConstraintDefinitionAssert_hasLabel_Test {
   }
 
   @Test
-  public void should_fail_if_constraint_definition_has_label() {
+  public void should_fail_if_constraint_definition_has_not_expected_label() {
     when(constraintDefinition.getLabel()).thenReturn(Label.label("Foo"));
     expectedException.expect(AssertionError.class);
 
@@ -70,7 +70,7 @@ public class ConstraintDefinitionAssert_hasLabel_Test {
   }
 
   @Test
-  public void should_fail_if_constraint_definition_has_label_with_string() {
+  public void should_fail_if_constraint_definition_has_not_expected_label_with_string() {
     when(constraintDefinition.getLabel()).thenReturn(Label.label("Foo"));
     expectedException.expect(AssertionError.class);
 

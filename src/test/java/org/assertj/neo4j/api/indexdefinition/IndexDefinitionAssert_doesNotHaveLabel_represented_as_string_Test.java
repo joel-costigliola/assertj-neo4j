@@ -49,7 +49,7 @@ public class IndexDefinitionAssert_doesNotHaveLabel_represented_as_string_Test {
     expectedException.expect(AssertionError.class);
     expectedException.expectMessage("Expecting actual not to be null");
 
-    assertThat((IndexDefinition) null).doesNotHaveLabel(("Thanos"));
+    assertThat((IndexDefinition) null).doesNotHaveLabel("Thanos");
   }
 
   @Test
@@ -61,7 +61,7 @@ public class IndexDefinitionAssert_doesNotHaveLabel_represented_as_string_Test {
 
   @Test
   public void should_fail_if_index_definition_does_have_label() {
-    expectedException.expect((AssertionError.class));
+    expectedException.expect(AssertionError.class);
 
     given_index_definition_with_label("Rocket Raccoon");
 
