@@ -85,7 +85,7 @@ public class IndexDefinitionAssert extends AbstractAssert<IndexDefinitionAssert,
    *    .indexFor(Label.label(&quot;Spiderman&quot;))
    *    .on(&quot;name&quot;).create();
    *
-   * assertThat(node).doesNotHaveLabel(Label.label(&quot;Shuri&quot;));
+   * assertThat(indexDefinition).doesNotHaveLabel(Label.label(&quot;Shuri&quot;));
    * </pre>
    *
    * If the <code>label</code> is {@code null}, an {@link IllegalArgumentException} is thrown.
