@@ -26,11 +26,10 @@ import org.neo4j.graphdb.schema.IndexDefinition;
  * @author Joel Costigliola
  * @author Florent Biville
  */
-public class Assertions {
+public class Assertions implements InstanceOfAssertFactories {
 
-  @SuppressWarnings("unchecked")
-  public static PropertyContainerAssert assertThat(PropertyContainer propertyContainer) {
-    return new PropertyContainerAssert(propertyContainer, PropertyContainerAssert.class);
+  public static <T extends PropertyContainer> PropertyContainerAssert<?, T> assertThat(T propertyContainer) {
+    return new PropertyContainerAssert<>(propertyContainer, PropertyContainerAssert.class);
   }
 
   public static NodeAssert assertThat(Node node) {
