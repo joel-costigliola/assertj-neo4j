@@ -6,7 +6,16 @@ language: java
 install:
   - mvn -q install -DskipTests=true -B -V
 script: mvn clean verify -B -V
+
 jdk:
-   - oraclejdk8
+  - openjdk11
+  - openjdk12
+  - openjdk13
+  - openjdk-ea
+
+matrix:
+  allow_failures:
+    - jdk: openjdk-ea
+
 after_success:
   - bash <(curl -s https://codecov.io/bash)
