@@ -18,14 +18,20 @@ import org.assertj.core.internal.Objects;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.schema.IndexDefinition;
 
+import java.util.Arrays;
+import java.util.List;
+
 import static org.assertj.neo4j.error.ShouldHaveLabel.shouldHaveLabel;
+import static org.assertj.neo4j.error.ShouldHavePropertyKeys.shouldHavePropertyKeys;
 import static org.assertj.neo4j.error.ShouldNotHaveLabel.shouldNotHaveLabel;
+import static org.assertj.neo4j.error.ShouldNotHavePropertyKeys.shouldNotHavePropertyKeys;
 
 /**
  * Assertions for Neo4J {@link IndexDefinition}
  *
  * @author Agathe Vaisse
  * @author Gwenaelle Rispal
+ * @author Rushi Chaudhari
  */
 public class IndexDefinitionAssert extends AbstractAssert<IndexDefinitionAssert, IndexDefinition> {
 
@@ -178,6 +184,155 @@ public class IndexDefinitionAssert extends AbstractAssert<IndexDefinitionAssert,
     }
     if (actual.getLabel().name().equals(labelValue)) {
       throw Failures.instance().failure(info, shouldNotHaveLabel(actual, labelValue));
+    }
+    return this;
+  }
+
+  /**
+   * Verifies that the actual {@link IndexDefinition} has the given set of property keys<br/>
+   * <p>
+   * Example:
+   *
+   * <pre>
+   * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
+   * IndexDefinition indexDefinition = graph.schema()
+   *    .indexFor(Label.label(&quot;Spiderman&quot;))
+   *    .on(&quot;name&quot;,&quot;power&quot).create();
+   *
+   * assertThat(indexDefinition).hasPropertyKeys(&quot;name&quot;,&quot;power&quot;);
+   * </pre>
+   *
+   * If the <code>propertyKeysNames</code> is {@code null}, an {@link IllegalArgumentException} is thrown.
+   * <p>
+   *
+   * @param propertyKeys the list of property keys to look for in the actual {@link IndexDefinition}
+   * @return this {@link IndexDefinitionAssert} for assertions chaining
+   *
+   * @throws IllegalArgumentException if <code>propertyKeysNames</code> is {@code null}.
+   * @throws AssertionError if the actual {@link IndexDefinition} does not contain the given propertyKeys
+   */
+  public IndexDefinitionAssert hasPropertyKeys(String... propertyKeys) {
+    Objects.instance().assertNotNull(info, actual);
+
+    if (propertyKeys == null) {
+      throw new IllegalArgumentException("The property keys to look for should not be null");
+    }
+    return checkPropertyKeyPresence(Arrays.asList(propertyKeys));
+  }
+
+  /**
+   * Verifies that the actual {@link IndexDefinition} has the given set of property keys<br/>
+   * <p>
+   * Example:
+   *
+   * <pre>
+   * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
+   * IndexDefinition indexDefinition = graph.schema()
+   *    .indexFor(Label.label(&quot;Spiderman&quot;))
+   *    .on(&quot;name&quot;,&quot;power&quot).create();
+   *
+   * assertThat(indexDefinition).hasPropertyKeys(Arrays.asList(&quot;name&quot;, &quot;power&quot;));
+   * </pre>
+   *
+   * If the <code>propertyKeys</code> is {@code null}, an {@link IllegalArgumentException} is thrown.
+   * <p>
+   *
+   * @param propertyKeys the list of property keys to look for in the actual {@link IndexDefinition}
+   * @return this {@link IndexDefinitionAssert} for assertions chaining
+   *
+   * @throws IllegalArgumentException if <code>propertyKeys</code> is {@code null}.
+   * @throws AssertionError if the actual {@link IndexDefinition} does not contain the given propertyKeys
+   */
+  public IndexDefinitionAssert hasPropertyKeys(Iterable<String> propertyKeys) {
+    Objects.instance().assertNotNull(info, actual);
+
+    if (propertyKeys == null) {
+      throw new IllegalArgumentException("The property keys to look for should not be null");
+    }
+
+    return checkPropertyKeyPresence(propertyKeys);
+  }
+
+  /**
+   * Verifies that the actual {@link IndexDefinition} does NOT have the given set of property keys<br/>
+   * <p>
+   * Example:
+   *
+   * <pre>
+   * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
+   * IndexDefinition indexDefinition = graph.schema()
+   *    .indexFor(Label.label(&quot;IronMan&quot;))
+   *    .on(&quot;name&quot;,&quot;power&quot).create();
+   *
+   * assertThat(indexDefinition)
+   *    .doesNotHavePropertyKeys(Arrays.asList(&quot;height&quot;, &quot;weight&quot;));
+   * </pre>
+   *
+   * If the <code>propertyKeysNames</code> is {@code null}, an {@link IllegalArgumentException} is thrown.
+   * <p>
+   *
+   * @param propertyKeys the list of property keys to look for in the actual {@link IndexDefinition}
+   * @return this {@link IndexDefinitionAssert} for assertions chaining
+   *
+   * @throws IllegalArgumentException if <code>propertyKeysNames</code> is {@code null}.
+   * @throws AssertionError if the actual {@link IndexDefinition} does contain the given propertyKeys
+   */
+  public IndexDefinitionAssert doesNotHavePropertyKeys(String... propertyKeys) {
+    Objects.instance().assertNotNull(info, actual);
+
+    if (propertyKeys == null) {
+      throw new IllegalArgumentException("The property keys to look for should not be null");
+    }
+
+    return checkPropertyKeyAbsence(Arrays.asList(propertyKeys));
+  }
+
+  /**
+   * Verifies that the actual {@link IndexDefinition} does NOT have the given set of property keys<br/>
+   * <p>
+   * Example:
+   *
+   * <pre>
+   * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
+   * IndexDefinition indexDefinition = graph.schema()
+   *    .indexFor(Label.label(&quot;IronMan&quot;))
+   *    .on(&quot;name&quot;,&quot;power&quot).create();
+   *
+   * assertThat(indexDefinition)
+   *    .doesNotHavePropertyKeys(Arrays.asList(&quot;height&quot;, &quot;weight&quot;));
+   * </pre>
+   *
+   * If the <code>propertyKeys</code> is {@code null}, an {@link IllegalArgumentException} is thrown.
+   * <p>
+   *
+   * @param propertyKeys the list of property keys to look for in the actual {@link IndexDefinition}
+   * @return this {@link IndexDefinitionAssert} for assertions chaining
+   *
+   * @throws IllegalArgumentException if <code>propertyKeys</code> is {@code null}.
+   * @throws AssertionError if the actual {@link IndexDefinition} does contain the given propertyKeys
+   */
+  public IndexDefinitionAssert doesNotHavePropertyKeys(Iterable<String> propertyKeys) {
+    Objects.instance().assertNotNull(info, actual);
+
+    if (propertyKeys == null) {
+      throw new IllegalArgumentException("The property keys to look for should not be null");
+    }
+
+    return checkPropertyKeyAbsence(propertyKeys);
+  }
+
+  private IndexDefinitionAssert checkPropertyKeyPresence(Iterable<String> propertyKeys) {
+    List<String> missingPropertyKeys = Iterables.difference(propertyKeys, actual.getPropertyKeys());
+    if (missingPropertyKeys.size() > 0) {
+      throw Failures.instance().failure(info, shouldHavePropertyKeys(actual, propertyKeys, missingPropertyKeys));
+    }
+    return this;
+  }
+
+  private IndexDefinitionAssert checkPropertyKeyAbsence(Iterable<String> propertyKeys) {
+    List<String> commonPropertyKeys = Iterables.intersection(propertyKeys, actual.getPropertyKeys());
+    if (commonPropertyKeys.size() > 0) {
+      throw Failures.instance().failure(info, shouldNotHavePropertyKeys(actual, propertyKeys, commonPropertyKeys));
     }
     return this;
   }
