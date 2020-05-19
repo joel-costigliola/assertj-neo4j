@@ -29,10 +29,10 @@ public class ShouldNotEndWithRelationship extends BasicErrorMessageFactory {
    * @return the created {@code ErrorMessageFactory}.
    */
   public static ErrorMessageFactory shouldNotEndWithRelationship(Path path, Relationship lastRelationship) {
-    return new ShouldNotEndWithRelationship(path, lastRelationship, StandardComparisonStrategy.instance());
+    return new ShouldNotEndWithRelationship(path, lastRelationship);
   }
 
-  private ShouldNotEndWithRelationship(Path actual, Relationship other, ComparisonStrategy comparisonStrategy) {
-    super("\nExpecting:\n  <%s>\nto not end with relationship:\n  <%s>\n%s", actual, other, comparisonStrategy);
+  private ShouldNotEndWithRelationship(Path actual, Relationship other) {
+    super("\nExpecting:\n  <%s>\nto not end with relationship:\n  <%s>\n", actual, other);
   }
 }

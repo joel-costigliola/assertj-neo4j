@@ -27,10 +27,10 @@ public class ShouldNotHaveLabel extends BasicErrorMessageFactory {
    * @return the created {@code ErrorMessageFactory}.
    */
   public static ErrorMessageFactory shouldNotHaveLabel(Object actual, String labelValue) {
-    return new ShouldNotHaveLabel(actual, labelValue, StandardComparisonStrategy.instance());
+    return new ShouldNotHaveLabel(actual, labelValue);
   }
 
-  private ShouldNotHaveLabel(Object actual, String other, ComparisonStrategy comparisonStrategy) {
-    super("\nExpecting:\n  <%s>\nnot to have label:\n  <%s>\n%s", actual, other, StandardComparisonStrategy.instance());
+  private ShouldNotHaveLabel(Object actual, String other) {
+    super("\nExpecting:\n  <%s>\nnot to have label:\n  <%s>\n", actual, other);
   }
 }

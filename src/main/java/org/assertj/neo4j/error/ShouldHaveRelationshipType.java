@@ -31,7 +31,7 @@ public class ShouldHaveRelationshipType extends BasicErrorMessageFactory {
   }
 
   private ShouldHaveRelationshipType(Object actual, String other) {
-    super("\nExpecting:\n  <%s>\nto have relationship type:\n  <%s>\n%s", actual, other, StandardComparisonStrategy.instance());
+    super("\nExpecting:\n  <%s>\nto have relationship type:\n  <%s>\n", actual, other);
   }
 
 }

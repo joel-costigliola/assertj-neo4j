@@ -44,6 +44,6 @@ public class ShouldNotStartWithNode extends BasicErrorMessageFactory {
   }
 
   private ShouldNotStartWithNode(Object actual, Node other) {
-    super("\nExpecting:\n  <%s>\nto not start with node:\n  <%s>\n%s", actual, other, StandardComparisonStrategy.instance());
+    super("\nExpecting:\n  <%s>\nto not start with node:\n  <%s>\n", actual, other);
   }
 }

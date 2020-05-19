@@ -30,7 +30,7 @@ public class ShouldEndWithNode extends BasicErrorMessageFactory {
    * @return the created {@code ErrorMessageFactory}.
    */
   public static ErrorMessageFactory shouldEndWithNode(Relationship actual, Node endNode) {
-    return new ShouldEndWithNode(actual, endNode, StandardComparisonStrategy.instance());
+    return new ShouldEndWithNode(actual, endNode);
   }
 
   /**
@@ -41,10 +41,10 @@ public class ShouldEndWithNode extends BasicErrorMessageFactory {
    * @return the created {@code ErrorMessageFactory}.
    */
   public static ErrorMessageFactory shouldEndWithNode(Path actual, Node endNode) {
-    return new ShouldEndWithNode(actual, endNode, StandardComparisonStrategy.instance());
+    return new ShouldEndWithNode(actual, endNode);
   }
 
-  private ShouldEndWithNode(Object actual, Node other, ComparisonStrategy comparisonStrategy) {
-    super("\nExpecting:\n  <%s>\nto end with node:\n  <%s>\n%s", actual, other, comparisonStrategy);
+  private ShouldEndWithNode(Object actual, Node other) {
+    super("\nExpecting:\n  <%s>\nto end with node:\n  <%s>\n", actual, other);
   }
 }

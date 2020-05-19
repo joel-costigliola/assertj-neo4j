@@ -37,8 +37,8 @@ public class ShouldHavePropertyKeys extends BasicErrorMessageFactory{
 	  private ShouldHavePropertyKeys(Object actual, Iterable<String> expectedPropertyKeys,
                                    Iterable<String> missingPropertyKeys) {
 
-	    super("\nExpecting:\n  <%s>\nto have all of these property keys:\n  <%s>\nbut did not find:\n  <%s>\n%s",
-            actual, expectedPropertyKeys, missingPropertyKeys, StandardComparisonStrategy.instance());
+	    super("\nExpecting:\n  <%s>\nto have all of these property keys:\n  <%s>\nbut did not find:\n  <%s>\n",
+            actual, expectedPropertyKeys, missingPropertyKeys);
 	  }
 
 }

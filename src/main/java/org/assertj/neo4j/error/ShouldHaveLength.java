@@ -31,6 +31,6 @@ public class ShouldHaveLength extends BasicErrorMessageFactory {
   }
 
   private ShouldHaveLength(Path actual, int length) {
-    super("\nExpecting:\n  <%s>\nto have length:\n  <%s>\n%s", actual, length, StandardComparisonStrategy.instance());
+    super("\nExpecting:\n  <%s>\nto have length:\n  <%s>\n", actual, length);
   }
 }

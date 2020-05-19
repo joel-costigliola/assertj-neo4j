@@ -27,10 +27,10 @@ public class ShouldHaveLabel extends BasicErrorMessageFactory {
    * @return the created {@code ErrorMessageFactory}.
    */
   public static ErrorMessageFactory shouldHaveLabel(Object actual, String labelValue) {
-    return new ShouldHaveLabel(actual, labelValue, StandardComparisonStrategy.instance());
+    return new ShouldHaveLabel(actual, labelValue);
   }
 
-  private ShouldHaveLabel(Object actual, String other, ComparisonStrategy comparisonStrategy) {
-    super("\nExpecting:\n  <%s>\nto have label:\n  <%s>\n%s", actual, other, comparisonStrategy);
+  private ShouldHaveLabel(Object actual, String other) {
+    super("\nExpecting:\n  <%s>\nto have label:\n  <%s>\n", actual, other);
   }
 }

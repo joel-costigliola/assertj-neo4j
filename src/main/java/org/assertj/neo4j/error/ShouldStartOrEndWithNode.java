@@ -32,7 +32,7 @@ public class ShouldStartOrEndWithNode extends BasicErrorMessageFactory {
   }
 
   private ShouldStartOrEndWithNode(Relationship actual, Node other) {
-    super("\nExpecting %s\nto either start or end with node:\n  <%s>\n%s", textRepresentation(actual), other,
+    super("\nExpecting %s\nto either start or end with node:\n  <%s>\n", textRepresentation(actual), other,
           StandardComparisonStrategy.instance());
   }
 

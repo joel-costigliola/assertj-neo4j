@@ -31,7 +31,7 @@ public class ShouldHavePropertyKey extends BasicErrorMessageFactory {
   }
 
   private ShouldHavePropertyKey(PropertyContainer actual, String other) {
-    super("\nExpecting:\n  <%s>\nto have property key:\n  <%s>\n%s", actual, other, StandardComparisonStrategy
+    super("\nExpecting:\n  <%s>\nto have property key:\n  <%s>\n", actual, other, StandardComparisonStrategy
         .instance());
   }
 }
