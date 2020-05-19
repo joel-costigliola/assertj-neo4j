@@ -12,17 +12,19 @@
  */
 package org.assertj.neo4j.api;
 
-import static org.assertj.neo4j.error.ShouldHaveLabel.shouldHaveLabel;
-import static org.assertj.neo4j.error.ShouldNotHaveLabel.shouldNotHaveLabel;
-
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.internal.Failures;
 import org.assertj.core.internal.Objects;
+import org.assertj.neo4j.error.ShouldBeOfConstraintType;
 import org.assertj.neo4j.error.ShouldHaveRelationshipType;
 import org.assertj.neo4j.error.ShouldNotHaveRelationshipType;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.schema.ConstraintDefinition;
+import org.neo4j.graphdb.schema.ConstraintType;
+
+import static org.assertj.neo4j.error.ShouldHaveLabel.shouldHaveLabel;
+import static org.assertj.neo4j.error.ShouldNotHaveLabel.shouldNotHaveLabel;
 
 /**
  * Assertions for Neo4J {@link ConstraintDefinition}
@@ -287,6 +289,30 @@ public class ConstraintDefinitionAssert extends AbstractAssert<ConstraintDefinit
 	  }
 	  return this;
   }
-  
-  
+
+  /**
+   * Verifies that the actual {@link ConstraintDefinition} is of the given constraint type<br/>
+   * <p>
+   * If the <code>constraintType</code> is {@code null}, an {@link IllegalArgumentException} is thrown.
+   * <p>
+   *
+   * @param constraintType the constraint type to look for in the actual {@link ConstraintDefinition}
+   * @return this {@link ConstraintDefinitionAssert} for assertions chaining
+   *
+   * @throws IllegalArgumentException if <code>constraintType</code> is {@code null}.
+   * @throws AssertionError if the actual {@link ConstraintDefinition} is not of the the given constraint type
+   */
+  public ConstraintDefinitionAssert isConstraintType(ConstraintType constraintType) {
+    Objects.instance().assertNotNull(info, actual);
+
+    if (constraintType == null) {
+      throw new IllegalArgumentException("The constraint type to look for should not be null");
+    }
+
+    if (!actual.isConstraintType(constraintType)) {
+      throw Failures.instance().failure(info, ShouldBeOfConstraintType.shouldBeOfConstraintType(constraintType));
+    }
+
+    return this;
+  }
 }
