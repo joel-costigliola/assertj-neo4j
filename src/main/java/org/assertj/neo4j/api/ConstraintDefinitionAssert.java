@@ -15,7 +15,7 @@ package org.assertj.neo4j.api;
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.internal.Failures;
 import org.assertj.core.internal.Objects;
-import org.assertj.neo4j.error.ShouldBeOfConstraintType;
+import org.assertj.neo4j.error.ConstraintTypeErrorMessageFactory;
 import org.assertj.neo4j.error.ShouldHaveRelationshipType;
 import org.assertj.neo4j.error.ShouldNotHaveRelationshipType;
 import org.neo4j.graphdb.Label;
@@ -32,6 +32,7 @@ import static org.assertj.neo4j.error.ShouldNotHaveLabel.shouldNotHaveLabel;
  * @author Brice Boutamdja
  * @author Agathe Vaisse
  * @author Bakary Djiba
+ * @author Florent Biville
  */
 public class ConstraintDefinitionAssert extends AbstractAssert<ConstraintDefinitionAssert, ConstraintDefinition> {
 
@@ -310,7 +311,33 @@ public class ConstraintDefinitionAssert extends AbstractAssert<ConstraintDefinit
     }
 
     if (!actual.isConstraintType(constraintType)) {
-      throw Failures.instance().failure(info, ShouldBeOfConstraintType.shouldBeOfConstraintType(constraintType));
+      throw Failures.instance().failure(info, ConstraintTypeErrorMessageFactory.shouldBeOfConstraintType(constraintType));
+    }
+
+    return this;
+  }
+
+  /**
+   * Verifies that the actual {@link ConstraintDefinition} is NOT of the given constraint type<br/>
+   * <p>
+   * If the <code>constraintType</code> is {@code null}, an {@link IllegalArgumentException} is thrown.
+   * <p>
+   *
+   * @param constraintType the constraint type to look for in the actual {@link ConstraintDefinition}
+   * @return this {@link ConstraintDefinitionAssert} for assertions chaining
+   *
+   * @throws IllegalArgumentException if <code>constraintType</code> is {@code null}.
+   * @throws AssertionError if the actual {@link ConstraintDefinition} is of the the given constraint type
+   */
+  public ConstraintDefinitionAssert isNotConstraintType(ConstraintType constraintType) {
+    Objects.instance().assertNotNull(info, actual);
+
+    if (constraintType == null) {
+      throw new IllegalArgumentException("The constraint type to look for should not be null");
+    }
+
+    if (actual.isConstraintType(constraintType)) {
+      throw Failures.instance().failure(info, ConstraintTypeErrorMessageFactory.shouldNotBeOfConstraintType(constraintType));
     }
 
     return this;

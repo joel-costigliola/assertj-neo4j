@@ -15,13 +15,17 @@ package org.assertj.neo4j.error;
 import org.assertj.core.error.BasicErrorMessageFactory;
 import org.neo4j.graphdb.schema.ConstraintType;
 
-public class ShouldBeOfConstraintType extends BasicErrorMessageFactory {
+public class ConstraintTypeErrorMessageFactory extends BasicErrorMessageFactory {
 
-  private ShouldBeOfConstraintType(ConstraintType constraintType) {
-    super("Expecting actual to be of type %s but was not", constraintType);
+  private ConstraintTypeErrorMessageFactory(String template, ConstraintType constraintType) {
+    super(template, constraintType);
   }
 
-  public static ShouldBeOfConstraintType shouldBeOfConstraintType(ConstraintType constraintType) {
-    return new ShouldBeOfConstraintType(constraintType);
+  public static ConstraintTypeErrorMessageFactory shouldBeOfConstraintType(ConstraintType constraintType) {
+    return new ConstraintTypeErrorMessageFactory("Expecting actual to be of type %s but was not", constraintType);
+  }
+
+  public static ConstraintTypeErrorMessageFactory shouldNotBeOfConstraintType(ConstraintType constraintType) {
+    return new ConstraintTypeErrorMessageFactory("Expecting actual to not be of type %s but was", constraintType);
   }
 }
