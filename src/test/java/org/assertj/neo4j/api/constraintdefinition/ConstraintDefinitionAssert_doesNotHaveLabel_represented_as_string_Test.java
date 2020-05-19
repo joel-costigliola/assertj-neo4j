@@ -10,7 +10,7 @@
  *
  * Copyright 2013-2019 the original author or authors.
  */
-package org.assertj.neo4j.api.constraintedefinition;
+package org.assertj.neo4j.api.constraintdefinition;
 
 import org.junit.Rule;
 import org.junit.Test;
