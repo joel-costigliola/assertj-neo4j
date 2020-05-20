@@ -19,19 +19,19 @@ import org.neo4j.graphdb.PropertyContainer;
 
 public class ShouldHavePropertyKey extends BasicErrorMessageFactory {
 
+  private ShouldHavePropertyKey(PropertyContainer actual, String other) {
+    super("\nExpecting:\n  <%s>\nto have property key:\n  <%s>\n", actual, other, StandardComparisonStrategy
+      .instance());
+  }
+
   /**
    * Creates a new </code>{@link ShouldHavePropertyKey}</code>.
-   * 
+   *
    * @param actual the actual value in the failed assertion.
    * @param key the key used in the failed assertion to compare the actual property key to.
    * @return the created {@code ErrorMessageFactory}.
    */
   public static ErrorMessageFactory shouldHavePropertyKey(PropertyContainer actual, String key) {
     return new ShouldHavePropertyKey(actual, key);
-  }
-
-  private ShouldHavePropertyKey(PropertyContainer actual, String other) {
-    super("\nExpecting:\n  <%s>\nto have property key:\n  <%s>\n", actual, other, StandardComparisonStrategy
-        .instance());
   }
 }

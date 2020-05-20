@@ -14,13 +14,16 @@ package org.assertj.neo4j.error;
 
 import org.assertj.core.error.BasicErrorMessageFactory;
 import org.assertj.core.error.ErrorMessageFactory;
-import org.assertj.core.internal.StandardComparisonStrategy;
 
 public class ShouldNotHaveRelationshipType extends BasicErrorMessageFactory {
 
+  private ShouldNotHaveRelationshipType(Object actual, String other) {
+    super("\nExpecting:\n  <%s>\nnot to have relationship type:\n  <%s>\n", actual, other);
+  }
+
   /**
    * Creates a new </code>{@link org.assertj.neo4j.error.ShouldNotHaveRelationshipType}</code>.
-   * 
+   *
    * @param actual the actual value in the failed assertion.
    * @param relationshipType the relationship type name used in the failed assertion to compare the actual relationship
    *          type name to.
@@ -28,9 +31,5 @@ public class ShouldNotHaveRelationshipType extends BasicErrorMessageFactory {
    */
   public static ErrorMessageFactory shouldNotHaveRelationshipType(Object actual, String relationshipType) {
     return new ShouldNotHaveRelationshipType(actual, relationshipType);
-  }
-
-  private ShouldNotHaveRelationshipType(Object actual, String other) {
-    super("\nExpecting:\n  <%s>\nnot to have relationship type:\n  <%s>\n", actual, other);
   }
 }

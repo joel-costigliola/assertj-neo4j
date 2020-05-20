@@ -14,23 +14,22 @@ package org.assertj.neo4j.error;
 
 import org.assertj.core.error.BasicErrorMessageFactory;
 import org.assertj.core.error.ErrorMessageFactory;
-import org.assertj.core.internal.StandardComparisonStrategy;
 import org.neo4j.graphdb.Path;
 
 public class ShouldHaveLength extends BasicErrorMessageFactory {
 
+  private ShouldHaveLength(Path actual, int length) {
+    super("\nExpecting:\n  <%s>\nto have length:\n  <%s>\n", actual, length);
+  }
+
   /**
    * Creates a new </code>{@link org.assertj.neo4j.error.ShouldHaveLength}</code>.
-   * 
+   *
    * @param path the actual value in the failed assertion.
    * @param length the expected path length
    * @return the created {@code ErrorMessageFactory}.
    */
   public static ErrorMessageFactory shouldHaveLength(Path path, int length) {
     return new ShouldHaveLength(path, length);
-  }
-
-  private ShouldHaveLength(Path actual, int length) {
-    super("\nExpecting:\n  <%s>\nto have length:\n  <%s>\n", actual, length);
   }
 }

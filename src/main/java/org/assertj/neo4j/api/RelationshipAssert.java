@@ -37,6 +37,31 @@ public class RelationshipAssert extends PropertyContainerAssert<RelationshipAsse
     super(actual, RelationshipAssert.class);
   }
 
+  private static void checkActualRelationshipNode(Node node, String errorMessage) {
+    if (node == null) {
+      throw new IllegalStateException(errorMessage);
+    }
+  }
+
+  private static void checkArgumentNode(Node node, String errorMessage) {
+    if (node == null) {
+      throw new IllegalArgumentException(errorMessage);
+    }
+  }
+
+  private static void checkTypeNameIsNotNull(RelationshipType actualType) {
+    checkTypeIsNotNull(actualType);
+    if (actualType.name() == null) {
+      throw new IllegalStateException("The actual relationship type name should not be null");
+    }
+  }
+
+  private static void checkTypeIsNotNull(RelationshipType actualType) {
+    if (actualType == null) {
+      throw new IllegalStateException("The actual relationship type should not be null");
+    }
+  }
+
   public Relationship getActual() {
     return actual;
   }
@@ -349,30 +374,5 @@ public class RelationshipAssert extends PropertyContainerAssert<RelationshipAsse
       throw Failures.instance().failure(info, shouldNotHaveRelationshipType(actual, relationshipTypeName));
     }
     return this;
-  }
-
-  private static void checkActualRelationshipNode(Node node, String errorMessage) {
-    if (node == null) {
-      throw new IllegalStateException(errorMessage);
-    }
-  }
-
-  private static void checkArgumentNode(Node node, String errorMessage) {
-    if (node == null) {
-      throw new IllegalArgumentException(errorMessage);
-    }
-  }
-
-  private static void checkTypeNameIsNotNull(RelationshipType actualType) {
-    checkTypeIsNotNull(actualType);
-    if (actualType.name() == null) {
-      throw new IllegalStateException("The actual relationship type name should not be null");
-    }
-  }
-
-  private static void checkTypeIsNotNull(RelationshipType actualType) {
-    if (actualType == null) {
-      throw new IllegalStateException("The actual relationship type should not be null");
-    }
   }
 }

@@ -14,12 +14,15 @@ package org.assertj.neo4j.error;
 
 import org.assertj.core.error.BasicErrorMessageFactory;
 import org.assertj.core.error.ErrorMessageFactory;
-import org.assertj.core.internal.StandardComparisonStrategy;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Path;
 import org.neo4j.graphdb.Relationship;
 
 public class ShouldNotStartWithNode extends BasicErrorMessageFactory {
+
+  private ShouldNotStartWithNode(Object actual, Node other) {
+    super("\nExpecting:\n  <%s>\nto not start with node:\n  <%s>\n", actual, other);
+  }
 
   /**
    * Creates a new </code>{@link ShouldNotStartWithNode}</code>.
@@ -41,9 +44,5 @@ public class ShouldNotStartWithNode extends BasicErrorMessageFactory {
    */
   public static ErrorMessageFactory shouldNotStartWithNode(Path actual, Node startNode) {
     return new ShouldNotStartWithNode(actual, startNode);
-  }
-
-  private ShouldNotStartWithNode(Object actual, Node other) {
-    super("\nExpecting:\n  <%s>\nto not start with node:\n  <%s>\n", actual, other);
   }
 }
