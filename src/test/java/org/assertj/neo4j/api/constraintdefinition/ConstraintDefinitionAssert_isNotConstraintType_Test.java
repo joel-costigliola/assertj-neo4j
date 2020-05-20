@@ -12,6 +12,8 @@
  */
 package org.assertj.neo4j.api.constraintdefinition;
 
+import org.assertj.neo4j.api.ConstraintDefinitionAssert;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -19,7 +21,7 @@ import org.neo4j.graphdb.schema.ConstraintDefinition;
 import org.neo4j.graphdb.schema.ConstraintType;
 
 import static org.assertj.neo4j.api.Assertions.assertThat;
-import static org.junit.Assert.assertNotNull;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -33,7 +35,8 @@ public class ConstraintDefinitionAssert_isNotConstraintType_Test {
   public void should_pass_if_constraint_definition_is_not_of_constraint_type() {
     when(constraintDefinition.isConstraintType(ConstraintType.UNIQUENESS)).thenReturn(false);
 
-    assertNotNull(assertThat(constraintDefinition).isNotConstraintType(ConstraintType.UNIQUENESS));
+    Assert.assertThat(assertThat(constraintDefinition).isNotConstraintType(ConstraintType.UNIQUENESS), instanceOf(
+      ConstraintDefinitionAssert.class));
   }
 
   @Test

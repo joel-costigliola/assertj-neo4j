@@ -12,6 +12,8 @@
  */
 package org.assertj.neo4j.api.indexdefinition;
 
+import org.assertj.neo4j.api.IndexDefinitionAssert;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -19,6 +21,7 @@ import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.schema.IndexDefinition;
 
 import static org.assertj.neo4j.api.Assertions.assertThat;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -32,7 +35,16 @@ public class IndexDefinitionAssert_hasLabel_Test {
   public void should_pass_if_index_definition_has_label() {
     given_index_definition_with_label("Black Widow");
 
-    assertThat(indexDefinition).hasLabel(Label.label("Black Widow"));
+    Assert.assertThat(assertThat(indexDefinition).hasLabel(Label.label("Black Widow")), instanceOf(
+      IndexDefinitionAssert.class));
+  }
+
+  @Test
+  public void should_pass_if_index_definition_has_label_string() {
+    given_index_definition_with_label("Black Widow");
+
+    Assert.assertThat(assertThat(indexDefinition).hasLabel("Black Widow"), instanceOf(
+      IndexDefinitionAssert.class));
   }
 
   @Test
@@ -44,8 +56,15 @@ public class IndexDefinitionAssert_hasLabel_Test {
   }
 
   @Test
-  public void should_fail_if_index_definition_label_is_null() {
-    given_index_definition_with_label("Hulk");
+  public void should_fail_if_index_definition_is_null_with_string() {
+    expectedException.expect(AssertionError.class);
+    expectedException.expectMessage("Expecting actual not to be null");
+
+    assertThat((IndexDefinition) null).hasLabel("Thor");
+  }
+
+  @Test
+  public void should_fail_if_label_is_null() {
     expectedException.expect(IllegalArgumentException.class);
     expectedException.expectMessage("The label to look for should not be null");
 
@@ -53,11 +72,27 @@ public class IndexDefinitionAssert_hasLabel_Test {
   }
 
   @Test
-  public void should_fail_if_index_definition_has_not_expected_label() {
+  public void should_fail_if_label_string_is_null() {
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectMessage("The label to look for should not be null");
+
+    assertThat(indexDefinition).hasLabel((String) null);
+  }
+
+  @Test
+  public void should_fail_if_index_definition_does_not_have_expected_label() {
     given_index_definition_with_label("Captain America");
     expectedException.expect(AssertionError.class);
 
     assertThat(indexDefinition).hasLabel(Label.label("Black Widow"));
+  }
+
+  @Test
+  public void should_fail_if_index_definition_does_not_have_expected_label_string() {
+    given_index_definition_with_label("Captain America");
+    expectedException.expect(AssertionError.class);
+
+    assertThat(indexDefinition).hasLabel("Black Widow");
   }
 
   private void given_index_definition_with_label(String value) {

@@ -12,6 +12,8 @@
  */
 package org.assertj.neo4j.api.path;
 
+import org.assertj.neo4j.api.PathAssert;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -19,6 +21,7 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Path;
 
 import static org.assertj.neo4j.api.Assertions.assertThat;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -33,7 +36,8 @@ public class PathAssert_startsWithNode_Test {
     Node node = mock(Node.class);
     given_path_starts_with_node(node);
 
-    assertThat(path).startsWithNode(node);
+    Assert.assertThat(assertThat(path).startsWithNode(node), instanceOf(
+      PathAssert.class));
   }
 
   @Test

@@ -12,6 +12,8 @@
  */
 package org.assertj.neo4j.api.relationship;
 
+import org.assertj.neo4j.api.RelationshipAssert;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -19,6 +21,7 @@ import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
 
 import static org.assertj.neo4j.api.Assertions.assertThat;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -34,7 +37,17 @@ public class RelationshipAssert_hasType_Test {
 
     given_relationship_has_type(relationshipType);
 
-    assertThat(relationship).hasType(relationshipType);
+    Assert.assertThat(assertThat(relationship).hasType(relationshipType), instanceOf(
+      RelationshipAssert.class));
+  }
+  @Test
+  public void should_pass_if_relationship_has_type_string() {
+    RelationshipType relationshipType = RelationshipType.withName("LINKS");
+
+    given_relationship_has_type(relationshipType);
+
+    Assert.assertThat(assertThat(relationship).hasType(relationshipType.name()), instanceOf(
+      RelationshipAssert.class));
   }
 
   @Test
@@ -46,11 +59,27 @@ public class RelationshipAssert_hasType_Test {
   }
 
   @Test
-  public void should_fail_if_relationship_type_is_null() {
+  public void should_fail_if_relationship_is_null_with_string() {
+    expectedException.expect(AssertionError.class);
+    expectedException.expectMessage("Expecting actual not to be null");
+
+    assertThat((Relationship) null).hasType("some name");
+  }
+
+  @Test
+  public void should_fail_if_actual_relationship_type_is_null() {
     expectedException.expect(IllegalStateException.class);
     expectedException.expectMessage("The actual relationship type should not be null");
 
     assertThat(relationship).hasType(mock(RelationshipType.class));
+  }
+
+  @Test
+  public void should_fail_if_actual_relationship_type_string_is_null() {
+    expectedException.expect(IllegalStateException.class);
+    expectedException.expectMessage("The actual relationship type should not be null");
+
+    assertThat(relationship).hasType("some type");
   }
 
   @Test
@@ -64,13 +93,13 @@ public class RelationshipAssert_hasType_Test {
   }
 
   @Test
-  public void should_fail_if_relationship_does_not_have_any_type_name() {
-    expectedException.expect(IllegalStateException.class);
-    expectedException.expectMessage("The actual relationship type name should not be null");
+  public void should_fail_if_given_relationship_type_string_is_null() {
+    expectedException.expect(IllegalArgumentException.class);
+    expectedException.expectMessage("The relationship type to look for should not be null");
 
     given_relationship_has_type(mock(RelationshipType.class));
 
-    assertThat(relationship).hasType(RelationshipType.withName("FOLLOWS"));
+    assertThat(relationship).hasType((String) null);
   }
 
   private void given_relationship_has_type(RelationshipType type) {

@@ -12,12 +12,15 @@
  */
 package org.assertj.neo4j.api.propertycontainer;
 
+import org.assertj.neo4j.api.PropertyContainerAssert;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.neo4j.graphdb.PropertyContainer;
 
 import static org.assertj.neo4j.api.Assertions.assertThat;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.rules.ExpectedException.none;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -32,21 +35,24 @@ public class PropertyContainerAssert_doesNotHaveProperty_Test {
   public void should_pass_when_property_container_does_not_have_key_and_value() {
     given_property_container_with_key_and_value("firstName", "Emil Eifrem");
 
-    assertThat(propertyContainer).doesNotHaveProperty("name", "Peter Neubauer");
+    Assert.assertThat(assertThat(propertyContainer).doesNotHaveProperty("name", "Peter Neubauer"), instanceOf(
+      PropertyContainerAssert.class));
   }
 
   @Test
   public void should_pass_when_property_container_has_key_but_NOT_value() {
     given_property_container_with_key_and_value("name", "Emil Eifrem");
 
-    assertThat(propertyContainer).doesNotHaveProperty("name", "Peter Neubauer");
+    Assert.assertThat(assertThat(propertyContainer).doesNotHaveProperty("name", "Peter Neubauer"), instanceOf(
+      PropertyContainerAssert.class));
   }
 
   @Test
   public void should_pass_when_property_container_has_value_but_NOT_key() {
     given_property_container_with_key_and_value("name", "Emil Eifrem");
 
-    assertThat(propertyContainer).doesNotHaveProperty("firstName", "Emil Eifrem");
+    Assert.assertThat(assertThat(propertyContainer).doesNotHaveProperty("firstName", "Emil Eifrem"), instanceOf(
+      PropertyContainerAssert.class));
   }
 
   @Test

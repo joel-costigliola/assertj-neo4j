@@ -12,6 +12,8 @@
  */
 package org.assertj.neo4j.api.relationship;
 
+import org.assertj.neo4j.api.RelationshipAssert;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -21,6 +23,7 @@ import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.RelationshipType;
 
 import static org.assertj.neo4j.api.Assertions.assertThat;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -31,7 +34,7 @@ public class RelationshipAssert_startsOrEndsWithNode_Test {
   public ExpectedException expectedException = ExpectedException.none();
 
   @Before
-  public void prepare() throws Exception {
+  public void prepare() {
     when(relationship.getId()).thenReturn(42L);
     when(relationship.getType()).thenReturn(RelationshipType.withName("SOME_TYPE"));
   }
@@ -42,7 +45,8 @@ public class RelationshipAssert_startsOrEndsWithNode_Test {
     given_relationship_starts_with_node(node);
     given_relationship_ends_with_node(mock(Node.class));
 
-    assertThat(relationship).startsOrEndsWithNode(node);
+    Assert.assertThat(assertThat(relationship).startsOrEndsWithNode(node), instanceOf(
+      RelationshipAssert.class));
   }
 
   @Test
@@ -51,7 +55,8 @@ public class RelationshipAssert_startsOrEndsWithNode_Test {
     given_relationship_starts_with_node(mock(Node.class));
     given_relationship_ends_with_node(node);
 
-    assertThat(relationship).startsOrEndsWithNode(node);
+    Assert.assertThat(assertThat(relationship).startsOrEndsWithNode(node), instanceOf(
+      RelationshipAssert.class));
   }
 
   @Test

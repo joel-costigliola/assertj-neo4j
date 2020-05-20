@@ -12,6 +12,8 @@
  */
 package org.assertj.neo4j.api.constraintdefinition;
 
+import org.assertj.neo4j.api.ConstraintDefinitionAssert;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -19,7 +21,7 @@ import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.schema.ConstraintDefinition;
 
 import static org.assertj.neo4j.api.Assertions.assertThat;
-import static org.junit.Assert.assertNotNull;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -34,7 +36,8 @@ public class ConstraintDefinitionAssert_hasRelationshipType_Test {
     RelationshipType relationshipType = RelationshipType.withName("Foo");
     when(constraintDefinition.getRelationshipType()).thenReturn(relationshipType);
 
-    assertNotNull(assertThat(constraintDefinition).hasRelationshipType(relationshipType));
+    Assert.assertThat(assertThat(constraintDefinition).hasRelationshipType(relationshipType), instanceOf(
+      ConstraintDefinitionAssert.class));
   }
 
   @Test
@@ -66,7 +69,8 @@ public class ConstraintDefinitionAssert_hasRelationshipType_Test {
   public void should_pass_if_constraint_definition_has_relationship_type_with_name() {
     when(constraintDefinition.getRelationshipType()).thenReturn(RelationshipType.withName("Foo"));
 
-    assertNotNull(assertThat(constraintDefinition).hasRelationshipType("Foo"));
+    Assert.assertThat(assertThat(constraintDefinition).hasRelationshipType("Foo"), instanceOf(
+      ConstraintDefinitionAssert.class));
   }
 
   @Test

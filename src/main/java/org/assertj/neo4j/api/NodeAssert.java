@@ -174,14 +174,8 @@ public class NodeAssert extends PropertyContainerAssert<NodeAssert, Node> {
   }
 
   private boolean hasFoundLabel(String labelValue) {
-    try (Transaction tx = actual.getGraphDatabase().beginTx()) {
-      for (Label label : actual.getLabels()) {
-        if (labelValue.equals(label.name())) {
-          return true;
-        }
-      }
-      tx.success();
+    try (Transaction ignored = actual.getGraphDatabase().beginTx()) {
+      return actual.hasLabel(Label.label(labelValue));
     }
-    return false;
   }
 }

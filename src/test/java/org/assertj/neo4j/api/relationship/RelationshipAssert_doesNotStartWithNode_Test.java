@@ -12,6 +12,8 @@
  */
 package org.assertj.neo4j.api.relationship;
 
+import org.assertj.neo4j.api.RelationshipAssert;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -19,6 +21,7 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Relationship;
 
 import static org.assertj.neo4j.api.Assertions.assertThat;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -27,6 +30,14 @@ public class RelationshipAssert_doesNotStartWithNode_Test {
   private final Relationship relationship = mock(Relationship.class);
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
+
+  @Test
+  public void should_pass_if_relationship_does_not_start_with_given_node() {
+    given_relationship_starts_with_node(mock(Node.class));
+
+    Assert.assertThat(assertThat(relationship).doesNotStartWithNode(mock(Node.class)), instanceOf(
+      RelationshipAssert.class));
+  }
 
   @Test
   public void should_fail_if_relationship_starts_with_node() {
@@ -63,13 +74,6 @@ public class RelationshipAssert_doesNotStartWithNode_Test {
     expectedException.expectMessage("The start node to look for should not be null");
 
     assertThat(relationship).doesNotStartWithNode(null);
-  }
-
-  @Test
-  public void should_pass_if_relationship_does_not_start_with_given_node() {
-    given_relationship_starts_with_node(mock(Node.class));
-
-    assertThat(relationship).doesNotStartWithNode(mock(Node.class));
   }
 
   private void given_relationship_starts_with_node(Node node) {
