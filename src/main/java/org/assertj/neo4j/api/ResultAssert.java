@@ -28,8 +28,8 @@ public class ResultAssert extends IterableAssert<Map<String, Object>> {
 
   private static Iterable<Map<String, Object>> convertToIterable(Iterator<Map<String, Object>> iterator) {
     List<Map<String, Object>> result = new ArrayList<>();
-    for (Iterator<Map<String, Object>> rows = iterator; rows.hasNext(); ) {
-      result.add(rows.next());
+    while (iterator.hasNext()) {
+      result.add(iterator.next());
     }
     return result;
   }

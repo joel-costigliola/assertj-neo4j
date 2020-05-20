@@ -20,17 +20,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.mock;
 
-/**
- * Tests for <code>{@link org.assertj.neo4j.api.Assertions#assertThat(org.neo4j.graphdb.Node)}</code>
- * 
- * @author Florent Biville
- */
 public class Assertions_assertThat_with_Node_Test {
 
   @Test
   public void should_create_Assert() {
-    NodeAssert nodeAssert = assertThat(mock(Node.class));
-    assertNotNull(nodeAssert);
+    assertNotNull(assertThat(mock(Node.class)));
   }
 
   @Test

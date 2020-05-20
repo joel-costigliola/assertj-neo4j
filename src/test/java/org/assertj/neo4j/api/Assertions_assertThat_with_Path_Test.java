@@ -20,23 +20,16 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.mock;
 
-/**
- * Tests for <code>{@link Assertions#assertThat(org.neo4j.graphdb.Path)}</code>
- *
- * @author Florent Biville
- */
 public class Assertions_assertThat_with_Path_Test {
 
   @Test
   public void should_create_Assert() {
-    PathAssert pathAssert = assertThat(mock(Path.class));
-    assertNotNull(pathAssert);
+    assertNotNull(assertThat(mock(Path.class)));
   }
 
   @Test
   public void should_pass_actual() {
     Path path = mock(Path.class);
-    PathAssert pathAssert = assertThat(path);
-    assertSame(path, pathAssert.getActual());
+    assertSame(path, assertThat(path).getActual());
   }
 }

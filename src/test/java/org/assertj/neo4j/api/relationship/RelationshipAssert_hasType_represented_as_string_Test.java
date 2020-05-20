@@ -22,17 +22,11 @@ import static org.assertj.neo4j.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-/**
- * Checks <code>{@link org.assertj.neo4j.api.RelationshipAssert#hasType(org.neo4j.graphdb.RelationshipType)}</code>
- * behavior.
- * 
- * @author Florent Biville
- */
 public class RelationshipAssert_hasType_represented_as_string_Test {
 
+  private final Relationship relationship = mock(Relationship.class);
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
-  private Relationship relationship = mock(Relationship.class);
 
   @Test
   public void should_pass_if_relationship_has_type_name() {

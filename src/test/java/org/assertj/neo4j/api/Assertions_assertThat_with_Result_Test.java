@@ -19,16 +19,10 @@ import static org.assertj.neo4j.api.Assertions.assertThat;
 import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 
-/**
- * Tests for <code>{@link Assertions#assertThat(Result)}</code>
- *
- * @author Florent Biville
- */
 public class Assertions_assertThat_with_Result_Test {
 
   @Test
   public void should_create_Assert() {
-    ResultAssert resultAssert = assertThat(mock(Result.class));
-    assertNotNull(resultAssert);
+    assertNotNull(assertThat(mock(Result.class)));
   }
 }

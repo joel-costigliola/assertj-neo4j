@@ -23,15 +23,13 @@ import static org.mockito.Mockito.mock;
 public class Assertions_assertThat_with_ConstraintDefinition_Test {
 
   @Test
-  public void should_create_Assert(){
-    ConstraintDefinitionAssert constraintDefinitionAssert = Assertions.assertThat(mock(ConstraintDefinition.class));
-    assertNotNull(constraintDefinitionAssert);
+  public void should_create_Assert() {
+    assertNotNull(assertThat(mock(ConstraintDefinition.class)));
   }
 
   @Test
   public void should_pass_actual() {
     ConstraintDefinition constraintDefinition = mock(ConstraintDefinition.class);
-    ConstraintDefinitionAssert constraintDefinitionAssert = assertThat(constraintDefinition);
-    assertSame(constraintDefinition, constraintDefinitionAssert.getActual());
+    assertSame(constraintDefinition, assertThat(constraintDefinition).getActual());
   }
 }

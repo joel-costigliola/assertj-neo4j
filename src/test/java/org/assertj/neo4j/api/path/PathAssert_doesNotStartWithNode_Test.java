@@ -22,16 +22,11 @@ import static org.assertj.neo4j.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-/**
- * Checks <code>{@link org.assertj.neo4j.api.PathAssert#doesNotStartWithNode(Node)}</code> behavior.
- *
- * @author Florent Biville
- */
 public class PathAssert_doesNotStartWithNode_Test {
 
+  private final Path path = mock(Path.class);
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
-  private Path path = mock(Path.class);
 
   @Test
   public void should_fail_if_path_starts_with_node() {

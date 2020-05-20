@@ -22,18 +22,11 @@ import static org.assertj.neo4j.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-/**
- * Checks <code>{@link org.assertj.neo4j.api.IndexDefinitionAssert#hasLabel(Label)}</code> behavior.
- *
- * @author Agathe Vaisse
- * @author Gwenaelle Rispal
- */
 public class IndexDefinitionAssert_hasLabel_Test {
 
+  private final IndexDefinition indexDefinition = mock(IndexDefinition.class);
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
-
-  private IndexDefinition indexDefinition = mock(IndexDefinition.class);
 
   @Test
   public void should_pass_if_index_definition_has_label() {

@@ -20,23 +20,17 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.mock;
 
-/**
- * Tests for <code>{@link Assertions#assertThat(PropertyContainer)}</code>
- * 
- * @author Florent Biville
- */
 public class Assertions_assertThat_with_PropertyContainer_Test {
 
   @Test
   public void should_create_Assert() {
-    PropertyContainerAssert propertyContainerAssert = assertThat(mock(PropertyContainer.class));
+    PropertyContainerAssert<?, ?> propertyContainerAssert = assertThat(mock(PropertyContainer.class));
     assertNotNull(propertyContainerAssert);
   }
 
   @Test
   public void should_pass_actual() {
     PropertyContainer propertyContainer = mock(PropertyContainer.class);
-    PropertyContainerAssert propertyContainerAssert = assertThat(propertyContainer);
-    assertSame(propertyContainer, propertyContainerAssert.getActual());
+    assertSame(propertyContainer, ((PropertyContainerAssert<?, ?>) assertThat(propertyContainer)).getActual());
   }
 }

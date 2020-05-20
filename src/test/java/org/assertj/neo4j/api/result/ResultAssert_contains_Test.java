@@ -16,15 +16,14 @@ import org.junit.Test;
 import org.neo4j.graphdb.Result;
 
 import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import static org.assertj.core.util.Maps.newHashMap;
 import static org.assertj.neo4j.api.Assertions.assertThat;
-
-/**
- * Checks <code>{@link org.assertj.neo4j.api.ResultAssert#contains(Object[])}</code> behavior.
- *
- * @author Florent Biville
- */
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class ResultAssert_contains_Test {
   /*
@@ -33,11 +32,19 @@ public class ResultAssert_contains_Test {
    */
   @Test
   public void should_contain_expected_rows() {
-    Result result = new TestResult(Collections.singletonList(newHashMap("foo", "fighters")));
+    List<Map<String, Object>> actualResults = Collections.singletonList(newHashMap("foo", "fighters"));
+    Result result = result(actualResults);
 
     assertThat(result)
-        .contains(newHashMap("foo", "fighters"))
-        .doesNotContain(newHashMap("fou", "rire"));
+      .contains(newHashMap("foo", "fighters"))
+      .doesNotContain(newHashMap("fou", "rire"));
   }
 
+  private Result result(Iterable<Map<String, Object>> rows) {
+    Iterator<Map<String, Object>> iterator = rows.iterator();
+    Result result = mock(Result.class);
+    when(result.hasNext()).thenAnswer((ignored) -> iterator.hasNext());
+    when(result.next()).thenAnswer((ignored) -> iterator.next());
+    return result;
+  }
 }

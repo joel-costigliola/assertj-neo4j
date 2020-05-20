@@ -12,14 +12,8 @@
  */
 package org.assertj.neo4j.api;
 
-import static java.util.stream.Collectors.toMap;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.from;
-import static org.assertj.core.api.BDDAssertions.then;
-import static org.assertj.core.api.InstanceOfAssertFactories.ARRAY;
-import static org.assertj.core.api.InstanceOfAssertFactories.type;
-import static org.assertj.core.data.MapEntry.entry;
-import static org.assertj.core.util.Sets.newLinkedHashSet;
+import org.assertj.core.api.InstanceOfAssertFactory;
+import org.junit.Test;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -33,21 +27,36 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
-import org.assertj.core.api.InstanceOfAssertFactory;
-import org.junit.Test;
+import static java.util.stream.Collectors.toMap;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.from;
+import static org.assertj.core.api.BDDAssertions.then;
+import static org.assertj.core.api.InstanceOfAssertFactories.ARRAY;
+import static org.assertj.core.api.InstanceOfAssertFactories.type;
+import static org.assertj.core.data.MapEntry.entry;
+import static org.assertj.core.util.Sets.newLinkedHashSet;
 
-/**
- * @author Stefano Cordio
- * @since 2.0.2
- */
 public class Assertions_sync_with_InstanceOfAssertFactories_Test {
 
   private static final Class<?>[] FIELD_FACTORIES_IGNORED_TYPES = {
-      PropertyContainerAssert.class,
+    PropertyContainerAssert.class,
   };
 
   private static final Class<?>[] METHOD_FACTORIES_IGNORED_TYPES = {
   };
+
+  private static Method[] findAssertThatMethods(Class<?>... ignoredReturnTypes) {
+    Set<Class<?>> ignoredReturnTypesSet = newLinkedHashSet(ignoredReturnTypes);
+    return Arrays.stream(Assertions.class.getMethods())
+                 .filter(method -> method.getName().equals("assertThat"))
+                 .filter(method -> !ignoredReturnTypesSet.contains(method.getReturnType()))
+                 .toArray(Method[]::new);
+  }
+
+  // Borrowed from JDK 11
+  private static <T> Predicate<T> not(Predicate<T> target) {
+    return target.negate();
+  }
 
   @Test
   public void each_neo4j_assertion_should_have_an_instance_of_assert_factory_static_field() {
@@ -88,14 +97,6 @@ public class Assertions_sync_with_InstanceOfAssertFactories_Test {
                  .filter(this::hasTypeParameters)
                  .map(this::toParameterAndReturnTypeEntry)
                  .collect(toMap(Entry::getKey, Entry::getValue));
-  }
-
-  private static Method[] findAssertThatMethods(Class<?>... ignoredReturnTypes) {
-    Set<Class<?>> ignoredReturnTypesSet = newLinkedHashSet(ignoredReturnTypes);
-    return Arrays.stream(Assertions.class.getMethods())
-                 .filter(method -> method.getName().equals("assertThat"))
-                 .filter(method -> !ignoredReturnTypesSet.contains(method.getReturnType()))
-                 .toArray(Method[]::new);
   }
 
   private boolean hasTypeParameters(Method method) {
@@ -160,11 +161,6 @@ public class Assertions_sync_with_InstanceOfAssertFactories_Test {
       return normalize(bounds[0]);
     }
     return type;
-  }
-
-  // Borrowed from JDK 11
-  private static <T> Predicate<T> not(Predicate<T> target) {
-    return target.negate();
   }
 
 }

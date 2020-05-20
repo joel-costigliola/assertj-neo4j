@@ -24,17 +24,11 @@ import static org.assertj.neo4j.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-/**
- * Checks <code>{@link org.assertj.neo4j.api.RelationshipAssert#startsOrEndsWithNode(org.neo4j.graphdb.Node)}</code>
- * behavior.
- * 
- * @author Florent Biville
- */
 public class RelationshipAssert_startsOrEndsWithNode_Test {
 
+  private final Relationship relationship = mock(Relationship.class);
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
-  private Relationship relationship = mock(Relationship.class);
 
   @Before
   public void prepare() throws Exception {
@@ -106,7 +100,7 @@ public class RelationshipAssert_startsOrEndsWithNode_Test {
 
     expectedException.expect(AssertionError.class);
     expectedException.expectMessage(
-        String.format("Expecting relationship with ID: 42 and type: SOME_TYPE%nto either start or end with node:"));
+      String.format("Expecting relationship with ID: 42 and type: SOME_TYPE%nto either start or end with node:"));
 
     assertThat(relationship).startsOrEndsWithNode(mock(Node.class));
   }

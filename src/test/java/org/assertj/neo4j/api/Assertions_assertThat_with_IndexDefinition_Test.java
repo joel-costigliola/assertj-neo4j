@@ -20,18 +20,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.mock;
 
-/**
- * Tests for <code>{@link org.assertj.neo4j.api.Assertions#assertThat(org.neo4j.graphdb.Node)}</code>
- *
- * @author Agathe Vaisse
- * @author Gwenaelle Rispal
- */
 public class Assertions_assertThat_with_IndexDefinition_Test {
 
   @Test
   public void should_create_Assert() {
-    IndexDefinitionAssert indexDefinitionAssert = assertThat(mock(IndexDefinition.class));
-    assertNotNull(indexDefinitionAssert);
+    assertNotNull(assertThat(mock(IndexDefinition.class)));
   }
 
   @Test
