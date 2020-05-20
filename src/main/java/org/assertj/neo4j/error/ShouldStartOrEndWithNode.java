@@ -20,9 +20,14 @@ import org.neo4j.graphdb.Relationship;
 
 public class ShouldStartOrEndWithNode extends BasicErrorMessageFactory {
 
+  private ShouldStartOrEndWithNode(Relationship actual, Node other) {
+    super("\nExpecting %s\nto either start or end with node:\n  <%s>\n", textRepresentation(actual), other,
+          StandardComparisonStrategy.instance());
+  }
+
   /**
    * Creates a new </code>{@link ShouldStartOrEndWithNode}</code>.
-   * 
+   *
    * @param actual the actual value in the failed assertion.
    * @param node the node used in the failed assertion to compare the actual label value to.
    * @return the created {@code ErrorMessageFactory}.
@@ -31,14 +36,9 @@ public class ShouldStartOrEndWithNode extends BasicErrorMessageFactory {
     return new ShouldStartOrEndWithNode(actual, node);
   }
 
-  private ShouldStartOrEndWithNode(Relationship actual, Node other) {
-    super("\nExpecting %s\nto either start or end with node:\n  <%s>\n", textRepresentation(actual), other,
-          StandardComparisonStrategy.instance());
-  }
-
   private static CharSequence textRepresentation(Relationship actual) {
     return unquotedString(String.format("relationship with ID: %d and type: %s",
-                         actual.getId(),
-                         actual.getType().name()));
+                                        actual.getId(),
+                                        actual.getType().name()));
   }
 }

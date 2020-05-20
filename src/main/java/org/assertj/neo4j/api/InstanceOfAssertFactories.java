@@ -31,47 +31,45 @@ import org.neo4j.graphdb.schema.IndexDefinition;
 public interface InstanceOfAssertFactories {
 
   /**
+   * {@link InstanceOfAssertFactory} for a {@link Node}.
+   */
+  InstanceOfAssertFactory<Node, NodeAssert> NODE = new InstanceOfAssertFactory<>(Node.class, Assertions::assertThat);
+  /**
+   * {@link InstanceOfAssertFactory} for a {@link Relationship}.
+   */
+  InstanceOfAssertFactory<Relationship, RelationshipAssert> RELATIONSHIP = new InstanceOfAssertFactory<>(Relationship.class,
+                                                                                                         Assertions::assertThat);
+  /**
+   * {@link InstanceOfAssertFactory} for a {@link Path}.
+   */
+  InstanceOfAssertFactory<Path, PathAssert> PATH = new InstanceOfAssertFactory<>(Path.class, Assertions::assertThat);
+  /**
+   * {@link InstanceOfAssertFactory} for a {@link Result}.
+   */
+  InstanceOfAssertFactory<Result, ResultAssert> RESULT = new InstanceOfAssertFactory<>(Result.class, Assertions::assertThat);
+  /**
+   * {@link InstanceOfAssertFactory} for a {@link ConstraintDefinition}.
+   */
+  InstanceOfAssertFactory<ConstraintDefinition, ConstraintDefinitionAssert> CONSTRAINT_DEFINITION = new InstanceOfAssertFactory<>(
+    ConstraintDefinition.class,
+    Assertions::assertThat);
+  /**
+   * {@link InstanceOfAssertFactory} for an {@link IndexDefinition}.
+   */
+  InstanceOfAssertFactory<IndexDefinition, IndexDefinitionAssert> INDEX_DEFINITION = new InstanceOfAssertFactory<>(
+    IndexDefinition.class,
+    Assertions::assertThat);
+
+  /**
    * {@link InstanceOfAssertFactory} for a {@link PropertyContainer}.
    *
    * @param <T>                   the {@code PropertyContainer} type.
    * @param propertyContainerType the property container type instance.
    * @return the factory instance.
    */
-  static <T extends PropertyContainer> InstanceOfAssertFactory<T, PropertyContainerAssert<?, T>> propertyContainer(Class<T> propertyContainerType) {
+  static <T extends PropertyContainer> InstanceOfAssertFactory<T, PropertyContainerAssert<?, T>> propertyContainer(
+    Class<T> propertyContainerType) {
     return new InstanceOfAssertFactory<>(propertyContainerType, Assertions::assertThat);
   }
-
-  /**
-   * {@link InstanceOfAssertFactory} for a {@link Node}.
-   */
-  InstanceOfAssertFactory<Node, NodeAssert> NODE = new InstanceOfAssertFactory<>(Node.class, Assertions::assertThat);
-
-  /**
-   * {@link InstanceOfAssertFactory} for a {@link Relationship}.
-   */
-  InstanceOfAssertFactory<Relationship, RelationshipAssert> RELATIONSHIP = new InstanceOfAssertFactory<>(Relationship.class,
-                                                                                                         Assertions::assertThat);
-
-  /**
-   * {@link InstanceOfAssertFactory} for a {@link Path}.
-   */
-  InstanceOfAssertFactory<Path, PathAssert> PATH = new InstanceOfAssertFactory<>(Path.class, Assertions::assertThat);
-
-  /**
-   * {@link InstanceOfAssertFactory} for a {@link Result}.
-   */
-  InstanceOfAssertFactory<Result, ResultAssert> RESULT = new InstanceOfAssertFactory<>(Result.class, Assertions::assertThat);
-
-  /**
-   * {@link InstanceOfAssertFactory} for a {@link ConstraintDefinition}.
-   */
-  InstanceOfAssertFactory<ConstraintDefinition, ConstraintDefinitionAssert> CONSTRAINT_DEFINITION = new InstanceOfAssertFactory<>(ConstraintDefinition.class,
-                                                                                                                                  Assertions::assertThat);
-
-  /**
-   * {@link InstanceOfAssertFactory} for an {@link IndexDefinition}.
-   */
-  InstanceOfAssertFactory<IndexDefinition, IndexDefinitionAssert> INDEX_DEFINITION = new InstanceOfAssertFactory<>(IndexDefinition.class,
-                                                                                                                   Assertions::assertThat);
 
 }

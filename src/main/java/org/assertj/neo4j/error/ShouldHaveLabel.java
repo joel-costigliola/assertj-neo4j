@@ -14,23 +14,21 @@ package org.assertj.neo4j.error;
 
 import org.assertj.core.error.BasicErrorMessageFactory;
 import org.assertj.core.error.ErrorMessageFactory;
-import org.assertj.core.internal.ComparisonStrategy;
-import org.assertj.core.internal.StandardComparisonStrategy;
 
 public class ShouldHaveLabel extends BasicErrorMessageFactory {
 
+  private ShouldHaveLabel(Object actual, String other) {
+    super("\nExpecting:\n  <%s>\nto have label:\n  <%s>\n", actual, other);
+  }
+
   /**
    * Creates a new </code>{@link ShouldHaveLabel}</code>.
-   * 
+   *
    * @param actual the actual value in the failed assertion.
    * @param labelValue the key used in the failed assertion to compare the actual label value to.
    * @return the created {@code ErrorMessageFactory}.
    */
   public static ErrorMessageFactory shouldHaveLabel(Object actual, String labelValue) {
     return new ShouldHaveLabel(actual, labelValue);
-  }
-
-  private ShouldHaveLabel(Object actual, String other) {
-    super("\nExpecting:\n  <%s>\nto have label:\n  <%s>\n", actual, other);
   }
 }

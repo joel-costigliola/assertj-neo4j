@@ -14,31 +14,28 @@ package org.assertj.neo4j.error;
 
 import org.assertj.core.error.BasicErrorMessageFactory;
 import org.assertj.core.error.ErrorMessageFactory;
-import org.assertj.core.internal.StandardComparisonStrategy;
 
-import java.util.List;
+public class ShouldHavePropertyKeys extends BasicErrorMessageFactory {
 
-public class ShouldHavePropertyKeys extends BasicErrorMessageFactory{
+  private ShouldHavePropertyKeys(Object actual, Iterable<String> expectedPropertyKeys,
+                                 Iterable<String> missingPropertyKeys) {
 
-	  /**
-	   * Creates a new </code>{@link ShouldHavePropertyKeys}</code>.
-	   *
-	   * @param actual the actual value in the failed assertion.
-	   * @param expectedPropertyKeys the property keys expected to be contained in the actual object.
-	   * @param missingPropertyKeys the missing property keys
-     * @return the created {@code ErrorMessageFactory}.
-	   */
+    super("\nExpecting:\n  <%s>\nto have all of these property keys:\n  <%s>\nbut did not find:\n  <%s>\n",
+          actual, expectedPropertyKeys, missingPropertyKeys);
+  }
 
-	  public static ErrorMessageFactory shouldHavePropertyKeys(Object actual, Iterable<String> expectedPropertyKeys,
-                                                             Iterable<String> missingPropertyKeys) {
-	    return new ShouldHavePropertyKeys(actual, expectedPropertyKeys, missingPropertyKeys);
-	  }
+  /**
+   * Creates a new </code>{@link ShouldHavePropertyKeys}</code>.
+   *
+   * @param actual the actual value in the failed assertion.
+   * @param expectedPropertyKeys the property keys expected to be contained in the actual object.
+   * @param missingPropertyKeys the missing property keys
+   * @return the created {@code ErrorMessageFactory}.
+   */
 
-	  private ShouldHavePropertyKeys(Object actual, Iterable<String> expectedPropertyKeys,
-                                   Iterable<String> missingPropertyKeys) {
-
-	    super("\nExpecting:\n  <%s>\nto have all of these property keys:\n  <%s>\nbut did not find:\n  <%s>\n",
-            actual, expectedPropertyKeys, missingPropertyKeys);
-	  }
+  public static ErrorMessageFactory shouldHavePropertyKeys(Object actual, Iterable<String> expectedPropertyKeys,
+                                                           Iterable<String> missingPropertyKeys) {
+    return new ShouldHavePropertyKeys(actual, expectedPropertyKeys, missingPropertyKeys);
+  }
 
 }

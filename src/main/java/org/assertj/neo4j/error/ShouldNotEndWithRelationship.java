@@ -14,12 +14,14 @@ package org.assertj.neo4j.error;
 
 import org.assertj.core.error.BasicErrorMessageFactory;
 import org.assertj.core.error.ErrorMessageFactory;
-import org.assertj.core.internal.ComparisonStrategy;
-import org.assertj.core.internal.StandardComparisonStrategy;
 import org.neo4j.graphdb.Path;
 import org.neo4j.graphdb.Relationship;
 
 public class ShouldNotEndWithRelationship extends BasicErrorMessageFactory {
+
+  private ShouldNotEndWithRelationship(Path actual, Relationship other) {
+    super("\nExpecting:\n  <%s>\nto not end with relationship:\n  <%s>\n", actual, other);
+  }
 
   /**
    * Creates a new </code>{@link ShouldNotEndWithRelationship}</code>.
@@ -30,9 +32,5 @@ public class ShouldNotEndWithRelationship extends BasicErrorMessageFactory {
    */
   public static ErrorMessageFactory shouldNotEndWithRelationship(Path path, Relationship lastRelationship) {
     return new ShouldNotEndWithRelationship(path, lastRelationship);
-  }
-
-  private ShouldNotEndWithRelationship(Path actual, Relationship other) {
-    super("\nExpecting:\n  <%s>\nto not end with relationship:\n  <%s>\n", actual, other);
   }
 }

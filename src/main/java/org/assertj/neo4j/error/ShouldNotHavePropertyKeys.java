@@ -14,24 +14,23 @@ package org.assertj.neo4j.error;
 
 import org.assertj.core.error.BasicErrorMessageFactory;
 import org.assertj.core.error.ErrorMessageFactory;
-import org.assertj.core.internal.StandardComparisonStrategy;
 
+public class ShouldNotHavePropertyKeys extends BasicErrorMessageFactory {
+  private ShouldNotHavePropertyKeys(Object actual, Iterable<String> propertyKeys, Iterable<String> commonPropertyKeys) {
+    super("\nExpecting:\n  <%s>\nto not have any of these property keys:\n  <%s>\nbut found:\n <%s>\n",
+          actual, propertyKeys, commonPropertyKeys);
+  }
 
-public class ShouldNotHavePropertyKeys extends BasicErrorMessageFactory{
-	  /**
-	   * Creates a new </code>{@link ShouldNotHavePropertyKeys}</code>.
-	   * 
-	   * @param actual the actual value in the failed assertion.
-	   * @param propertyKeys the key used in the failed assertion to compare the actual property keys to.
-	   * @return the created {@code ErrorMessageFactory}.
-	   */
+  /**
+   * Creates a new </code>{@link ShouldNotHavePropertyKeys}</code>.
+   *
+   * @param actual the actual value in the failed assertion.
+   * @param propertyKeys the key used in the failed assertion to compare the actual property keys to.
+   * @return the created {@code ErrorMessageFactory}.
+   */
 
-	  public static ErrorMessageFactory shouldNotHavePropertyKeys(Object actual, Iterable<String> propertyKeys, Iterable<String> commonPropertyKeys) {
-	    return new ShouldNotHavePropertyKeys(actual, propertyKeys, commonPropertyKeys);
-	  }
-
-	  private ShouldNotHavePropertyKeys(Object actual, Iterable<String> propertyKeys, Iterable<String> commonPropertyKeys) {
-      super("\nExpecting:\n  <%s>\nto not have any of these property keys:\n  <%s>\nbut found:\n <%s>\n",
-            actual, propertyKeys, commonPropertyKeys);
-	  }
+  public static ErrorMessageFactory shouldNotHavePropertyKeys(Object actual, Iterable<String> propertyKeys,
+                                                              Iterable<String> commonPropertyKeys) {
+    return new ShouldNotHavePropertyKeys(actual, propertyKeys, commonPropertyKeys);
+  }
 }

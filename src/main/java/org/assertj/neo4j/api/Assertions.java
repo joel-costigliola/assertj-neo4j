@@ -28,6 +28,13 @@ import org.neo4j.graphdb.schema.IndexDefinition;
  */
 public class Assertions implements InstanceOfAssertFactories {
 
+  /**
+   * Creates a new </code>{@link Assertions}</code>.
+   */
+  protected Assertions() {
+    // empty
+  }
+
   public static <T extends PropertyContainer> PropertyContainerAssert<?, T> assertThat(T propertyContainer) {
     return new PropertyContainerAssert<>(propertyContainer, PropertyContainerAssert.class);
   }
@@ -54,12 +61,5 @@ public class Assertions implements InstanceOfAssertFactories {
 
   public static IndexDefinitionAssert assertThat(IndexDefinition indexDefinition) {
     return new IndexDefinitionAssert(indexDefinition);
-  }
-
-  /**
-   * Creates a new </code>{@link Assertions}</code>.
-   */
-  protected Assertions() {
-    // empty
   }
 }

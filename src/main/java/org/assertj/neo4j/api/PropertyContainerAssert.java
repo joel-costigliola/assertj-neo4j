@@ -24,14 +24,26 @@ import static org.assertj.neo4j.error.ShouldNotHavePropertyKey.shouldNotHaveProp
 
 /**
  * Assertions for Neo4J {@link PropertyContainer}
- * 
+ *
  * @author Florent Biville
  */
 public class PropertyContainerAssert<A extends PropertyContainerAssert<A, T>, T extends PropertyContainer> extends
-    AbstractAssert<A, T> {
+  AbstractAssert<A, T> {
 
   protected PropertyContainerAssert(T actual, Class<? extends A> assertClass) {
     super(actual, assertClass);
+  }
+
+  private static void checkPropertyValueIsNotNull(Object value) {
+    if (value == null) {
+      throw new IllegalArgumentException("The value to look for should not be null");
+    }
+  }
+
+  private static void checkPropertyKeyIsNotNull(String key) {
+    if (key == null) {
+      throw new IllegalArgumentException("The key to look for should not be null");
+    }
   }
 
   public T getActual() {
@@ -42,27 +54,27 @@ public class PropertyContainerAssert<A extends PropertyContainerAssert<A, T>, T 
    * Verifies that the actual {@link PropertyContainer} has the given property key<br/>
    * <p>
    * Example:
-   * 
+   *
    * <pre>
    * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
    * Node node = graph.createNode();
    * node.setProperty(&quot;firstName&quot;, &quot;Homer&quot;);
-   * 
+   *
    * assertThat(node).hasPropertyKey(&quot;firstName&quot;);
-   * 
+   *
    * // it also works with relationships:
    * Relationship relationship = homer.createRelationshipTo(donut, RelationshipType.withName(&quot;LOVES&quot;));
    * relationship.setProperty(&quot;firstName&quot;, &quot;Homer&quot;);
-   * 
+   *
    * assertThat(relationship).hasPropertyKey(&quot;firstName&quot;);
    * </pre>
-   * 
+   *
    * If the given <code>key</code> is {@code null}, an {@link IllegalArgumentException} is thrown.
    * <p>
-   * 
+   *
    * @param key the property key to look for in the actual {@link PropertyContainer}
    * @return this {@link PropertyContainerAssert} for assertions chaining
-   * 
+   *
    * @throws IllegalArgumentException if <code>key</code> is {@code null}.
    * @throws AssertionError if the actual {@link PropertyContainer} does not have a property with the given key.
    */
@@ -80,22 +92,22 @@ public class PropertyContainerAssert<A extends PropertyContainerAssert<A, T>, T 
    * Verifies that the actual {@link PropertyContainer} has the given property key with the given value<br/>
    * <p>
    * Example:
-   * 
+   *
    * <pre>
    * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
    * ResourceIterator&lt;String&gt; loveLevelIterator = myExecutionEngine.execute(
    *     &quot;MATCH (:CHARACTER)-[l:LOVES]-&gt;(:DOUGHNUT) RETURN l.level AS level&quot;).columnAs(&quot;level&quot;);
-   * 
+   *
    * assertThat(loveLevelIterator).hasSize(3);
    * </pre>
-   * 
+   *
    * If the given <code>size</code> is negative, an {@link IllegalArgumentException} is thrown.
    * <p>
-   * 
+   *
    * @param key the property key to look for in the actual {@link PropertyContainer}
    * @param value the property value to look for in the actual {@link PropertyContainer}
    * @return this {@link PropertyContainerAssert} for assertions chaining
-   * 
+   *
    * @throws IllegalArgumentException if <code>key</code> is {@code null}.
    * @throws IllegalArgumentException if <code>value</code> is {@code null}.
    * @throws AssertionError if the actual {@link PropertyContainer} does not have a property with given key and value.
@@ -114,27 +126,27 @@ public class PropertyContainerAssert<A extends PropertyContainerAssert<A, T>, T 
    * Verifies that the actual {@link PropertyContainer} does not have the given property key<br/>
    * <p>
    * Example:
-   * 
+   *
    * <pre>
    * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
    * Node node = graph.createNode();
    * node.setProperty(&quot;firstName&quot;, &quot;Homer&quot;);
-   * 
+   *
    * assertThat(node).doesNotHavePropertyKey(&quot;lastName&quot;);
-   * 
+   *
    * // it also works with relationships:
    * Relationship relationship = homer.createRelationshipTo(donut, RelationshipType.withName(&quot;LOVES&quot;));
    * relationship.setProperty(&quot;firstName&quot;, &quot;Homer&quot;);
-   * 
+   *
    * assertThat(relationship).doesNotHavePropertyKey(&quot;lastName&quot;);
    * </pre>
-   * 
+   *
    * If the <code>key</code> is {@code null}, an {@link IllegalArgumentException} is thrown.
    * <p>
-   * 
+   *
    * @param key the property key to look for in the actual {@link PropertyContainer}
    * @return this {@link PropertyContainerAssert} for assertions chaining
-   * 
+   *
    * @throws IllegalArgumentException if <code>key</code> is {@code null}.
    * @throws AssertionError if the actual {@link PropertyContainer} has a property with given key.
    */
@@ -152,32 +164,32 @@ public class PropertyContainerAssert<A extends PropertyContainerAssert<A, T>, T 
    * Verifies that the actual {@link PropertyContainer} does not have a property with given key and value.<br/>
    * <p>
    * Example:
-   * 
+   *
    * <pre>
    * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
    * Node node = graph.createNode();
    * node.setProperty(&quot;firstName&quot;, &quot;Homer&quot;);
-   * 
+   *
    * assertThat(node).doesNotHaveProperty(&quot;firstName&quot;, &quot;Bart&quot;);
    * assertThat(node).doesNotHaveProperty(&quot;lastName&quot;, &quot;Homer&quot;);
-   * 
+   *
    * // it also works with relationships:
    * Relationship relationship = homer.createRelationshipTo(donut, RelationshipType.withName(&quot;LOVES&quot;));
    * relationship.setProperty(&quot;firstName&quot;, &quot;Homer&quot;);
-   * 
+   *
    * assertThat(relationship).doesNotHaveProperty(&quot;firstName&quot;, &quot;Bart&quot;);
    * assertThat(relationship).doesNotHaveProperty(&quot;lastName&quot;, &quot;Homer&quot;);
-   * 
+   *
    * </pre>
-   * 
+   *
    * If any of the <code>key</code> or <code>value</code> is {@code null}, an {@link IllegalArgumentException} is
    * thrown.
    * <p>
-   * 
+   *
    * @param key the property key to look for in the actual {@link PropertyContainer}
    * @param value the property value to look for in the actual {@link PropertyContainer}
    * @return this {@link PropertyContainerAssert} for assertions chaining
-   * 
+   *
    * @throws IllegalArgumentException if <code>key</code> is {@code null}.
    * @throws IllegalArgumentException if <code>value</code> is {@code null}.
    * @throws AssertionError if the actual {@link PropertyContainer} has a property with given key and value.
@@ -191,18 +203,6 @@ public class PropertyContainerAssert<A extends PropertyContainerAssert<A, T>, T 
       throw Failures.instance().failure(info, shouldNotHaveProperty(actual, key, value));
     }
     return myself;
-  }
-
-  private static void checkPropertyValueIsNotNull(Object value) {
-    if (value == null) {
-      throw new IllegalArgumentException("The value to look for should not be null");
-    }
-  }
-
-  private static void checkPropertyKeyIsNotNull(String key) {
-    if (key == null) {
-      throw new IllegalArgumentException("The key to look for should not be null");
-    }
   }
 
 }

@@ -123,7 +123,6 @@ public class ConstraintDefinitionAssert extends AbstractAssert<ConstraintDefinit
     return this;
   }
 
-
   /**
    * Verifies that the actual {@link ConstraintDefinition} does NOT have the given label<br/>
    * <p>
@@ -159,7 +158,6 @@ public class ConstraintDefinitionAssert extends AbstractAssert<ConstraintDefinit
     return this;
   }
 
-
   /**
    * Verifies that the actual {@link ConstraintDefinition} has the given label name<br/>
    * <p>
@@ -183,10 +181,10 @@ public class ConstraintDefinitionAssert extends AbstractAssert<ConstraintDefinit
    * @throws IllegalArgumentException if <code>labelValue</code> is {@code null}.
    * @throws AssertionError if the actual {@link ConstraintDefinition} does contain the given label
    */
-  public ConstraintDefinitionAssert doesNotHaveLabel(String labelValue){
+  public ConstraintDefinitionAssert doesNotHaveLabel(String labelValue) {
     Objects.instance().assertNotNull(info, actual);
 
-    if (labelValue == null){
+    if (labelValue == null) {
       throw new IllegalArgumentException("The label value to look for should not be null");
     }
     if (actual.getLabel().name().equals(labelValue)) {
@@ -194,7 +192,7 @@ public class ConstraintDefinitionAssert extends AbstractAssert<ConstraintDefinit
     }
     return this;
   }
-  
+
   /**
    * Verifies that the actual {@link ConstraintDefinition} has the given relationship type<br/>
    * <p>
@@ -207,18 +205,19 @@ public class ConstraintDefinitionAssert extends AbstractAssert<ConstraintDefinit
    * @throws IllegalArgumentException if <code>relationshipType</code> is {@code null}.
    * @throws AssertionError if the actual {@link ConstraintDefinition} does not contain the given relationshipType
    */
-  public ConstraintDefinitionAssert hasRelationshipType(RelationshipType relationshipType){
-	  Objects.instance().assertNotNull(info, actual);
-	  
-	  if (relationshipType == null){
-		  throw new IllegalArgumentException("The relationship type to look for should not be null");
-	  }
-	  if (!actual.getRelationshipType().equals(relationshipType)) {
-		  throw Failures.instance().failure(info, ShouldHaveRelationshipType.shouldHaveRelationshipType(actual.getRelationshipType(), relationshipType.name()));
-	  }
-	  return this;
+  public ConstraintDefinitionAssert hasRelationshipType(RelationshipType relationshipType) {
+    Objects.instance().assertNotNull(info, actual);
+
+    if (relationshipType == null) {
+      throw new IllegalArgumentException("The relationship type to look for should not be null");
+    }
+    if (!actual.getRelationshipType().equals(relationshipType)) {
+      throw Failures.instance().failure(info, ShouldHaveRelationshipType
+        .shouldHaveRelationshipType(actual.getRelationshipType(), relationshipType.name()));
+    }
+    return this;
   }
-  
+
   /**
    * Verifies that the actual {@link ConstraintDefinition} does NOT have the given relationship type<br/>
    * <p>
@@ -231,18 +230,19 @@ public class ConstraintDefinitionAssert extends AbstractAssert<ConstraintDefinit
    * @throws IllegalArgumentException if <code>relationshipType</code> is {@code null}.
    * @throws AssertionError if the actual {@link ConstraintDefinition} contains the given relationshipType
    */
-  public ConstraintDefinitionAssert doesNotHaveRelationshipType(RelationshipType relationshipType){
-	  Objects.instance().assertNotNull(info, actual);
-	  
-	  if (relationshipType == null){
-		  throw new IllegalArgumentException("The relationship type to look for should not be null");
-	  }
-	  if (actual.getRelationshipType().equals(relationshipType)) {
-		  throw Failures.instance().failure(info, ShouldNotHaveRelationshipType.shouldNotHaveRelationshipType(actual.getRelationshipType(), relationshipType.name()));
-	  }
-	  return this;
+  public ConstraintDefinitionAssert doesNotHaveRelationshipType(RelationshipType relationshipType) {
+    Objects.instance().assertNotNull(info, actual);
+
+    if (relationshipType == null) {
+      throw new IllegalArgumentException("The relationship type to look for should not be null");
+    }
+    if (actual.getRelationshipType().equals(relationshipType)) {
+      throw Failures.instance().failure(info, ShouldNotHaveRelationshipType
+        .shouldNotHaveRelationshipType(actual.getRelationshipType(), relationshipType.name()));
+    }
+    return this;
   }
-  
+
   /**
    * Verifies that the actual {@link ConstraintDefinition} has the given relationship type name<br/>
    * <p>
@@ -255,18 +255,19 @@ public class ConstraintDefinitionAssert extends AbstractAssert<ConstraintDefinit
    * @throws IllegalArgumentException if <code>relationshipTypeName</code> is {@code null}.
    * @throws AssertionError if the actual {@link ConstraintDefinition} does not contain the given relationshipType name
    */
-  public ConstraintDefinitionAssert hasRelationshipType(String relationshipTypeName){
-	  Objects.instance().assertNotNull(info, actual);
-	  
-	  if (relationshipTypeName == null){
-		  throw new IllegalArgumentException("The relationship type name to look for should not be null");
-	  }
-	  if (!actual.getRelationshipType().name().equals(relationshipTypeName)) {
-		  throw Failures.instance().failure(info, ShouldHaveRelationshipType.shouldHaveRelationshipType(actual.getRelationshipType(), relationshipTypeName));
-	  }
-	  return this;
+  public ConstraintDefinitionAssert hasRelationshipType(String relationshipTypeName) {
+    Objects.instance().assertNotNull(info, actual);
+
+    if (relationshipTypeName == null) {
+      throw new IllegalArgumentException("The relationship type name to look for should not be null");
+    }
+    if (!actual.getRelationshipType().name().equals(relationshipTypeName)) {
+      throw Failures.instance().failure(info, ShouldHaveRelationshipType
+        .shouldHaveRelationshipType(actual.getRelationshipType(), relationshipTypeName));
+    }
+    return this;
   }
-  
+
   /**
    * Verifies that the actual {@link ConstraintDefinition} does NOT have the given relationship type name<br/>
    * <p>
@@ -280,15 +281,16 @@ public class ConstraintDefinitionAssert extends AbstractAssert<ConstraintDefinit
    * @throws AssertionError if the actual {@link ConstraintDefinition} contains the given relationshipType name
    */
   public ConstraintDefinitionAssert doesNotHaveRelationshipType(String relationshipTypeName) {
-	  Objects.instance().assertNotNull(info, actual);
-	  
-	  if (relationshipTypeName == null) {
-		  throw new IllegalArgumentException("The relationship type name to look for should not be null");
-	  }
-	  if (actual.getRelationshipType().name().equals(relationshipTypeName)) {
-		  throw Failures.instance().failure(info, ShouldNotHaveRelationshipType.shouldNotHaveRelationshipType(actual.getRelationshipType(), relationshipTypeName));
-	  }
-	  return this;
+    Objects.instance().assertNotNull(info, actual);
+
+    if (relationshipTypeName == null) {
+      throw new IllegalArgumentException("The relationship type name to look for should not be null");
+    }
+    if (actual.getRelationshipType().name().equals(relationshipTypeName)) {
+      throw Failures.instance().failure(info, ShouldNotHaveRelationshipType
+        .shouldNotHaveRelationshipType(actual.getRelationshipType(), relationshipTypeName));
+    }
+    return this;
   }
 
   /**

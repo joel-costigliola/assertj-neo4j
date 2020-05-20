@@ -14,17 +14,19 @@ package org.assertj.neo4j.error;
 
 import org.assertj.core.error.BasicErrorMessageFactory;
 import org.assertj.core.error.ErrorMessageFactory;
-import org.assertj.core.internal.ComparisonStrategy;
-import org.assertj.core.internal.StandardComparisonStrategy;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Path;
 import org.neo4j.graphdb.Relationship;
 
 public class ShouldEndWithNode extends BasicErrorMessageFactory {
 
+  private ShouldEndWithNode(Object actual, Node other) {
+    super("\nExpecting:\n  <%s>\nto end with node:\n  <%s>\n", actual, other);
+  }
+
   /**
    * Creates a new </code>{@link ShouldEndWithNode}</code>.
-   * 
+   *
    * @param actual the actual value in the failed assertion.
    * @param endNode the end node used in the failed assertion to compare the actual label value to.
    * @return the created {@code ErrorMessageFactory}.
@@ -35,16 +37,12 @@ public class ShouldEndWithNode extends BasicErrorMessageFactory {
 
   /**
    * Creates a new </code>{@link ShouldEndWithNode}</code>.
-   * 
+   *
    * @param actual the actual value in the failed assertion.
    * @param endNode the end node used in the failed assertion to compare the actual label value to.
    * @return the created {@code ErrorMessageFactory}.
    */
   public static ErrorMessageFactory shouldEndWithNode(Path actual, Node endNode) {
     return new ShouldEndWithNode(actual, endNode);
-  }
-
-  private ShouldEndWithNode(Object actual, Node other) {
-    super("\nExpecting:\n  <%s>\nto end with node:\n  <%s>\n", actual, other);
   }
 }

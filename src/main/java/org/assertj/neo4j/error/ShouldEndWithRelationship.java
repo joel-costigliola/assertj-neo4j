@@ -14,25 +14,23 @@ package org.assertj.neo4j.error;
 
 import org.assertj.core.error.BasicErrorMessageFactory;
 import org.assertj.core.error.ErrorMessageFactory;
-import org.assertj.core.internal.ComparisonStrategy;
-import org.assertj.core.internal.StandardComparisonStrategy;
 import org.neo4j.graphdb.Path;
 import org.neo4j.graphdb.Relationship;
 
 public class ShouldEndWithRelationship extends BasicErrorMessageFactory {
 
+  private ShouldEndWithRelationship(Path actual, Relationship other) {
+    super("\nExpecting:\n  <%s>\nto end with relationship:\n  <%s>\n", actual, other);
+  }
+
   /**
    * Creates a new </code>{@link ShouldEndWithRelationship}</code>.
-   * 
+   *
    * @param path the actual value in the failed assertion.
    * @param lastRelationship the last relationship used in the failed assertion to compare the actual label value to.
    * @return the created {@code ErrorMessageFactory}.
    */
   public static ErrorMessageFactory shouldEndWithRelationship(Path path, Relationship lastRelationship) {
     return new ShouldEndWithRelationship(path, lastRelationship);
-  }
-
-  private ShouldEndWithRelationship(Path actual, Relationship other) {
-    super("\nExpecting:\n  <%s>\nto end with relationship:\n  <%s>\n", actual, other);
   }
 }

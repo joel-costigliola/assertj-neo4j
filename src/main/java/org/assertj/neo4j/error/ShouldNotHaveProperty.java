@@ -14,14 +14,19 @@ package org.assertj.neo4j.error;
 
 import org.assertj.core.error.BasicErrorMessageFactory;
 import org.assertj.core.error.ErrorMessageFactory;
-import org.assertj.core.internal.StandardComparisonStrategy;
 import org.neo4j.graphdb.PropertyContainer;
 
 public class ShouldNotHaveProperty extends BasicErrorMessageFactory {
 
+  private ShouldNotHaveProperty(PropertyContainer actual, String key, Object value) {
+    super(
+      "\nExpecting:\n  <%s>\nnot to have property with key:\n  <%s>\nand value:\n  <%s>\nbut actually found such property ",
+      actual, key, value);
+  }
+
   /**
    * Creates a new </code>{@link ShouldNotHaveProperty}</code>.
-   * 
+   *
    * @param actual the actual value in the failed assertion.
    * @param key the key used in the failed assertion to compare the actual property key to.
    * @param value the value used in the failed assertion to compare the actual property value to.
@@ -29,11 +34,5 @@ public class ShouldNotHaveProperty extends BasicErrorMessageFactory {
    */
   public static ErrorMessageFactory shouldNotHaveProperty(PropertyContainer actual, String key, Object value) {
     return new ShouldNotHaveProperty(actual, key, value);
-  }
-
-  private ShouldNotHaveProperty(PropertyContainer actual, String key, Object value) {
-    super(
-        "\nExpecting:\n  <%s>\nnot to have property with key:\n  <%s>\nand value:\n  <%s>\nbut actually found such property ",
-        actual, key, value);
   }
 }

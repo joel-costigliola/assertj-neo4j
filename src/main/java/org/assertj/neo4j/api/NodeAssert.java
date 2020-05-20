@@ -23,7 +23,7 @@ import static org.assertj.neo4j.error.ShouldNotHaveLabel.shouldNotHaveLabel;
 
 /**
  * Assertions for Neo4J {@link org.neo4j.graphdb.Node}
- * 
+ *
  * @author Florent Biville
  */
 public class NodeAssert extends PropertyContainerAssert<NodeAssert, Node> {
@@ -40,21 +40,21 @@ public class NodeAssert extends PropertyContainerAssert<NodeAssert, Node> {
    * Verifies that the actual {@link org.neo4j.graphdb.Node} has the given label name<br/>
    * <p>
    * Example:
-   * 
+   *
    * <pre>
    * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
    * Node node = graph.createNode();
    * node.addLabel(Label.label(&quot;DOUGHNUT_LOVER&quot;));
-   * 
+   *
    * assertThat(node).hasLabel(&quot;DOUGHNUT_LOVER&quot;);
    * </pre>
-   * 
+   *
    * If the <code>labelValue</code> is {@code null}, an {@link IllegalArgumentException} is thrown.
    * <p>
-   * 
+   *
    * @param labelValue the label name to look for in the actual {@link org.neo4j.graphdb.Node}
    * @return this {@link NodeAssert} for assertions chaining
-   * 
+   *
    * @throws IllegalArgumentException if <code>labelValue</code> is {@code null}.
    * @throws AssertionError if the actual {@link org.neo4j.graphdb.Node} does not contain the given label
    */
@@ -74,21 +74,21 @@ public class NodeAssert extends PropertyContainerAssert<NodeAssert, Node> {
    * Verifies that the actual {@link org.neo4j.graphdb.Node} does NOT have the given label name<br/>
    * <p>
    * Example:
-   * 
+   *
    * <pre>
    * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
    * Node node = graph.createNode();
    * node.addLabel(Label.label(&quot;DOUGHNUT_LOVER&quot;));
-   * 
+   *
    * assertThat(node).doesNotHaveLabel(&quot;FRUIT_LOVER&quot;);
    * </pre>
-   * 
+   *
    * If the <code>labelValue</code> is {@code null}, an {@link IllegalArgumentException} is thrown.
    * <p>
-   * 
+   *
    * @param labelValue the label name to look for in the actual {@link org.neo4j.graphdb.Node}
    * @return this {@link NodeAssert} for assertions chaining
-   * 
+   *
    * @throws IllegalArgumentException if <code>labelValue</code> is {@code null}.
    * @throws AssertionError if the actual {@link org.neo4j.graphdb.Node} does contain the given label
    */
@@ -108,22 +108,22 @@ public class NodeAssert extends PropertyContainerAssert<NodeAssert, Node> {
    * Verifies that the actual {@link org.neo4j.graphdb.Node} has the given label<br/>
    * <p>
    * Example:
-   * 
+   *
    * <pre>
    * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
    * Node node = graph.createNode();
    * Label doughnutLover = Label.label(&quot;DOUGHNUT_LOVER&quot;);
    * node.addLabel(doughnutLover);
-   * 
+   *
    * assertThat(node).hasLabel(doughnutLover);
    * </pre>
-   * 
+   *
    * If the <code>label</code> is {@code null}, an {@link IllegalArgumentException} is thrown.
    * <p>
-   * 
+   *
    * @param label the label to look for in the actual {@link org.neo4j.graphdb.Node}
    * @return this {@link NodeAssert} for assertions chaining
-   * 
+   *
    * @throws IllegalArgumentException if <code>label</code> is {@code null}.
    * @throws AssertionError if the actual {@link org.neo4j.graphdb.Node} does not contain the given label
    */
@@ -143,21 +143,21 @@ public class NodeAssert extends PropertyContainerAssert<NodeAssert, Node> {
    * Verifies that the actual {@link org.neo4j.graphdb.Node} does NOT have the given label<br/>
    * <p>
    * Example:
-   * 
+   *
    * <pre>
    * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
    * Node node = graph.createNode();
    * node.addLabel(Label.label(&quot;DOUGHNUT_LOVER&quot;));
-   * 
+   *
    * assertThat(node).doesNotHaveLabel(Label.label(&quot;FRUIT_LOVER&quot;));
    * </pre>
-   * 
+   *
    * If the <code>label</code> is {@code null}, an {@link IllegalArgumentException} is thrown.
    * <p>
-   * 
+   *
    * @param label the label to look for in the actual {@link org.neo4j.graphdb.Node}
    * @return this {@link NodeAssert} for assertions chaining
-   * 
+   *
    * @throws IllegalArgumentException if <code>label</code> is {@code null}.
    * @throws AssertionError if the actual {@link org.neo4j.graphdb.Node} does contain the given label
    */
