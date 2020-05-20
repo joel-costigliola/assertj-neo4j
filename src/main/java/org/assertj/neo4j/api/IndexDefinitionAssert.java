@@ -144,7 +144,7 @@ public class IndexDefinitionAssert extends AbstractAssert<IndexDefinitionAssert,
     Objects.instance().assertNotNull(info, actual);
 
     if (labelValue == null) {
-      throw new IllegalArgumentException("The label value to look for should not be null");
+      throw new IllegalArgumentException("The label to look for should not be null");
     }
     if (!actual.getLabel().name().equals(labelValue)) {
       throw Failures.instance().failure(info, shouldHaveLabel(actual, labelValue));

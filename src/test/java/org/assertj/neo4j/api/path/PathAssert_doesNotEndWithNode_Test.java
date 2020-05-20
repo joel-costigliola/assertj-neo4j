@@ -12,6 +12,8 @@
  */
 package org.assertj.neo4j.api.path;
 
+import org.assertj.neo4j.api.PathAssert;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -19,6 +21,7 @@ import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Path;
 
 import static org.assertj.neo4j.api.Assertions.assertThat;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -27,6 +30,14 @@ public class PathAssert_doesNotEndWithNode_Test {
   private final Path path = mock(Path.class);
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
+
+  @Test
+  public void should_pass_if_path_does_not_end_with_given_node() {
+    given_path_ends_with_node(mock(Node.class));
+
+    Assert.assertThat(assertThat(path).doesNotEndWithNode(mock(Node.class)), instanceOf(
+      PathAssert.class));
+  }
 
   @Test
   public void should_fail_if_path_ends_with_node() {
@@ -63,13 +74,6 @@ public class PathAssert_doesNotEndWithNode_Test {
     expectedException.expectMessage("The end node to look for should not be null");
 
     assertThat(path).doesNotEndWithNode(null);
-  }
-
-  @Test
-  public void should_pass_if_path_does_not_end_with_given_node() {
-    given_path_ends_with_node(mock(Node.class));
-
-    assertThat(path).doesNotEndWithNode(mock(Node.class));
   }
 
   private void given_path_ends_with_node(Node node) {

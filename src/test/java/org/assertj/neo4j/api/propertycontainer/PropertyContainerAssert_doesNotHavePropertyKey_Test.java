@@ -12,12 +12,15 @@
  */
 package org.assertj.neo4j.api.propertycontainer;
 
+import org.assertj.neo4j.api.PropertyContainerAssert;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.neo4j.graphdb.PropertyContainer;
 
 import static org.assertj.neo4j.api.Assertions.assertThat;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.rules.ExpectedException.none;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -30,7 +33,8 @@ public class PropertyContainerAssert_doesNotHavePropertyKey_Test {
 
   @Test
   public void should_pass_if_property_container_does_NOT_have_key() {
-    assertThat(propertyContainer).doesNotHavePropertyKey("key");
+    Assert.assertThat(assertThat(propertyContainer).doesNotHavePropertyKey("key"), instanceOf(
+      PropertyContainerAssert.class));
   }
 
   @Test

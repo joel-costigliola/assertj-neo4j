@@ -12,6 +12,8 @@
  */
 package org.assertj.neo4j.api.indexdefinition;
 
+import org.assertj.neo4j.api.IndexDefinitionAssert;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -20,7 +22,7 @@ import org.neo4j.graphdb.schema.IndexDefinition;
 import java.util.Arrays;
 
 import static org.assertj.neo4j.api.Assertions.assertThat;
-import static org.junit.Assert.assertNotNull;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -34,14 +36,16 @@ public class IndexDefinitionAssert_hasPropertyKeys_Test {
   public void should_pass_if_index_definition_has_iterable_property_keys() {
     given_index_definition_with_property_keys("name", "power");
 
-    assertNotNull(assertThat(indexDefinition).hasPropertyKeys(Arrays.asList("name", "power")));
+    Assert.assertThat(assertThat(indexDefinition).hasPropertyKeys(Arrays.asList("name", "power")), instanceOf(
+      IndexDefinitionAssert.class));
   }
 
   @Test
   public void should_pass_if_index_definition_has_varargs_property_keys() {
     given_index_definition_with_property_keys("name", "power");
 
-    assertNotNull(assertThat(indexDefinition).hasPropertyKeys("name", "power"));
+    Assert.assertThat(assertThat(indexDefinition).hasPropertyKeys("name", "power"), instanceOf(
+      IndexDefinitionAssert.class));
   }
 
   @Test

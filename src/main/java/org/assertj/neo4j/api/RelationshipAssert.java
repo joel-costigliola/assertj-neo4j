@@ -49,13 +49,6 @@ public class RelationshipAssert extends PropertyContainerAssert<RelationshipAsse
     }
   }
 
-  private static void checkTypeNameIsNotNull(RelationshipType actualType) {
-    checkTypeIsNotNull(actualType);
-    if (actualType.name() == null) {
-      throw new IllegalStateException("The actual relationship type name should not be null");
-    }
-  }
-
   private static void checkTypeIsNotNull(RelationshipType actualType) {
     if (actualType == null) {
       throw new IllegalStateException("The actual relationship type should not be null");
@@ -291,13 +284,13 @@ public class RelationshipAssert extends PropertyContainerAssert<RelationshipAsse
     Objects.instance().assertNotNull(info, actual);
 
     RelationshipType actualType = actual.getType();
-    checkTypeNameIsNotNull(actualType);
+    checkTypeIsNotNull(actualType);
 
     if (relationshipTypeName == null) {
       throw new IllegalArgumentException("The relationship type to look for should not be null");
     }
 
-    if (!actualType.name().equals(relationshipTypeName)) {
+    if (!relationshipTypeName.equals(actualType.name())) {
       throw Failures.instance().failure(info, shouldHaveRelationshipType(actual, relationshipTypeName));
     }
     return this;
@@ -364,7 +357,7 @@ public class RelationshipAssert extends PropertyContainerAssert<RelationshipAsse
     Objects.instance().assertNotNull(info, actual);
 
     RelationshipType actualType = actual.getType();
-    checkTypeNameIsNotNull(actualType);
+    checkTypeIsNotNull(actualType);
 
     if (relationshipTypeName == null) {
       throw new IllegalArgumentException("The relationship type to look for should not be null");

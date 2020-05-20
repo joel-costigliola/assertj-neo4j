@@ -12,15 +12,18 @@
  */
 package org.assertj.neo4j.api.node;
 
+import org.assertj.neo4j.api.NodeAssert;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
+import org.neo4j.graphdb.GraphDatabaseService;
 import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Node;
-import org.neo4j.graphdb.ResourceIterable;
-import org.neo4j.graphdb.ResourceIterator;
+import org.neo4j.graphdb.Transaction;
 
 import static org.assertj.neo4j.api.Assertions.assertThat;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -32,9 +35,18 @@ public class NodeAssert_doesNotHaveLabel_Test {
 
   @Test
   public void should_pass_if_node_does_not_have_label() {
-    given_node_with_label("MAMMAL");
+    given_node_with_label("Mammal");
 
-    assertThat(node).doesNotHaveLabel(Label.label("REPTILE"));
+    Assert.assertThat(assertThat(node).doesNotHaveLabel(Label.label("Reptile")), instanceOf(
+      NodeAssert.class));
+  }
+  
+  @Test
+  public void should_pass_if_node_does_not_have_label_string() {
+    given_node_with_label("Mammal");
+
+    Assert.assertThat(assertThat(node).doesNotHaveLabel("Reptile"), instanceOf(
+      NodeAssert.class));
   }
 
   @Test
@@ -42,34 +54,54 @@ public class NodeAssert_doesNotHaveLabel_Test {
     expectedException.expect(AssertionError.class);
     expectedException.expectMessage("Expecting actual not to be null");
 
-    assertThat((Node) null).doesNotHaveLabel(Label.label("LABEL"));
+    assertThat((Node) null).doesNotHaveLabel(Label.label("Label"));
   }
 
   @Test
-  public void should_fail_if_label_value_is_null() {
+  public void should_fail_if_node_is_null_with_string() {
+    expectedException.expect(AssertionError.class);
+    expectedException.expectMessage("Expecting actual not to be null");
+
+    assertThat((Node) null).doesNotHaveLabel("Label");
+  }
+
+  @Test
+  public void should_fail_if_label_is_null() {
     expectedException.expect(IllegalArgumentException.class);
 
     assertThat(node).doesNotHaveLabel((Label) null);
   }
 
   @Test
+  public void should_fail_if_label_string_is_null() {
+    expectedException.expect(IllegalArgumentException.class);
+
+    assertThat(node).doesNotHaveLabel((String) null);
+  }
+
+  @Test
   public void should_fail_if_node_has_label() {
     expectedException.expect(AssertionError.class);
 
-    given_node_with_label("REPTILE");
+    given_node_with_label("Reptile");
 
-    assertThat(node).doesNotHaveLabel(Label.label("REPTILE"));
+    assertThat(node).doesNotHaveLabel(Label.label("Reptile"));
   }
 
-  @SuppressWarnings("unchecked")
+  @Test
+  public void should_fail_if_node_has_label_string() {
+    expectedException.expect(AssertionError.class);
+
+    given_node_with_label("Reptile");
+
+    assertThat(node).doesNotHaveLabel("Reptile");
+  }
+
   private void given_node_with_label(String value) {
-    ResourceIterable<Label> labels = mock(ResourceIterable.class);
-    ResourceIterator<Label> iterator = mock(ResourceIterator.class);
-    Label label = Label.label(value);
-    when(iterator.next()).thenReturn(label);
-    when(iterator.hasNext()).thenReturn(true, false);
-    when(labels.iterator()).thenReturn(iterator);
-    when(node.hasLabel(label)).thenReturn(true);
+    when(node.hasLabel(Label.label(value))).thenReturn(true);
+    GraphDatabaseService graph = mock(GraphDatabaseService.class);
+    when(graph.beginTx()).thenReturn(mock(Transaction.class));
+    when(node.getGraphDatabase()).thenReturn(graph);
   }
 
 }

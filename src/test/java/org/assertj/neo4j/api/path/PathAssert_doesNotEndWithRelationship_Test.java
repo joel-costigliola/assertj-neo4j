@@ -12,6 +12,8 @@
  */
 package org.assertj.neo4j.api.path;
 
+import org.assertj.neo4j.api.PathAssert;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -19,6 +21,7 @@ import org.neo4j.graphdb.Path;
 import org.neo4j.graphdb.Relationship;
 
 import static org.assertj.neo4j.api.Assertions.assertThat;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -27,6 +30,16 @@ public class PathAssert_doesNotEndWithRelationship_Test {
   private final Path path = mock(Path.class);
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
+
+  @Test
+  public void should_pass_if_path_does_not_end_with_relationship() {
+    Relationship relationship = mock(Relationship.class);
+    given_path_last_relationship(relationship);
+    Relationship anotherRelationship = mock(Relationship.class);
+
+    Assert.assertThat(assertThat(path).doesNotEndWithRelationship(anotherRelationship), instanceOf(
+      PathAssert.class));
+  }
 
   @Test
   public void should_fail_if_path_ends_with_relationship() {

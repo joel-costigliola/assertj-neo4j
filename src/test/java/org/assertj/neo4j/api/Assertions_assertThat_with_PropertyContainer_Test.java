@@ -12,11 +12,12 @@
  */
 package org.assertj.neo4j.api;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.neo4j.graphdb.PropertyContainer;
 
 import static org.assertj.neo4j.api.Assertions.assertThat;
-import static org.junit.Assert.assertNotNull;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.mock;
 
@@ -24,8 +25,8 @@ public class Assertions_assertThat_with_PropertyContainer_Test {
 
   @Test
   public void should_create_Assert() {
-    PropertyContainerAssert<?, ?> propertyContainerAssert = assertThat(mock(PropertyContainer.class));
-    assertNotNull(propertyContainerAssert);
+    Assert.assertThat(assertThat(mock(PropertyContainer.class)), instanceOf(
+      PropertyContainerAssert.class));
   }
 
   @Test

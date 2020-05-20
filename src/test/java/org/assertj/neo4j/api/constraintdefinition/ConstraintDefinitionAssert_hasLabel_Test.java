@@ -12,6 +12,8 @@
  */
 package org.assertj.neo4j.api.constraintdefinition;
 
+import org.assertj.neo4j.api.ConstraintDefinitionAssert;
+import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -19,7 +21,7 @@ import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.schema.ConstraintDefinition;
 
 import static org.assertj.neo4j.api.Assertions.assertThat;
-import static org.junit.Assert.assertNotNull;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -33,11 +35,12 @@ public class ConstraintDefinitionAssert_hasLabel_Test {
   public void should_pass_if_constraint_definition_has_label() {
     when(constraintDefinition.getLabel()).thenReturn(Label.label("Foo"));
 
-    assertNotNull(assertThat(constraintDefinition).hasLabel(Label.label("Foo")));
+    Assert.assertThat(assertThat(constraintDefinition).hasLabel(Label.label("Foo")), instanceOf(
+      ConstraintDefinitionAssert.class));
   }
 
   @Test
-  public void should_fail_if_constraint_definition_has_not_expected_label() {
+  public void should_fail_if_constraint_definition_does_not_have_expected_label() {
     when(constraintDefinition.getLabel()).thenReturn(Label.label("Foo"));
     expectedException.expect(AssertionError.class);
 
@@ -65,11 +68,12 @@ public class ConstraintDefinitionAssert_hasLabel_Test {
   public void should_pass_if_constraint_definition_has_label_with_string() {
     when(constraintDefinition.getLabel()).thenReturn(Label.label("Foo"));
 
-    assertNotNull(assertThat(constraintDefinition).hasLabel("Foo"));
+    Assert.assertThat(assertThat(constraintDefinition).hasLabel("Foo"), instanceOf(
+      ConstraintDefinitionAssert.class));
   }
 
   @Test
-  public void should_fail_if_constraint_definition_has_not_expected_label_with_string() {
+  public void should_fail_if_constraint_definition_does_not_have_expected_label_with_string() {
     when(constraintDefinition.getLabel()).thenReturn(Label.label("Foo"));
     expectedException.expect(AssertionError.class);
 

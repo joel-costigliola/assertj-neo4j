@@ -12,17 +12,19 @@
  */
 package org.assertj.neo4j.api;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.neo4j.graphdb.Result;
 
 import static org.assertj.neo4j.api.Assertions.assertThat;
-import static org.junit.Assert.assertNotNull;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.mockito.Mockito.mock;
 
 public class Assertions_assertThat_with_Result_Test {
 
   @Test
   public void should_create_Assert() {
-    assertNotNull(assertThat(mock(Result.class)));
+    Assert.assertThat(assertThat(mock(Result.class)), instanceOf(
+      ResultAssert.class));
   }
 }

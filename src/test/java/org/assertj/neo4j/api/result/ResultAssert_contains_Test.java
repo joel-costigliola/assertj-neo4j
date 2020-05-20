@@ -12,6 +12,8 @@
  */
 package org.assertj.neo4j.api.result;
 
+import org.assertj.neo4j.api.ResultAssert;
+import org.junit.Assert;
 import org.junit.Test;
 import org.neo4j.graphdb.Result;
 
@@ -22,6 +24,7 @@ import java.util.Map;
 
 import static org.assertj.core.util.Maps.newHashMap;
 import static org.assertj.neo4j.api.Assertions.assertThat;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -31,13 +34,13 @@ public class ResultAssert_contains_Test {
    * while keeping the code coverage high enough.
    */
   @Test
-  public void should_contain_expected_rows() {
+  public void should_pass_if_result_contains_given_rows() {
     List<Map<String, Object>> actualResults = Collections.singletonList(newHashMap("foo", "fighters"));
     Result result = result(actualResults);
 
-    assertThat(result)
+    Assert.assertThat(assertThat(result)
       .contains(newHashMap("foo", "fighters"))
-      .doesNotContain(newHashMap("fou", "rire"));
+      .doesNotContain(newHashMap("fou", "rire")), instanceOf(ResultAssert.class));
   }
 
   private Result result(Iterable<Map<String, Object>> rows) {

@@ -12,11 +12,12 @@
  */
 package org.assertj.neo4j.api;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.neo4j.graphdb.schema.ConstraintDefinition;
 
 import static org.assertj.neo4j.api.Assertions.assertThat;
-import static org.junit.Assert.assertNotNull;
+import static org.hamcrest.core.IsInstanceOf.instanceOf;
 import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.mock;
 
@@ -24,7 +25,8 @@ public class Assertions_assertThat_with_ConstraintDefinition_Test {
 
   @Test
   public void should_create_Assert() {
-    assertNotNull(assertThat(mock(ConstraintDefinition.class)));
+    Assert.assertThat(assertThat(mock(ConstraintDefinition.class)), instanceOf(
+      ConstraintDefinitionAssert.class));
   }
 
   @Test
