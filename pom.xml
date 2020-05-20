@@ -62,6 +62,7 @@
         <configuration>
           <properties>
             <inceptionYear>2013</inceptionYear>
+            <currentYear>2020</currentYear>
           </properties>
         </configuration>
       </plugin>
