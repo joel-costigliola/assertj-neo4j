@@ -22,17 +22,11 @@ import static org.junit.rules.ExpectedException.none;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-/**
- * Checks <code>{@link org.assertj.neo4j.api.PropertyContainerAssert#doesNotHavePropertyKey(String)}</code> behavior.
- * 
- * @author Florent Biville
- */
 public class PropertyContainerAssert_doesNotHavePropertyKey_Test {
 
+  private final PropertyContainer propertyContainer = mock(PropertyContainer.class);
   @Rule
   public ExpectedException expectedException = none();
-
-  private PropertyContainer propertyContainer = mock(PropertyContainer.class);
 
   @Test
   public void should_pass_if_property_container_does_NOT_have_key() {

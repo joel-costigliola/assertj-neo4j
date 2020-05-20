@@ -24,18 +24,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-/**
- * Checks <code>{@link org.assertj.neo4j.api.IndexDefinitionAssert#doesNotHavePropertyKeys}}</code> behavior.
- *
- * @author Rushi Chaudhari
- */
 public class IndexDefinitionAssert_doesNotHavePropertyKeys_Test {
 
+  private final IndexDefinition indexDefinition = mock(IndexDefinition.class);
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
-
-  private IndexDefinition indexDefinition = mock(IndexDefinition.class);
-
 
   @Test
   public void should_pass_if_index_definition_does_not_have_expected_iterable_property_keys() {

@@ -12,7 +12,6 @@
  */
 package org.assertj.neo4j.api.constraintdefinition;
 
-import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -26,15 +25,9 @@ import static org.mockito.Mockito.when;
 
 public class ConstraintDefinitionAssert_isConstraintType_Test {
 
+  private final ConstraintDefinition constraintDefinition = mock(ConstraintDefinition.class);
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
-
-  private ConstraintDefinition constraintDefinition;
-
-  @Before
-  public void prepare() {
-    constraintDefinition = mock(ConstraintDefinition.class);
-  }
 
   @Test
   public void should_pass_if_constraint_definition_is_of_constraint_type() {

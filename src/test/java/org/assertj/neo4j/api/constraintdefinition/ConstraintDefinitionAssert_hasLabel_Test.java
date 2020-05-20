@@ -25,10 +25,9 @@ import static org.mockito.Mockito.when;
 
 public class ConstraintDefinitionAssert_hasLabel_Test {
 
+  private final ConstraintDefinition constraintDefinition = mock(ConstraintDefinition.class);
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
-
-  private ConstraintDefinition constraintDefinition = mock(ConstraintDefinition.class);
 
   @Test
   public void should_pass_if_constraint_definition_has_label() {

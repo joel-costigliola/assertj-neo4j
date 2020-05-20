@@ -12,23 +12,22 @@
  */
 package org.assertj.neo4j.api.constraintdefinition;
 
-import static org.assertj.neo4j.api.Assertions.assertThat;
-import static org.junit.Assert.assertNotNull;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.schema.ConstraintDefinition;
 
+import static org.assertj.neo4j.api.Assertions.assertThat;
+import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 public class ConstraintDefinitionAssert_doesNotHaveRelationshipType_Test {
 
+  private final ConstraintDefinition constraintDefinition = mock(ConstraintDefinition.class);
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
-
-  private ConstraintDefinition constraintDefinition = mock(ConstraintDefinition.class);
 
   @Test
   public void should_pass_if_constraint_definition_does_not_have_relationship_type() {
@@ -93,5 +92,5 @@ public class ConstraintDefinitionAssert_doesNotHaveRelationshipType_Test {
 
     assertThat((ConstraintDefinition) null).doesNotHaveRelationshipType("B");
   }
-  
+
 }

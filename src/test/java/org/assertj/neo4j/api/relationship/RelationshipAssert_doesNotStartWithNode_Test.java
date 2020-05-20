@@ -22,16 +22,11 @@ import static org.assertj.neo4j.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-/**
- * Checks <code>{@link org.assertj.neo4j.api.RelationshipAssert#doesNotStartWithNode(Node)}</code> behavior.
- *
- * @author Florent Biville
- */
 public class RelationshipAssert_doesNotStartWithNode_Test {
 
+  private final Relationship relationship = mock(Relationship.class);
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
-  private Relationship relationship = mock(Relationship.class);
 
   @Test
   public void should_fail_if_relationship_starts_with_node() {

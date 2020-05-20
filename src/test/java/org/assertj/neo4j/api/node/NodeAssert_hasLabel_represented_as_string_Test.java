@@ -26,17 +26,11 @@ import static org.assertj.neo4j.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-/**
- * Checks <code>{@link org.assertj.neo4j.api.NodeAssert#hasLabel(String)}</code> behavior.
- * 
- * @author Florent Biville
- */
 public class NodeAssert_hasLabel_represented_as_string_Test {
 
+  private final Node node = mock(Node.class);
   @Rule
   public ExpectedException expectedException = ExpectedException.none();
-
-  private Node node = mock(Node.class);
 
   @Test
   public void should_pass_if_node_has_label() {
