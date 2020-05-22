@@ -22,9 +22,15 @@ import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.RelationshipType;
 import org.neo4j.graphdb.schema.ConstraintDefinition;
 import org.neo4j.graphdb.schema.ConstraintType;
+import org.neo4j.graphdb.schema.IndexDefinition;
 
 import static org.assertj.neo4j.error.ShouldHaveLabel.shouldHaveLabel;
+import static org.assertj.neo4j.error.ShouldHavePropertyKeys.shouldHavePropertyKeys;
 import static org.assertj.neo4j.error.ShouldNotHaveLabel.shouldNotHaveLabel;
+import static org.assertj.neo4j.error.ShouldNotHavePropertyKeys.shouldNotHavePropertyKeys;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Assertions for Neo4J {@link ConstraintDefinition}
@@ -344,4 +350,162 @@ public class ConstraintDefinitionAssert extends AbstractAssert<ConstraintDefinit
 
     return this;
   }
+  
+  /**
+   * Verifies that the actual {@link ConstraintDefinition} has the given set of property keys<br/>
+   * <p>
+   * Example:
+   *
+   * <pre>
+   * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
+   * ConstraintDefinition constraintDefinition = graph.schema()
+   *    .constraintFor(&quot;User&quot;)
+   *    .assertPropertyIsUnique(&quot;Login&quot;)
+   *    .assertPropertyIsUnique(&quot;Username&quot;)
+   *    .create();
+   *    
+   * assertThat(constraintDefinition).hasPropertyKeys(&quot;Login&quot;,&quot;Username&quot;);
+   * </pre>
+   *
+   * If the <code>propertyKeysNames</code> is {@code null}, an {@link IllegalArgumentException} is thrown.
+   * <p>
+   *
+   * @param propertyKeys the list of property keys to look for in the actual {@link ConstraintDefinition}
+   * @return this {@link ConstraintDefinitionAssert} for assertions chaining
+   *
+   * @throws IllegalArgumentException if <code>propertyKeysNames</code> is {@code null}.
+   * @throws AssertionError if the actual {@link ConstraintDefinition} does not contain the given propertyKeys
+   */
+  public ConstraintDefinitionAssert hasPropertyKeys(String... propertyKeys) {
+    Objects.instance().assertNotNull(info, actual);
+
+    if (propertyKeys == null) {
+      throw new IllegalArgumentException("The property keys to look for should not be null");
+    }
+    return checkPropertyKeyPresence(Arrays.asList(propertyKeys));
+  }
+
+  /**
+   * Verifies that the actual {@link ConstraintDefinition} has the given set of property keys<br/>
+   * <p>
+   * Example:
+   *
+   * <pre>
+   * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
+   * ConstraintDefinition constraintDefinition = graph.schema()
+   *    .constraintFor(&quot;User&quot;)
+   *    .assertPropertyIsUnique(&quot;Login&quot;)
+   *    .assertPropertyIsUnique(&quot;Username&quot;)
+   *    .create();
+   *
+   * assertThat(constraintDefinition).hasPropertyKeys(Arrays.asList(&quot;Username&quot;, &quot;Login&quot;));
+   * </pre>
+   *
+   * If the <code>propertyKeys</code> is {@code null}, an {@link IllegalArgumentException} is thrown.
+   * <p>
+   *
+   * @param propertyKeys the list of property keys to look for in the actual {@link ConstraintDefinition}
+   * @return this {@link ConstraintDefinitionAssert} for assertions chaining
+   *
+   * @throws IllegalArgumentException if <code>propertyKeys</code> is {@code null}.
+   * @throws AssertionError if the actual {@link ConstraintDefinition} does not contain the given propertyKeys
+   */
+  public ConstraintDefinitionAssert hasPropertyKeys(Iterable<String> propertyKeys) {
+    Objects.instance().assertNotNull(info, actual);
+
+    if (propertyKeys == null) {
+      throw new IllegalArgumentException("The property keys to look for should not be null");
+    }
+
+    return checkPropertyKeyPresence(propertyKeys);
+  }
+
+  /**
+   * Verifies that the actual {@link ConstraintDefinition} does NOT have the given set of property keys<br/>
+   * <p>
+   * Example:
+   *
+   * <pre>
+   * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
+   * ConstraintDefinition constraintDefinition = graph.schema()
+   *    .constraintFor(&quot;User&quot;)
+   *    .assertPropertyIsUnique(&quot;Login&quot;)
+   *    .assertPropertyIsUnique(&quot;Username&quot;)
+   *    .create();
+   *
+   * assertThat(indexDefinition)
+   *    .doesNotHavePropertyKeys(&quot;dob&quot;, &quot;password&quot;);
+   * </pre>
+   *
+   * If the <code>propertyKeysNames</code> is {@code null}, an {@link IllegalArgumentException} is thrown.
+   * <p>
+   *
+   * @param propertyKeys the list of property keys to look for in the actual {@link ConstraintDefinition}
+   * @return this {@link ConstraintDefinitionAssert} for assertions chaining
+   *
+   * @throws IllegalArgumentException if <code>propertyKeysNames</code> is {@code null}.
+   * @throws AssertionError if the actual {@link ConstraintDefinition} does contain the given propertyKeys
+   */
+  public ConstraintDefinitionAssert doesNotHavePropertyKeys(String... propertyKeys) {
+    Objects.instance().assertNotNull(info, actual);
+
+    if (propertyKeys == null) {
+      throw new IllegalArgumentException("The property keys to look for should not be null");
+    }
+
+    return checkPropertyKeyAbsence(Arrays.asList(propertyKeys));
+  }
+
+  /**
+   * Verifies that the actual {@link ConstraintDefinition} does NOT have the given set of property keys<br/>
+   * <p>
+   * Example:
+   *
+   * <pre>
+   * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
+   * ConstraintDefinition constraintDefinition = graph.schema()
+   *    .constraintFor(&quot;User&quot;)
+   *    .assertPropertyIsUnique(&quot;Login&quot;)
+   *    .assertPropertyIsUnique(&quot;Username&quot;)
+   *    .create();
+   *
+   * assertThat(indexDefinition)
+   *    .doesNotHavePropertyKeys(Arrays.asList(&quot;dob&quot;, &quot;password&quot;));
+   * </pre>
+   *
+   * If the <code>propertyKeys</code> is {@code null}, an {@link IllegalArgumentException} is thrown.
+   * <p>
+   *
+   * @param propertyKeys the list of property keys to look for in the actual {@link ConstraintDefinition}
+   * @return this {@link ConstraintDefinitionAssert} for assertions chaining
+   *
+   * @throws IllegalArgumentException if <code>propertyKeys</code> is {@code null}.
+   * @throws AssertionError if the actual {@link ConstraintDefinition} does contain the given propertyKeys
+   */
+  public ConstraintDefinitionAssert doesNotHavePropertyKeys(Iterable<String> propertyKeys) {
+    Objects.instance().assertNotNull(info, actual);
+
+    if (propertyKeys == null) {
+      throw new IllegalArgumentException("The property keys to look for should not be null");
+    }
+
+    return checkPropertyKeyAbsence(propertyKeys);
+  }
+
+  private ConstraintDefinitionAssert checkPropertyKeyPresence(Iterable<String> propertyKeys) {
+    List<String> missingPropertyKeys = Iterables.difference(propertyKeys, actual.getPropertyKeys());
+    if (missingPropertyKeys.size() > 0) {
+      throw Failures.instance().failure(info, shouldHavePropertyKeys(actual, propertyKeys, missingPropertyKeys));
+    }
+    return this;
+  }
+
+  private ConstraintDefinitionAssert checkPropertyKeyAbsence(Iterable<String> propertyKeys) {
+    List<String> commonPropertyKeys = Iterables.intersection(propertyKeys, actual.getPropertyKeys());
+    if (commonPropertyKeys.size() > 0) {
+      throw Failures.instance().failure(info, shouldNotHavePropertyKeys(actual, propertyKeys, commonPropertyKeys));
+    }
+    return this;
+  }
+
 }
