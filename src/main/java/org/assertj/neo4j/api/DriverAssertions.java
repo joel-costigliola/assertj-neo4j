@@ -7,9 +7,8 @@ import org.neo4j.driver.Driver;
  */
 public class DriverAssertions {
 
-    public static BaseDriverAssert assertThat(Driver driver) {
-        return new BaseDriverAssert(driver);
+    public static DriverAssert assertThat(Driver driver) {
+        return new DriverAssert(driver);
     }
-
 
 }
