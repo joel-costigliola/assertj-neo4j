@@ -9,3 +9,6 @@ target
 *.iml
 TODO*
 .java-version
+.classpath
+.project
+.settings/

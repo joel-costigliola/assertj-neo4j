@@ -17,6 +17,7 @@ import org.neo4j.graphdb.Label;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Path;
 import org.neo4j.graphdb.PropertyContainer;
+import org.neo4j.graphdb.QueryStatistics;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.Result;
 import org.neo4j.graphdb.schema.ConstraintDefinition;
@@ -27,6 +28,7 @@ import static org.assertj.neo4j.api.InstanceOfAssertFactories.CONSTRAINT_DEFINIT
 import static org.assertj.neo4j.api.InstanceOfAssertFactories.INDEX_DEFINITION;
 import static org.assertj.neo4j.api.InstanceOfAssertFactories.NODE;
 import static org.assertj.neo4j.api.InstanceOfAssertFactories.PATH;
+import static org.assertj.neo4j.api.InstanceOfAssertFactories.QUERY_STATISTICS;
 import static org.assertj.neo4j.api.InstanceOfAssertFactories.RELATIONSHIP;
 import static org.assertj.neo4j.api.InstanceOfAssertFactories.RESULT;
 import static org.assertj.neo4j.api.InstanceOfAssertFactories.propertyContainer;
@@ -101,6 +103,17 @@ public class InstanceOfAssertFactoriesTest {
     IndexDefinitionAssert result = assertThat(value).asInstanceOf(INDEX_DEFINITION);
 
     result.doesNotHaveLabel("label");
+  }
+
+  @SuppressWarnings("CastCanBeRemovedNarrowingVariableType")
+  @Test
+  public void query_statistics_factory_should_allow_query_statistics_assertions() {
+    Object value = mock(QueryStatistics.class, RETURNS_DEEP_STUBS);
+    given(((QueryStatistics) value).containsUpdates()).willReturn(true);
+
+    QueryStatisticsAssert result = assertThat(value).asInstanceOf(QUERY_STATISTICS);
+
+    result.containsUpdates();
   }
 
 }
