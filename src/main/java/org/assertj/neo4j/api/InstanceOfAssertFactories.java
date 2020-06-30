@@ -17,6 +17,7 @@ import org.assertj.core.api.InstanceOfAssertFactory;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Path;
 import org.neo4j.graphdb.PropertyContainer;
+import org.neo4j.graphdb.QueryStatistics;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.Result;
 import org.neo4j.graphdb.schema.ConstraintDefinition;
@@ -58,6 +59,12 @@ public interface InstanceOfAssertFactories {
    */
   InstanceOfAssertFactory<IndexDefinition, IndexDefinitionAssert> INDEX_DEFINITION = new InstanceOfAssertFactory<>(
     IndexDefinition.class,
+    Assertions::assertThat);
+  /**
+   * {@link InstanceOfAssertFactory} for an {@link org.neo4j.graphdb.QueryStatistics}.
+   */
+  InstanceOfAssertFactory<QueryStatistics, QueryStatisticsAssert> QUERY_STATISTICS = new InstanceOfAssertFactory<>(
+    QueryStatistics.class,
     Assertions::assertThat);
 
   /**
