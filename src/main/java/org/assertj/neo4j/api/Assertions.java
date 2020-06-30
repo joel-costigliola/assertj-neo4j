@@ -15,6 +15,7 @@ package org.assertj.neo4j.api;
 import org.neo4j.graphdb.Node;
 import org.neo4j.graphdb.Path;
 import org.neo4j.graphdb.PropertyContainer;
+import org.neo4j.graphdb.QueryStatistics;
 import org.neo4j.graphdb.Relationship;
 import org.neo4j.graphdb.Result;
 import org.neo4j.graphdb.schema.ConstraintDefinition;
@@ -62,4 +63,8 @@ public class Assertions implements InstanceOfAssertFactories {
   public static IndexDefinitionAssert assertThat(IndexDefinition indexDefinition) {
     return new IndexDefinitionAssert(indexDefinition);
   }
+  
+  public static QueryStatisticsAssert assertThat(QueryStatistics queryStatistics) {
+	    return new QueryStatisticsAssert(queryStatistics);
+	  }
 }
