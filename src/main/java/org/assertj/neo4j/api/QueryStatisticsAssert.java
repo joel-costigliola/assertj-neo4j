@@ -26,42 +26,52 @@ import org.neo4j.graphdb.QueryStatistics;
  */
 public class QueryStatisticsAssert extends AbstractAssert<QueryStatisticsAssert, QueryStatistics> {
 
-  protected QueryStatisticsAssert(QueryStatistics actual) {
-    super(actual, QueryStatisticsAssert.class);
-  }
-
-  protected QueryStatistics getActual() {
-    return actual;
-  }
-
-  /**
-   * Verifies that the actual {@link QueryStatistics} contains updates</br>
-   * <p>
-   *   Example :
-   *
-   * <pre>
-   * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
-   * QueryStatistics queryStatistics = graph.execute(&quot;MATCH (n) SET n.foo = 'bar'&quot;).getQueryStatistics();
-   *
-   * assertThat(queryStatistics).containsUpdates();
-   * </pre>
-   * </p>
-   *
-   *
-   * If the <code>label</code> is {@code null}, an {@link IllegalArgumentException} is thrown.
-   * <p>
-   *
-   * @return this {@link QueryStatisticsAssert} for assertions chaining
-   *
-   * @throws AssertionError if the actual {@link QueryStatistics} does not contain updates
-   */
-  public QueryStatisticsAssert containsUpdates() {
-    Objects.instance().assertNotNull(info, actual);
-
-    if (!actual.containsUpdates()) {
-      throw Failures.instance().failure(info, QueryStatisticsErrorMessageFactory.shouldContainsUpdates());
+    protected QueryStatisticsAssert(QueryStatistics actual) {
+        super(actual, QueryStatisticsAssert.class);
     }
-    return this;
-  }
+
+    protected QueryStatistics getActual() {
+        return actual;
+    }
+
+    /**
+     * Verifies that the actual {@link QueryStatistics} contains updates</br>
+     * <p>
+     * Example :
+     *
+     * <pre>
+     * GraphDatabaseService graph = new TestGraphDatabaseFactory().newImpermanentDatabase();
+     * QueryStatistics queryStatistics = graph.execute(&quot;MATCH (n) SET n.foo = 'bar'&quot;).getQueryStatistics();
+     *
+     * assertThat(queryStatistics).containsUpdates();
+     * </pre>
+     * </p>
+     * <p>
+     * <p>
+     * If the <code>label</code> is {@code null}, an {@link IllegalArgumentException} is thrown.
+     * <p>
+     *
+     * @return this {@link QueryStatisticsAssert} for assertions chaining
+     * @throws AssertionError if the actual {@link QueryStatistics} does not contain updates
+     */
+    public QueryStatisticsAssert containsUpdates() {//HasRelationshipDelete(int)
+        Objects.instance().assertNotNull(info, actual);
+
+        if (!actual.containsUpdates()) {
+            throw Failures.instance().failure(info, QueryStatisticsErrorMessageFactory.shouldContainsUpdates());
+        }
+        return this;
+    }
+
+    public QueryStatisticsAssert hasRelationshipDeleted(int statsdeleted) {
+        //this.actual is the 
+        int relationshipsDeleted = this.actual.getRelationshipsDeleted(); //ctr+alt+v = extraction variables
+        //delete 
+        boolean result = (relationshipsDeleted == statsdeleted);
+        if (!result) {
+            throw new AssertionError("RelationshipDeleted equals " + relationshipsDeleted + " but expected " + statsdeleted)
+        }
+        return this;
+    }
 
 }
