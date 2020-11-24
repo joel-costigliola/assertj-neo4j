@@ -9,3 +9,8 @@ target
 *.iml
 TODO*
 .java-version
+/data
+.ipynb_checkpoints/
+!/src/test/resources/samples/*.cypher
+!/src/test/resources/samples/*.ipynb
+/src/test/resources/samples/

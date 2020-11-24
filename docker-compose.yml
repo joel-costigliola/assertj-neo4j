@@ -1,0 +1,20 @@
+version: '3'
+services:
+
+  datascience-notebook:
+    image: jupyter/datascience-notebook:r-4.0.3
+    volumes:
+      - ./src/test/resources/samples:/home/jovyan/work
+    ports:
+      - 8888:8888
+    container_name: datascience-notebook-container
+
+  neo4j:
+    image: neo4j:4.1.1
+    volumes:
+      - ./data:/data
+    environment:
+      NEO4J_AUTH: none
+    ports:
+      - 7687:7687
+      - 7474:7474

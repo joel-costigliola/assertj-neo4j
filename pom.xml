@@ -11,7 +11,7 @@
   <parent>
     <groupId>org.assertj</groupId>
     <artifactId>assertj-parent-pom</artifactId>
-    <version>2.2.5</version>
+    <version>2.2.8</version>
   </parent>
 
   <scm>
@@ -31,18 +31,43 @@
     <maven.compiler.showWarnings>true</maven.compiler.showWarnings>
   </properties>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.testcontainers</groupId>
+        <artifactId>testcontainers-bom</artifactId>
+        <version>1.15.0</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <dependency>
       <groupId>org.assertj</groupId>
       <artifactId>assertj-core</artifactId>
-      <version>3.13.2</version>
+      <version>3.17.2</version>
     </dependency>
+    <!-- TODO : Should only take the driver -->
+    <!-- TODO : Should be upgrade to neo4J 4.1.1 ? -->
     <dependency>
       <groupId>org.neo4j</groupId>
       <artifactId>neo4j</artifactId>
       <version>3.0.0</version>
     </dependency>
+    <dependency>
+      <groupId>org.neo4j.driver</groupId>
+      <artifactId>neo4j-java-driver</artifactId>
+      <version>4.1.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
     <!-- test dependencies -->
+    <!-- TODO : Upgrade to JUnit 5 -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -54,9 +79,18 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>org.testcontainers</groupId>
       <artifactId>neo4j</artifactId>
-      <version>1.14.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>junit-jupiter</artifactId>
       <scope>test</scope>
     </dependency>
     <!-- Or slf4j-nop ? -->
@@ -66,7 +100,6 @@
       <version>1.2.3</version>
       <scope>test</scope>
     </dependency>
-
   </dependencies>
 
   <build>
