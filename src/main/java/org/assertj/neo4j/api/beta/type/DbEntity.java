@@ -32,7 +32,7 @@ public abstract class DbEntity<T> {
         this.properties = properties;
     }
 
-    public RecordType getType() {
+    public RecordType getRecordType() {
         return recordType;
     }
 

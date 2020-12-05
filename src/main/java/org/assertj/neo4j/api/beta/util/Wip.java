@@ -13,7 +13,11 @@
 package org.assertj.neo4j.api.beta.util;
 
 /**
- * @author pallain - 14/11/2020
+ * WORK IN PROGRESS.
+ *
+ * TODO : SHOULD BE DELETED !
+ *
+ * @author patouche - 14/11/2020
  */
 public class Wip {
 

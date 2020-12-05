@@ -16,8 +16,11 @@ import org.neo4j.driver.Record;
 import org.neo4j.driver.Value;
 import org.neo4j.driver.internal.InternalRecord;
 import org.neo4j.driver.internal.value.NodeValue;
+import org.neo4j.driver.internal.value.RelationshipValue;
 import org.neo4j.driver.types.Node;
+import org.neo4j.driver.types.Relationship;
 
+import javax.management.relation.Relation;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,6 +54,11 @@ public class RecordBuilder {
 
     public RecordBuilder node(Node node) {
         this.values.add(new NodeValue(node));
+        return this;
+    }
+
+    public RecordBuilder relation(Relationship relationship) {
+        this.values.add(new RelationshipValue(relationship));
         return this;
     }
 

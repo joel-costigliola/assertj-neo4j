@@ -12,6 +12,8 @@
  */
 package org.assertj.neo4j.api.beta.testing;
 
+import org.assertj.neo4j.api.beta.type.Relationships;
+
 /**
  * @author patouche - 11/11/2020
  */
@@ -27,5 +29,9 @@ public final class Mocks {
 
     public static NodeBuilder node() {
         return new NodeBuilder();
+    }
+
+    public static RelationshipBuilder relation(final String type) {
+        return new RelationshipBuilder(type);
     }
 }

@@ -12,53 +12,55 @@
  */
 package org.assertj.neo4j.api.beta.error;
 
-import org.assertj.neo4j.api.beta.type.Nodes;
+import org.assertj.neo4j.api.beta.type.DbEntity;
 
 import java.util.List;
 import java.util.Objects;
 
 /**
- * @author pallain - 14/11/2020
+ * @author patouche - 14/11/2020
  */
-public class MissingNodeLabels {
+public class Missing<E extends DbEntity<E>, M> {
 
-    private final Nodes.DbNode node;
+    /** The entity. */
+    private final E entity;
 
-    private final List<String> missingLabels;
+    /** The missing data. */
+    private final List<  M> data;
 
-    public MissingNodeLabels(final Nodes.DbNode node, final List<String> missingLabels) {
-        this.node = node;
-        this.missingLabels = missingLabels;
+    public Missing(final E entity, final List<  M> data) {
+        this.entity = entity;
+        this.data = data;
     }
 
-    public Nodes.DbNode getNode() {
-        return node;
+    public E getEntity() {
+        return entity;
     }
 
-    public List<String> getMissingLabels() {
-        return missingLabels;
+    public List<  M> getData() {
+        return data;
     }
 
     public boolean hasMissing() {
-        return !missingLabels.isEmpty();
+        return !data.isEmpty();
     }
 
     @Override
     public String toString() {
-        return "MissingNodeLabels{node=" + node + ", missingLabels=" + missingLabels + '}';
+        return "Missing{entity=" + entity + ", data=" + data + '}';
     }
 
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        final MissingNodeLabels that = (MissingNodeLabels) o;
-        return Objects.equals(node, that.node)
-               && Objects.equals(missingLabels, that.missingLabels);
+        final Missing<?, ?> that = (Missing) o;
+        return Objects.equals(entity, that.entity)
+               && Objects.equals(data, that.data);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(node, missingLabels);
+        return Objects.hash(entity, data);
     }
 }

@@ -14,6 +14,7 @@ package org.assertj.neo4j.api.beta.integrations;
 
 import org.assertj.neo4j.api.beta.DriverAssertions;
 import org.assertj.neo4j.api.beta.testing.Neo4JDataSet;
+import org.assertj.neo4j.api.beta.type.Drivers;
 import org.assertj.neo4j.api.beta.type.Nodes;
 import org.junit.jupiter.api.Test;
 import org.neo4j.driver.Driver;
@@ -50,7 +51,7 @@ public class ParisIntegrationTests {
                 .haveLabels("Language")
                 .haveProperties("name")
                 .ignoringIds()
-                .contains(Nodes.node().label("Language").property("name", "Scala").build());
+                .contains(Drivers.node().label("Language").property("name", "Scala").build());
     }
 
 }

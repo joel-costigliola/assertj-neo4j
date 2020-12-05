@@ -12,7 +12,6 @@
  */
 package org.assertj.neo4j.api.beta.type;
 
-import org.assertj.core.api.Assertions;
 import org.assertj.neo4j.api.beta.testing.Mocks;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
@@ -28,6 +27,8 @@ import org.neo4j.driver.Values;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.neo4j.api.beta.testing.Mocks.record;
+import static org.assertj.neo4j.api.beta.testing.Mocks.relation;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
@@ -53,19 +54,28 @@ class RelationshipsTests {
     }
 
     @Test
-    void load_whenMultiLabels() {
+    void load() {
         // GIVEN
-        final Nodes nodes = new Nodes(driver);
-        final Result result = Mocks.result()
+        final Relationships relationships = new Relationships(driver, "KNOWS");
+        final Result result;
+        result = Mocks.result()
                 .record(Mocks.record()
-                                .key("key")
-                                .node(Mocks.node().labels("Sample").properties("prop-0", Values.value(true)).build())
+                        .key("key")
+                        .relation(Mocks.relation("SAMPLE")
+                                .id(1)
+                                .properties("prop-0", Values.value(true))
                                 .build()
+                        )
+                        .build()
                 )
                 .record(Mocks.record()
-                                .key("key")
-                                .node(Mocks.node().id(1).labels("Sample").properties("prop-1", Values.value(false)).build())
+                        .key("key")
+                        .relation(Mocks.relation("SAMPLE")
+                                .id(2)
+                                .properties("prop-1", Values.value(false))
                                 .build()
+                        )
+                        .build()
                 )
                 .build();
 
@@ -73,54 +83,18 @@ class RelationshipsTests {
         doReturn(result).when(session).run(anyString(), any(TransactionConfig.class));
 
         // WHEN
-        final List<Nodes.DbNode> dbNodes = nodes.load();
+        final List<Relationships.DbRelationship> dbRelationships = relationships.load();
 
         // THEN
-        assertThat(dbNodes)
+        assertThat(dbRelationships)
                 .hasSize(2)
                 .contains(
-                        Nodes.node().id(0).label("Sample").property("prop-0", true).build(),
-                        Nodes.node().id(1).label("Sample").property("prop-1", false).build()
+                        Drivers.relation("SAMPLE").id(1).property("prop-0", true).build(),
+                        Drivers.relation("SAMPLE").id(2).property("prop-1", false).build()
                 );
 
         verify(driver).session();
-        verify(session).run(eq("MATCH (n ) RETURN n"), any(TransactionConfig.class));
-        verify(session).close();
-    }
-
-    @Test
-    void load_whenNoLabels() {
-        // GIVEN
-        final Nodes nodes = new Nodes(driver);
-        final Result result = Mocks.result()
-                .record(Mocks.record()
-                                .key("key")
-                                .node(Mocks.node().labels("Sample").properties("prop-0", Values.value(true)).build())
-                                .build()
-                )
-                .record(Mocks.record()
-                                .key("key")
-                                .node(Mocks.node().id(1).labels("Sample").properties("prop-1", Values.value(false)).build())
-                                .build()
-                )
-                .build();
-
-        doReturn(session).when(driver).session();
-        doReturn(result).when(session).run(anyString(), any(TransactionConfig.class));
-
-        // WHEN
-        final List<Nodes.DbNode> dbNodes = nodes.load();
-
-        // THEN
-        assertThat(dbNodes)
-                .hasSize(2)
-                .contains(
-                        Nodes.node().id(0).label("Sample").property("prop-0", true).build(),
-                        Nodes.node().id(1).label("Sample").property("prop-1", false).build()
-                );
-
-        verify(driver).session();
-        verify(session).run(eq("MATCH (n ) RETURN n"), any(TransactionConfig.class));
+        verify(session).run(eq("MATCH ()-[r:KNOWS]->() RETURN r"), any(TransactionConfig.class));
         verify(session).close();
     }
 

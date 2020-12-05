@@ -17,6 +17,7 @@ import org.assertj.neo4j.api.beta.testing.AbstractDirtyIntegrationTests;
 import org.assertj.neo4j.api.beta.testing.AbstractIntegrationTests;
 import org.assertj.neo4j.api.beta.testing.Dataset;
 import org.assertj.neo4j.api.beta.testing.Version;
+import org.assertj.neo4j.api.beta.type.Drivers;
 import org.assertj.neo4j.api.beta.type.Nodes;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -45,7 +46,7 @@ class SampleNodesIntegrationTests extends AbstractIntegrationTests {
         public void contains() {
             final Nodes nodes = new Nodes(driver, "Language");
             DriverAssertions.assertThat(nodes)
-                    .contains(Nodes.node().id(6).label("Language").property("name", "Scala").build());
+                    .contains(Drivers.node().id(6).label("Language").property("name", "Scala").build());
         }
 
     }
@@ -58,7 +59,7 @@ class SampleNodesIntegrationTests extends AbstractIntegrationTests {
                 .haveLabels("Language")
                 .haveProperties("name")
                 .ignoringIds()
-                .contains(Nodes.node().label("Language").property("name", "Scala").build());
+                .contains(Drivers.node().label("Language").property("name", "Scala").build());
     }
 
     @Test
@@ -66,7 +67,7 @@ class SampleNodesIntegrationTests extends AbstractIntegrationTests {
         final Nodes nodes = new Nodes(driver, "Language");
         DriverAssertions.assertThat(nodes)
                 .ignoringIds()
-                .contains(Nodes.node().label("Language").property("name", "Scala").build());
+                .contains(Drivers.node().label("Language").property("name", "Scala").build());
     }
 
     @Test
@@ -76,7 +77,7 @@ class SampleNodesIntegrationTests extends AbstractIntegrationTests {
     }
 
     @Test
-    public void haveProperties() {
+    public void havePropertyKeys() {
         final Nodes nodes = new Nodes(driver, "Language");
         DriverAssertions.assertThat(nodes).haveProperties("name");
     }

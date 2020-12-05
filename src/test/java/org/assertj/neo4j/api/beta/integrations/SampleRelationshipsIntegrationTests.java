@@ -15,6 +15,7 @@ package org.assertj.neo4j.api.beta.integrations;
 import org.assertj.neo4j.api.beta.DriverAssertions;
 import org.assertj.neo4j.api.beta.testing.AbstractIntegrationTests;
 import org.assertj.neo4j.api.beta.testing.Dataset;
+import org.assertj.neo4j.api.beta.type.Drivers;
 import org.assertj.neo4j.api.beta.type.Relationships;
 import org.junit.jupiter.api.Test;
 
@@ -33,44 +34,32 @@ class SampleRelationshipsIntegrationTests extends AbstractIntegrationTests {
     public void full() {
         final Relationships relationships = new Relationships(driver, "KNOWS");
         DriverAssertions.assertThat(relationships)
-                .hasSize(7)
-                .haveType("Language")
-                .haveProperties("name")
+                .hasSize(18)
+                .haveType("KNOWS")
+                .havePropertyKeys("level")
                 .ignoringIds()
-                .contains(Relationships.relation().type("Language").property("name", "Scala").build());
+                .contains(Drivers.relation("KNOWS").property("level", 5).build());
     }
 
     @Test
     public void ignoringIds() {
+        // FIXME : Maybe, we should convert Integer => Long ?
         final Relationships relationships = new Relationships(driver, "KNOWS");
         DriverAssertions.assertThat(relationships)
-                .hasSize(7)
-                .haveType("Language")
-                .haveProperties("name")
                 .ignoringIds()
-                .contains(Relationships.relation().type("Language").property("name", "Scala").build());
+                .contains(relationships.create().property("level", 5).build());
     }
 
     @Test
     public void haveType() {
         final Relationships relationships = new Relationships(driver, "KNOWS");
-        DriverAssertions.assertThat(relationships)
-                .hasSize(7)
-                .haveType("Language")
-                .haveProperties("name")
-                .ignoringIds()
-                .contains(Relationships.relation().type("Language").property("name", "Scala").build());
+        DriverAssertions.assertThat(relationships).haveType("KNOWS");
     }
 
     @Test
-    public void haveProperties() {
+    public void havePropertyKeys() {
         final Relationships relationships = new Relationships(driver, "KNOWS");
-        DriverAssertions.assertThat(relationships)
-                .hasSize(7)
-                .haveType("Language")
-                .haveProperties("name")
-                .ignoringIds()
-                .contains(Relationships.relation().type("Language").property("name", "Scala").build());
+        DriverAssertions.assertThat(relationships).havePropertyKeys("level");
     }
 
 }

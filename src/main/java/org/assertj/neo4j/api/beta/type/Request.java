@@ -12,9 +12,15 @@
  */
 package org.assertj.neo4j.api.beta.type;
 
+import org.neo4j.driver.Driver;
+import org.neo4j.driver.Value;
+
 /**
  * @author pallain - 01/11/2020
  */
 public class Request {
 
+    public Request(final Driver driver, final String query, final Value... parameters) {
+
+    }
 }

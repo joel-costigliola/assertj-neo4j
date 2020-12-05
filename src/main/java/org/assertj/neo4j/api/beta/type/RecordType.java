@@ -26,9 +26,9 @@ import java.util.stream.Collectors;
  */
 public enum RecordType {
 
-    NODE(Node.class),
-    RELATIONSHIP(Relationship.class),
-    PATH(Path.class),
+    NODE(Node.class, "nodes"),
+    RELATIONSHIP(Relationship.class, "relationships"),
+    PATH(Path.class, "paths"),
     ;
 
     private final static Map<Class<?>, RecordType> MAPPING = Arrays.stream(values())
@@ -36,8 +36,11 @@ public enum RecordType {
 
     private final Class<?> clazz;
 
-    RecordType(final Class<?> clazz) {
+    private final String pluralForm;
+
+    RecordType(final Class<?> clazz, final String pluralForm) {
         this.clazz = clazz;
+        this.pluralForm = pluralForm;
     }
 
     public static RecordType get(final Object object) {
@@ -49,4 +52,7 @@ public enum RecordType {
         return null;
     }
 
+    public String pluralForm() {
+        return pluralForm;
+    }
 }

@@ -13,9 +13,17 @@
 package org.assertj.neo4j.api.beta.type;
 
 import org.neo4j.driver.Driver;
+import org.neo4j.driver.Record;
+import org.neo4j.driver.Result;
+import org.neo4j.driver.Session;
+import org.neo4j.driver.TransactionConfig;
+import org.neo4j.driver.Value;
 
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author patouche - 31/10/2020
@@ -30,13 +38,29 @@ public class Relationships extends LoadingType<Relationships.DbRelationship> {
         this.type = type;
     }
 
-    public static Relationships.DbRelationshipBuilder relation() {
-        return new DbRelationshipBuilder();
-    }
-
+    /** {@inheritDoc} */
     @Override
     public List<Relationships.DbRelationship> load() {
-        return null;
+        try (Session session = this.driver.session()) {
+            final String query = String.format("MATCH ()-[r:%s]->() RETURN r", type);
+            final Result result = session.run(query, TransactionConfig.builder().build());
+            final List<Record> records = result.list();
+            return records.stream()
+                    .map(Record::values)
+                    .flatMap(Collection::stream)
+                    .map(Value::asRelationship)
+                    .map(r -> new Relationships.DbRelationship(r.id(), r.type(), r.asMap()))
+                    .collect(Collectors.toList());
+        }
+    }
+
+    /**
+     * Create a new {@link DbRelationshipBuilder}.
+     *
+     * @return
+     */
+    public DbRelationshipBuilder create() {
+        return new DbRelationshipBuilder().type(type);
     }
 
     public static class DbRelationship extends DbEntity<DbRelationship> {
@@ -50,6 +74,10 @@ public class Relationships extends LoadingType<Relationships.DbRelationship> {
         public DbRelationship(final Long id, final String type, final Map<String, Object> properties) {
             super(RecordType.RELATIONSHIP, id, properties);
             this.type = type;
+        }
+
+        public String getType() {
+            return type;
         }
 
         @Override
@@ -70,9 +98,10 @@ public class Relationships extends LoadingType<Relationships.DbRelationship> {
 
         private String type;
 
-        private Map<String, Object> properties;
+        private final Map<String, Object> properties = new HashMap<>();
 
-        private DbRelationshipBuilder() {
+        /** Protected constructor. Can be invoke in current package. */
+        protected DbRelationshipBuilder() {
         }
 
         public DbRelationshipBuilder id(final int id) {

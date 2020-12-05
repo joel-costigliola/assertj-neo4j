@@ -78,8 +78,8 @@ class NodesTests {
         assertThat(dbNodes)
                 .hasSize(2)
                 .contains(
-                        Nodes.node().id(0).label("Sample").property("prop-0", true).build(),
-                        Nodes.node().id(1).label("Sample").property("prop-1", false).build()
+                        Drivers.node().id(0).label("Sample").property("prop-0", true).build(),
+                        Drivers.node().id(1).label("Sample").property("prop-1", false).build()
                 );
 
         verify(driver).session();
@@ -115,8 +115,8 @@ class NodesTests {
         assertThat(dbNodes)
                 .hasSize(2)
                 .contains(
-                        Nodes.node().id(0).label("Lbl1").label( "Lbl2").property("prop-0", true).build(),
-                        Nodes.node().id(1).label("Lbl1").label( "Lbl2").property("prop-1", false).build()
+                        Drivers.node().id(0).label("Lbl1").label( "Lbl2").property("prop-0", true).build(),
+                        Drivers.node().id(1).label("Lbl1").label( "Lbl2").property("prop-1", false).build()
                 );
 
         verify(driver).session();

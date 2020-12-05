@@ -14,6 +14,7 @@ package org.assertj.neo4j.api.beta;
 
 import org.assertj.neo4j.api.beta.type.Nodes;
 import org.assertj.neo4j.api.beta.type.Relationships;
+import org.assertj.neo4j.api.beta.type.Request;
 import org.neo4j.driver.Result;
 
 /**
@@ -21,16 +22,15 @@ import org.neo4j.driver.Result;
  */
 public class DriverAssertions {
 
-    public static DriverResultAssert assertThat(final Result result) {
-        return new DriverResultAssert(result);
-    }
-
     public static DriverNodesAssert assertThat(final Nodes nodes) {
         return new DriverNodesAssert(nodes);
     }
 
     public static DriverRelationshipsAssert assertThat(final Relationships relationships) {
         return new DriverRelationshipsAssert(relationships);
+    }
+    public static DriverRequestAssert assertThat(final Request request) {
+        return new DriverRequestAssert(request);
     }
 
 }

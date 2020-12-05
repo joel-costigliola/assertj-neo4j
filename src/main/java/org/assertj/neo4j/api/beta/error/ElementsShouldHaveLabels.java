@@ -14,62 +14,58 @@ package org.assertj.neo4j.api.beta.error;
 
 import org.assertj.core.error.BasicErrorMessageFactory;
 import org.assertj.core.util.Strings;
-import org.assertj.neo4j.api.beta.output.Representations;
-import org.assertj.neo4j.api.beta.type.DbEntity;
 import org.assertj.neo4j.api.beta.type.Nodes;
+import org.assertj.neo4j.api.beta.util.Entities;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * @param <ENTITY> the type of entity where this error occurred.
  * @author patouche - 29/09/2020
  */
 public class ElementsShouldHaveLabels extends BasicErrorMessageFactory {
 
     public ElementsShouldHaveLabels(
-            final List<String> expectedLabels,
-            final List<Nodes.DbNode> nodes,
-            final List<MissingNodeLabels> havingMissingNodeLabels) {
-        super("%nExpecting:%n"
+            final List<Nodes.DbNode> actual, final List<String> expectedLabels,
+            final List<Missing<Nodes.DbNode, String>> missingActual) {
+        super("%nExpecting nodes:%n"
               + "  <%s> to have all the following labels:%n"
               + "  <%s>%n"
-              + "but some labels where missing on:%n%n"
-              + Strings.escapePercent(describeItems(expectedLabels, havingMissingNodeLabels)),
-              Representations.ids(nodes), expectedLabels
+              + "but some labels were missing on:%n%n"
+              + Strings.escapePercent(describeItems(expectedLabels, missingActual)),
+              Entities.outputIds(actual), expectedLabels
         );
     }
 
     /**
      * Create a new error when there is a missing labels on a {@link org.assertj.neo4j.api.beta.type.Nodes.DbNode}.
      *
+     * @param actual                   the database nodes which have missing labels
      * @param expectedLabels          all expected labels
-     * @param nodes                   the database nodes which have missing labels
-     * @param havingMissingNodeLabels all missing labels
+     * @param missingActual all missing labels
      * @return a new instance of {@link ElementsShouldHaveLabels}.
      */
-    public static <E extends DbEntity<E>> ElementsShouldHaveLabels create(
-            final List<String> expectedLabels,
-            final List<Nodes.DbNode> nodes,
-            final List<MissingNodeLabels> havingMissingNodeLabels) {
-        return new ElementsShouldHaveLabels(expectedLabels, nodes, havingMissingNodeLabels);
+    public static ElementsShouldHaveLabels create(
+            final List<Nodes.DbNode> actual, final List<String> expectedLabels,
+            final List<Missing<Nodes.DbNode, String>> missingActual) {
+        return new ElementsShouldHaveLabels(actual, expectedLabels, missingActual);
     }
 
-    private static <E extends DbEntity<E>> String describeItems(
-            final List<String> expectedLabels,
-            final List<MissingNodeLabels> items) {
+    private static String describeItems(
+            final List<String> expectedLabels, final List<Missing<Nodes.DbNode, String>> items) {
         return items.stream()
                 .map(item -> describeItem(expectedLabels, item))
                 .collect(Collectors.joining(String.format("%n%n")));
     }
 
-    private static String describeItem(final List<String> expectedLabels, final MissingNodeLabels item) {
-        final Nodes.DbNode entity = item.getNode();
+    private static String describeItem(final List<String> expectedLabels, final Missing<Nodes.DbNode, String> missing) {
+        final Nodes.DbNode entity = missing.getEntity();
+        final List<String> actualLabels = entity.getLabels().stream().sorted().collect(Collectors.toList());
         return String.format(
                 "  - %s have missing labels: %s%n"
                 + "    Actual: <%s>%n"
                 + "    Expected: <%s>",
-                Representations.id(entity), item.getMissingLabels(), entity.getLabels(), expectedLabels
+                Entities.outputId(entity), missing.getData(), actualLabels, expectedLabels
         );
     }
 

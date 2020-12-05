@@ -12,9 +12,8 @@
  */
 package org.assertj.neo4j.api.beta;
 
-import org.assertj.core.api.Assertions;
-import org.assertj.neo4j.api.beta.testing.Mocks;
-import org.assertj.neo4j.api.beta.testing.NodeBuilder;
+import org.assertj.neo4j.api.beta.type.DbEntity;
+import org.assertj.neo4j.api.beta.type.Drivers;
 import org.assertj.neo4j.api.beta.type.Nodes;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -39,16 +38,18 @@ public class DriverNodesAssertTests {
         void should_return_a_list_of_nodes_without_ids() {
             // GIVEN
             final List<Nodes.DbNode> nodes = Arrays.asList(
-                    Nodes.node().id(22).label("lbl-1").build(),
-                    Nodes.node().id(56).label("lbl-2").build()
+                    Drivers.node().id(22).label("lbl-1").build(),
+                    Drivers.node().id(56).label("lbl-2").build()
             );
-            DriverNodesAssert driverNodesAssert = new DriverNodesAssert(nodes, null);
+            final DriverNodesAssert nodesAssert = new DriverNodesAssert(nodes, null, null);
 
             // WHEN
-            final DriverNodesAssert result = driverNodesAssert.ignoringIds();
+            final DriverNodesAssert result = nodesAssert.ignoringIds();
 
             // THEN
-            Assertions.fail("TODO");
+            assertThat(result.getActual())
+                    .extracting(DbEntity::getId)
+                    .containsOnlyNulls();
         }
     }
 
@@ -57,9 +58,9 @@ public class DriverNodesAssertTests {
     class HaveLabelsTests {
 
         @Test
-        void should_fail_whenNoLabelsProvided() {
+        void should_fail_when_no_labels_provided() {
             // GIVEN
-            final DriverNodesAssert nodesAssert = new DriverNodesAssert(Collections.emptyList(), null);
+            final DriverNodesAssert nodesAssert = new DriverNodesAssert(Collections.emptyList(), null, null);
 
             // WHEN
             final Throwable throwable = catchThrowable(nodesAssert::haveLabels);
@@ -67,13 +68,13 @@ public class DriverNodesAssertTests {
             // THEN
             assertThat(throwable)
                     .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage("The array of values to look for should not be empty");
+                    .hasMessage("The labels to look for should not be null or empty");
         }
 
         @Test
-        void should_fail_whenIterablesIsEmpty() {
+        void should_fail_when_iterable_is_empty() {
             // GIVEN
-            final DriverNodesAssert nodesAssert = new DriverNodesAssert(Collections.emptyList(), null);
+            final DriverNodesAssert nodesAssert = new DriverNodesAssert(Collections.emptyList(), null, null);
 
             // WHEN
             final Throwable throwable = catchThrowable(() -> nodesAssert.haveLabels(Collections.emptyList()));
@@ -85,17 +86,17 @@ public class DriverNodesAssertTests {
         }
 
         @Test
-        void should_pass_whenSingleValue() {
+        void should_pass_when_single_value() {
 
             // GIVEN
             final List<Nodes.DbNode> nodes = Arrays.asList(
-                    Nodes.node().label("Test").build(),
-                    Nodes.node().label("Test").build(),
-                    Nodes.node().label("Test").build(),
-                    Nodes.node().label("Test").build(),
-                    Nodes.node().label("Test").build()
+                    Drivers.node().label("Test").build(),
+                    Drivers.node().label("Test").build(),
+                    Drivers.node().label("Test").build(),
+                    Drivers.node().label("Test").build(),
+                    Drivers.node().label("Test").build()
             );
-            final DriverNodesAssert nodesAssert = new DriverNodesAssert(nodes, null);
+            final DriverNodesAssert nodesAssert = new DriverNodesAssert(nodes, null, null);
 
             // WHEN
             final DriverNodesAssert result = nodesAssert.haveLabels("Test");
@@ -105,23 +106,100 @@ public class DriverNodesAssertTests {
         }
 
         @Test
-        void should_fail_whenSingleValue() {
+        void should_fail_when_single_value() {
             // GIVEN
             final List<Nodes.DbNode> nodes = Arrays.asList(
-                    Nodes.node().label("Test").build(),
-                    Nodes.node().label("Test").build(),
-                    Nodes.node().label("OTHER-LABEL").build(),
-                    Nodes.node().label("Test").build(),
-                    Nodes.node().label("Test").build()
+                    Drivers.node().label("Test").build(),
+                    Drivers.node().label("Test").build(),
+                    Drivers.node().label("OTHER-LABEL").build(),
+                    Drivers.node().label("Test").build(),
+                    Drivers.node().label("Test").build()
             );
-            final DriverNodesAssert nodesAssert = new DriverNodesAssert(nodes, null);
+            final DriverNodesAssert nodesAssert = new DriverNodesAssert(nodes, null, null);
 
             // WHEN
             final Throwable throwable = catchThrowable(() -> nodesAssert.haveLabels("Test"));
 
             // THEN
-            assertThat(throwable).isInstanceOf(IllegalArgumentException.class);
+            assertThat(throwable)
+                    .isInstanceOf(AssertionError.class)
+            .hasMessageContainingAll("Expecting nodes:", "to have all the following labels:");
         }
+    }
+
+    @Nested
+    class HavePropertyKeysTests {
+
+        private final List<Nodes.DbNode> samplePropNodes = Arrays.asList(
+                Drivers.node().id(1).property("prop", "value-1").build(),
+                Drivers.node().id(2).property("prop", "value-2").build(),
+                Drivers.node().id(3).property("prop", "value-3").build(),
+                Drivers.node().id(4).property("prop", "value-4").build(),
+                Drivers.node().id(5).property("prop", "value-5").build()
+        );
+
+        @Test
+        void should_fail_when_no_labels_provided() {
+            // GIVEN
+            final DriverNodesAssert nodesAssert = new DriverNodesAssert(samplePropNodes, null, null);
+
+            // WHEN
+            final Throwable throwable = catchThrowable(nodesAssert::havePropertyKeys);
+
+            // THEN
+            assertThat(throwable)
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("The property keys to look for should not be null or empty");
+        }
+
+        @Test
+        void should_fail_when_iterable_is_empty() {
+            // GIVEN
+            final DriverNodesAssert nodesAssert = new DriverNodesAssert(samplePropNodes, null, null);
+
+            // WHEN
+            final Throwable throwable = catchThrowable(() -> nodesAssert.havePropertyKeys(Collections.emptyList()));
+
+            // THEN
+            assertThat(throwable)
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("The iterable of property keys to look for should not be empty");
+        }
+
+        @Test
+        void should_fail_when_nodes_have_missing_values() {
+            // GIVEN
+            final List<Nodes.DbNode> nodes = Arrays.asList(
+                    Drivers.node().id(1).property("prop", "value-1").build(),
+                    Drivers.node().id(2).property("other-prop", "value-2").build(),
+                    Drivers.node().id(3).property("prop", "value-3").build(),
+                    Drivers.node().id(4).property("other-prop", "value-4").build(),
+                    Drivers.node().id(5).property("prop", "value-5").build()
+            );
+            final DriverNodesAssert nodesAssert = new DriverNodesAssert(nodes, null, null);
+
+            // WHEN
+            final Throwable throwable = catchThrowable(() -> nodesAssert.havePropertyKeys("prop"));
+
+            // THEN
+            assertThat(throwable)
+                    .isInstanceOf(AssertionError.class)
+                    .hasMessageContainingAll("Expecting nodes:", "but some property keys were missing on:");
+        }
+
+        @Test
+        void should_pass() {
+            // GIVEN
+            final DriverNodesAssert nodesAssert = new DriverNodesAssert(samplePropNodes, null, null);
+
+            // WHEN
+            final DriverNodesAssert result = nodesAssert.havePropertyKeys("prop");
+
+            // THEN
+            assertThat(result).isSameAs(nodesAssert);
+        }
+
+
     }
 
 }

@@ -37,15 +37,21 @@ public class Nodes extends LoadingType<Nodes.DbNode> {
     /** The node labels. */
     private final List<String> labels;
 
+    /**
+     * Class constructor for {@link Nodes}.
+     *
+     * This will allow you to write easy assertions on your database nodes.
+     *
+     * @param driver the neo4j driver
+     * @param labels the nodes labels to watch
+     */
     public Nodes(final Driver driver, final String... labels) {
         super(driver, RecordType.NODE);
         this.labels = Arrays.asList(labels);
     }
 
-    public static DbNodeBuilder node() {
-        return new DbNodeBuilder();
-    }
-
+    /** {@inheritDoc} */
+    @Override
     public List<DbNode> load() {
         try (Session session = this.driver.session()) {
             final String queryLabels = labels.stream().map(i -> ":" + i).collect(Collectors.joining(""));
@@ -86,7 +92,7 @@ public class Nodes extends LoadingType<Nodes.DbNode> {
         public DbNode withoutId() {
             return new DbNode(this.labels, this.properties);
         }
-        
+
         @Override
         public String toString() {
             return entityRepresentation("labels=" + labels);
@@ -115,7 +121,7 @@ public class Nodes extends LoadingType<Nodes.DbNode> {
 
         private final Map<String, Object> properties = new HashMap<>();
 
-        private DbNodeBuilder() {
+        protected DbNodeBuilder() {
         }
 
         public DbNodeBuilder id(final int id) {

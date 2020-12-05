@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * @author pallain - 09/11/2020
  */
-abstract class LoadingType<T> {
+public abstract class LoadingType<T> {
 
     /** The Neo4j Database driver. */
     protected final Driver driver;
@@ -43,5 +43,5 @@ abstract class LoadingType<T> {
      *
      * @return the list of records transform into a expected type
      */
-    abstract List<T> load();
+    public abstract List<T> load();
 }
