@@ -44,13 +44,14 @@ public class ElementsShouldHaveLabelsTests {
         // THEN
         Assertions.assertThat(error.create()).isEqualToNormalizingNewlines(
                 "\nExpecting nodes:\n"
-                + "  <[\"NODE{id=1}\", \"NODE{id=2}\", \"NODE{id=3}\"]> to have all the following labels:\n"
-                + "  <[\"LBL_1\", \"LBL_2\", \"LBL_3\"]>\n"
+                + "  [\"NODE{id=1}\", \"NODE{id=2}\", \"NODE{id=3}\"]\n"
+                + "to have all the following labels:\n"
+                + "  [\"LBL_1\", \"LBL_2\", \"LBL_3\"]\n"
                 + "but some labels were missing on:\n"
                 + "\n"
                 + "  - NODE{id=2} have missing labels: [LBL_2]\n"
-                + "    Actual: <[LBL_1, LBL_3]>\n"
-                + "    Expected: <[LBL_1, LBL_2, LBL_3]>"
+                + "      Actual  : [LBL_1, LBL_3]\n"
+                + "      Expected: [LBL_1, LBL_2, LBL_3]"
         );
 
     }
@@ -74,25 +75,26 @@ public class ElementsShouldHaveLabelsTests {
         // THEN
         Assertions.assertThat(error.create()).isEqualToNormalizingNewlines(
                 "\nExpecting nodes:\n"
-                + "  <[\"NODE{id=2}\", \"NODE{id=3}\", \"NODE{id=4}\", \"NODE{id=5}\"]> to have all the following labels:\n"
-                + "  <[\"LBL_1\", \"LBL_2\", \"LBL_3\"]>\n"
+                + "  [\"NODE{id=2}\", \"NODE{id=3}\", \"NODE{id=4}\", \"NODE{id=5}\"]\n"
+                + "to have all the following labels:\n"
+                + "  [\"LBL_1\", \"LBL_2\", \"LBL_3\"]\n"
                 + "but some labels were missing on:\n"
                 + "\n"
                 + "  - NODE{id=2} have missing labels: [LBL_1]\n"
-                + "    Actual: <[LBL_2, LBL_3]>\n"
-                + "    Expected: <[LBL_1, LBL_2, LBL_3]>\n"
+                + "      Actual  : [LBL_2, LBL_3]\n"
+                + "      Expected: [LBL_1, LBL_2, LBL_3]\n"
                 + "\n"
                 + "  - NODE{id=3} have missing labels: [LBL_2]\n"
-                + "    Actual: <[LBL_1, LBL_3]>\n"
-                + "    Expected: <[LBL_1, LBL_2, LBL_3]>\n"
+                + "      Actual  : [LBL_1, LBL_3]\n"
+                + "      Expected: [LBL_1, LBL_2, LBL_3]\n"
                 + "\n"
                 + "  - NODE{id=4} have missing labels: [LBL_3]\n"
-                + "    Actual: <[LBL_1, LBL_2]>\n"
-                + "    Expected: <[LBL_1, LBL_2, LBL_3]>\n"
+                + "      Actual  : [LBL_1, LBL_2]\n"
+                + "      Expected: [LBL_1, LBL_2, LBL_3]\n"
                 + "\n"
                 + "  - NODE{id=5} have missing labels: [LBL_2, LBL_3]\n"
-                + "    Actual: <[LBL_1]>\n"
-                + "    Expected: <[LBL_1, LBL_2, LBL_3]>"
+                + "      Actual  : [LBL_1]\n"
+                + "      Expected: [LBL_1, LBL_2, LBL_3]"
         );
 
     }

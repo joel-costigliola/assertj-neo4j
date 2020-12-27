@@ -13,8 +13,8 @@
 package org.assertj.neo4j.api.beta.integrations;
 
 import org.assertj.neo4j.api.beta.DriverAssertions;
-import org.assertj.neo4j.api.beta.testing.AbstractIntegrationTests;
 import org.assertj.neo4j.api.beta.testing.Dataset;
+import org.assertj.neo4j.api.beta.testing.IntegrationTests;
 import org.assertj.neo4j.api.beta.type.Request;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -27,7 +27,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
  * @author patouche - 5/26/20.
  */
 @Testcontainers
-class SampleRequestIntegrationTests extends AbstractIntegrationTests {
+class SampleRequestIntegrationTests extends IntegrationTests.DatasetTests {
 
     public SampleRequestIntegrationTests() {
         super(Dataset.GITHUB_LANGUAGE);

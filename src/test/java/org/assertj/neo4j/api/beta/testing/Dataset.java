@@ -14,6 +14,7 @@ package org.assertj.neo4j.api.beta.testing;
 
 public enum Dataset {
 
+    TYPES("samples/types.cypher"),
     GITHUB_LANGUAGE("samples/language.cypher"),
     EUROPEAN_CITIES("samples/paris-subway.cypher"),
     ;

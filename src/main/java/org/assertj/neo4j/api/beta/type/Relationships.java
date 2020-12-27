@@ -28,11 +28,17 @@ import java.util.stream.Collectors;
 /**
  * @author patouche - 31/10/2020
  */
-public class Relationships extends LoadingType<Relationships.DbRelationship> {
+public class Relationships extends AbstractDbData<Relationships.DbRelationship> {
 
     /** The relationship type. */
     private final String type;
 
+    /**
+     * Create a new relationships for assertions.
+     *
+     * @param driver the neo4j driver
+     * @param type   the relationships type.
+     */
     public Relationships(final Driver driver, final String type) {
         super(driver, RecordType.RELATIONSHIP);
         this.type = type;
@@ -49,7 +55,7 @@ public class Relationships extends LoadingType<Relationships.DbRelationship> {
                     .map(Record::values)
                     .flatMap(Collection::stream)
                     .map(Value::asRelationship)
-                    .map(r -> new Relationships.DbRelationship(r.id(), r.type(), r.asMap()))
+                    .map(r -> new Relationships.DbRelationship(r.id(), r.type(), ValueType.convertMap(r.asMap())))
                     .collect(Collectors.toList());
         }
     }
@@ -57,7 +63,7 @@ public class Relationships extends LoadingType<Relationships.DbRelationship> {
     /**
      * Create a new {@link DbRelationshipBuilder}.
      *
-     * @return
+     * @return a new {@link DbRelationshipBuilder} with the same {@link #type} of the current relationships.
      */
     public DbRelationshipBuilder create() {
         return new DbRelationshipBuilder().type(type);
@@ -67,11 +73,11 @@ public class Relationships extends LoadingType<Relationships.DbRelationship> {
 
         private final String type;
 
-        public DbRelationship(final String type, final Map<String, Object> properties) {
+        DbRelationship(final String type, final Map<String, DbValue> properties) {
             this(null, type, properties);
         }
 
-        public DbRelationship(final Long id, final String type, final Map<String, Object> properties) {
+        DbRelationship(final Long id, final String type, final Map<String, DbValue> properties) {
             super(RecordType.RELATIONSHIP, id, properties);
             this.type = type;
         }
@@ -98,10 +104,9 @@ public class Relationships extends LoadingType<Relationships.DbRelationship> {
 
         private String type;
 
-        private final Map<String, Object> properties = new HashMap<>();
+        private final Map<String, DbValue> properties = new HashMap<>();
 
-        /** Protected constructor. Can be invoke in current package. */
-        protected DbRelationshipBuilder() {
+        DbRelationshipBuilder() {
         }
 
         public DbRelationshipBuilder id(final int id) {
@@ -114,7 +119,7 @@ public class Relationships extends LoadingType<Relationships.DbRelationship> {
         }
 
         public DbRelationshipBuilder property(final String key, final Object value) {
-            this.properties.put(key, value);
+            this.properties.put(key, ValueType.convert(value));
             return this;
         }
 

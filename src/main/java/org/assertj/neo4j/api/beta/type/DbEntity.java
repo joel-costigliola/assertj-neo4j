@@ -12,10 +12,15 @@
  */
 package org.assertj.neo4j.api.beta.type;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
+ * Abstract class for any neo4j entity.
+ *
  * @author patouche - 09/11/2020
  */
 public abstract class DbEntity<T> {
@@ -24,9 +29,9 @@ public abstract class DbEntity<T> {
 
     protected Long id;
 
-    protected Map<String, Object> properties;
+    protected final Map<String, DbValue> properties;
 
-    public DbEntity(final RecordType recordType, final Long id, final Map<String, Object> properties) {
+    protected DbEntity(final RecordType recordType, final Long id, final Map<String, DbValue> properties) {
         this.recordType = recordType;
         this.id = id;
         this.properties = properties;
@@ -44,27 +49,33 @@ public abstract class DbEntity<T> {
         this.id = id;
     }
 
-    public Map<String, Object> getProperties() {
+    public Map<String, DbValue> getProperties() {
         return properties;
     }
 
-    public void setProperties(final Map<String, Object> properties) {
-        this.properties = properties;
+    public List<String> getPropertyKeys() {
+        return this.properties.keySet().stream().distinct().sorted().collect(Collectors.toList());
+    }
+
+    public Object getPropertyValue(final String key) {
+        return Optional.ofNullable(properties.get(key)).map(DbValue::getContent).orElse(null);
+    }
+
+    public ValueType getPropertyType(final String key) {
+        return Optional.ofNullable(properties.get(key)).map(DbValue::getType).orElse(null);
     }
 
     public abstract T withoutId();
-
 
     /**
      * Design for unified {@link #toString()} representation.
      */
     protected String entityRepresentation(final String prefix) {
         if (id == null) {
-            return recordType + "{" +  prefix+ ", properties=" + properties + '}';
+            return recordType + "{" +  prefix + ", properties=" + properties + '}';
         }
         return recordType + "{id=" + id + ", " + prefix + ", properties=" + properties + '}';
     }
-
 
     @Override
     public boolean equals(final Object o) {

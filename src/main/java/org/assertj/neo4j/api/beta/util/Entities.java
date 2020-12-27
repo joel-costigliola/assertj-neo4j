@@ -76,24 +76,18 @@ public final class Entities {
         return Streams.stream(keys).allMatch(key -> hasKey(entity, key));
     }
 
+    /**
+     * Check if all entities have the provided keys.
+     *
+     * @param entities the entities to check
+     * @param keys     the keys to test
+     * @param <E>      the entity type
+     * @return true if all entities have the provided keys.
+     */
     public static <E extends DbEntity<E>> boolean haveAllKeys(final List<E> entities, final Iterable<String> keys) {
         return entities.stream().allMatch(entity -> hasAllKeys(entity, keys));
     }
 
-    public static <E extends DbEntity<E>> Missing<E, String> missingPropertyKeys(
-            E entity, final Iterable<String> keys) {
-        final Set<String> entityKeys = entity.getProperties().keySet();
-        final List<String> missingKeys = Streams.stream(keys)
-                .filter(expectedLabel -> !entityKeys.contains(expectedLabel))
-                .collect(Collectors.toList());
-        return new Missing<>(entity, missingKeys);
-    }
 
-    public static <E extends DbEntity<E>> List<Missing<E, String>> missingPropertyKeys(
-            final List<E> entities, final Iterable<String> keys) {
-        return entities.stream()
-                .map(node -> Entities.missingPropertyKeys(node, keys))
-                .filter(Missing::hasMissing)
-                .collect(Collectors.toList());
-    }
+
 }

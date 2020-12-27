@@ -17,9 +17,9 @@ import org.neo4j.driver.Driver;
 import java.util.List;
 
 /**
- * @author pallain - 09/11/2020
+ * @author patouche - 09/11/2020
  */
-public abstract class LoadingType<T> {
+public abstract class AbstractDbData<T> {
 
     /** The Neo4j Database driver. */
     protected final Driver driver;
@@ -33,7 +33,7 @@ public abstract class LoadingType<T> {
      * @param driver the Neo4J database driver
      * @param recordType   the record type
      */
-    protected LoadingType(final Driver driver, final RecordType recordType) {
+    protected AbstractDbData(final Driver driver, final RecordType recordType) {
         this.driver = driver;
         this.recordType = recordType;
     }

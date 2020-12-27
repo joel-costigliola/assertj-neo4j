@@ -55,7 +55,7 @@ public final class NodeLabels {
     }
 
     public static List<Missing<Nodes.DbNode, String>> missing(final List<Nodes.DbNode> nodes,
-            final List<String> labels) {
+                                                              final List<String> labels) {
         return nodes.stream()
                 .map(node -> NodeLabels.missing(node, labels))
                 .filter(Missing::hasMissing)

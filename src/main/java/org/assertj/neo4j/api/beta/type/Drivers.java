@@ -13,6 +13,8 @@
 package org.assertj.neo4j.api.beta.type;
 
 /**
+ * Create builder for generating object to compare
+ *
  * @author patouche - 27/11/2020
  */
 public final class Drivers {

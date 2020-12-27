@@ -28,6 +28,9 @@ import java.util.stream.Collectors;
  */
 public class DriverNodesAssert extends AbstractEntitiesAssert<DriverNodesAssert, Nodes, Nodes.DbNode> {
 
+    private static final EntitiesAssertFactory<DriverNodesAssert, Nodes.DbNode> FACTORY =
+            (entities, current) -> new DriverNodesAssert(entities, current.loadingType, current);
+
     /**
      * Create new assertions on {@link Nodes}.
      *
@@ -41,15 +44,8 @@ public class DriverNodesAssert extends AbstractEntitiesAssert<DriverNodesAssert,
         this(nodes.load(), nodes, parent);
     }
 
-    protected DriverNodesAssert(List<Nodes.DbNode> dbNodes, final Nodes nodes, final DriverNodesAssert parent) {
-        super(RecordType.NODE, nodes, dbNodes, DriverNodesAssert.class, parent);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public DriverNodesAssert ignoringIds() {
-        final List<Nodes.DbNode> nodes = actual.stream().map(Nodes.DbNode::withoutId).collect(Collectors.toList());
-        return new DriverNodesAssert(nodes, this.loadingType, this);
+    protected DriverNodesAssert(final List<Nodes.DbNode> entities, final Nodes nodes, final DriverNodesAssert parent) {
+        super(RecordType.NODE, nodes, entities, DriverNodesAssert.class, FACTORY, parent);
     }
 
     /**

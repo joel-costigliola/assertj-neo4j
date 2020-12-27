@@ -29,6 +29,7 @@ public class DriverAssertions {
     public static DriverRelationshipsAssert assertThat(final Relationships relationships) {
         return new DriverRelationshipsAssert(relationships);
     }
+
     public static DriverRequestAssert assertThat(final Request request) {
         return new DriverRequestAssert(request);
     }

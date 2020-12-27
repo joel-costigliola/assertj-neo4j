@@ -13,8 +13,8 @@
 package org.assertj.neo4j.api.beta.integrations;
 
 import org.assertj.neo4j.api.beta.DriverAssertions;
-import org.assertj.neo4j.api.beta.testing.AbstractIntegrationTests;
 import org.assertj.neo4j.api.beta.testing.Dataset;
+import org.assertj.neo4j.api.beta.testing.IntegrationTests;
 import org.assertj.neo4j.api.beta.type.Drivers;
 import org.assertj.neo4j.api.beta.type.Relationships;
 import org.junit.jupiter.api.Test;
@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Test;
  *
  * @author patouche - 5/26/20.
  */
-class SampleRelationshipsIntegrationTests extends AbstractIntegrationTests {
+class SampleRelationshipsIntegrationTests extends IntegrationTests.DatasetTests {
 
     public SampleRelationshipsIntegrationTests() {
         super(Dataset.GITHUB_LANGUAGE);
@@ -43,7 +43,6 @@ class SampleRelationshipsIntegrationTests extends AbstractIntegrationTests {
 
     @Test
     public void ignoringIds() {
-        // FIXME : Maybe, we should convert Integer => Long ?
         final Relationships relationships = new Relationships(driver, "KNOWS");
         DriverAssertions.assertThat(relationships)
                 .ignoringIds()

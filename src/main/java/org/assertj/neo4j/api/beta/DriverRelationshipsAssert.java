@@ -13,6 +13,7 @@
 package org.assertj.neo4j.api.beta;
 
 import org.assertj.neo4j.api.beta.error.ElementsShouldHaveType;
+import org.assertj.neo4j.api.beta.type.Nodes;
 import org.assertj.neo4j.api.beta.type.RecordType;
 import org.assertj.neo4j.api.beta.type.Relationships;
 import org.assertj.neo4j.api.beta.util.RelationshipTypes;
@@ -26,6 +27,9 @@ import java.util.stream.Collectors;
 public class DriverRelationshipsAssert
         extends AbstractEntitiesAssert<DriverRelationshipsAssert, Relationships, Relationships.DbRelationship> {
 
+    /** The factory. */
+    private static final EntitiesAssertFactory<DriverRelationshipsAssert, Relationships.DbRelationship> FACTORY =
+            (entities, current) -> new DriverRelationshipsAssert(entities, current.loadingType, current);
     /**
      * Create new assertions on {@link Relationships}.
      *
@@ -42,15 +46,7 @@ public class DriverRelationshipsAssert
     public DriverRelationshipsAssert(
             final List<Relationships.DbRelationship> dbRelationships, final Relationships relationships,
             final DriverRelationshipsAssert parent) {
-        super(RecordType.RELATIONSHIP, relationships, dbRelationships, DriverRelationshipsAssert.class, parent);
-    }
-
-    /** {@inheritDoc} */
-    public DriverRelationshipsAssert ignoringIds() {
-        final List<Relationships.DbRelationship> entities = actual.stream()
-                .map(Relationships.DbRelationship::withoutId)
-                .collect(Collectors.toList());
-        return new DriverRelationshipsAssert(entities, this.loadingType, this);
+        super(RecordType.RELATIONSHIP, relationships, dbRelationships, DriverRelationshipsAssert.class, FACTORY, parent);
     }
 
     /**
@@ -61,7 +57,7 @@ public class DriverRelationshipsAssert
      */
     public DriverRelationshipsAssert haveType(final String expectedType) {
         if (!RelationshipTypes.are(expectedType, actual)) {
-            throwAssertionError(ElementsShouldHaveType.create(actual, expectedType, RelationshipTypes.others(expectedType, actual)));
+            throwAssertionError(ElementsShouldHaveType.create(actual, expectedType));
         }
         return myself;
     }

@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * @author pallain - 25/11/2020
+ * @author patouche - 25/11/2020
  */
 public final class RelationshipTypes {
 

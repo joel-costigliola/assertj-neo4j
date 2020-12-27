@@ -27,11 +27,12 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
 /**
- * @author pallain - 12/11/2020
+ * @author patouche - 12/11/2020
  */
 public class DriverNodesAssertTests {
 
     @Nested
+    @DisplayName("ignoringIds")
     class IgnoringIdsTests {
 
         @Test
@@ -127,79 +128,7 @@ public class DriverNodesAssertTests {
         }
     }
 
-    @Nested
-    class HavePropertyKeysTests {
-
-        private final List<Nodes.DbNode> samplePropNodes = Arrays.asList(
-                Drivers.node().id(1).property("prop", "value-1").build(),
-                Drivers.node().id(2).property("prop", "value-2").build(),
-                Drivers.node().id(3).property("prop", "value-3").build(),
-                Drivers.node().id(4).property("prop", "value-4").build(),
-                Drivers.node().id(5).property("prop", "value-5").build()
-        );
-
-        @Test
-        void should_fail_when_no_labels_provided() {
-            // GIVEN
-            final DriverNodesAssert nodesAssert = new DriverNodesAssert(samplePropNodes, null, null);
-
-            // WHEN
-            final Throwable throwable = catchThrowable(nodesAssert::havePropertyKeys);
-
-            // THEN
-            assertThat(throwable)
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage("The property keys to look for should not be null or empty");
-        }
-
-        @Test
-        void should_fail_when_iterable_is_empty() {
-            // GIVEN
-            final DriverNodesAssert nodesAssert = new DriverNodesAssert(samplePropNodes, null, null);
-
-            // WHEN
-            final Throwable throwable = catchThrowable(() -> nodesAssert.havePropertyKeys(Collections.emptyList()));
-
-            // THEN
-            assertThat(throwable)
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage("The iterable of property keys to look for should not be empty");
-        }
-
-        @Test
-        void should_fail_when_nodes_have_missing_values() {
-            // GIVEN
-            final List<Nodes.DbNode> nodes = Arrays.asList(
-                    Drivers.node().id(1).property("prop", "value-1").build(),
-                    Drivers.node().id(2).property("other-prop", "value-2").build(),
-                    Drivers.node().id(3).property("prop", "value-3").build(),
-                    Drivers.node().id(4).property("other-prop", "value-4").build(),
-                    Drivers.node().id(5).property("prop", "value-5").build()
-            );
-            final DriverNodesAssert nodesAssert = new DriverNodesAssert(nodes, null, null);
-
-            // WHEN
-            final Throwable throwable = catchThrowable(() -> nodesAssert.havePropertyKeys("prop"));
-
-            // THEN
-            assertThat(throwable)
-                    .isInstanceOf(AssertionError.class)
-                    .hasMessageContainingAll("Expecting nodes:", "but some property keys were missing on:");
-        }
-
-        @Test
-        void should_pass() {
-            // GIVEN
-            final DriverNodesAssert nodesAssert = new DriverNodesAssert(samplePropNodes, null, null);
-
-            // WHEN
-            final DriverNodesAssert result = nodesAssert.havePropertyKeys("prop");
-
-            // THEN
-            assertThat(result).isSameAs(nodesAssert);
-        }
 
 
-    }
 
 }

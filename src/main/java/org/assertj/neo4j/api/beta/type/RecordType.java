@@ -22,7 +22,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * @author pallain - 02/11/2020
+ * @author patouche - 02/11/2020
  */
 public enum RecordType {
 

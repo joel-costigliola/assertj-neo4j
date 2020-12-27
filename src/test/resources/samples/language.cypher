@@ -1,3 +1,7 @@
+// WARNING :
+// ALL OF VALUES DESCRIBE BELLOW IS NOT REAL AND HAVE BEEN DEFINE ONLY TO HAVE
+// A DATASET TO RUN SOME INTEGRATION TESTS
+
 // Nodes
 
 CREATE
@@ -13,22 +17,22 @@ CREATE
 CREATE
   (HLecomte:Person:Developer {
     name:          'Hanspeter Lecomte',
-    date_of_birth: '1975-10-07T06:48:59.527Z',
+    date_of_birth: date('1975-10-07'),
     picture:       'https://randomuser.me/api/portraits/men/37.jpg'
   }),
   (JAnderson:Person:Developer {
     name:          'Judy Anderson',
-    date_of_birth: '1984-12-26T15:30:30.434Z',
+    date_of_birth: date('1984-12-26'),
     picture:       'https://randomuser.me/api/portraits/women/68.jpg'
   }),
   (MKing:Person:Developer {
     name:          'Mike King',
-    date_of_birth: '1994-07-24T22:53:30.778Z',
+    date_of_birth: date('1994-07-24'),
     picture:       'https://randomuser.me/api/portraits/men/41.jpg'
   }),
   (ZCote:Person:Developer {
     name:          'Zachary Côté',
-    date_of_birth: '1956-03-14T14:08:38.472Z',
+    date_of_birth: date('1956-03-14'),
     picture:       'https://randomuser.me/api/portraits/men/35.jpg'
   }),
   (RGros:Person:Sysadmin {
@@ -37,7 +41,7 @@ CREATE
   }),
   (FJordan:Person:SRE {
     name:          'Florence Jordan',
-    date_of_birth: '1992-03-06T08:28:52.108Z'
+    date_of_birth: date('1992-03-06')
   }),
   (KTurner:Person:DBA {
     name: 'Keira Turner'
@@ -45,40 +49,124 @@ CREATE
 
 CREATE
   (Assertj_AssertjCore:Repo {
-    url: 'https://github.com/assertj/assertj-core'
+    name: 'assertj-core',
+    owner: 'assertj',
+    url: 'https://github.com/assertj/assertj-core',
+    creation_date: localdatetime('2013-03-14T16:18:49'),
+    onboarding_duration: duration({  minutes: 3 }),
+    active_branches: ['main', 'dev' ],
+    stats_items: ['branches', 'tags', 'stars', 'fork'],
+    stats_values: [17, 42, 3450, 345]
   }),
   (Neo4j_Neo4j:Repo {
-    url: 'https://github.com/neo4j/neo4j'
+    name: 'neo4j',
+    owner: 'neo4j',
+    url: 'https://github.com/neo4j/neo4j',
+    creation_date: localdatetime('2012-11-12T08:46:15'),
+    onboarding_duration: duration({  minutes: 15 }),
+    active_branches: ['master', 'dev' ],
+    stats_items: ['branches', 'tags', 'stars', 'fork'],
+    stats_values: [17, 42, 3450, 345]
   }),
   (JunitTeam_Junit5:Repo {
-    url: 'https://github.com/junit-team/junit5'
+    name: 'junit5',
+    owner: 'junit-team',
+    url: 'https://github.com/junit-team/junit5',
+    creation_date: localdatetime('2015-01-11T19:06:10'),
+    onboarding_duration: duration({  minutes: 10 }),
+    active_branches: ['main', 'dev', 'junit-4-support'],
+    stats_items: ['branches', 'tags', 'stars', 'fork'],
+    stats_values: [17, 42, 3450, 345]
   }),
   (Urfave_Cli:Repo {
-    url: 'https://github.com/urfave/cli'
+    name: 'cli',
+    owner: 'urfave',
+    url: 'https://github.com/urfave/cli',
+    creation_date: localdatetime('2013-07-13T19:32:06'),
+    onboarding_duration: duration({  minutes: 5 }),
+    active_branches: ['master', 'dev', '2.0' ],
+    stats_items: ['branches', 'tags', 'stars', 'fork'],
+    stats_values: [17, 42, 3450, 345]
   }),
   (Labstack_Echo:Repo {
-    url: 'https://github.com/labstack/echo'
+    name: 'echo',
+    owner: 'labstack',
+    url: 'https://github.com/labstack/echo',
+    creation_date: localdatetime('2015-03-01T17:43:01'),
+    onboarding_duration: duration({  minutes: 10 }),
+    active_branches: ['master' ],
+    stats_items: ['branches', 'tags', 'stars', 'fork'],
+    stats_values: [17, 42, 3450, 345]
   }),
   (Ktorio_Ktor:Repo {
-    url: 'https://github.com/ktorio/ktor'
+    name: 'ktor',
+    owner: 'ktorio',
+    url: 'https://github.com/ktorio/ktor',
+    creation_date: localdatetime('2015-08-03T16:49:36'),
+    onboarding_duration: duration({  minutes: 20 }),
+    active_branches: ['main', 'jvm', 'native' ],
+    stats_items: ['branches', 'tags', 'stars', 'fork'],
+    stats_values: [17, 42, 3450, 345]
   }),
   (Kubernetes_Kubernetes:Repo {
-    url: 'https://github.com/kubernetes/kubernetes'
+    name: 'kubernetes',
+    owner: 'kubernetes',
+    url: 'https://github.com/kubernetes/kubernetes',
+    creation_date: localdatetime('2014-06-06T22:56:04'),
+    onboarding_duration: duration({  minutes: 30 }),
+    active_branches: ['main', 'dev', '1.19.X', '1.20.X' ],
+    stats_items: ['branches', 'tags', 'stars', 'fork'],
+    stats_values: [17, 42, 3450, 345]
   }),
   (Grafana_Tempo:Repo {
-    url: 'https://github.com/grafana/tempo'
+    name: 'tempo',
+    owner: 'grafana',
+    url: 'https://github.com/grafana/tempo',
+    creation_date: localdatetime('2020-01-24T18:05:02'),
+    onboarding_duration: duration({  minutes: 25 }),
+    active_branches: ['main'],
+    stats_items: ['branches', 'tags', 'stars', 'fork'],
+    stats_values: [17, 42, 3450, 345]
   }),
   (Prometheus_Prometheus:Repo {
-    url: 'https://github.com/prometheus/prometheus'
+    name: 'prometheus',
+    owner: 'prometheus',
+    url: 'https://github.com/prometheus/prometheus',
+    creation_date: localdatetime('2012-11-24T11:14:12'),
+    onboarding_duration: duration({  minutes: 25 }),
+    active_branches: ['master'],
+    stats_items: ['branches', 'tags', 'stars', 'fork'],
+    stats_values: [17, 42, 3450, 345]
   }),
   (Pallets_Flask:Repo {
-    url: 'https://github.com/pallets/flask/'
+    name: 'flask',
+    owner: 'pallets',
+    url: 'https://github.com/pallets/flask',
+    creation_date: localdatetime('2010-04-06T11:11:59'),
+    onboarding_duration: duration({  minutes: 20 }),
+    active_branches: ['main', 'python-2.7', 'python-3'],
+    stats_items: ['branches', 'tags', 'stars', 'fork'],
+    stats_values: [17, 42, 3450, 345]
   }),
   (Pallets_Click:Repo {
-    url: 'https://github.com/pallets/click/'
+    name: 'click',
+    owner: 'pallets',
+    url: 'https://github.com/pallets/click',
+    creation_date: localdatetime('2014-04-24T09:52:19'),
+    onboarding_duration: duration({  minutes: 5 }),
+    active_branches: ['master', 'python-2.7', 'python-3'],
+    stats_items: ['branches', 'tags', 'stars', 'fork'],
+    stats_values: [17, 42, 3450, 345]
   }),
   (Sstephenson_Bats:Repo {
-    url: 'https://github.com/sstephenson/bats'
+    name: 'bats',
+    owner: 'sstephenson',
+    url: 'https://github.com/sstephenson/bats',
+    creation_date: localdatetime('2011-12-28T18:40:33'),
+    onboarding_duration: duration({  minutes: 3 }),
+    active_branches: ['master'],
+    stats_items: ['branches', 'tags', 'stars', 'fork'],
+    stats_values: [17, 42, 3450, 345]
   })
 
 // Some relationships

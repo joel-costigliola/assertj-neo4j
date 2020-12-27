@@ -26,7 +26,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
 /**
- * @author pallain - 24/11/2020
+ * @author patouche - 24/11/2020
  */
 class DriverRelationshipsAssertTests {
 

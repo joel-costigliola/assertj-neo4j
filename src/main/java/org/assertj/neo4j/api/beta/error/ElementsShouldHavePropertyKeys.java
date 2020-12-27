@@ -12,58 +12,64 @@
  */
 package org.assertj.neo4j.api.beta.error;
 
-import org.assertj.core.error.BasicErrorMessageFactory;
-import org.assertj.core.util.Strings;
+import org.assertj.core.util.Streams;
 import org.assertj.neo4j.api.beta.type.DbEntity;
 import org.assertj.neo4j.api.beta.type.RecordType;
 import org.assertj.neo4j.api.beta.util.Entities;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
  * @author patouche - 26/11/2020
  */
-public class ElementsShouldHavePropertyKeys<E extends DbEntity<E>> extends BasicErrorMessageFactory {
+public class ElementsShouldHavePropertyKeys<E extends DbEntity<E>>
+        extends DbEntitiesMessageFactory<E, List<String>, Missing<E, String>> {
 
-    /**
-     * Creates a new <code>{@link BasicErrorMessageFactory}</code>.
-     */
-    public ElementsShouldHavePropertyKeys(
-            final RecordType recordType, final List<E> actual, final List<String> expectedKeys,
-            final List<Missing<E, String>> missingActual) {
-        super("%nExpecting " + recordType.pluralForm() + ":%n"
-              + "  <%s> to have all the following property keys:%n"
-              + "  <%s>%n"
-              + "but some property keys were missing on:%n%n"
-              + Strings.escapePercent(describeItems(expectedKeys, missingActual)),
-              Entities.outputIds(actual), expectedKeys);
+    private ElementsShouldHavePropertyKeys(
+            final RecordType recordType, final List<E> actual, final List<String> expectedKeys) {
+        super(
+                recordType,
+                "to have all the following property keys",
+                "but some property keys were missing on",
+                actual,
+                expectedKeys,
+                missingPropertyKeys(actual, expectedKeys),
+                itemFactory()
+        );
+    }
+
+    static <E extends DbEntity<E>> Missing<E, String> missingPropertyKeys(final E entity, final Iterable<String> keys) {
+        final List<String> entityKeys = entity.getPropertyKeys();
+        final List<String> missingKeys = Streams.stream(keys)
+                .filter(expectedLabel -> !entityKeys.contains(expectedLabel))
+                .collect(Collectors.toList());
+        return new Missing<>(entity, missingKeys);
+    }
+
+    static <E extends DbEntity<E>> List<Missing<E, String>> missingPropertyKeys(
+            final List<E> entities, final Iterable<String> keys) {
+        return entities.stream()
+                .map(node -> missingPropertyKeys(node, keys))
+                .filter(Missing::hasMissing)
+                .collect(Collectors.toList());
+    }
+
+    private static <E extends DbEntity<E>> ItemMessageFactory<List<String>, Missing<E, String>> itemFactory() {
+        return (expected, missing) -> String.format(
+                "  - %s have missing property keys: %s%n"
+                + "      Actual  : <%s>%n"
+                + "      Expected: <%s>",
+                Entities.outputId(missing.getEntity()),
+                missing.getData(),
+                missing.getEntity().getPropertyKeys(),
+                expected
+        );
     }
 
     public static <E extends DbEntity<E>> ElementsShouldHavePropertyKeys<E> create(
-            final RecordType recordType, final List<E> actual, final List<String> expectedKeys,
-            final List<Missing<E, String>> missingActual) {
-        return new ElementsShouldHavePropertyKeys<>(recordType, actual, expectedKeys, missingActual);
-    }
-
-    private static <E extends DbEntity<E>> String describeItems(
-            final List<String> expectedLabels, final List<Missing<E, String>> items) {
-        return items.stream()
-                .map(item -> describeItem(expectedLabels, item))
-                .collect(Collectors.joining(String.format("%n%n")));
-    }
-
-    private static <E extends DbEntity<E>> String describeItem(
-            final List<String> expectedKeys, final Missing<E, String> missing) {
-        final E entity = missing.getEntity();
-        final List<String> actualKeys = entity.getProperties().keySet().stream().sorted().collect(Collectors.toList());
-        return String.format(
-                "  - %s have missing property keys: %s%n"
-                + "    Actual: <%s>%n"
-                + "    Expected: <%s>",
-                Entities.outputId(entity), missing.getData(), actualKeys, expectedKeys
-        );
+            final RecordType recordType, final List<E> actual, final List<String> expectedKeys) {
+        return new ElementsShouldHavePropertyKeys<>(recordType, actual, expectedKeys);
     }
 
 }

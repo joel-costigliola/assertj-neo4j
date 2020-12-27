@@ -15,8 +15,11 @@ package org.assertj.neo4j.api.beta.error;
 import org.assertj.core.error.BasicErrorMessageFactory;
 import org.assertj.core.util.Strings;
 import org.assertj.neo4j.api.beta.type.Nodes;
+import org.assertj.neo4j.api.beta.type.RecordType;
 import org.assertj.neo4j.api.beta.type.Relationships;
+import org.assertj.neo4j.api.beta.type.Relationships.DbRelationship;
 import org.assertj.neo4j.api.beta.util.Entities;
+import org.assertj.neo4j.api.beta.util.RelationshipTypes;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,47 +27,37 @@ import java.util.stream.Collectors;
 /**
  * @author patouche - 25/11/2020
  */
-public class ElementsShouldHaveType extends BasicErrorMessageFactory {
+public class ElementsShouldHaveType extends DbEntitiesMessageFactory<DbRelationship, String, DbRelationship> {
 
     /**
      * Creates a new <code>{@link BasicErrorMessageFactory}</code>.
      *
-     * @param actual        the relationships
-     * @param expectedType  the expected type.
-     * @param missingActual the relationships that doesn't have the expected type
+     * @param actual       the relationships
+     * @param expectedType the expected type
      */
-    public ElementsShouldHaveType(final List<Relationships.DbRelationship> actual, final String expectedType,
-            final List<Relationships.DbRelationship> missingActual) {
-        super("%nExpecting relationships:%n"
-              + "  <%s> to be of type:%n"
-              + "  <%s>%n"
-              + "but some relationships have an other type:%n%n"
-              + Strings.escapePercent(describeItems(expectedType, missingActual)),
-              Entities.outputIds(actual), expectedType
-
+    public ElementsShouldHaveType(final List<DbRelationship> actual, final String expectedType) {
+        super(
+                RecordType.RELATIONSHIP,
+                "to be of type",
+                "but some relationships have an other type",
+                actual,
+                expectedType,
+                RelationshipTypes.others(expectedType, actual),
+                factory()
         );
     }
 
-    private static String describeItems(
-            final String expectedType, final List<Relationships.DbRelationship> relationships) {
-        return relationships.stream()
-                .map(item -> describeItem(expectedType, item))
-                .collect(Collectors.joining(String.format("%n%n")));
-    }
-
-    private static String describeItem(final String expectedType, final Relationships.DbRelationship relationship) {
-
-        return String.format(
+    private static ItemMessageFactory<String, DbRelationship> factory() {
+        return (expected, relationship) -> String.format(
                 "  - %s doesn't have the expected type:%n"
-                + "    Actual: <%s>%n"
-                + "    Expected: <%s>",
-                Entities.outputId(relationship), relationship.getType(), expectedType
+                + "      Actual  : %s%n"
+                + "      Expected: %s",
+                Entities.outputId(relationship), relationship.getType(), expected
         );
     }
 
     public static ElementsShouldHaveType create(
-            final List<Relationships.DbRelationship> actual, final String expectedType,
-            final List<Relationships.DbRelationship> missingActual) {
-        return new ElementsShouldHaveType(actual, expectedType, missingActual);
+            final List<DbRelationship> actual, final String expectedType) {
+        return new ElementsShouldHaveType(actual, expectedType);
     }
 }

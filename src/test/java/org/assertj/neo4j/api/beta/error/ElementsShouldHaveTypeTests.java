@@ -35,21 +35,21 @@ class ElementsShouldHaveTypeTests {
                 Drivers.relation("OTHER_TYPE").id(2).build(),
                 Drivers.relation("TYPE").id(3).build()
         );
-        final List<Relationships.DbRelationship> others = RelationshipTypes.others(expectedType, relationships);
 
         // WHEN
-        final ElementsShouldHaveType error = ElementsShouldHaveType.create(relationships, expectedType, others);
+        final ElementsShouldHaveType error = ElementsShouldHaveType.create(relationships, expectedType);
 
         // THEN
         Assertions.assertThat(error.create()).isEqualToNormalizingNewlines(
                 "\nExpecting relationships:\n"
-                + "  <[\"RELATIONSHIP{id=1}\", \"RELATIONSHIP{id=2}\", \"RELATIONSHIP{id=3}\"]> to be of type:\n"
-                + "  <\"TYPE\">\n"
+                + "  [\"RELATIONSHIP{id=1}\", \"RELATIONSHIP{id=2}\", \"RELATIONSHIP{id=3}\"]\n"
+                + "to be of type:\n"
+                + "  \"TYPE\"\n"
                 + "but some relationships have an other type:\n"
                 + "\n"
                 + "  - RELATIONSHIP{id=2} doesn't have the expected type:\n"
-                + "    Actual: <OTHER_TYPE>\n"
-                + "    Expected: <TYPE>"
+                + "      Actual  : OTHER_TYPE\n"
+                + "      Expected: TYPE"
         );
 
     }
@@ -66,34 +66,34 @@ class ElementsShouldHaveTypeTests {
                 Drivers.relation("OTHER_TYPE_5").id(5).build(),
                 Drivers.relation("TYPE").id(6).build()
         );
-        final List<Relationships.DbRelationship> others = RelationshipTypes.others(expectedType, relationships);
 
         // WHEN
-        final ElementsShouldHaveType error = ElementsShouldHaveType.create(relationships, expectedType, others);
+        final ElementsShouldHaveType error = ElementsShouldHaveType.create(relationships, expectedType);
 
         // THEN
         Assertions.assertThat(error.create()).isEqualToNormalizingNewlines(
                 "\nExpecting relationships:\n"
-                + "  <[\"RELATIONSHIP{id=1}\",\n"
+                + "  [\"RELATIONSHIP{id=1}\",\n"
                 + "    \"RELATIONSHIP{id=2}\",\n"
                 + "    \"RELATIONSHIP{id=3}\",\n"
                 + "    \"RELATIONSHIP{id=4}\",\n"
                 + "    \"RELATIONSHIP{id=5}\",\n"
-                + "    \"RELATIONSHIP{id=6}\"]> to be of type:\n"
-                + "  <\"TYPE\">\n"
+                + "    \"RELATIONSHIP{id=6}\"]\n"
+                + "to be of type:\n"
+                + "  \"TYPE\"\n"
                 + "but some relationships have an other type:\n"
                 + "\n"
                 + "  - RELATIONSHIP{id=2} doesn't have the expected type:\n"
-                + "    Actual: <OTHER_TYPE_2>\n"
-                + "    Expected: <TYPE>\n"
+                + "      Actual  : OTHER_TYPE_2\n"
+                + "      Expected: TYPE\n"
                 + "\n"
                 + "  - RELATIONSHIP{id=4} doesn't have the expected type:\n"
-                + "    Actual: <OTHER_TYPE_4>\n"
-                + "    Expected: <TYPE>\n"
+                + "      Actual  : OTHER_TYPE_4\n"
+                + "      Expected: TYPE\n"
                 + "\n"
                 + "  - RELATIONSHIP{id=5} doesn't have the expected type:\n"
-                + "    Actual: <OTHER_TYPE_5>\n"
-                + "    Expected: <TYPE>"
+                + "      Actual  : OTHER_TYPE_5\n"
+                + "      Expected: TYPE"
         );
 
     }

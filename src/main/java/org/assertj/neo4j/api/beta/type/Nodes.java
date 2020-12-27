@@ -32,14 +32,14 @@ import java.util.stream.Collectors;
 /**
  * @author patouche - 31/10/2020
  */
-public class Nodes extends LoadingType<Nodes.DbNode> {
+public class Nodes extends AbstractDbData<Nodes.DbNode> {
 
     /** The node labels. */
     private final List<String> labels;
 
     /**
      * Class constructor for {@link Nodes}.
-     *
+     * <p>
      * This will allow you to write easy assertions on your database nodes.
      *
      * @param driver the neo4j driver
@@ -62,7 +62,7 @@ public class Nodes extends LoadingType<Nodes.DbNode> {
                     .map(Record::values)
                     .flatMap(Collection::stream)
                     .map(Value::asNode)
-                    .map(n -> new DbNode(n.id(), Lists.newArrayList(n.labels()), n.asMap()))
+                    .map(n -> new DbNode(n.id(), Lists.newArrayList(n.labels()), ValueType.convertMap(n.asMap())))
                     .collect(Collectors.toList());
         }
     }
@@ -71,17 +71,21 @@ public class Nodes extends LoadingType<Nodes.DbNode> {
 
         protected List<String> labels;
 
-        public DbNode(final List<String> labels, final Map<String, Object> properties) {
+        DbNode(final List<String> labels, final Map<String, DbValue> properties) {
             this(null, labels, properties);
         }
 
-        public DbNode(final Long id, final List<String> labels, final Map<String, Object> properties) {
+        DbNode(final Long id, final List<String> labels, final Map<String, DbValue> properties) {
             super(RecordType.NODE, id, properties);
             this.labels = labels;
         }
 
         public List<String> getLabels() {
             return labels;
+        }
+
+        public List<String> getSortedLabels() {
+            return labels.stream().sorted().collect(Collectors.toList());
         }
 
         public void setLabels(final List<String> labels) {
@@ -119,7 +123,7 @@ public class Nodes extends LoadingType<Nodes.DbNode> {
 
         private final List<String> labels = new ArrayList<>();
 
-        private final Map<String, Object> properties = new HashMap<>();
+        private final Map<String, DbValue> properties = new HashMap<>();
 
         protected DbNodeBuilder() {
         }
@@ -134,7 +138,7 @@ public class Nodes extends LoadingType<Nodes.DbNode> {
         }
 
         public DbNodeBuilder property(final String key, final Object value) {
-            this.properties.put(key, value);
+            this.properties.put(key, ValueType.convert(value));
             return this;
         }
 
