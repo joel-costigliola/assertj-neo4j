@@ -16,6 +16,7 @@ import org.assertj.neo4j.api.beta.DriverAssertions;
 import org.assertj.neo4j.api.beta.testing.Neo4JDataSet;
 import org.assertj.neo4j.api.beta.type.Drivers;
 import org.assertj.neo4j.api.beta.type.Nodes;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.neo4j.driver.Driver;
 import org.testcontainers.containers.Neo4jContainer;
@@ -28,6 +29,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
  * @author patouche - 5/26/20.
  */
 @Testcontainers
+@Disabled("TO BE WRITTEN WITH REAL TEST CASES")
 public class ParisIntegrationTests {
 
     @Container

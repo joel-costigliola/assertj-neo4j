@@ -29,6 +29,12 @@
   <properties>
     <maven.compiler.showDeprecation>true</maven.compiler.showDeprecation>
     <maven.compiler.showWarnings>true</maven.compiler.showWarnings>
+
+    <neo4j-driver.version>4.1.1</neo4j-driver.version>
+
+    <testcontainers.version>1.15.1</testcontainers.version>
+    <logback.version>1.2.3</logback.version>
+    <slf4j.version>1.7.30</slf4j.version>
   </properties>
 
   <dependencyManagement>
@@ -36,7 +42,7 @@
       <dependency>
         <groupId>org.testcontainers</groupId>
         <artifactId>testcontainers-bom</artifactId>
-        <version>1.15.1</version>
+        <version>${testcontainers.version}</version>
         <type>pom</type>
         <scope>import</scope>
       </dependency>
@@ -49,26 +55,16 @@
       <artifactId>assertj-core</artifactId>
       <version>3.17.2</version>
     </dependency>
-    <!-- TODO : Should only take the driver -->
-    <!-- TODO : Should be upgrade to neo4J 4.1.1 ? -->
-    <dependency>
-      <groupId>org.neo4j</groupId>
-      <artifactId>neo4j</artifactId>
-      <version>3.0.0</version>
-    </dependency>
     <dependency>
       <groupId>org.neo4j.driver</groupId>
       <artifactId>neo4j-java-driver</artifactId>
-      <version>4.1.1</version>
+      <version>${neo4j-driver.version}</version>
+      <scope>provided</scope>
     </dependency>
+    <!-- Test dependencies -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>
       <artifactId>junit-jupiter</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.junit.vintage</groupId>
-      <artifactId>junit-vintage-engine</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -91,12 +87,24 @@
       <artifactId>junit-jupiter</artifactId>
       <scope>test</scope>
     </dependency>
+    <!-- Test containers still required to have junit4 in classpath -->
+    <dependency>
+      <groupId>org.junit.vintage</groupId>
+      <artifactId>junit-vintage-engine</artifactId>
+      <scope>test</scope>
+    </dependency>
     <!-- Or slf4j-nop ? -->
     <dependency>
       <groupId>ch.qos.logback</groupId>
       <artifactId>logback-classic</artifactId>
-      <version>1.2.3</version>
+      <version>${logback.version}</version>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>org.slf4j</groupId>
+          <artifactId>*</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
   </dependencies>
 
@@ -112,6 +120,17 @@
           </properties>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <configuration>
+          <includes>
+            <include>**/*Test.java</include>
+            <include>**/*Tests.java</include>
+          </includes>
+          <argLine>-Xms512m</argLine>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 
@@ -122,27 +141,21 @@
         <artifactId>maven-project-info-reports-plugin</artifactId>
       </plugin>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>2.22.2</version>
+        <configuration>
+          <includes>
+            <include>**/*Test.java</include>
+            <include>**/*Tests.java</include>
+          </includes>
+          <argLine>-Xms512m</argLine>
+        </configuration>
       </plugin>
     </plugins>
   </reporting>
 
   <profiles>
-    <profile>
-      <id>driver-neo4j-4</id>
-      <activation>
-        <activeByDefault>true</activeByDefault>
-      </activation>
-      <dependencies>
-        <dependency>
-          <groupId>org.neo4j.driver</groupId>
-          <artifactId>neo4j-java-driver</artifactId>
-          <version>4.0.1</version>
-          <optional>true</optional>
-        </dependency>
-      </dependencies>
-    </profile>
     <profile>
       <id>coverage</id>
       <activation>
