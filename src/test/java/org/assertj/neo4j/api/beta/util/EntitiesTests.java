@@ -12,13 +12,15 @@
  */
 package org.assertj.neo4j.api.beta.util;
 
-import org.assertj.neo4j.api.beta.error.Missing;
 import org.assertj.neo4j.api.beta.type.Drivers;
 import org.assertj.neo4j.api.beta.type.Nodes;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.neo4j.driver.Values;
 
 import java.security.SecureRandom;
+import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -33,6 +35,24 @@ import static org.assertj.core.api.Assertions.assertThat;
 class EntitiesTests {
 
     public static final SecureRandom SECURE_RANDOM = new SecureRandom();
+
+    private static final Nodes.DbNode SAMPLE_ENTITY = node(42);
+
+    private static final List<Nodes.DbNode> SAMPLE_ENTITIES = IntStream.range(0, 10)
+            .mapToObj(EntitiesTests::node)
+            .collect(Collectors.toList());
+
+    static Nodes.DbNode node(int idx) {
+        return Drivers.node()
+                .id(idx)
+                .property("key-boolean", idx % 2 == 0)
+                .property("key-long", idx)
+                .property("key-string", "value-" + idx)
+                .property("key-duration", Values.value(Duration.ofDays(idx + 1)).asObject())
+                .property("key-list-long", IntStream.range(0, idx).boxed().collect(Collectors.toList()))
+                .build();
+    }
+
 
     @Nested
     class IdTests {
@@ -139,14 +159,9 @@ class EntitiesTests {
         void should_return_true() {
             // GIVEN
             final List<String> keys = Arrays.asList("key-1", "key-2", "key-3");
-            final Nodes.DbNode entity = Drivers.node()
-                    .property("key-1", "value-1")
-                    .property("key-2", "value-2")
-                    .property("key-3", "value-3")
-                    .build();
 
             // WHEN
-            final boolean result = Entities.hasAllKeys(entity, keys);
+            final boolean result = Entities.hasAllKeys(SAMPLE_ENTITY, keys);
 
             // THEN
             assertThat(result).isTrue();
@@ -156,14 +171,9 @@ class EntitiesTests {
         void should_return_false() {
             // GIVEN
             final List<String> keys = Arrays.asList("key-1", "key-2", "key-3", "other-key");
-            final Nodes.DbNode entity = Drivers.node()
-                    .property("key-1", "value-1")
-                    .property("key-2", "value-2")
-                    .property("key-3", "value-3")
-                    .build();
 
             // WHEN
-            final boolean result = Entities.hasAllKeys(entity, keys);
+            final boolean result = Entities.hasAllKeys(SAMPLE_ENTITY, keys);
 
             // THEN
             assertThat(result).isFalse();
@@ -177,16 +187,9 @@ class EntitiesTests {
         void should_return_true() {
             // GIVEN
             final List<String> keys = Arrays.asList("k-1", "k-2", "k-3");
-            final List<Nodes.DbNode> entities = IntStream.range(0, 10)
-                    .mapToObj(i -> Drivers.node()
-                            .property("k-1", "val-1-" + i)
-                            .property("k-2", "val-2-" + i)
-                            .property("k-3", "val-3-" + i)
-                            .build())
-                    .collect(Collectors.toList());
 
             // WHEN
-            final boolean result = Entities.haveAllKeys(entities, keys);
+            final boolean result = Entities.haveAllKeys(SAMPLE_ENTITIES, keys);
 
             // THEN
             assertThat(result).isTrue();
@@ -196,20 +199,12 @@ class EntitiesTests {
         void should_return_false() {
             // GIVEN
             final List<String> keys = Arrays.asList("key-1", "key-2", "key-3");
+            final Nodes.DbNode other = Drivers.node()
+                    .property("key-1", "val-other-1")
+                    .property("key-2", "val-other-2")
+                    .build();
             final List<Nodes.DbNode> entities = Stream
-                    .concat(
-                            IntStream.range(0, 10).mapToObj(i -> Drivers.node()
-                                    .property("key-1", "val-" + i + "-1")
-                                    .property("key-2", "val-" + i + "-2")
-                                    .property("key-3", "val-" + i + "-3")
-                                    .build()),
-                            Stream.of(
-                                    Drivers.node()
-                                            .property("key-1", "val-other-1")
-                                            .property("key-2", "val-other-2")
-                                            .build()
-                            )
-                    )
+                    .concat(SAMPLE_ENTITIES.stream(), Stream.of(other))
                     .collect(Collectors.toList());
 
             // WHEN
@@ -220,8 +215,13 @@ class EntitiesTests {
         }
     }
 
+    @Nested
+    class HavePropertyTypeTests {
 
-
+        void should_() {
+            Assertions.fail("TODO");
+        }
+    }
 
 
 }

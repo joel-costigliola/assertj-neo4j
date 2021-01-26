@@ -37,8 +37,8 @@ public class ElementsShouldHaveLabels extends DbEntitiesMessageFactory<DbNode, L
     private static ItemMessageFactory<List<String>, Missing<DbNode, String>> itemFactory() {
         return (expected, missing) -> String.format(
                 "  - %s have missing labels: %s%n"
-                + "      Expected: %s"
-                + "      Actual  : %s%n",
+                + "      Expected: %s%n"
+                + "      Actual  : %s",
                 Entities.outputId(missing.getEntity()), missing.getData(), expected,
                 missing.getEntity().getSortedLabels()
         );

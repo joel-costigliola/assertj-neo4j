@@ -13,10 +13,11 @@
 package org.assertj.neo4j.api.beta.integrations;
 
 import org.assertj.neo4j.api.beta.DriverAssertions;
+import org.assertj.neo4j.api.beta.testing.Dataset;
+import org.assertj.neo4j.api.beta.testing.IntegrationTests;
 import org.assertj.neo4j.api.beta.testing.Neo4JDataSet;
 import org.assertj.neo4j.api.beta.type.Drivers;
 import org.assertj.neo4j.api.beta.type.Nodes;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.neo4j.driver.Driver;
 import org.testcontainers.containers.Neo4jContainer;
@@ -29,31 +30,23 @@ import org.testcontainers.junit.jupiter.Testcontainers;
  * @author patouche - 5/26/20.
  */
 @Testcontainers
-@Disabled("TO BE WRITTEN WITH REAL TEST CASES")
-public class ParisIntegrationTests {
+@IntegrationTests.ToBeImplemented
+public class ParisIntegrationTests extends IntegrationTests.DatasetTests {
 
-    @Container
-    public Neo4jContainer neo4jContainer = new Neo4jContainer<>("neo4j:4.1.1")
-            .withoutAuthentication();
+
+    protected ParisIntegrationTests() {
+        super(Dataset.PARIS_SUBWAY);
+    }
 
     @Test
     public void allStationOfLines() {
         // GIVEN & WHEN
-        final Driver driver = Neo4JDataSet.fromUrl(neo4jContainer.getBoltUrl())
-                .execScript("samples/language.cypher")
-                .getDriver();
 
         // WHEN
         final String s = "MATCH (n:Station)<--(s:Stop) WHERE '14' IN n.lines RETURN n, s";
 
         // THEN
-        final Nodes nodes = new Nodes(driver, "Language");
-        DriverAssertions.assertThat(nodes)
-                .hasSize(7)
-                .haveLabels("Language")
-                .haveProperties("name")
-                .ignoringIds()
-                .contains(Drivers.node().label("Language").property("name", "Scala").build());
+
     }
 
 }

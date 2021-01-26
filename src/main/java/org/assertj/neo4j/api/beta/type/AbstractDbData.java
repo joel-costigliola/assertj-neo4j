@@ -44,4 +44,8 @@ public abstract class AbstractDbData<T> {
      * @return the list of records transform into a expected type
      */
     public abstract List<T> load();
+
+    public Driver getDriver() {
+        return this.driver;
+    }
 }

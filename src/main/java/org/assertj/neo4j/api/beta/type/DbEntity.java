@@ -12,6 +12,8 @@
  */
 package org.assertj.neo4j.api.beta.type;
 
+import org.assertj.neo4j.api.beta.util.Wip;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -59,6 +61,15 @@ public abstract class DbEntity<T> {
 
     public Object getPropertyValue(final String key) {
         return Optional.ofNullable(properties.get(key)).map(DbValue::getContent).orElse(null);
+    }
+
+    public List<DbValue> getPropertyList(final String key) {
+        final DbValue property = Objects.requireNonNull(properties.get(key), "Property key \"" + key + "\" doesn't exist");
+        final Object content = property.getContent();
+        if (property.getType() != ValueType.LIST || !(content instanceof List)) {
+            throw new IllegalArgumentException("Property key \"" + key + "\" is not a list composite type");
+        }
+        return (List<DbValue>) content;
     }
 
     public ValueType getPropertyType(final String key) {

@@ -37,7 +37,8 @@ import java.util.stream.IntStream;
  */
 class DbEntityTests {
 
-    private static final ZonedDateTime SAMPLE_TIME = ZonedDateTime.of(2020, 2, 3, 4, 5, 6, 7, ZoneId.of("Australia/Sydney"));
+    private static final ZonedDateTime SAMPLE_TIME = ZonedDateTime.of(2020, 2, 3, 4, 5, 6, 7, ZoneId.of("Australia"
+                                                                                                        + "/Sydney"));
 
     public static final Nodes.DbNode SAMPLE_NODE = Drivers.node()
             .property("boolean", true)
@@ -50,8 +51,8 @@ class DbEntityTests {
             .property("time", SAMPLE_TIME.toLocalTime().atOffset(ZoneOffset.UTC))
             .property("localtime", SAMPLE_TIME.toLocalTime())
             .property("duration", Duration.ofDays(3))
-            .property("point_2d", Values.point(0, 42L, 12L))
-            .property("point_3d", Values.point(0, 42L, 12L, 69L))
+            .property("point_2d", Values.point(0, 42L, 12L).asObject())
+            .property("point_3d", Values.point(0, 42L, 12L, 69L).asObject())
             .build();
 
     public static final Nodes.DbNode SAMPLE_LIST_NODE = Drivers.node()
@@ -121,22 +122,61 @@ class DbEntityTests {
             softly.assertThat(SAMPLE_NODE.getPropertyValue("datetime")).isEqualTo(SAMPLE_TIME);
             softly.assertThat(SAMPLE_NODE.getPropertyValue("localdatetime")).isEqualTo(SAMPLE_TIME.toLocalDateTime());
             softly.assertThat(SAMPLE_NODE.getPropertyValue("time")).isEqualTo(SAMPLE_TIME.toLocalTime().atOffset(ZoneOffset.UTC));
-            softly.assertThat(SAMPLE_NODE.getPropertyValue("localtime")).isEqualTo("04:05:06.00000000");
-            softly.assertThat(SAMPLE_NODE.getPropertyValue("duration")).isEqualTo("P0M0DT259200S");
-            softly.assertThat(SAMPLE_NODE.getPropertyValue("point_2d")).isEqualTo("toto");
-            softly.assertThat(SAMPLE_NODE.getPropertyValue("point_3d")).isEqualTo("toto");
+            softly.assertThat(SAMPLE_NODE.getPropertyValue("localtime")).isEqualTo(SAMPLE_TIME.toLocalTime());
+            softly.assertThat(SAMPLE_NODE.getPropertyValue("duration")).isEqualTo(Values.value(Duration.ofDays(3)).asObject());
+            softly.assertThat(SAMPLE_NODE.getPropertyValue("point_2d")).isEqualTo(Values.point(0, 42, 12).asPoint());
+            softly.assertThat(SAMPLE_NODE.getPropertyValue("point_3d")).isEqualTo(Values.point(0, 42, 12, 69).asPoint());
         }
     }
 
     @Nested
     @DisplayName("getPropertyType")
     @ExtendWith(SoftAssertionsExtension.class)
-    class GetPropertyType {
+    class GetPropertyTypeTests {
+
         @Test
         void should_return_the_right_property_type(final SoftAssertions softly) {
             // WHEN & THEN
-            softly.assertThat(SAMPLE_NODE.getPropertyValue("k")).isEqualTo("toto");
+            softly.assertThat(SAMPLE_NODE.getPropertyType("boolean")).isEqualTo(ValueType.BOOLEAN);
+            softly.assertThat(SAMPLE_NODE.getPropertyType("string")).isEqualTo(ValueType.STRING);
+            softly.assertThat(SAMPLE_NODE.getPropertyType("long")).isEqualTo(ValueType.INTEGER);
+            softly.assertThat(SAMPLE_NODE.getPropertyType("double")).isEqualTo(ValueType.FLOAT);
+            softly.assertThat(SAMPLE_NODE.getPropertyType("date")).isEqualTo(ValueType.DATE);
+            softly.assertThat(SAMPLE_NODE.getPropertyType("datetime")).isEqualTo(ValueType.DATE_TIME);
+            softly.assertThat(SAMPLE_NODE.getPropertyType("localdatetime")).isEqualTo(ValueType.LOCAL_DATE_TIME);
+            softly.assertThat(SAMPLE_NODE.getPropertyType("time")).isEqualTo(ValueType.TIME);
+            softly.assertThat(SAMPLE_NODE.getPropertyType("localtime")).isEqualTo(ValueType.LOCAL_TIME);
+            softly.assertThat(SAMPLE_NODE.getPropertyType("duration")).isEqualTo(ValueType.DURATION);
+            softly.assertThat(SAMPLE_NODE.getPropertyType("point_2d")).isEqualTo(ValueType.POINT);
+            softly.assertThat(SAMPLE_NODE.getPropertyType("point_3d")).isEqualTo(ValueType.POINT);
         }
+
+    }
+
+    @Nested
+    @DisplayName("getPropertyList")
+    @ExtendWith(SoftAssertionsExtension.class)
+    class GetPropertyListTests {
+
+        @Test
+        void should_throw_an_exception(final SoftAssertions softly) {
+            // WHEN & THEN
+            softly.assertThatThrownBy(() -> SAMPLE_LIST_NODE.getPropertyList("key_doesnt_exist"))
+                    .hasMessage("Property key \"key_doesnt_exist\" doesn't exist")
+                    .hasNoCause();
+        }
+
+        @Test
+        void should_return_the_right_property_type(final SoftAssertions softly) {
+            // WHEN & THEN
+            softly.assertThat(SAMPLE_LIST_NODE.getPropertyList("list_long"))
+                    .hasSize(10)
+                    .contains(IntStream.range(0, 10).mapToObj(ValueType::convert).toArray(DbValue[]::new));
+            softly.assertThat(SAMPLE_LIST_NODE.getPropertyList("list_string"))
+                    .hasSize(3)
+                    .contains(ValueType.convert("str-1"), ValueType.convert("str-2"), ValueType.convert("str-3"));
+        }
+
     }
 
 }

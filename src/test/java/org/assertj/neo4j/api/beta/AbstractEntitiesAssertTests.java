@@ -38,18 +38,20 @@ public class AbstractEntitiesAssertTests {
             Drivers.node().id(1).property("prop", "val-1").build(),
             Drivers.node().id(2).property("prop", "val-2").property("other-prop", 1).build(),
             Drivers.node().id(3).property("prop", "val-3").property("prop-1", LocalDateTime.now()).build(),
-            Drivers.node().id(4).property("prop", "val-4").property("other-prop", 1).property("prop-1", LocalDateTime.now()).build(),
+            Drivers.node().id(4).property("prop", "val-4").property("other-prop", 1).property("prop-1",
+                    LocalDateTime.now()).build(),
             Drivers.node().id(5).property("prop", "val-5").property("prop-1", "v-5").build()
     );
 
-    static class FakeEntitiesAssert extends AbstractEntitiesAssert<FakeEntitiesAssert, Nodes, Nodes.DbNode> {
+    static class FakeEntitiesAssert
+            extends AbstractEntitiesAssert<FakeEntitiesAssert, Nodes, Nodes.DbNode, FakeEntitiesAssert> {
 
         protected FakeEntitiesAssert(List<Nodes.DbNode> entities) {
             this(entities, null);
         }
 
         protected FakeEntitiesAssert(List<Nodes.DbNode> entities, FakeEntitiesAssert parent) {
-            super(RecordType.NODE, null, entities, FakeEntitiesAssert.class, FakeEntitiesAssert::new, parent);
+            super(RecordType.NODE, FakeEntitiesAssert.class, null, entities, FakeEntitiesAssert::new, parent, null);
         }
 
     }

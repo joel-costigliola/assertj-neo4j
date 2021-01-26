@@ -25,8 +25,12 @@ public class Wip {
         throw new RuntimeException("TODO: " + msg);
     }
 
+    public static <T> RuntimeException TODO(final Class<T> clazz) {
+        return todo(clazz.getName());
+    }
+
     public static <T> RuntimeException TODO(final T myself) {
-        return todo(myself.getClass().getName());
+        return TODO(myself.getClass());
     }
 
     public static <T> RuntimeException TODO(final T myself, final String message) {

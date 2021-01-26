@@ -15,6 +15,7 @@ package org.assertj.neo4j.api.beta.util;
 import org.assertj.core.util.Streams;
 import org.assertj.neo4j.api.beta.error.Missing;
 import org.assertj.neo4j.api.beta.type.DbEntity;
+import org.assertj.neo4j.api.beta.type.ValueType;
 
 import java.util.Comparator;
 import java.util.List;
@@ -87,6 +88,12 @@ public final class Entities {
     public static <E extends DbEntity<E>> boolean haveAllKeys(final List<E> entities, final Iterable<String> keys) {
         return entities.stream().allMatch(entity -> hasAllKeys(entity, keys));
     }
+
+    public static <E extends DbEntity<E>> boolean haveAllPropertyType(final List<E> entities, final String key,
+                                                                   final ValueType type) {
+        throw Wip.TODO(Entities.class);
+    }
+
 
 
 

@@ -27,6 +27,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
  * @author patouche - 5/26/20.
  */
 @Testcontainers
+@Disabled("TO BE IMPLEMENTED")
 class SampleRequestIntegrationTests extends IntegrationTests.DatasetTests {
 
     public SampleRequestIntegrationTests() {

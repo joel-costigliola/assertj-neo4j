@@ -21,6 +21,9 @@ import org.assertj.neo4j.api.beta.util.Entities;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * See how the
+ */
 public abstract class DbEntitiesMessageFactory<E extends DbEntity<E>, EXPECTED, ITEM> extends BasicErrorMessageFactory {
 
     /**

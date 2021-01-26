@@ -34,4 +34,9 @@ public class DriverAssertions {
         return new DriverRequestAssert(request);
     }
 
+
+    public static DriverResultAssert assertThat(final Result result) {
+        return new DriverResultAssert(result);
+    }
+
 }

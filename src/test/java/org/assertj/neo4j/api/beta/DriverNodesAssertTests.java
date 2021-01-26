@@ -42,7 +42,7 @@ public class DriverNodesAssertTests {
                     Drivers.node().id(22).label("lbl-1").build(),
                     Drivers.node().id(56).label("lbl-2").build()
             );
-            final DriverNodesAssert nodesAssert = new DriverNodesAssert(nodes, null, null);
+            final DriverNodesAssert nodesAssert = new DriverNodesAssert(nodes);
 
             // WHEN
             final DriverNodesAssert result = nodesAssert.ignoringIds();
@@ -61,7 +61,7 @@ public class DriverNodesAssertTests {
         @Test
         void should_fail_when_no_labels_provided() {
             // GIVEN
-            final DriverNodesAssert nodesAssert = new DriverNodesAssert(Collections.emptyList(), null, null);
+            final DriverNodesAssert nodesAssert = new DriverNodesAssert(Collections.emptyList());
 
             // WHEN
             final Throwable throwable = catchThrowable(nodesAssert::haveLabels);
@@ -75,7 +75,7 @@ public class DriverNodesAssertTests {
         @Test
         void should_fail_when_iterable_is_empty() {
             // GIVEN
-            final DriverNodesAssert nodesAssert = new DriverNodesAssert(Collections.emptyList(), null, null);
+            final DriverNodesAssert nodesAssert = new DriverNodesAssert(Collections.emptyList());
 
             // WHEN
             final Throwable throwable = catchThrowable(() -> nodesAssert.haveLabels(Collections.emptyList()));
@@ -97,7 +97,7 @@ public class DriverNodesAssertTests {
                     Drivers.node().label("Test").build(),
                     Drivers.node().label("Test").build()
             );
-            final DriverNodesAssert nodesAssert = new DriverNodesAssert(nodes, null, null);
+            final DriverNodesAssert nodesAssert = new DriverNodesAssert(nodes );
 
             // WHEN
             final DriverNodesAssert result = nodesAssert.haveLabels("Test");
@@ -116,7 +116,7 @@ public class DriverNodesAssertTests {
                     Drivers.node().label("Test").build(),
                     Drivers.node().label("Test").build()
             );
-            final DriverNodesAssert nodesAssert = new DriverNodesAssert(nodes, null, null);
+            final DriverNodesAssert nodesAssert = new DriverNodesAssert(nodes );
 
             // WHEN
             final Throwable throwable = catchThrowable(() -> nodesAssert.haveLabels("Test"));

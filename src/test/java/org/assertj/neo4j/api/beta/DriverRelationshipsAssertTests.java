@@ -41,8 +41,7 @@ class DriverRelationshipsAssertTests {
                     Drivers.relation("KNOWS").id(22).build(),
                     Drivers.relation("KNOWS").id(56).build()
             );
-            final DriverRelationshipsAssert relationshipsAssert = new DriverRelationshipsAssert(relationships, null,
-                                                                                                null);
+            final DriverRelationshipsAssert relationshipsAssert = new DriverRelationshipsAssert(relationships);
 
             // WHEN
             final DriverRelationshipsAssert result = relationshipsAssert.ignoringIds();
@@ -66,8 +65,7 @@ class DriverRelationshipsAssertTests {
                     Drivers.relation("KNOWS").id(22).build(),
                     Drivers.relation("KNOWS").id(56).build()
             );
-            final DriverRelationshipsAssert relationshipsAssert = new DriverRelationshipsAssert(relationships, null,
-                                                                                                null);
+            final DriverRelationshipsAssert relationshipsAssert = new DriverRelationshipsAssert(relationships);
 
             // WHEN
             final DriverRelationshipsAssert result = relationshipsAssert.haveType("KNOWS");
@@ -83,9 +81,7 @@ class DriverRelationshipsAssertTests {
                     Drivers.relation("KNOWS").id(22).build(),
                     Drivers.relation("KNOWS").id(56).build()
             );
-            final DriverRelationshipsAssert relationshipsAssert = new DriverRelationshipsAssert(
-                    relationships, null, null
-            );
+            final DriverRelationshipsAssert relationshipsAssert = new DriverRelationshipsAssert(relationships);
 
             // WHEN
             final Throwable throwable = catchThrowable(() -> relationshipsAssert.haveType("OTHER_TYPE"));

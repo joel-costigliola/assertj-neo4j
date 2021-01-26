@@ -12,24 +12,16 @@
  */
 package org.assertj.neo4j.api.beta;
 
-import org.assertj.core.util.IterableUtil;
-import org.assertj.core.util.Lists;
-import org.assertj.neo4j.api.beta.error.ElementsShouldHaveLabels;
+import org.assertj.core.util.VisibleForTesting;
 import org.assertj.neo4j.api.beta.type.Nodes;
-import org.assertj.neo4j.api.beta.type.RecordType;
-import org.assertj.neo4j.api.beta.util.NodeLabels;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author patouche - 08/11/2020
  */
-public class DriverNodesAssert extends AbstractEntitiesAssert<DriverNodesAssert, Nodes, Nodes.DbNode> {
-
-    private static final EntitiesAssertFactory<DriverNodesAssert, Nodes.DbNode> FACTORY =
-            (entities, current) -> new DriverNodesAssert(entities, current.loadingType, current);
+public class DriverNodesAssert
+        extends AbstractNodesAssert<DriverNodesAssert, Nodes, DriverNodesAssert> {
 
     /**
      * Create new assertions on {@link Nodes}.
@@ -37,64 +29,20 @@ public class DriverNodesAssert extends AbstractEntitiesAssert<DriverNodesAssert,
      * @param nodes the nodes to assert
      */
     public DriverNodesAssert(final Nodes nodes) {
-        this(nodes, null);
+        this(nodes.load(), nodes, null);
     }
 
-    protected DriverNodesAssert(final Nodes nodes, final DriverNodesAssert parent) {
-        this(nodes.load(), nodes, parent);
+    @VisibleForTesting
+    protected DriverNodesAssert(final List<Nodes.DbNode> entities) {
+        this(entities, null,  null);
     }
 
-    protected DriverNodesAssert(final List<Nodes.DbNode> entities, final Nodes nodes, final DriverNodesAssert parent) {
-        super(RecordType.NODE, nodes, entities, DriverNodesAssert.class, FACTORY, parent);
+    private DriverNodesAssert(final List<Nodes.DbNode> entities, final Nodes nodes, final DriverNodesAssert parent) {
+        super(DriverNodesAssert.class, entities, nodes, factory(), parent, rootAssert(parent));
     }
 
-    /**
-     * Verifies that all nodes have the expected label names.
-     * <p/>
-     * Example:
-     * <pre><code class='java'>
-     * Nodes nodes = new Nodes(driver, "Person");
-     * assertThat(nodes).haveLabels("Committer", "Developer")
-     * </code></pre>
-     * <p/>
-     * If the <code>expectedLabels</code> is {@code null} or empty, an {@link IllegalArgumentException} is thrown.
-     * <p/>
-     *
-     * @param expectedLabels the labels name to search on nodes
-     * @return this {@link DriverNodesAssert} for assertions chaining
-     * @throws IllegalArgumentException if <code>expectedLabels</code> is {@code null} or empty.
-     * @throws AssertionError           if the one of the actual nodes does not contain the given label
-     */
-    public DriverNodesAssert haveLabels(final String... expectedLabels) {
-        return haveLabels(checkArray(expectedLabels, "The labels to look for should not be null or empty"));
-    }
-
-    /**
-     * Verifies that all nodes have the expected label names.
-     * <p/>
-     * Example:
-     * <pre><code class='java'>
-     * Nodes nodes = new Nodes(driver, "Person");
-     * assertThat(nodes).haveLabels("Committer", "Developer")
-     * </code></pre>
-     * <p/>
-     * If the <code>expectedLabels</code> is {@code null} or empty, an {@link IllegalArgumentException} is thrown.
-     * <p/>
-     *
-     * @param expectedLabels the labels name to search on nodes
-     * @return this {@link DriverNodesAssert} for assertions chaining
-     * @throws IllegalArgumentException if <code>expectedLabels</code> is {@code null} or empty.
-     * @throws AssertionError           if the one of the actual nodes does not contain the given label
-     */
-    public DriverNodesAssert haveLabels(final Iterable<String> expectedLabels) {
-        if (IterableUtil.isNullOrEmpty(expectedLabels)) {
-            throw new IllegalArgumentException("The iterable of values to look for should not be empty");
-        }
-        if (NodeLabels.haveLabels(actual, expectedLabels)) {
-            final ArrayList<String> labels = Lists.newArrayList(expectedLabels);
-            throwAssertionError(ElementsShouldHaveLabels.create(actual, labels, NodeLabels.missing(actual, labels)));
-        }
-        return myself;
+    private static EntitiesAssertFactory<DriverNodesAssert, Nodes.DbNode, DriverNodesAssert> factory() {
+        return (entities, current) -> new DriverNodesAssert(entities, current.dbData, current);
     }
 
 }

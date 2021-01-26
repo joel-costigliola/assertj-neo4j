@@ -15,6 +15,7 @@ package org.assertj.neo4j.api.beta.integrations;
 import org.assertj.neo4j.api.beta.DriverAssertions;
 import org.assertj.neo4j.api.beta.testing.Dataset;
 import org.assertj.neo4j.api.beta.testing.IntegrationTests;
+import org.assertj.neo4j.api.beta.testing.TestTags;
 import org.assertj.neo4j.api.beta.testing.Version;
 import org.assertj.neo4j.api.beta.type.Drivers;
 import org.assertj.neo4j.api.beta.type.Nodes;
@@ -24,6 +25,7 @@ import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
@@ -31,7 +33,7 @@ import java.util.Objects;
  *
  * @author patouche - 5/26/20.
  */
-@Tag("INTEGRATION")
+@Tag(TestTags.INTEGRATION)
 class SampleNodesIntegrationTests {
 
     @Nested
@@ -52,50 +54,7 @@ class SampleNodesIntegrationTests {
     }
 
     @Nested
-    @DisplayName("Property type tests")
-    class PropertyTypeTests extends IntegrationTests.DatasetTests {
-
-        public PropertyTypeTests() {
-            super(Dataset.TYPES);
-        }
-
-        @Test
-        void should_property_have_the_right_type() {
-            Nodes nodes = new Nodes(driver, "Types");
-            DriverAssertions.assertThat(nodes)
-                    // Simple property types
-                    .havePropertyType("type_boolean", ValueType.BOOLEAN)
-                    .havePropertyType("type_string", ValueType.STRING)
-                    .havePropertyType("type_long", ValueType.INTEGER)
-                    .havePropertyType("type_double", ValueType.FLOAT)
-                    .havePropertyType("type_date", ValueType.DATE)
-                    .havePropertyType("type_datetime", ValueType.DATE_TIME)
-                    .havePropertyType("type_localdatetime", ValueType.LOCAL_DATE_TIME)
-                    .havePropertyType("type_time", ValueType.TIME)
-                    .havePropertyType("type_localtime", ValueType.LOCAL_TIME)
-                    .havePropertyType("type_duration", ValueType.DURATION)
-                    .havePropertyType("type_point_2d", ValueType.POINT)
-                    .havePropertyType("type_point_3d", ValueType.POINT)
-                    // Composite property types
-                    .havePropertyType("type_list_boolean", ValueType.LIST)
-                    .havePropertyType("type_list_string", ValueType.LIST)
-                    .havePropertyType("type_list_long", ValueType.LIST)
-                    .havePropertyType("type_list_double", ValueType.LIST)
-                    .havePropertyType("type_list_date", ValueType.LIST)
-                    .havePropertyType("type_list_datetime", ValueType.LIST)
-                    .havePropertyType("type_list_localdatetime", ValueType.LIST)
-                    .havePropertyType("type_list_time", ValueType.LIST)
-                    .havePropertyType("type_list_localtime", ValueType.LIST)
-                    .havePropertyType("type_list_duration", ValueType.LIST)
-                    .havePropertyType("type_list_point_2d", ValueType.LIST)
-                    .havePropertyType("type_list_point_3d", ValueType.LIST)
-                    .havePropertyType("type_list_mixed", ValueType.LIST)
-            ;
-        }
-    }
-
-    @Nested
-    @IntegrationTests.FailingTests
+    // @IntegrationTests.FailingTests
     @DisplayName("Should failed")
     class ShouldFailedTests extends IntegrationTests.DatasetTests {
 
@@ -107,6 +66,12 @@ class SampleNodesIntegrationTests {
         void haveLabels() {
             final Nodes nodes = new Nodes(driver, "Language");
             DriverAssertions.assertThat(nodes).haveLabels("OtherLabel", "AnotherLabel");
+        }
+
+        @Test
+        void haveSize() {
+            final Nodes nodes = new Nodes(driver, "Language");
+            DriverAssertions.assertThat(nodes).hasSize(42);
         }
 
         @Test
@@ -144,13 +109,27 @@ class SampleNodesIntegrationTests {
 
         @Test
         void full() {
-            final Nodes nodes = new Nodes(driver, "Language");
+            final Nodes nodes = new Nodes(driver, "Repo");
+            //@formatter:off
             DriverAssertions.assertThat(nodes)
-                    .hasSize(7)
-                    .haveLabels("Language")
-                    .haveProperties("name")
+                    .hasSize(12)
+                    .haveLabels("Repo")
+                    .havePropertyKeys("name")
+                    .havePropertyNumber(1)
+                    .havePropertyType("name", ValueType.STRING)
                     .ignoringIds()
-                    .contains(Drivers.node().label("Language").property("name", "Scala").build());
+                        .contains(Drivers.node().label("Language").property("name", "Scala").build())
+                        .filteredOnPropertyExists("key")
+                        .havePropertyMatching("key", LocalDateTime.class::isInstance)
+                        .toParentAssert()
+                    .incomingRelationships("TYPE")
+                        .ignoringIds()
+                        .contains(Drivers.relation("TYPE").build())
+                        .toParentAssert()
+                    .toRootAssert()
+//            .havePropertyMatching()
+            ;
+            //@formatter:on
         }
 
         @Test
@@ -184,7 +163,7 @@ class SampleNodesIntegrationTests {
         }
 
         @Test
-        void  haveListPropertyContainingType() {
+        void haveListPropertyContainingType() {
             final Nodes nodes = new Nodes(driver, "Repo");
             DriverAssertions.assertThat(nodes)
                     .haveListPropertyContainingType("active_branches", ValueType.STRING);

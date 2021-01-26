@@ -12,53 +12,37 @@
  */
 package org.assertj.neo4j.api.beta;
 
-import org.assertj.neo4j.api.beta.error.ElementsShouldHaveType;
-import org.assertj.neo4j.api.beta.type.Nodes;
-import org.assertj.neo4j.api.beta.type.RecordType;
+import org.assertj.core.util.VisibleForTesting;
 import org.assertj.neo4j.api.beta.type.Relationships;
-import org.assertj.neo4j.api.beta.util.RelationshipTypes;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author patouche - 24/11/2020
  */
 public class DriverRelationshipsAssert
-        extends AbstractEntitiesAssert<DriverRelationshipsAssert, Relationships, Relationships.DbRelationship> {
+        extends AbstractRelationshipsAssert<DriverRelationshipsAssert, Relationships, DriverRelationshipsAssert> {
 
-    /** The factory. */
-    private static final EntitiesAssertFactory<DriverRelationshipsAssert, Relationships.DbRelationship> FACTORY =
-            (entities, current) -> new DriverRelationshipsAssert(entities, current.loadingType, current);
     /**
      * Create new assertions on {@link Relationships}.
      *
      * @param relationships the relationships to assert
      */
     public DriverRelationshipsAssert(final Relationships relationships) {
-        this(relationships, null);
+        this(relationships.load(), relationships, null);
     }
 
-    protected DriverRelationshipsAssert(final Relationships relationships, final DriverRelationshipsAssert parent) {
-        this(relationships.load(), relationships, parent);
+    @VisibleForTesting
+    protected DriverRelationshipsAssert(final List<Relationships.DbRelationship> entities) {
+        this(entities, null,  null);
     }
 
-    public DriverRelationshipsAssert(
-            final List<Relationships.DbRelationship> dbRelationships, final Relationships relationships,
-            final DriverRelationshipsAssert parent) {
-        super(RecordType.RELATIONSHIP, relationships, dbRelationships, DriverRelationshipsAssert.class, FACTORY, parent);
+    private DriverRelationshipsAssert(final List<Relationships.DbRelationship> entities, final Relationships nodes, final DriverRelationshipsAssert parent) {
+        super(DriverNodesAssert.class, entities, nodes, factory(), parent, rootAssert(parent));
     }
 
-    /**
-     * Is it really useful ?
-     *
-     * @param expectedType
-     * @return
-     */
-    public DriverRelationshipsAssert haveType(final String expectedType) {
-        if (!RelationshipTypes.are(expectedType, actual)) {
-            throwAssertionError(ElementsShouldHaveType.create(actual, expectedType));
-        }
-        return myself;
+    private static EntitiesAssertFactory<DriverRelationshipsAssert, Relationships.DbRelationship, DriverRelationshipsAssert> factory() {
+        return (entities, current) -> new DriverRelationshipsAssert(entities, current.dbData, current);
     }
+
 }

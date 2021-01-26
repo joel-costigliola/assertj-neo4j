@@ -28,4 +28,5 @@ public class DriverRequestAssert extends AbstractAssert<DriverRequestAssert, Req
     public DriverRequestAssert hasSingleNodeResult() {
         throw Wip.TODO(this);
     }
+
 }

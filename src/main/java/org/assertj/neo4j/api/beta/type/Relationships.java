@@ -69,6 +69,10 @@ public class Relationships extends AbstractDbData<Relationships.DbRelationship> 
         return new DbRelationshipBuilder().type(type);
     }
 
+    /**
+     * TODO : Maybe extract method here in a interface to be able to decorate a Relationship from driver
+     *   - This may have impact for comparing relationship.
+     */
     public static class DbRelationship extends DbEntity<DbRelationship> {
 
         private final String type;

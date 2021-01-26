@@ -67,6 +67,10 @@ public class Nodes extends AbstractDbData<Nodes.DbNode> {
         }
     }
 
+    /**
+     * TODO : Maybe extract method here in a interface to be able to decorate a Node from driver
+     *   - This may have impact for comparing node.
+     */
     public static class DbNode extends DbEntity<DbNode> {
 
         protected List<String> labels;

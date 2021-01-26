@@ -23,7 +23,6 @@ import org.assertj.neo4j.api.beta.error.ElementsShouldHavePropertyWithType;
 import org.assertj.neo4j.api.beta.type.DbEntity;
 import org.assertj.neo4j.api.beta.type.AbstractDbData;
 import org.assertj.neo4j.api.beta.type.DbValue;
-import org.assertj.neo4j.api.beta.type.Nodes;
 import org.assertj.neo4j.api.beta.type.RecordType;
 import org.assertj.neo4j.api.beta.type.ValueType;
 import org.assertj.neo4j.api.beta.util.Entities;
@@ -32,9 +31,9 @@ import org.assertj.neo4j.api.beta.util.Wip;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Abstract entities assertions.
@@ -45,10 +44,12 @@ import java.util.stream.Stream;
  * @author patouche - 24/11/2020
  */
 //@formatter:off
-public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert<SELF, DB_DATA, ENTITY>,
-        DB_DATA extends AbstractDbData<ENTITY>,
-        ENTITY extends DbEntity<ENTITY>>
-        extends AbstractAssert<SELF, List<ENTITY>> {
+public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert<SELF, DB_DATA, ENTITY, ROOT_ASSERT>,
+                                             DB_DATA extends AbstractDbData<ENTITY>,
+                                             ENTITY extends DbEntity<ENTITY>,
+                                             ROOT_ASSERT>
+        extends AbstractAssert<SELF, List<ENTITY>>
+        implements Navigable<SELF, ROOT_ASSERT> {
 //@formatter:on
 
     protected Iterables iterables = Iterables.instance();
@@ -58,13 +59,16 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
 
     // FIXME: Should be remove ?
     /** The loading type. */
-    protected final DB_DATA loadingType;
+    protected final DB_DATA dbData;
 
     /** Factory for creating new assertions on restricted list of entities. */
-    private EntitiesAssertFactory<SELF, ENTITY> factory;
+    private EntitiesAssertFactory<SELF, ENTITY, ROOT_ASSERT> factory;
 
-    /** Parent nodes asserts. May be {@code null}. */
-    private final SELF parent;
+    /** Root assert. May be {@code null}. */
+    protected final ROOT_ASSERT rootAssert;
+
+    /** Previous assert. May be {@code null}. */
+    protected final SELF parentAssert;
 
     /**
      * Factory for creating new {@link SELF} assertions with the another list of entities.
@@ -73,28 +77,43 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
      * @param <ENTITY> the entity type
      */
     @FunctionalInterface
-    protected interface EntitiesAssertFactory<SELF, ENTITY> {
+    protected interface EntitiesAssertFactory<SELF extends Navigable<SELF, ROOT_ASSERT>, ENTITY, ROOT_ASSERT> {
 
-        SELF create(List<ENTITY> entities, SELF current);
+        SELF create(final List<ENTITY> entities, final SELF current);
+
     }
 
     /**
      * Class constructor.
      *
-     * @param recordType  the record type
-     * @param loadingType the loading type
-     * @param entities    the entities
-     * @param selfType    the self class type
-     * @param parent      the parent entities for navigation
+     * @param recordType the record type
+     * @param selfType   the self class type
+     * @param dbData     the loading type
+     * @param entities   the entities
+     * @param rootAssert the parent entities for navigation
      */
     protected AbstractEntitiesAssert(
-            final RecordType recordType, final DB_DATA loadingType, final List<ENTITY> entities,
-            final Class<?> selfType, final EntitiesAssertFactory<SELF, ENTITY> factory, final SELF parent) {
+            final RecordType recordType, final Class<?> selfType, final DB_DATA dbData,
+            final List<ENTITY> entities, final EntitiesAssertFactory<SELF, ENTITY, ROOT_ASSERT> factory,
+            final SELF parentAssert, final ROOT_ASSERT rootAssert) {
         super(entities, selfType);
         this.recordType = recordType;
+        this.dbData = dbData;
         this.factory = factory;
-        this.parent = parent;
-        this.loadingType = loadingType;
+        this.parentAssert = parentAssert;
+        this.rootAssert = rootAssert;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public SELF toParentAssert() {
+        throw Wip.TODO(this);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public ROOT_ASSERT toRootAssert() {
+        throw Wip.TODO(this);
     }
 
     /**
@@ -107,19 +126,19 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
         return this.actual;
     }
 
-    /**
-     * Check that a
-     *
-     * @param items
-     * @param message
-     * @param <T>
-     * @return
-     */
     protected static <T> List<T> checkArray(final T[] items, String message) {
         if (Arrays.isNullOrEmpty(items)) {
             throw new IllegalArgumentException(message);
         }
         return java.util.Arrays.asList(items);
+    }
+
+    protected static <INSTANCE extends AbstractEntitiesAssert<INSTANCE, DB_DATA, ENTITY, ROOT_ASSERT>,
+            DB_DATA extends AbstractDbData<ENTITY>,
+            ENTITY extends DbEntity<ENTITY>,
+            ROOT_ASSERT>
+    ROOT_ASSERT rootAssert(INSTANCE parent) {
+        return Optional.ofNullable(parent).map(i -> i.rootAssert).orElse(null);
     }
 
     /**
@@ -155,7 +174,7 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
      *         .property("alias", "M")
      *         .build()
      * );
-     *</code></pre>
+     * </code></pre>
      *
      * @param expectedEntities the expected entities
      * @return {@code this} assertion object.
@@ -183,6 +202,10 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
     public SELF filteredOn(final Predicate<ENTITY> predicate) {
         final List<ENTITY> entities = this.actual.stream().filter(predicate).collect(Collectors.toList());
         return factory.create(entities, myself);
+    }
+
+    public SELF filteredOnPropertyExists(String... keys) {
+        throw Wip.TODO(this);
     }
 
     /**
@@ -258,7 +281,27 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
     }
 
     /**
-     * Verifies that actual entities (nodes or a relationships) have a property {@code key} with the expected type.
+     * Verifies that each actual entities have the expected number of properties.
+     * <p/>
+     * Example :
+     * <pre><code class='java'> // assertions on nodes
+     * Nodes nodes = new Nodes(driver, "Person");
+     * assertThat(nodes)
+     *   .havePropertyNumber(8);
+     * </code></pre>
+     *
+     * @param expectedNumberOfProperties the expected number of properties
+     * @return {@code this} assertion object.
+     * @throws AssertionError if one entities don't have the expected number of properties
+     */
+    public SELF havePropertyNumber(int expectedNumberOfProperties) {
+        Wip.TODO(this);
+        return myself;
+    }
+
+    /**
+     * Verifies that each actual entities (nodes or a relationships) have a property {@code key} with the expected
+     * type.
      * <p/>
      * Example :
      * <pre><code class='java'> // assertions on nodes
@@ -286,6 +329,12 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
         return myself;
     }
 
+    public SELF havePropertyType(final String key, final Class<?> expectedClass) {
+        havePropertyKeys(key);
+        Wip.TODO(this, "havePropertyType");
+        return myself;
+    }
+
     /**
      * Verifies that actual entities (nodes or a relationships) have a property {@code key} with the expected type.
      * <p/>
@@ -310,17 +359,18 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
         havePropertyKeys(key);
         havePropertyType(key, ValueType.LIST);
         final boolean b = this.actual.stream()
-                .map(e -> e.getPropertyValue(key))
-                .map(DbValue.class::cast)
-                .map(DbValue::getContent)
-                .map(i -> (List<?> ) i)
+                .map(e -> e.getPropertyList(key))
                 .flatMap(Collection::stream)
-                .map(DbValue.class::cast)
                 .map(DbValue::getType)
                 .allMatch(t -> expectedType == t);
         if (!b) {
             throwAssertionError(ElementsShouldHavePropertyWithType.create(recordType, actual, key, expectedType));
         }
+        return myself;
+    }
+
+    public SELF havePropertyMatching(final String key, Predicate<Object> predicate) {
+        Wip.TODO(this, "havePropertyMatching");
         return myself;
     }
 
@@ -331,29 +381,17 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
      * <pre><code class='java'> // assertions on nodes
      * Nodes nodes = new Nodes(driver, "Person");
      * assertThat(nodes)
-     *   .havePropertyOfType("name", ValueType.STRING)
-     *   .havePropertyOfType("dateOfBirth", ValueType.DATE);
+     *   .filteredOn(n -> Objects.equals(n.getPropertyValue("company"), "my-little-company"))
+     *   .haveProperty("country", "FR");
+     * </code></pre>
      *
-     * // assertions on relationships
-     * Relationships relationships = new Relationships(driver, "KNOWS");
-     * assertThat(relationships)
-     *   .havePropertyOfType("since", ValueType.DATE);</code></pre>
-     *
-     * @param key
-     * @param value
+     * @param key the property key
+     * @param value the property value
      * @return
      */
     public SELF haveProperty(final String key, Object value) {
-        throw Wip.TODO(this);
-    }
-
-    public SELF haveProperties(final String... keys) {
-        throw Wip.TODO(this);
-    }
-
-    public SELF haveProperties(final Iterable<String> keys) {
-        throw Wip.TODO(this);
-        // return myself;
+        Wip.TODO(this, "haveProperty");
+        return myself;
     }
 
 }
