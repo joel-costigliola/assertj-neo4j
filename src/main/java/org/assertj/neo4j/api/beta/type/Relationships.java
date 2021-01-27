@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 /**
  * @author patouche - 31/10/2020
  */
-public class Relationships extends AbstractDbData<Relationships.DbRelationship> {
+public class Relationships extends AbstractDataLoader<Relationships.DbRelationship> {
 
     /** The relationship type. */
     private final String type;

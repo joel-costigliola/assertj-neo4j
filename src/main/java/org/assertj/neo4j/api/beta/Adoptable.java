@@ -12,18 +12,19 @@
  */
 package org.assertj.neo4j.api.beta;
 
-import org.assertj.core.api.AbstractAssert;
-import org.assertj.core.api.MapAssert;
-import org.assertj.core.api.ObjectAssert;
-
-import java.util.Map;
-
 /**
- * @author patouche - 26/01/2021
+ * Children assertions can be adopt by another parent assertions after it has been properly created.
+ *
+ * @author patouche - 27/01/2021
  */
-public class RecordMapAssert extends AbstractAssert<RecordMapAssert, Map<String, Object>> {
+public interface Adoptable<SELF, PARENT_ASSERT> {
 
-    public RecordMapAssert(Map<String, Object> stringObjectMap) {
-        super(stringObjectMap, RecordMapAssert.class);
-    }
+    /**
+     * Set the parent of the children entities
+     *
+     * @param parentAssert the parent assert
+     * @return the self type
+     */
+    SELF withParent(PARENT_ASSERT parentAssert);
+
 }

@@ -1,6 +1,18 @@
+/*
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
+ *
+ * Copyright 2013-2020 the original author or authors.
+ */
 package org.assertj.neo4j.api.beta;
 
-import org.assertj.neo4j.api.beta.type.AbstractDbData;
+import org.assertj.neo4j.api.beta.type.DataLoader;
 import org.assertj.neo4j.api.beta.type.Relationships;
 
 import java.util.List;
@@ -9,30 +21,43 @@ import java.util.List;
  * @author patouche - 02/01/2021
  */
 //@formatter:off
-public class ChildrenDriverRelationshipsAssert<DB_DATA extends AbstractDbData<Relationships.DbRelationship>,
-                                               ROOT_ASSERT>
-        extends AbstractRelationshipsAssert<ChildrenDriverRelationshipsAssert<DB_DATA, ROOT_ASSERT>, DB_DATA, ROOT_ASSERT>{
+public class ChildrenDriverRelationshipsAssert<PARENT_ASSERT, ROOT_ASSERT>
+        extends AbstractRelationshipsAssert<ChildrenDriverRelationshipsAssert< PARENT_ASSERT, ROOT_ASSERT>,
+                                            PARENT_ASSERT,
+                                            ROOT_ASSERT>
+        implements Adoptable<ChildrenDriverRelationshipsAssert<PARENT_ASSERT, ROOT_ASSERT>, PARENT_ASSERT> {
 //@formatter:on
 
     protected ChildrenDriverRelationshipsAssert(final List<Relationships.DbRelationship> entities,
-                                                DB_DATA dbData,
-                                                ROOT_ASSERT rootAssert) {
-        this(entities, dbData, null, rootAssert);
+                                                final DataLoader<Relationships.DbRelationship> loader,
+                                                final boolean ignoringIds,
+                                                final ROOT_ASSERT rootAssert) {
+        this(entities, loader, ignoringIds, null, rootAssert);
     }
 
-    private ChildrenDriverRelationshipsAssert(final List<Relationships.DbRelationship> entities,
-                                              final DB_DATA dbData,
-                                              final ChildrenDriverRelationshipsAssert<DB_DATA, ROOT_ASSERT> parentAssert,
-                                              final ROOT_ASSERT rootAssert) {
-        super(ChildrenDriverRelationshipsAssert.class, entities, dbData, factory(), parentAssert, rootAssert);
+    protected ChildrenDriverRelationshipsAssert(final List<Relationships.DbRelationship> entities,
+                                                final DataLoader<Relationships.DbRelationship> loader,
+                                                final boolean ignoringIds,
+                                                final PARENT_ASSERT parentAssert,
+                                                final ROOT_ASSERT rootAssert) {
+        super(
+                ChildrenDriverRelationshipsAssert.class,
+                entities,
+                loader,
+                ignoringIds,
+                factory(),
+                parentAssert,
+                rootAssert
+        );
     }
 
-    private static <DB_DATA extends AbstractDbData<Relationships.DbRelationship>, ROOT_ASSERT>
-    EntitiesAssertFactory<ChildrenDriverRelationshipsAssert<DB_DATA, ROOT_ASSERT>,
-            Relationships.DbRelationship,
-            ROOT_ASSERT>
-    factory() {
-        return (entities, current) -> new ChildrenDriverRelationshipsAssert<>(entities, current.dbData, current,
-                current.rootAssert);
+    private static <PARENT_ASSERT, ROOT_ASSERT> EntitiesAssertFactory<ChildrenDriverRelationshipsAssert<PARENT_ASSERT, ROOT_ASSERT>,
+            Relationships.DbRelationship, PARENT_ASSERT, ROOT_ASSERT> factory() {
+        return (entities, loader, ignoringIds, rootAssert) -> new ChildrenDriverRelationshipsAssert<>(entities, loader, ignoringIds, rootAssert.rootAssert);
+    }
+
+    @Override
+    public ChildrenDriverRelationshipsAssert<PARENT_ASSERT, ROOT_ASSERT> withParent(PARENT_ASSERT parentAssert) {
+        return new ChildrenDriverRelationshipsAssert<>(actual, dataLoader, ignoreIds, parentAssert, rootAssert);
     }
 }

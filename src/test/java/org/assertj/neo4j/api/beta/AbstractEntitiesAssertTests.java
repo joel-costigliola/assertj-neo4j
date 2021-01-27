@@ -13,12 +13,14 @@
 package org.assertj.neo4j.api.beta;
 
 import org.assertj.core.api.Assertions;
+import org.assertj.neo4j.api.beta.type.DataLoader;
 import org.assertj.neo4j.api.beta.type.Drivers;
 import org.assertj.neo4j.api.beta.type.Nodes;
 import org.assertj.neo4j.api.beta.type.RecordType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.neo4j.driver.Driver;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -44,14 +46,14 @@ public class AbstractEntitiesAssertTests {
     );
 
     static class FakeEntitiesAssert
-            extends AbstractEntitiesAssert<FakeEntitiesAssert, Nodes, Nodes.DbNode, FakeEntitiesAssert> {
+            extends AbstractEntitiesAssert<FakeEntitiesAssert, Nodes.DbNode, FakeEntitiesAssert, FakeEntitiesAssert> {
 
         protected FakeEntitiesAssert(List<Nodes.DbNode> entities) {
-            this(entities, null);
+            this(entities, null, false, null);
         }
 
-        protected FakeEntitiesAssert(List<Nodes.DbNode> entities, FakeEntitiesAssert parent) {
-            super(RecordType.NODE, FakeEntitiesAssert.class, null, entities, FakeEntitiesAssert::new, parent, null);
+        protected FakeEntitiesAssert(List<Nodes.DbNode> entities, DataLoader<Nodes.DbNode> loader, boolean ignoringIds, FakeEntitiesAssert parent) {
+            super(RecordType.NODE, FakeEntitiesAssert.class, loader, entities,ignoringIds, FakeEntitiesAssert::new, parent, null);
         }
 
     }

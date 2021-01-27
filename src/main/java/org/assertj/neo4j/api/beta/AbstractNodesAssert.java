@@ -15,8 +15,7 @@ package org.assertj.neo4j.api.beta;
 import org.assertj.core.util.IterableUtil;
 import org.assertj.core.util.Lists;
 import org.assertj.neo4j.api.beta.error.ElementsShouldHaveLabels;
-import org.assertj.neo4j.api.beta.type.AbstractDbData;
-import org.assertj.neo4j.api.beta.type.Drivers;
+import org.assertj.neo4j.api.beta.type.DataLoader;
 import org.assertj.neo4j.api.beta.type.Nodes;
 import org.assertj.neo4j.api.beta.type.RecordType;
 import org.assertj.neo4j.api.beta.type.Relationships;
@@ -30,19 +29,20 @@ import java.util.List;
  * @author patouche - 08/11/2020
  */
 //@formatter:off
-public abstract class AbstractNodesAssert<SELF extends AbstractNodesAssert<SELF, DB_DATA,  PARENT>,
-                                          DB_DATA extends AbstractDbData<Nodes.DbNode>,
-                                          PARENT>
-        extends AbstractEntitiesAssert<SELF, DB_DATA, Nodes.DbNode, PARENT> {
+public abstract class AbstractNodesAssert<SELF extends AbstractNodesAssert<SELF,  PARENT_ASSERT, ROOT_ASSERT>,
+                                          PARENT_ASSERT,
+                                          ROOT_ASSERT>
+        extends AbstractEntitiesAssert<SELF, Nodes.DbNode, PARENT_ASSERT, ROOT_ASSERT> {
 //@formatter:on
 
     protected AbstractNodesAssert(final Class<SELF> selfType,
                                   final List<Nodes.DbNode> entities,
-                                  final DB_DATA dbData,
-                                  final EntitiesAssertFactory<SELF, Nodes.DbNode, PARENT> factory,
-                                  final SELF parentAssert,
-                                  final PARENT rootAssert) {
-        super(RecordType.NODE, selfType, dbData, entities, factory, parentAssert, rootAssert);
+                                  final DataLoader<Nodes.DbNode> dataLoader,
+                                  final boolean ignoreIds,
+                                  final EntitiesAssertFactory<SELF, Nodes.DbNode, PARENT_ASSERT, ROOT_ASSERT> factory,
+                                  final PARENT_ASSERT parentAssert,
+                                  final ROOT_ASSERT rootAssert) {
+        super(RecordType.NODE, selfType, dataLoader, entities, ignoreIds, factory, parentAssert, rootAssert);
     }
 
     /**
@@ -94,17 +94,20 @@ public abstract class AbstractNodesAssert<SELF extends AbstractNodesAssert<SELF,
         return myself;
     }
 
-    public ChildrenDriverRelationshipsAssert<AbstractDbData<Relationships.DbRelationship>, SELF> incomingRelationships(String type) {
-
-        final Relationships relationships = new Relationships(this.dbData.getDriver(), type);
-//        return new ChildrenDriverRelationshipsAssert<>(relationships.load(), dbData, this)
-//                .filteredOn();
-
-
-        throw Wip.TODO(this);
+    /**
+     * Create a new assertions on incoming relationships
+     * @param type the relation type
+     * @return a
+     */
+    public ChildrenDriverRelationshipsAssert<SELF, ROOT_ASSERT> incomingRelationships(final String type) {
+        final List<Long> nodeIds = entityIds();
+        final Relationships relationships = new Relationships(this.dataLoader.getDriver(), type);
+        return new ChildrenDriverRelationshipsAssert<>(relationships.load(), relationships, false, myself, rootAssert)
+                .filteredOn(r -> nodeIds.contains(r.getId()))
+                .withParent(myself);
     }
 
-    public ChildrenDriverRelationshipsAssert<AbstractDbData<Relationships.DbRelationship>, SELF> outgoingRelationships(String type) {
+    public ChildrenDriverRelationshipsAssert<SELF, ROOT_ASSERT> outgoingRelationships(String type) {
         throw Wip.TODO(this);
     }
 

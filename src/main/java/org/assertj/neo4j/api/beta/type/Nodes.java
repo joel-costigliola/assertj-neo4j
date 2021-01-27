@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
 /**
  * @author patouche - 31/10/2020
  */
-public class Nodes extends AbstractDbData<Nodes.DbNode> {
+public class Nodes extends AbstractDataLoader<Nodes.DbNode> {
 
     /** The node labels. */
     private final List<String> labels;

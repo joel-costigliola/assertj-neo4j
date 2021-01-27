@@ -20,8 +20,8 @@ import org.assertj.core.util.Lists;
 import org.assertj.core.util.VisibleForTesting;
 import org.assertj.neo4j.api.beta.error.ElementsShouldHavePropertyKeys;
 import org.assertj.neo4j.api.beta.error.ElementsShouldHavePropertyWithType;
+import org.assertj.neo4j.api.beta.type.DataLoader;
 import org.assertj.neo4j.api.beta.type.DbEntity;
-import org.assertj.neo4j.api.beta.type.AbstractDbData;
 import org.assertj.neo4j.api.beta.type.DbValue;
 import org.assertj.neo4j.api.beta.type.RecordType;
 import org.assertj.neo4j.api.beta.type.ValueType;
@@ -38,18 +38,19 @@ import java.util.stream.Collectors;
 /**
  * Abstract entities assertions.
  *
- * @param <SELF>    the current assertions type.
- * @param <DB_DATA> the database data type that will be load from the database
- * @param <ENTITY>  the entity type
+ * @param <SELF>          the current assertions type.
+ * @param <ENTITY>        the entity type
+ * @param <PARENT_ASSERT> the parent assertions type
+ * @param <ROOT_ASSERT>   the root assertions type
  * @author patouche - 24/11/2020
  */
 //@formatter:off
-public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert<SELF, DB_DATA, ENTITY, ROOT_ASSERT>,
-                                             DB_DATA extends AbstractDbData<ENTITY>,
+public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert<SELF, ENTITY, PARENT_ASSERT, ROOT_ASSERT>,
                                              ENTITY extends DbEntity<ENTITY>,
+                                             PARENT_ASSERT,
                                              ROOT_ASSERT>
         extends AbstractAssert<SELF, List<ENTITY>>
-        implements Navigable<SELF, ROOT_ASSERT> {
+        implements Navigable<PARENT_ASSERT, ROOT_ASSERT> {
 //@formatter:on
 
     protected Iterables iterables = Iterables.instance();
@@ -57,48 +58,42 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
     /** The record type */
     protected final RecordType recordType;
 
-    // FIXME: Should be remove ?
-    /** The loading type. */
-    protected final DB_DATA dbData;
+    /** The data loader. */
+    protected final DataLoader<ENTITY> dataLoader;
+
+    protected final boolean ignoreIds;
 
     /** Factory for creating new assertions on restricted list of entities. */
-    private EntitiesAssertFactory<SELF, ENTITY, ROOT_ASSERT> factory;
+    private final EntitiesAssertFactory<SELF, ENTITY, PARENT_ASSERT, ROOT_ASSERT> factory;
 
     /** Root assert. May be {@code null}. */
     protected final ROOT_ASSERT rootAssert;
 
     /** Previous assert. May be {@code null}. */
-    protected final SELF parentAssert;
-
-    /**
-     * Factory for creating new {@link SELF} assertions with the another list of entities.
-     *
-     * @param <SELF>   the self type
-     * @param <ENTITY> the entity type
-     */
-    @FunctionalInterface
-    protected interface EntitiesAssertFactory<SELF extends Navigable<SELF, ROOT_ASSERT>, ENTITY, ROOT_ASSERT> {
-
-        SELF create(final List<ENTITY> entities, final SELF current);
-
-    }
+    protected final PARENT_ASSERT parentAssert;
 
     /**
      * Class constructor.
      *
      * @param recordType the record type
      * @param selfType   the self class type
-     * @param dbData     the loading type
+     * @param dataLoader the data loader
      * @param entities   the entities
      * @param rootAssert the parent entities for navigation
      */
     protected AbstractEntitiesAssert(
-            final RecordType recordType, final Class<?> selfType, final DB_DATA dbData,
-            final List<ENTITY> entities, final EntitiesAssertFactory<SELF, ENTITY, ROOT_ASSERT> factory,
-            final SELF parentAssert, final ROOT_ASSERT rootAssert) {
+            final RecordType recordType,
+            final Class<?> selfType,
+            final DataLoader<ENTITY> dataLoader,
+            final List<ENTITY> entities,
+            final boolean ignoreIds,
+            final EntitiesAssertFactory<SELF, ENTITY, PARENT_ASSERT, ROOT_ASSERT> factory,
+            final PARENT_ASSERT parentAssert,
+            final ROOT_ASSERT rootAssert) {
         super(entities, selfType);
         this.recordType = recordType;
-        this.dbData = dbData;
+        this.dataLoader = dataLoader;
+        this.ignoreIds = ignoreIds;
         this.factory = factory;
         this.parentAssert = parentAssert;
         this.rootAssert = rootAssert;
@@ -106,7 +101,7 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
 
     /** {@inheritDoc} */
     @Override
-    public SELF toParentAssert() {
+    public PARENT_ASSERT toParentAssert() {
         throw Wip.TODO(this);
     }
 
@@ -126,6 +121,15 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
         return this.actual;
     }
 
+    /**
+     * Retrieve the entity ids.
+     *
+     * @return the entity ids.
+     */
+    protected List<Long> entityIds() {
+        return actual.stream().map(DbEntity::getId).collect(Collectors.toList());
+    }
+
     protected static <T> List<T> checkArray(final T[] items, String message) {
         if (Arrays.isNullOrEmpty(items)) {
             throw new IllegalArgumentException(message);
@@ -133,11 +137,13 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
         return java.util.Arrays.asList(items);
     }
 
-    protected static <INSTANCE extends AbstractEntitiesAssert<INSTANCE, DB_DATA, ENTITY, ROOT_ASSERT>,
-            DB_DATA extends AbstractDbData<ENTITY>,
-            ENTITY extends DbEntity<ENTITY>,
-            ROOT_ASSERT>
-    ROOT_ASSERT rootAssert(INSTANCE parent) {
+
+    //@formatter:off
+    protected static <INSTANCE extends AbstractEntitiesAssert<INSTANCE, ENTITY, PARENT_ASSERT, ROOT_ASSERT>,
+                      ENTITY extends DbEntity<ENTITY>,
+                      PARENT_ASSERT,
+                      ROOT_ASSERT> ROOT_ASSERT rootAssert(INSTANCE parent) {
+    //@formatter:on
         return Optional.ofNullable(parent).map(i -> i.rootAssert).orElse(null);
     }
 
@@ -181,7 +187,11 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
      * @throws AssertionError if one of the expected entities cannot be found in the actual list of entities
      */
     public SELF contains(final ENTITY... expectedEntities) {
-        iterables.assertContains(info, actual, expectedEntities);
+        List<ENTITY> entities = actual;
+        if (this.ignoreIds) {
+            entities = actual.stream().map(DbEntity::withoutId).collect(Collectors.toList());
+        }
+        iterables.assertContains(info, entities, expectedEntities);
         return myself;
     }
 
@@ -201,7 +211,7 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
      */
     public SELF filteredOn(final Predicate<ENTITY> predicate) {
         final List<ENTITY> entities = this.actual.stream().filter(predicate).collect(Collectors.toList());
-        return factory.create(entities, myself);
+        return factory.create(entities, dataLoader, ignoreIds, myself);
     }
 
     public SELF filteredOnPropertyExists(String... keys) {
@@ -229,8 +239,7 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
      * @return a new instance of {@link DriverNodesAssert}
      */
     public SELF ignoringIds() {
-        final List<ENTITY> entities = actual.stream().map(DbEntity::withoutId).collect(Collectors.toList());
-        return factory.create(entities, myself);
+        return factory.create(actual, dataLoader, true, myself);
     }
 
     /**
@@ -385,13 +394,43 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
      *   .haveProperty("country", "FR");
      * </code></pre>
      *
-     * @param key the property key
+     * @param key   the property key
      * @param value the property value
-     * @return
+     * @return {@code this} assertion object.
      */
     public SELF haveProperty(final String key, Object value) {
         Wip.TODO(this, "haveProperty");
         return myself;
+    }
+
+    /**
+     * Factory for creating new {@link SELF} assertions with the another list of entities.
+     *
+     * @param <SELF>   the self type
+     * @param <ENTITY> the entity type
+     */
+    //@formatter:off
+    @FunctionalInterface
+    protected interface EntitiesAssertFactory<SELF extends Navigable<PARENT_ASSERT, ROOT_ASSERT>,
+            ENTITY,
+            PARENT_ASSERT,
+            ROOT_ASSERT> {
+    //@formatter:on
+
+        /**
+         * Create a new assertions on a restricted part of entities.
+         *
+         * @param entities    the filtered entities
+         * @param loader      the data loader
+         * @param ignoringIds if true, the ids will be ignore when using compare.
+         * @param current     the current assertions
+         * @return a new assertion of the current type
+         */
+        SELF create(final List<ENTITY> entities,
+                    final DataLoader<ENTITY> loader,
+                    final boolean ignoringIds,
+                    final SELF current);
+
     }
 
 }

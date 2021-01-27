@@ -17,35 +17,21 @@ import org.neo4j.driver.Driver;
 import java.util.List;
 
 /**
- * @author patouche - 09/11/2020
+ * @author patouche - 27/01/2021
  */
-public abstract class AbstractDbData<T> {
-
-    /** The Neo4j Database driver. */
-    protected final Driver driver;
-
-    /** The type of record. */
-    protected final RecordType recordType;
+public interface DataLoader<ENTITY> {
 
     /**
-     * Class constructor.
+     * Get the driver use to load the data.
      *
-     * @param driver the Neo4J database driver
-     * @param recordType   the record type
+     * @return the neo4j driver.
      */
-    protected AbstractDbData(final Driver driver, final RecordType recordType) {
-        this.driver = driver;
-        this.recordType = recordType;
-    }
+    Driver getDriver();
 
     /**
      * Load a list of records.
      *
      * @return the list of records transform into a expected type
      */
-    public abstract List<T> load();
-
-    public Driver getDriver() {
-        return this.driver;
-    }
+    List<ENTITY> load();
 }

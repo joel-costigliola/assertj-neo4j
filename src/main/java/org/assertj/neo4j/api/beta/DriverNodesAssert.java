@@ -13,6 +13,7 @@
 package org.assertj.neo4j.api.beta;
 
 import org.assertj.core.util.VisibleForTesting;
+import org.assertj.neo4j.api.beta.type.DataLoader;
 import org.assertj.neo4j.api.beta.type.Nodes;
 
 import java.util.List;
@@ -21,7 +22,7 @@ import java.util.List;
  * @author patouche - 08/11/2020
  */
 public class DriverNodesAssert
-        extends AbstractNodesAssert<DriverNodesAssert, Nodes, DriverNodesAssert> {
+        extends AbstractNodesAssert<DriverNodesAssert, DriverNodesAssert, DriverNodesAssert> {
 
     /**
      * Create new assertions on {@link Nodes}.
@@ -29,20 +30,20 @@ public class DriverNodesAssert
      * @param nodes the nodes to assert
      */
     public DriverNodesAssert(final Nodes nodes) {
-        this(nodes.load(), nodes, null);
+        this(nodes.load(), nodes,false,  null);
     }
 
     @VisibleForTesting
     protected DriverNodesAssert(final List<Nodes.DbNode> entities) {
-        this(entities, null,  null);
+        this(entities, null, false,  null);
     }
 
-    private DriverNodesAssert(final List<Nodes.DbNode> entities, final Nodes nodes, final DriverNodesAssert parent) {
-        super(DriverNodesAssert.class, entities, nodes, factory(), parent, rootAssert(parent));
+    private DriverNodesAssert(final List<Nodes.DbNode> entities,
+                              final DataLoader<Nodes.DbNode> nodes,
+                              final boolean ignoreIds,
+                              final DriverNodesAssert parent) {
+        super(DriverNodesAssert.class, entities, nodes, ignoreIds, DriverNodesAssert::new, parent, rootAssert(parent));
     }
 
-    private static EntitiesAssertFactory<DriverNodesAssert, Nodes.DbNode, DriverNodesAssert> factory() {
-        return (entities, current) -> new DriverNodesAssert(entities, current.dbData, current);
-    }
 
 }

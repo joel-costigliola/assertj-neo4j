@@ -13,7 +13,7 @@
 package org.assertj.neo4j.api.beta;
 
 import org.assertj.neo4j.api.beta.error.ElementsShouldHaveType;
-import org.assertj.neo4j.api.beta.type.AbstractDbData;
+import org.assertj.neo4j.api.beta.type.DataLoader;
 import org.assertj.neo4j.api.beta.type.RecordType;
 import org.assertj.neo4j.api.beta.type.Relationships;
 import org.assertj.neo4j.api.beta.util.RelationshipTypes;
@@ -24,20 +24,26 @@ import java.util.List;
  * @author patouche - 24/11/2020
  */
 //@formatter:off
-public abstract class AbstractRelationshipsAssert<SELF extends AbstractRelationshipsAssert<SELF,DB_DATA, ROOT_ASSERT>,
-                                                  DB_DATA extends AbstractDbData<Relationships.DbRelationship>,
+public abstract class AbstractRelationshipsAssert<SELF extends AbstractRelationshipsAssert<SELF,PARENT_ASSERT, ROOT_ASSERT>,
+                                                  PARENT_ASSERT,
                                                   ROOT_ASSERT>
-        extends AbstractEntitiesAssert<SELF, DB_DATA, Relationships.DbRelationship, ROOT_ASSERT> {
+        extends AbstractEntitiesAssert<SELF,
+                                       Relationships.DbRelationship,
+                                       PARENT_ASSERT,
+                                       ROOT_ASSERT>
+        implements Navigable<PARENT_ASSERT,
+                             ROOT_ASSERT> {
 //@formatter:on
 
     protected AbstractRelationshipsAssert(
             final Class<?> selfType,
             final List<Relationships.DbRelationship> dbRelationships,
-            final DB_DATA dbData,
-            final EntitiesAssertFactory<SELF, Relationships.DbRelationship, ROOT_ASSERT> factory,
-            final SELF parentAssert,
+            final DataLoader<Relationships.DbRelationship> dbData,
+            final boolean ignoringIds,
+            final EntitiesAssertFactory<SELF, Relationships.DbRelationship, PARENT_ASSERT, ROOT_ASSERT> factory,
+            final PARENT_ASSERT parentAssert,
             final ROOT_ASSERT rootAssert) {
-        super(RecordType.RELATIONSHIP, selfType, dbData, dbRelationships, factory, parentAssert, rootAssert);
+        super(RecordType.RELATIONSHIP, selfType, dbData, dbRelationships, ignoringIds, factory, parentAssert, rootAssert);
     }
 
     /**
