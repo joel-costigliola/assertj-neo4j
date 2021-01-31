@@ -54,7 +54,7 @@ class SampleNodesIntegrationTests {
     }
 
     @Nested
-    // @IntegrationTests.FailingTests
+    @IntegrationTests.FailingTests
     @DisplayName("Should failed")
     class ShouldFailedTests extends IntegrationTests.DatasetTests {
 
@@ -82,13 +82,13 @@ class SampleNodesIntegrationTests {
         }
 
         @Test
-        void havePropertyType() {
+        void havePropertyOfType() {
             final Nodes nodes = new Nodes(driver, "Repo");
             DriverAssertions.assertThat(nodes)
-                    .havePropertyType("name", ValueType.DATE_TIME)
-                    .havePropertyType("creation_date", ValueType.DURATION)
-                    .havePropertyType("active_branches", ValueType.DATE_TIME)
-                    .havePropertyType("non_existing_property", ValueType.DATE_TIME);
+                    .havePropertyOfType("name", ValueType.DATE_TIME)
+                    .havePropertyOfType("creation_date", ValueType.DURATION)
+                    .havePropertyOfType("active_branches", ValueType.DATE_TIME)
+                    .havePropertyOfType("non_existing_property", ValueType.DATE_TIME);
         }
 
         @Test
@@ -115,12 +115,12 @@ class SampleNodesIntegrationTests {
                     .hasSize(12)
                     .haveLabels("Repo")
                     .havePropertyKeys("name")
-                    .havePropertyNumber(1)
-                    .havePropertyType("name", ValueType.STRING)
+                    .havePropertySize(1)
+                    .havePropertyOfType("name", ValueType.STRING)
                     .ignoringIds()
                         .contains(Drivers.node().label("Language").property("name", "Scala").build())
                         .filteredOnPropertyExists("key")
-                        .havePropertyMatching("key", LocalDateTime.class::isInstance)
+                        .havePropertyValueMatching("key", LocalDateTime.class::isInstance)
                         .toParentAssert()
                     .incomingRelationships("TYPE")
                         .ignoringIds()
@@ -154,19 +154,19 @@ class SampleNodesIntegrationTests {
         }
 
         @Test
-        void havePropertyType() {
+        void havePropertyOfType() {
             final Nodes nodes = new Nodes(driver, "Repo");
             DriverAssertions.assertThat(nodes)
-                    .havePropertyType("name", ValueType.STRING)
-                    .havePropertyType("creation_date", ValueType.LOCAL_DATE_TIME)
-                    .havePropertyType("active_branches", ValueType.LIST);
+                    .havePropertyOfType("name", ValueType.STRING)
+                    .havePropertyOfType("creation_date", ValueType.LOCAL_DATE_TIME)
+                    .havePropertyOfType("active_branches", ValueType.LIST);
         }
 
         @Test
         void haveListPropertyContainingType() {
             final Nodes nodes = new Nodes(driver, "Repo");
             DriverAssertions.assertThat(nodes)
-                    .haveListPropertyContainingType("active_branches", ValueType.STRING);
+                    .haveListPropertyOfType("active_branches", ValueType.STRING);
         }
 
         @Test

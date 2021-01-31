@@ -31,11 +31,22 @@ class SampleTests {
   * Entities (commons nodes & relationships) :
     * [X] `ignoringIds`: Remove id to entities and create a new assertions
     * [X] `havePropertyKeys`: Verify if property's entities have the expected keys
-    * [ ] `havePropertyType` IN PROGRESS: Verify if all property's entities have the expected type
+    * [ ] `havePropertyType` : Verify if all property's entities have the expected type
     * [ ] `havePropertyCount`: Verify if entities have the number of properties
-    * [ ] `haveProperty`
-    * [ ] `haveProperties`
-    * [X] `contains`
+    * [ ] `haveProperty` :
+    * [ ] `haveProperty` :
+    * [ ] `haveProperty` :
+    * [ ] `haveProperties` :
+    * [X] `contains` :
+    * [ ] `filteredOn`
+    * [ ] `filteredOnPropertyExists`
+    * [ ] `filteredOnProperty`
+    * [ ]
+    * [ ]
+    * [ ]
+    * [ ]
+    * [ ]
+    * [ ]
   * Nodes :
     * [X] `haveLabels`
     * [X] `Drivers.node()....`

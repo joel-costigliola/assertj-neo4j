@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * @author patouche - 08/11/2020
  */
-public class DriverNodesAssert
+public final class DriverNodesAssert
         extends AbstractNodesAssert<DriverNodesAssert, DriverNodesAssert, DriverNodesAssert> {
 
     /**
@@ -30,20 +30,31 @@ public class DriverNodesAssert
      * @param nodes the nodes to assert
      */
     public DriverNodesAssert(final Nodes nodes) {
-        this(nodes.load(), nodes,false,  null);
+        this(nodes.load(), nodes, false, null);
     }
 
     @VisibleForTesting
     protected DriverNodesAssert(final List<Nodes.DbNode> entities) {
-        this(entities, null, false,  null);
+        this(entities, null, false, null);
     }
 
     private DriverNodesAssert(final List<Nodes.DbNode> entities,
                               final DataLoader<Nodes.DbNode> nodes,
                               final boolean ignoreIds,
                               final DriverNodesAssert parent) {
-        super(DriverNodesAssert.class, entities, nodes, ignoreIds, DriverNodesAssert::new, parent, rootAssert(parent));
+        super(
+                DriverNodesAssert.class,
+                entities,
+                nodes,
+                ignoreIds,
+                DriverNodesAssert::new, parent,
+                Navigable.rootAssert(parent)
+        );
     }
 
-
+    /** {@inheritDoc}*/
+    @Override
+    public DriverNodesAssert toRootAssert() {
+        return rootAssert().orElse(this);
+    }
 }

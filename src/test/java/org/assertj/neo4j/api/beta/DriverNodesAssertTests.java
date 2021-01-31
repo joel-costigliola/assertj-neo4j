@@ -87,26 +87,6 @@ public class DriverNodesAssertTests {
         }
 
         @Test
-        void should_pass_when_single_value() {
-
-            // GIVEN
-            final List<Nodes.DbNode> nodes = Arrays.asList(
-                    Drivers.node().label("Test").build(),
-                    Drivers.node().label("Test").build(),
-                    Drivers.node().label("Test").build(),
-                    Drivers.node().label("Test").build(),
-                    Drivers.node().label("Test").build()
-            );
-            final DriverNodesAssert nodesAssert = new DriverNodesAssert(nodes );
-
-            // WHEN
-            final DriverNodesAssert result = nodesAssert.haveLabels("Test");
-
-            // THEN
-            assertThat(result).isSameAs(nodesAssert);
-        }
-
-        @Test
         void should_fail_when_single_value() {
             // GIVEN
             final List<Nodes.DbNode> nodes = Arrays.asList(
@@ -124,7 +104,27 @@ public class DriverNodesAssertTests {
             // THEN
             assertThat(throwable)
                     .isInstanceOf(AssertionError.class)
-            .hasMessageContainingAll("Expecting nodes:", "to have all the following labels:");
+                    .hasMessageContainingAll("Expecting nodes:", "to have all the following labels:");
+        }
+
+        @Test
+        void should_pass_when_single_value() {
+
+            // GIVEN
+            final List<Nodes.DbNode> nodes = Arrays.asList(
+                    Drivers.node().label("Test").build(),
+                    Drivers.node().label("Test").build(),
+                    Drivers.node().label("Test").build(),
+                    Drivers.node().label("Test").build(),
+                    Drivers.node().label("Test").build()
+            );
+            final DriverNodesAssert nodesAssert = new DriverNodesAssert(nodes );
+
+            // WHEN
+            final DriverNodesAssert result = nodesAssert.haveLabels("Test");
+
+            // THEN
+            assertThat(result).isSameAs(nodesAssert);
         }
     }
 

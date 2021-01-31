@@ -16,6 +16,7 @@ import org.assertj.neo4j.api.beta.type.DataLoader;
 import org.assertj.neo4j.api.beta.type.Relationships;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author patouche - 02/01/2021
@@ -47,17 +48,31 @@ public class ChildrenDriverRelationshipsAssert<PARENT_ASSERT, ROOT_ASSERT>
                 ignoringIds,
                 factory(),
                 parentAssert,
-                rootAssert
+                Objects.requireNonNull(rootAssert)
         );
     }
 
-    private static <PARENT_ASSERT, ROOT_ASSERT> EntitiesAssertFactory<ChildrenDriverRelationshipsAssert<PARENT_ASSERT, ROOT_ASSERT>,
+    private static <PARENT_ASSERT, ROOT_ASSERT> EntitiesAssertFactory<ChildrenDriverRelationshipsAssert<PARENT_ASSERT
+            , ROOT_ASSERT>,
             Relationships.DbRelationship, PARENT_ASSERT, ROOT_ASSERT> factory() {
-        return (entities, loader, ignoringIds, rootAssert) -> new ChildrenDriverRelationshipsAssert<>(entities, loader, ignoringIds, rootAssert.rootAssert);
+        return (entities, loader, ignoringIds, self) -> new ChildrenDriverRelationshipsAssert<>(
+                entities,
+                loader,
+                ignoringIds,
+                self.toRootAssert()
+        );
     }
 
+    /** {@inheritDoc} */
     @Override
     public ChildrenDriverRelationshipsAssert<PARENT_ASSERT, ROOT_ASSERT> withParent(PARENT_ASSERT parentAssert) {
-        return new ChildrenDriverRelationshipsAssert<>(actual, dataLoader, ignoreIds, parentAssert, rootAssert);
+        return new ChildrenDriverRelationshipsAssert<>(actual, dataLoader, ignoreIds, parentAssert, toRootAssert());
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public ROOT_ASSERT toRootAssert() {
+        return rootAssert()
+                .orElseThrow(() -> new IllegalArgumentException("Root assertion shouldn't be null !"));
     }
 }

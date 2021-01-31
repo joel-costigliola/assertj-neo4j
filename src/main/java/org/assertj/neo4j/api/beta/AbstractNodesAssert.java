@@ -12,17 +12,15 @@
  */
 package org.assertj.neo4j.api.beta;
 
-import org.assertj.core.util.IterableUtil;
-import org.assertj.core.util.Lists;
 import org.assertj.neo4j.api.beta.error.ElementsShouldHaveLabels;
 import org.assertj.neo4j.api.beta.type.DataLoader;
 import org.assertj.neo4j.api.beta.type.Nodes;
 import org.assertj.neo4j.api.beta.type.RecordType;
 import org.assertj.neo4j.api.beta.type.Relationships;
+import org.assertj.neo4j.api.beta.util.Checks;
 import org.assertj.neo4j.api.beta.util.NodeLabels;
 import org.assertj.neo4j.api.beta.util.Wip;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -63,7 +61,7 @@ public abstract class AbstractNodesAssert<SELF extends AbstractNodesAssert<SELF,
      * @throws AssertionError           if the one of the actual nodes does not contain the given label
      */
     public SELF haveLabels(final String... expectedLabels) {
-        return haveLabels(checkArray(expectedLabels, "The labels to look for should not be null or empty"));
+        return haveLabels(Checks.notNullOrEmpty(expectedLabels, "The labels to look for should not be null or empty"));
     }
 
     /**
@@ -84,11 +82,9 @@ public abstract class AbstractNodesAssert<SELF extends AbstractNodesAssert<SELF,
      * @throws AssertionError           if the one of the actual nodes does not contain the given label
      */
     public SELF haveLabels(final Iterable<String> expectedLabels) {
-        if (IterableUtil.isNullOrEmpty(expectedLabels)) {
-            throw new IllegalArgumentException("The iterable of values to look for should not be empty");
-        }
+        final List<String> labels = Checks
+                .notNullOrEmpty(expectedLabels, "The iterable of values to look for should not be empty");
         if (NodeLabels.haveLabels(actual, expectedLabels)) {
-            final ArrayList<String> labels = Lists.newArrayList(expectedLabels);
             throwAssertionError(ElementsShouldHaveLabels.create(actual, labels, NodeLabels.missing(actual, labels)));
         }
         return myself;
@@ -102,7 +98,7 @@ public abstract class AbstractNodesAssert<SELF extends AbstractNodesAssert<SELF,
     public ChildrenDriverRelationshipsAssert<SELF, ROOT_ASSERT> incomingRelationships(final String type) {
         final List<Long> nodeIds = entityIds();
         final Relationships relationships = new Relationships(this.dataLoader.getDriver(), type);
-        return new ChildrenDriverRelationshipsAssert<>(relationships.load(), relationships, false, myself, rootAssert)
+        return new ChildrenDriverRelationshipsAssert<>(relationships.load(), relationships, false, myself, toRootAssert())
                 .filteredOn(r -> nodeIds.contains(r.getId()))
                 .withParent(myself);
     }

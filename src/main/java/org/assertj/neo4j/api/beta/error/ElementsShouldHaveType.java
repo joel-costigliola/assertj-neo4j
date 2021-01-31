@@ -13,16 +13,12 @@
 package org.assertj.neo4j.api.beta.error;
 
 import org.assertj.core.error.BasicErrorMessageFactory;
-import org.assertj.core.util.Strings;
-import org.assertj.neo4j.api.beta.type.Nodes;
 import org.assertj.neo4j.api.beta.type.RecordType;
-import org.assertj.neo4j.api.beta.type.Relationships;
 import org.assertj.neo4j.api.beta.type.Relationships.DbRelationship;
-import org.assertj.neo4j.api.beta.util.Entities;
+import org.assertj.neo4j.api.beta.util.Presentations;
 import org.assertj.neo4j.api.beta.util.RelationshipTypes;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author patouche - 25/11/2020
@@ -52,7 +48,7 @@ public class ElementsShouldHaveType extends DbEntitiesMessageFactory<DbRelations
                 "  - %s doesn't have the expected type:%n"
                 + "      Actual  : %s%n"
                 + "      Expected: %s",
-                Entities.outputId(relationship), relationship.getType(), expected
+                Presentations.outputId(relationship), relationship.getType(), expected
         );
     }
 

@@ -16,16 +16,16 @@ import org.assertj.core.error.ErrorMessageFactory;
 import org.assertj.neo4j.api.beta.type.DbEntity;
 import org.assertj.neo4j.api.beta.type.RecordType;
 import org.assertj.neo4j.api.beta.type.ValueType;
-import org.assertj.neo4j.api.beta.util.Entities;
+import org.assertj.neo4j.api.beta.util.Presentations;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ElementsShouldHavePropertyWithType<E extends DbEntity<E>>
+public class ElementsShouldHavePropertyValueType<E extends DbEntity<E>>
         extends DbEntitiesMessageFactory<E, ValueType, E> {
 
-    private ElementsShouldHavePropertyWithType(final RecordType recordType, final List<E> actual, final String key,
-                                               final ValueType expectedType) {
+    private ElementsShouldHavePropertyValueType(final RecordType recordType, final List<E> actual, final String key,
+                                                final ValueType expectedType) {
         super(recordType,
                 String.format("to have property \"%s\" with type", key),
                 String.format("but some %s have for the property \"%s\" another type", recordType.pluralForm(), key),
@@ -42,12 +42,15 @@ public class ElementsShouldHavePropertyWithType<E extends DbEntity<E>>
                 + "      Expected: %s%n"
                 + "      Actual  : %s%n"
                 + "      Value   : %s",
-                Entities.outputId(entity), key, expected, entity.getPropertyType(key), entity.getPropertyValue(key)
+                Presentations.outputId(entity), key, expected, entity.getPropertyType(key), entity.getPropertyValue(key)
         );
     }
 
     public static <E extends DbEntity<E>> ErrorMessageFactory create(
-            final RecordType recordType, final List<E> actual, final String key, final ValueType expectedType) {
-        return new ElementsShouldHavePropertyWithType<>(recordType, actual, key, expectedType);
+            final RecordType recordType,
+            final List<E> actual,
+            final String key,
+            final ValueType expectedType) {
+        return new ElementsShouldHavePropertyValueType<>(recordType, actual, key, expectedType);
     }
 }

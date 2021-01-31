@@ -16,7 +16,6 @@ import org.assertj.core.util.VisibleForTesting;
 import org.assertj.neo4j.api.beta.type.DataLoader;
 import org.assertj.neo4j.api.beta.type.Relationships;
 
-import javax.xml.crypto.Data;
 import java.util.List;
 
 /**
@@ -27,7 +26,7 @@ public class DriverRelationshipsAssert
         extends AbstractRelationshipsAssert<DriverRelationshipsAssert,
                                             DriverRelationshipsAssert,
                                             DriverRelationshipsAssert> {
-//@formatter:off
+//@formatter:on
 
     /**
      * Create new assertions on {@link Relationships}.
@@ -35,19 +34,31 @@ public class DriverRelationshipsAssert
      * @param relationships the relationships to assert
      */
     public DriverRelationshipsAssert(final Relationships relationships) {
-        this(relationships.load(), relationships,false, null);
+        this(relationships.load(), relationships, false, null);
     }
 
     @VisibleForTesting
     protected DriverRelationshipsAssert(final List<Relationships.DbRelationship> entities) {
-        this(entities, null, false,null);
+        this(entities, null, false, null);
     }
 
     private DriverRelationshipsAssert(final List<Relationships.DbRelationship> entities,
                                       final DataLoader<Relationships.DbRelationship> loader,
                                       final boolean ignorindIds,
                                       final DriverRelationshipsAssert parent) {
-        super(DriverNodesAssert.class, entities, loader, ignorindIds, DriverRelationshipsAssert::new, parent, rootAssert(parent));
+        super(
+                DriverRelationshipsAssert.class,
+                entities,
+                loader,
+                ignorindIds,
+                DriverRelationshipsAssert::new,
+                parent,
+                Navigable.rootAssert(parent)
+        );
     }
 
+    @Override
+    public DriverRelationshipsAssert toRootAssert() {
+        return rootAssert().orElse(this);
+    }
 }

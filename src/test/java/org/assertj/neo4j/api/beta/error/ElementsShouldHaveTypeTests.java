@@ -15,7 +15,6 @@ package org.assertj.neo4j.api.beta.error;
 import org.assertj.core.api.Assertions;
 import org.assertj.neo4j.api.beta.type.Drivers;
 import org.assertj.neo4j.api.beta.type.Relationships;
-import org.assertj.neo4j.api.beta.util.RelationshipTypes;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;

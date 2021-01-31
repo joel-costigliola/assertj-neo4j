@@ -16,7 +16,7 @@ import org.assertj.core.error.BasicErrorMessageFactory;
 import org.assertj.core.util.Strings;
 import org.assertj.neo4j.api.beta.type.DbEntity;
 import org.assertj.neo4j.api.beta.type.RecordType;
-import org.assertj.neo4j.api.beta.util.Entities;
+import org.assertj.neo4j.api.beta.util.Presentations;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,18 +29,22 @@ public abstract class DbEntitiesMessageFactory<E extends DbEntity<E>, EXPECTED, 
     /**
      * Creates a new <code>{@link BasicErrorMessageFactory}</code>.
      */
-    protected DbEntitiesMessageFactory(final RecordType recordType, final String title, final String but,
-                                       final List<E> actual, final EXPECTED expected, final List<ITEM> items,
-                                       final ItemMessageFactory<EXPECTED, ITEM> factory) {
+    protected DbEntitiesMessageFactory(
+            final RecordType recordType,
+            final String title,
+            final String but,
+            final List<E> actual, final EXPECTED expected,
+            final List<ITEM> items,
+            final ItemMessageFactory<EXPECTED, ITEM> factory) {
         super(
                 "%nExpecting %s:%n"
                 + "  %s%n"
                 + "%s:%n"
-                + "  %s %n"
+                + "  %s%n"
                 + "%s:%n%n"
                 + Strings.escapePercent(describeItems(expected, items, factory)),
                 unquotedString(recordType.pluralForm()),
-                Entities.outputIds(actual),
+                Presentations.outputIds(actual),
                 unquotedString(title),
                 expected,
                 unquotedString(but)

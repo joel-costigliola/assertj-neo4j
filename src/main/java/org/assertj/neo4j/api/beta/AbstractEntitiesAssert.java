@@ -13,24 +13,24 @@
 package org.assertj.neo4j.api.beta;
 
 import org.assertj.core.api.AbstractAssert;
+import org.assertj.core.error.ErrorMessageFactory;
 import org.assertj.core.internal.Iterables;
-import org.assertj.core.util.Arrays;
-import org.assertj.core.util.IterableUtil;
-import org.assertj.core.util.Lists;
 import org.assertj.core.util.VisibleForTesting;
+import org.assertj.neo4j.api.beta.error.ElementsShouldHavePropertyInstanceOf;
 import org.assertj.neo4j.api.beta.error.ElementsShouldHavePropertyKeys;
-import org.assertj.neo4j.api.beta.error.ElementsShouldHavePropertyWithType;
+import org.assertj.neo4j.api.beta.error.ElementsShouldHavePropertySize;
+import org.assertj.neo4j.api.beta.error.ElementsShouldHavePropertyValue;
+import org.assertj.neo4j.api.beta.error.ElementsShouldHavePropertyValueType;
 import org.assertj.neo4j.api.beta.type.DataLoader;
 import org.assertj.neo4j.api.beta.type.DbEntity;
-import org.assertj.neo4j.api.beta.type.DbValue;
 import org.assertj.neo4j.api.beta.type.RecordType;
 import org.assertj.neo4j.api.beta.type.ValueType;
-import org.assertj.neo4j.api.beta.util.Entities;
+import org.assertj.neo4j.api.beta.util.Checks;
+import org.assertj.neo4j.api.beta.util.Predicates;
 import org.assertj.neo4j.api.beta.util.Wip;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -53,7 +53,8 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
         implements Navigable<PARENT_ASSERT, ROOT_ASSERT> {
 //@formatter:on
 
-    protected Iterables iterables = Iterables.instance();
+    /** Iterables to reuse assertions. */
+    protected final Iterables iterables = Iterables.instance();
 
     /** The record type */
     protected final RecordType recordType;
@@ -61,13 +62,14 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
     /** The data loader. */
     protected final DataLoader<ENTITY> dataLoader;
 
+    /** True if comparison should be made ignoring ids */
     protected final boolean ignoreIds;
 
     /** Factory for creating new assertions on restricted list of entities. */
     private final EntitiesAssertFactory<SELF, ENTITY, PARENT_ASSERT, ROOT_ASSERT> factory;
 
     /** Root assert. May be {@code null}. */
-    protected final ROOT_ASSERT rootAssert;
+    private final ROOT_ASSERT rootAssert;
 
     /** Previous assert. May be {@code null}. */
     protected final PARENT_ASSERT parentAssert;
@@ -102,13 +104,11 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
     /** {@inheritDoc} */
     @Override
     public PARENT_ASSERT toParentAssert() {
-        throw Wip.TODO(this);
+        return this.parentAssert;
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public ROOT_ASSERT toRootAssert() {
-        throw Wip.TODO(this);
+    public Optional<ROOT_ASSERT> rootAssert() {
+        return Optional.ofNullable(this.rootAssert);
     }
 
     /**
@@ -130,21 +130,22 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
         return actual.stream().map(DbEntity::getId).collect(Collectors.toList());
     }
 
-    protected static <T> List<T> checkArray(final T[] items, String message) {
-        if (Arrays.isNullOrEmpty(items)) {
-            throw new IllegalArgumentException(message);
+    /**
+     * Ensure all entities verify the provided predicate. If not, the {@code callback} will be invoke to create a new
+     * instance of a {@link ErrorMessageFactory}
+     *
+     * @param predicate the predicate that all entities should validate
+     * @param callback  the callback to create the {@link ErrorMessageFactory}
+     * @return {@code this} assertion object.
+     */
+    protected SELF shouldAllVerify(final Predicate<ENTITY> predicate,
+                                   final ErrorMessageCallback<ENTITY> callback) {
+        final List<ENTITY> notSatisfies = actual.stream()
+                .filter(predicate.negate()).collect(Collectors.toList());
+        if (!notSatisfies.isEmpty()) {
+            throwAssertionError(callback.create(notSatisfies));
         }
-        return java.util.Arrays.asList(items);
-    }
-
-
-    //@formatter:off
-    protected static <INSTANCE extends AbstractEntitiesAssert<INSTANCE, ENTITY, PARENT_ASSERT, ROOT_ASSERT>,
-                      ENTITY extends DbEntity<ENTITY>,
-                      PARENT_ASSERT,
-                      ROOT_ASSERT> ROOT_ASSERT rootAssert(INSTANCE parent) {
-    //@formatter:on
-        return Optional.ofNullable(parent).map(i -> i.rootAssert).orElse(null);
+        return myself;
     }
 
     /**
@@ -214,8 +215,41 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
         return factory.create(entities, dataLoader, ignoreIds, myself);
     }
 
-    public SELF filteredOnPropertyExists(String... keys) {
-        throw Wip.TODO(this);
+    /**
+     * Filtered entities to create a new {@link SELF} assertions.
+     * <p/>
+     * Example:
+     * <pre><code class='java'> Nodes nodes = new Nodes(driver, "Person");
+     * assertThat(nodes)
+     *   .hasSize(10)
+     *   .filteredOnPropertyExists("name", "civility")
+     *   .hasSize(5)
+     * </code></pre>
+     *
+     * @param keys the keys that entities all entities should have
+     * @return a new assertion object
+     */
+    public SELF filteredOnPropertyExists(final String... keys) {
+        return filteredOnPropertyExists(Checks.notNullOrEmpty(keys, "The property keys should not be null or empty"));
+    }
+
+    /**
+     * Filtered entities to create a new {@link SELF} assertions.
+     * <p/>
+     * Example:
+     * <pre><code class='java'> Nodes nodes = new Nodes(driver, "Person");
+     * assertThat(nodes)
+     *   .hasSize(10)
+     *   .filteredOnPropertyExists(Arrays.asList("name", "civility"))
+     *   .hasSize(5)
+     * </code></pre>
+     *
+     * @param keys the keys that entities all entities should have
+     * @return a new assertion object
+     */
+    public SELF filteredOnPropertyExists(final Iterable<String> keys) {
+        Checks.notNullOrEmpty(keys, "The iterable of property keys should not be empty");
+        return filteredOn(Predicates.propertyKeysExists(keys));
     }
 
     /**
@@ -259,7 +293,7 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
      * @throws AssertionError if the actual value is not equal to the given one.
      */
     public SELF havePropertyKeys(final String... expectedKeys) {
-        return havePropertyKeys(checkArray(expectedKeys, "The property keys to look for should not be null or empty"));
+        return havePropertyKeys(Checks.notNullOrEmpty(expectedKeys, "The property keys should not be null or empty"));
     }
 
     /**
@@ -279,33 +313,32 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
      * @throws AssertionError if the actual value is not equal to the given one.
      */
     public SELF havePropertyKeys(final Iterable<String> expectedKeys) {
-        if (IterableUtil.isNullOrEmpty(expectedKeys)) {
-            throw new IllegalArgumentException("The iterable of property keys to look for should not be empty");
-        }
-        if (!Entities.haveAllKeys(actual, expectedKeys)) {
-            final ArrayList<String> keys = Lists.newArrayList(expectedKeys);
-            throwAssertionError(ElementsShouldHavePropertyKeys.create(recordType, actual, keys));
-        }
-        return myself;
+        final List<String> keys = Checks.notNullOrEmpty(expectedKeys, "The property keys should not be null or empty");
+        return shouldAllVerify(
+                Predicates.propertyKeysExists(keys),
+                (notSatisfying) -> ElementsShouldHavePropertyKeys.create(recordType, actual, keys)
+        );
     }
 
     /**
-     * Verifies that each actual entities have the expected number of properties.
+     * Verifies that each actual entities have the expected size of properties.
      * <p/>
      * Example :
      * <pre><code class='java'> // assertions on nodes
      * Nodes nodes = new Nodes(driver, "Person");
      * assertThat(nodes)
-     *   .havePropertyNumber(8);
+     *   .havePropertySize(8);
      * </code></pre>
      *
-     * @param expectedNumberOfProperties the expected number of properties
+     * @param expectedSizeOfProperties the expected size of properties
      * @return {@code this} assertion object.
-     * @throws AssertionError if one entities don't have the expected number of properties
+     * @throws AssertionError if one entities don't have the expected size of properties
      */
-    public SELF havePropertyNumber(int expectedNumberOfProperties) {
-        Wip.TODO(this);
-        return myself;
+    public SELF havePropertySize(final int expectedSizeOfProperties) {
+        return shouldAllVerify(Predicates.propertySize(expectedSizeOfProperties),
+        (notSatifies) -> ElementsShouldHavePropertySize
+                .create(recordType, actual, notSatifies, expectedSizeOfProperties)
+                );
     }
 
     /**
@@ -325,60 +358,80 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
      *   .havePropertyOfType("since", ValueType.DATE);</code></pre>
      *
      * @param key          the property key all entities should have.
-     * @param expectedType the expected type for the property
+     * @param expectedType the expected value type for the property
      * @return {@code this} assertion object.
      * @throws AssertionError if the actual value is not equal to the given one.
      */
-    public SELF havePropertyType(final String key, final ValueType expectedType) {
+    public SELF havePropertyOfType(final String key, final ValueType expectedType) {
+        Objects.requireNonNull(key, "The property key shouldn't be null");
+        Objects.requireNonNull(expectedType, "The expected value type shouldn't be null");
         havePropertyKeys(key);
-        final boolean b = this.actual.stream().map(e -> e.getPropertyType(key)).allMatch(t -> expectedType == t);
-        if (!b) {
-            throwAssertionError(ElementsShouldHavePropertyWithType.create(recordType, actual, key, expectedType));
-        }
-        return myself;
-    }
-
-    public SELF havePropertyType(final String key, final Class<?> expectedClass) {
-        havePropertyKeys(key);
-        Wip.TODO(this, "havePropertyType");
-        return myself;
+        return shouldAllVerify(
+                Predicates.propertyValueType(key, expectedType),
+                (notSatisfies) -> ElementsShouldHavePropertyValueType
+                        .create(recordType, actual, key, expectedType)
+        );
     }
 
     /**
-     * Verifies that actual entities (nodes or a relationships) have a property {@code key} with the expected type.
+     * Verifies that each actual entities (nodes or a relationships) have a property {@code key} with the expected
+     * type.
      * <p/>
      * Example :
      * <pre><code class='java'> // assertions on nodes
      * Nodes nodes = new Nodes(driver, "Person");
      * assertThat(nodes)
-     *   .havePropertyOfType("name", ValueType.STRING)
-     *   .havePropertyOfType("dateOfBirth", ValueType.DATE);
+     *   .havePropertyInstanceOf("name", String.class)
+     *   .havePropertyInstanceOf("dateOfBirth", LocalDate.class);
      *
      * // assertions on relationships
      * Relationships relationships = new Relationships(driver, "KNOWS");
      * assertThat(relationships)
-     *   .havePropertyOfType("since", ValueType.DATE);</code></pre>
+     *   .havePropertyInstanceOf("since", LocalDate.class);</code></pre>
+     *
+     * @param key           the property key all entities should have.
+     * @param expectedClass the expected class for the property value
+     * @return {@code this} assertion object.
+     * @throws AssertionError if the actual value is not equal to the given one.
+     */
+    public SELF havePropertyInstanceOf(final String key, final Class<?> expectedClass) {
+        Objects.requireNonNull(key, "The property key shouldn't be null");
+        Objects.requireNonNull(expectedClass, "The expected class shouldn't be null");
+        havePropertyKeys(key);
+        return shouldAllVerify(
+                Predicates.propertyValueInstanceOf(key, expectedClass),
+                (notSatisfies) -> ElementsShouldHavePropertyInstanceOf
+                        .create(recordType, actual, key, expectedClass)
+        );
+    }
+
+    /**
+     * Verifies that all actual entities (nodes or a relationships) have a property named {@code key} of type list and
+     * each items of this list contains value of the expected {@link ValueType}.
+     * <p/>
+     * Example :
+     * <pre><code class='java'> // assertions on nodes
+     * Nodes nodes = new Nodes(driver, "Person");
+     * assertThat(nodes)
+     *   .haveListPropertyOfType("nicknames", ValueType.STRING)
+     * </code></pre>
      *
      * @param key          the property key all entities should have.
      * @param expectedType the expected type for the property
      * @return {@code this} assertion object.
      * @throws AssertionError if the actual value is not equal to the given one.
      */
-    public SELF haveListPropertyContainingType(final String key, final ValueType expectedType) {
+    public SELF haveListPropertyOfType(final String key, final ValueType expectedType) {
         havePropertyKeys(key);
-        havePropertyType(key, ValueType.LIST);
-        final boolean b = this.actual.stream()
-                .map(e -> e.getPropertyList(key))
-                .flatMap(Collection::stream)
-                .map(DbValue::getType)
-                .allMatch(t -> expectedType == t);
-        if (!b) {
-            throwAssertionError(ElementsShouldHavePropertyWithType.create(recordType, actual, key, expectedType));
-        }
-        return myself;
+        havePropertyOfType(key, ValueType.LIST);
+        return shouldAllVerify(
+                Predicates.propertyListContainsValueType(key, expectedType),
+                (notSatisfies) -> ElementsShouldHavePropertyValueType
+                        .create(recordType, actual, key, expectedType)
+        );
     }
 
-    public SELF havePropertyMatching(final String key, Predicate<Object> predicate) {
+    public SELF havePropertyValueMatching(final String key, final Predicate<Object> predicate) {
         Wip.TODO(this, "havePropertyMatching");
         return myself;
     }
@@ -394,13 +447,17 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
      *   .haveProperty("country", "FR");
      * </code></pre>
      *
-     * @param key   the property key
-     * @param value the property value
+     * @param key           the property key
+     * @param expectedValue the property value
      * @return {@code this} assertion object.
      */
-    public SELF haveProperty(final String key, Object value) {
-        Wip.TODO(this, "haveProperty");
-        return myself;
+    public SELF haveProperty(final String key, final Object expectedValue) {
+        havePropertyKeys(key);
+        return shouldAllVerify(
+                Predicates.propertyValue(key, expectedValue),
+                (notSatisfies) -> ElementsShouldHavePropertyValue
+                        .create(recordType, actual, notSatisfies, key, expectedValue)
+        );
     }
 
     /**
@@ -412,9 +469,9 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
     //@formatter:off
     @FunctionalInterface
     protected interface EntitiesAssertFactory<SELF extends Navigable<PARENT_ASSERT, ROOT_ASSERT>,
-            ENTITY,
-            PARENT_ASSERT,
-            ROOT_ASSERT> {
+                                              ENTITY,
+                                              PARENT_ASSERT,
+                                              ROOT_ASSERT> {
     //@formatter:on
 
         /**
@@ -426,10 +483,14 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
          * @param current     the current assertions
          * @return a new assertion of the current type
          */
-        SELF create(final List<ENTITY> entities,
-                    final DataLoader<ENTITY> loader,
-                    final boolean ignoringIds,
-                    final SELF current);
+        SELF create(List<ENTITY> entities, DataLoader<ENTITY> loader, boolean ignoringIds, SELF current);
+
+    }
+
+    @FunctionalInterface
+    protected interface ErrorMessageCallback<ENTITY> {
+
+        ErrorMessageFactory create(List<ENTITY> notSatisfies);
 
     }
 

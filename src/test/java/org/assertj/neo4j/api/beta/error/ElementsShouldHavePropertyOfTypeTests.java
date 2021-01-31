@@ -27,7 +27,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-class ElementsShouldHavePropertyWithTypeTests {
+class ElementsShouldHavePropertyOfTypeTests {
 
     @Test
     void single_entities_error() {
@@ -41,7 +41,7 @@ class ElementsShouldHavePropertyWithTypeTests {
         );
 
         // WHEN
-        final ErrorMessageFactory result = ElementsShouldHavePropertyWithType
+        final ErrorMessageFactory result = ElementsShouldHavePropertyValueType
                 .create(RecordType.NODE, actual, "prop-key", expectedType);
 
         // THEN
@@ -75,7 +75,7 @@ class ElementsShouldHavePropertyWithTypeTests {
                 .collect(Collectors.toList());
 
         // WHEN
-        final ErrorMessageFactory result = ElementsShouldHavePropertyWithType
+        final ErrorMessageFactory result = ElementsShouldHavePropertyValueType
                 .create(RecordType.NODE, actual, "prop-key", expectedType);
 
         // THEN

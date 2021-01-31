@@ -15,10 +15,9 @@ package org.assertj.neo4j.api.beta.error;
 import org.assertj.core.error.ErrorMessageFactory;
 import org.assertj.neo4j.api.beta.type.DbEntity;
 import org.assertj.neo4j.api.beta.type.DbValue;
-import org.assertj.neo4j.api.beta.type.Nodes;
 import org.assertj.neo4j.api.beta.type.RecordType;
 import org.assertj.neo4j.api.beta.type.ValueType;
-import org.assertj.neo4j.api.beta.util.Entities;
+import org.assertj.neo4j.api.beta.util.Presentations;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -62,7 +61,7 @@ public class ElementsShouldHavePropertyListOfType<E extends DbEntity<E>>
                 + "      Expected: %s%n"
                 + "      Actual  : %s%n"
                 + "      Value   : %s",
-                Entities.outputId(entity),
+                Presentations.outputId(entity),
                 key,
                 expected,
                 streamValues(entity, key).findFirst().map(DbValue::getType).orElse(null),

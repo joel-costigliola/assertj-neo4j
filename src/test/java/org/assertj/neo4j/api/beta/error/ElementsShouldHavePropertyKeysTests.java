@@ -14,10 +14,8 @@ package org.assertj.neo4j.api.beta.error;
 
 import org.assertj.core.api.Assertions;
 import org.assertj.neo4j.api.beta.type.Drivers;
-import org.assertj.neo4j.api.beta.type.Nodes;
 import org.assertj.neo4j.api.beta.type.Nodes.DbNode;
 import org.assertj.neo4j.api.beta.type.RecordType;
-import org.assertj.neo4j.api.beta.util.Entities;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;

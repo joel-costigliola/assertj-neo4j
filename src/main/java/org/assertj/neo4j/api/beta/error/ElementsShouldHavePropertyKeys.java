@@ -15,7 +15,7 @@ package org.assertj.neo4j.api.beta.error;
 import org.assertj.core.util.Streams;
 import org.assertj.neo4j.api.beta.type.DbEntity;
 import org.assertj.neo4j.api.beta.type.RecordType;
-import org.assertj.neo4j.api.beta.util.Entities;
+import org.assertj.neo4j.api.beta.util.Presentations;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -60,7 +60,7 @@ public class ElementsShouldHavePropertyKeys<E extends DbEntity<E>>
                 "  - %s have missing property keys: %s%n"
                 + "      Actual  : <%s>%n"
                 + "      Expected: <%s>",
-                Entities.outputId(missing.getEntity()),
+                Presentations.outputId(missing.getEntity()),
                 missing.getData(),
                 missing.getEntity().getPropertyKeys(),
                 expected

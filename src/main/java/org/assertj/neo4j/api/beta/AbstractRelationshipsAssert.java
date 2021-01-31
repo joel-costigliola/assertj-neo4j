@@ -27,12 +27,8 @@ import java.util.List;
 public abstract class AbstractRelationshipsAssert<SELF extends AbstractRelationshipsAssert<SELF,PARENT_ASSERT, ROOT_ASSERT>,
                                                   PARENT_ASSERT,
                                                   ROOT_ASSERT>
-        extends AbstractEntitiesAssert<SELF,
-                                       Relationships.DbRelationship,
-                                       PARENT_ASSERT,
-                                       ROOT_ASSERT>
-        implements Navigable<PARENT_ASSERT,
-                             ROOT_ASSERT> {
+        extends AbstractEntitiesAssert<SELF, Relationships.DbRelationship, PARENT_ASSERT, ROOT_ASSERT>
+        implements Navigable<PARENT_ASSERT, ROOT_ASSERT> {
 //@formatter:on
 
     protected AbstractRelationshipsAssert(

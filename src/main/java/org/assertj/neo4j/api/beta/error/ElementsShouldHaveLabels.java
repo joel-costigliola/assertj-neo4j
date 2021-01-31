@@ -14,7 +14,7 @@ package org.assertj.neo4j.api.beta.error;
 
 import org.assertj.neo4j.api.beta.type.Nodes.DbNode;
 import org.assertj.neo4j.api.beta.type.RecordType;
-import org.assertj.neo4j.api.beta.util.Entities;
+import org.assertj.neo4j.api.beta.util.Presentations;
 
 import java.util.List;
 
@@ -39,7 +39,7 @@ public class ElementsShouldHaveLabels extends DbEntitiesMessageFactory<DbNode, L
                 "  - %s have missing labels: %s%n"
                 + "      Expected: %s%n"
                 + "      Actual  : %s",
-                Entities.outputId(missing.getEntity()), missing.getData(), expected,
+                Presentations.outputId(missing.getEntity()), missing.getData(), expected,
                 missing.getEntity().getSortedLabels()
         );
     }
