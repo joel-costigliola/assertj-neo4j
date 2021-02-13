@@ -15,9 +15,9 @@ package org.assertj.neo4j.api.beta.type;
 import java.util.Objects;
 
 /**
- * DB Value wrap an object within its type.
+ * Wrap an object within its type.
  *
- * @author patouche - 23/12/2020
+ * @author Patrick Allain - 23/12/2020
  */
 public class DbValue {
 

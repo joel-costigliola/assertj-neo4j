@@ -44,7 +44,7 @@ import static java.util.stream.Stream.concat;
  *     </li>
  * </ul>
  *
- * @author patouche - 27/11/2020
+ * @author Patrick Allain - 27/11/2020
  */
 public enum ValueType {
 
@@ -62,7 +62,8 @@ public enum ValueType {
 
     DATE(LocalDate.class, Function.identity()),
 
-    DATE_TIME(ZonedDateTime.class, Function.identity(), new Converter<>(OffsetDateTime.class, OffsetDateTime::toZonedDateTime)),
+    DATE_TIME(ZonedDateTime.class, Function.identity(), new Converter<>(OffsetDateTime.class,
+            OffsetDateTime::toZonedDateTime)),
 
     LOCAL_DATE_TIME(LocalDateTime.class, Function.identity()),
 
@@ -86,17 +87,20 @@ public enum ValueType {
     /**
      * Enum constructor.
      *
-     * @param targetClass
-     * @param converters
-     * @param <T>
+     * @param targetClass   the target class
+     * @param objectFactory the object factory to create
+     * @param converters    the converter that will convert from the provided input type into the target type.
+     * @param <T>           the target class type
      */
+    @SafeVarargs
     <T> ValueType(final Class<T> targetClass, final Function<T, ?> objectFactory, final Converter<?, T>... converters) {
         this.targetClass = targetClass;
         this.objectFactory = (Function<Object, Object>) objectFactory;
         this.converters = converters(targetClass, converters);
     }
 
-    private static <T> List<Converter<?, ?>> converters(final Class<T> targetClass, Converter<?, T>[] converters) {
+    private static <T> List<Converter<?, ?>> converters(final Class<T> targetClass,
+                                                        final Converter<?, T>[] converters) {
         return concat(
                 Stream.of(new Converter<>(targetClass, Function.identity())),
                 Arrays.stream(converters)
@@ -146,18 +150,24 @@ public enum ValueType {
         return result;
     }
 
+    /**
+     * Converter.
+     *
+     * @param <I> the input type
+     * @param <O> the output type
+     */
     static class Converter<I, O> {
 
         private final Class<I> fromClass;
         private final Function<I, O> function;
 
-        public Converter(final Class<I> fromClass, final Function<I, O> function) {
+        Converter(final Class<I> fromClass, final Function<I, O> function) {
             this.fromClass = fromClass;
             this.function = function;
         }
 
         @SuppressWarnings("unchecked")
-        public O convert(final Object input) {
+        O convert(final Object input) {
             if (!fromClass.isInstance(input)) {
                 throw new UnsupportedOperationException("Cannot convert object " + input + " as it isn't a instance "
                                                         + "of " + fromClass);

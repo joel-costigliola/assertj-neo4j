@@ -13,76 +13,40 @@
 package org.assertj.neo4j.api.beta.type;
 
 import org.neo4j.driver.Driver;
-import org.neo4j.driver.Record;
-import org.neo4j.driver.Result;
-import org.neo4j.driver.Session;
-import org.neo4j.driver.TransactionConfig;
-import org.neo4j.driver.Value;
 
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
- * @author patouche - 31/10/2020
+ * {@link Relationships.DbRelationship} entities loader definition.
+ *
+ * @author Patrick Allain - 31/10/2020
  */
-public class Relationships extends AbstractDataLoader<Relationships.DbRelationship> {
+public interface Relationships extends DataLoader<Relationships.DbRelationship> {
 
-    /** The relationship type. */
-    private final String type;
-
-    /**
-     * Create a new relationships for assertions.
-     *
-     * @param driver the neo4j driver
-     * @param type   the relationships type.
-     */
-    public Relationships(final Driver driver, final String type) {
-        super(driver, RecordType.RELATIONSHIP);
-        this.type = type;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public List<Relationships.DbRelationship> load() {
-        try (Session session = this.driver.session()) {
-            final String query = String.format("MATCH ()-[r:%s]->() RETURN r", type);
-            final Result result = session.run(query, TransactionConfig.builder().build());
-            final List<Record> records = result.list();
-            return records.stream()
-                    .map(Record::values)
-                    .flatMap(Collection::stream)
-                    .map(Value::asRelationship)
-                    .map(r -> new Relationships.DbRelationship(r.id(), r.type(), ValueType.convertMap(r.asMap())))
-                    .collect(Collectors.toList());
-        }
+    static Relationships of(final Driver driver, final String type) {
+        return new RelationshipLoader(driver, type);
     }
 
     /**
-     * Create a new {@link DbRelationshipBuilder}.
-     *
-     * @return a new {@link DbRelationshipBuilder} with the same {@link #type} of the current relationships.
+     * TODO : Maybe extract method here in a interface to be able to decorate a Relationship from driver - This may have
+     * impact for comparing relationship.
      */
-    public DbRelationshipBuilder create() {
-        return new DbRelationshipBuilder().type(type);
-    }
+    class DbRelationship extends DbEntity<DbRelationship> {
 
-    /**
-     * TODO : Maybe extract method here in a interface to be able to decorate a Relationship from driver
-     *   - This may have impact for comparing relationship.
-     */
-    public static class DbRelationship extends DbEntity<DbRelationship> {
-
+        private final Long start;
+        private final Long end;
         private final String type;
 
         DbRelationship(final String type, final Map<String, DbValue> properties) {
-            this(null, type, properties);
+            this(null, type, null, null, properties);
         }
 
-        DbRelationship(final Long id, final String type, final Map<String, DbValue> properties) {
+        DbRelationship(final Long id, final String type, final Long start, final Long end,
+                       final Map<String, DbValue> properties) {
             super(RecordType.RELATIONSHIP, id, properties);
+            this.start = start;
+            this.end = end;
             this.type = type;
         }
 
@@ -90,23 +54,32 @@ public class Relationships extends AbstractDataLoader<Relationships.DbRelationsh
             return type;
         }
 
+        public Long getStart() {
+            return start;
+        }
+
+        public Long getEnd() {
+            return end;
+        }
+
         @Override
         public String toString() {
-            return entityRepresentation("type='" + type + "'");
+            return entityRepresentation("type='" + type + "', start=" + start + ", end=" + end);
         }
 
         @Override
         public DbRelationship withoutId() {
-            return new DbRelationship(this.type, this.properties);
+            return new DbRelationship(null, this.type, this.start, this.end, this.properties);
         }
 
     }
 
-    public static class DbRelationshipBuilder {
+    class DbRelationshipBuilder {
 
         private Long id;
-
         private String type;
+        private Long start;
+        private Long end;
 
         private final Map<String, DbValue> properties = new HashMap<>();
 
@@ -132,8 +105,26 @@ public class Relationships extends AbstractDataLoader<Relationships.DbRelationsh
             return this;
         }
 
+        public DbRelationshipBuilder start(final int start) {
+            return start((long) start);
+        }
+
+        public DbRelationshipBuilder start(final Long start) {
+            this.start = start;
+            return this;
+        }
+
+        public DbRelationshipBuilder end(final int end) {
+            return end((long) end);
+        }
+
+        public DbRelationshipBuilder end(final Long end) {
+            this.end = end;
+            return this;
+        }
+
         public DbRelationship build() {
-            return new DbRelationship(id, type, properties);
+            return new DbRelationship(id, type, start, end, properties);
         }
 
     }

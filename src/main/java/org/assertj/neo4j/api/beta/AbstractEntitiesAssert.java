@@ -14,25 +14,33 @@ package org.assertj.neo4j.api.beta;
 
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.error.ErrorMessageFactory;
+import org.assertj.core.error.ShouldBeEmpty;
+import org.assertj.core.internal.ComparisonStrategy;
 import org.assertj.core.internal.Iterables;
 import org.assertj.core.util.VisibleForTesting;
-import org.assertj.neo4j.api.beta.error.ElementsShouldHavePropertyInstanceOf;
-import org.assertj.neo4j.api.beta.error.ElementsShouldHavePropertyKeys;
-import org.assertj.neo4j.api.beta.error.ElementsShouldHavePropertySize;
-import org.assertj.neo4j.api.beta.error.ElementsShouldHavePropertyValue;
-import org.assertj.neo4j.api.beta.error.ElementsShouldHavePropertyValueType;
+import org.assertj.neo4j.api.beta.error.ShouldBeEmptyQueryResult;
+import org.assertj.neo4j.api.beta.error.ShouldHavePropertyInstanceOf;
+import org.assertj.neo4j.api.beta.error.ShouldHavePropertyListOfType;
+import org.assertj.neo4j.api.beta.error.ShouldHavePropertySize;
+import org.assertj.neo4j.api.beta.error.ShouldHavePropertyValue;
+import org.assertj.neo4j.api.beta.error.ShouldHavePropertyValueType;
+import org.assertj.neo4j.api.beta.error.ShouldHavePropertyKeys;
+import org.assertj.neo4j.api.beta.error.ShouldPropertyMatch;
 import org.assertj.neo4j.api.beta.type.DataLoader;
 import org.assertj.neo4j.api.beta.type.DbEntity;
 import org.assertj.neo4j.api.beta.type.RecordType;
 import org.assertj.neo4j.api.beta.type.ValueType;
 import org.assertj.neo4j.api.beta.util.Checks;
 import org.assertj.neo4j.api.beta.util.Predicates;
+import org.assertj.neo4j.api.beta.util.Presentations;
+import org.assertj.neo4j.api.beta.util.Utils;
 import org.assertj.neo4j.api.beta.util.Wip;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 /**
@@ -42,7 +50,7 @@ import java.util.stream.Collectors;
  * @param <ENTITY>        the entity type
  * @param <PARENT_ASSERT> the parent assertions type
  * @param <ROOT_ASSERT>   the root assertions type
- * @author patouche - 24/11/2020
+ * @author Patrick Allain - 24/11/2020
  */
 //@formatter:off
 public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert<SELF, ENTITY, PARENT_ASSERT, ROOT_ASSERT>,
@@ -62,7 +70,11 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
     /** The data loader. */
     protected final DataLoader<ENTITY> dataLoader;
 
-    /** True if comparison should be made ignoring ids */
+    // /** Comparison strategy. */
+    // protected final ComparisonStrategy comparisonStrategy;
+
+    /** True if comparison should be made ignoring ids. */
+    /** TODO: Check if it's possible to use a ComparisonStrategy instead. */
     protected final boolean ignoreIds;
 
     /** Factory for creating new assertions on restricted list of entities. */
@@ -140,10 +152,22 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
      */
     protected SELF shouldAllVerify(final Predicate<ENTITY> predicate,
                                    final ErrorMessageCallback<ENTITY> callback) {
-        final List<ENTITY> notSatisfies = actual.stream()
-                .filter(predicate.negate()).collect(Collectors.toList());
+        final List<ENTITY> notSatisfies = actual.stream().filter(predicate.negate()).collect(Collectors.toList());
         if (!notSatisfies.isEmpty()) {
             throwAssertionError(callback.create(notSatisfies));
+        }
+        return myself;
+    }
+
+    public SELF isEmpty() {
+        return isEmpty(
+                (entities) -> ShouldBeEmptyQueryResult.elements(entities, dataLoader.query()).notSatisfies(entities)
+        );
+    }
+
+    protected SELF isEmpty(final ErrorMessageCallback<ENTITY> callback) {
+        if (!actual.isEmpty()) {
+            throwAssertionError(callback.create(actual));
         }
         return myself;
     }
@@ -216,7 +240,7 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
     }
 
     /**
-     * Filtered entities to create a new {@link SELF} assertions.
+     * Filtered entities having existing properties to create a new {@link SELF} assertions.
      * <p/>
      * Example:
      * <pre><code class='java'> Nodes nodes = new Nodes(driver, "Person");
@@ -234,7 +258,7 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
     }
 
     /**
-     * Filtered entities to create a new {@link SELF} assertions.
+     * Filtered entities having existing properties to create a new {@link SELF} assertions.
      * <p/>
      * Example:
      * <pre><code class='java'> Nodes nodes = new Nodes(driver, "Person");
@@ -248,8 +272,30 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
      * @return a new assertion object
      */
     public SELF filteredOnPropertyExists(final Iterable<String> keys) {
-        Checks.notNullOrEmpty(keys, "The iterable of property keys should not be empty");
+        Checks.nonNullElementsIn(keys, "The iterable of property keys should not be empty");
         return filteredOn(Predicates.propertyKeysExists(keys));
+    }
+
+    /**
+     * Filtered entities on a property value to create a new {@link SELF} assertions.
+     * <p/>
+     * Example:
+     * <pre><code class='java'> Nodes nodes = new Nodes(driver, "Person");
+     * assertThat(nodes)
+     *   .hasSize(10)
+     *   .filteredOnPropertyValue("name", "civility")
+     *   .hasSize(5)
+     * </code></pre>
+     *
+     * @param key   the property key that the filtered entities will have
+     * @param value the property value that the filtered entities will have
+     * @return a new assertion object
+     */
+    public SELF filteredOnPropertyValue(final String key, final Object value) {
+        return filteredOn(Predicates.propertyValue(
+                Objects.requireNonNull(key, "The property key cannot be null"),
+                value
+        ));
     }
 
     /**
@@ -293,7 +339,7 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
      * @throws AssertionError if the actual value is not equal to the given one.
      */
     public SELF havePropertyKeys(final String... expectedKeys) {
-        return havePropertyKeys(Checks.notNullOrEmpty(expectedKeys, "The property keys should not be null or empty"));
+        return havePropertyKeys(Utils.listOf(expectedKeys));
     }
 
     /**
@@ -313,10 +359,11 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
      * @throws AssertionError if the actual value is not equal to the given one.
      */
     public SELF havePropertyKeys(final Iterable<String> expectedKeys) {
-        final List<String> keys = Checks.notNullOrEmpty(expectedKeys, "The property keys should not be null or empty");
+        final List<String> keys = Checks.nonNullElementsIn(expectedKeys, "The property keys should not be null or "
+                                                                         + "empty");
         return shouldAllVerify(
                 Predicates.propertyKeysExists(keys),
-                (notSatisfying) -> ElementsShouldHavePropertyKeys.create(recordType, actual, keys)
+                (notSatisfies) -> ShouldHavePropertyKeys.elements(actual, keys).notSatisfies(notSatisfies)
         );
     }
 
@@ -330,15 +377,15 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
      *   .havePropertySize(8);
      * </code></pre>
      *
-     * @param expectedSizeOfProperties the expected size of properties
+     * @param expectedSize the expected size of properties
      * @return {@code this} assertion object.
      * @throws AssertionError if one entities don't have the expected size of properties
      */
-    public SELF havePropertySize(final int expectedSizeOfProperties) {
-        return shouldAllVerify(Predicates.propertySize(expectedSizeOfProperties),
-        (notSatifies) -> ElementsShouldHavePropertySize
-                .create(recordType, actual, notSatifies, expectedSizeOfProperties)
-                );
+    public SELF havePropertySize(final int expectedSize) {
+        return shouldAllVerify(
+                Predicates.propertySize(expectedSize),
+                (notSatisfies) -> ShouldHavePropertySize.elements(actual, expectedSize).notSatisfies(notSatisfies)
+        );
     }
 
     /**
@@ -364,12 +411,11 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
      */
     public SELF havePropertyOfType(final String key, final ValueType expectedType) {
         Objects.requireNonNull(key, "The property key shouldn't be null");
-        Objects.requireNonNull(expectedType, "The expected value type shouldn't be null");
+        final ValueType type = Objects.requireNonNull(expectedType, "The expected value type shouldn't be null");
         havePropertyKeys(key);
         return shouldAllVerify(
-                Predicates.propertyValueType(key, expectedType),
-                (notSatisfies) -> ElementsShouldHavePropertyValueType
-                        .create(recordType, actual, key, expectedType)
+                Predicates.propertyValueType(key, type),
+                (notSatisfies) -> ShouldHavePropertyValueType.elements(actual, key, type).notSatisfies(notSatisfies)
         );
     }
 
@@ -396,12 +442,11 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
      */
     public SELF havePropertyInstanceOf(final String key, final Class<?> expectedClass) {
         Objects.requireNonNull(key, "The property key shouldn't be null");
-        Objects.requireNonNull(expectedClass, "The expected class shouldn't be null");
+        final Class<?> clazz = Objects.requireNonNull(expectedClass, "The expected class shouldn't be null");
         havePropertyKeys(key);
         return shouldAllVerify(
-                Predicates.propertyValueInstanceOf(key, expectedClass),
-                (notSatisfies) -> ElementsShouldHavePropertyInstanceOf
-                        .create(recordType, actual, key, expectedClass)
+                Predicates.propertyValueInstanceOf(key, clazz),
+                (notSatisfies) -> ShouldHavePropertyInstanceOf.elements(actual, key, clazz).notSatisfies(notSatisfies)
         );
     }
 
@@ -424,16 +469,29 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
     public SELF haveListPropertyOfType(final String key, final ValueType expectedType) {
         havePropertyKeys(key);
         havePropertyOfType(key, ValueType.LIST);
+        final ValueType type = Objects.requireNonNull(expectedType, "The expected value type shouldn't be null");
         return shouldAllVerify(
-                Predicates.propertyListContainsValueType(key, expectedType),
-                (notSatisfies) -> ElementsShouldHavePropertyValueType
-                        .create(recordType, actual, key, expectedType)
+                Predicates.propertyListContainsValueType(key, type),
+                (notSatisfies) -> ShouldHavePropertyListOfType.elements(actual, key, type).notSatisfies(notSatisfies)
         );
     }
 
     public SELF havePropertyValueMatching(final String key, final Predicate<Object> predicate) {
-        Wip.TODO(this, "havePropertyMatching");
-        return myself;
+        havePropertyKeys(key);
+        return shouldAllVerify(
+                Predicates.propertyValueMatch(key, predicate),
+                (notSatisfies) -> ShouldPropertyMatch.elements(actual, key).notSatisfies(notSatisfies)
+        );
+    }
+
+    public <T> SELF havePropertyValueMatching(final String key, final Class<T> expectedClass,
+                                              final Predicate<T> predicate) {
+        havePropertyKeys(key);
+        havePropertyInstanceOf(key, expectedClass);
+        return shouldAllVerify(
+                Predicates.propertyValueMatch(key, predicate),
+                (notSatisfies) -> ShouldPropertyMatch.elements(actual, key).notSatisfies(notSatisfies)
+        );
     }
 
     /**
@@ -455,8 +513,9 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
         havePropertyKeys(key);
         return shouldAllVerify(
                 Predicates.propertyValue(key, expectedValue),
-                (notSatisfies) -> ElementsShouldHavePropertyValue
-                        .create(recordType, actual, notSatisfies, key, expectedValue)
+                (notSatisfies) -> ShouldHavePropertyValue
+                        .elements(actual, key, expectedValue)
+                        .notSatisfies(notSatisfies)
         );
     }
 

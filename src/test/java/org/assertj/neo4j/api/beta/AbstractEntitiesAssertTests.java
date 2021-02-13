@@ -12,7 +12,6 @@
  */
 package org.assertj.neo4j.api.beta;
 
-import org.assertj.core.api.Assertions;
 import org.assertj.neo4j.api.beta.type.DataLoader;
 import org.assertj.neo4j.api.beta.type.DbEntity;
 import org.assertj.neo4j.api.beta.type.Drivers;
@@ -20,24 +19,28 @@ import org.assertj.neo4j.api.beta.type.Nodes;
 import org.assertj.neo4j.api.beta.type.RecordType;
 import org.assertj.neo4j.api.beta.type.ValueType;
 import org.assertj.neo4j.api.beta.util.Predicates;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
+import org.neo4j.driver.Query;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 /**
- * @author patouche - 12/11/2020
+ * @author Patrick Allain - 12/11/2020
  */
 class AbstractEntitiesAssertTests {
 
@@ -45,8 +48,8 @@ class AbstractEntitiesAssertTests {
             extends AbstractEntitiesAssert<ConcreteEntitiesAssert, Nodes.DbNode, ConcreteEntitiesAssert,
             ConcreteEntitiesAssert> {
 
-        protected ConcreteEntitiesAssert(List<Nodes.DbNode> entities) {
-            this(entities, null, false, null);
+        protected ConcreteEntitiesAssert(List<Nodes.DbNode> entities, DataLoader<Nodes.DbNode> loader) {
+            this(entities, loader, false, null);
         }
 
         protected ConcreteEntitiesAssert(List<Nodes.DbNode> entities, DataLoader<Nodes.DbNode> loader,
@@ -71,14 +74,27 @@ class AbstractEntitiesAssertTests {
 
     private static class BaseTests {
 
+        protected final Nodes dataLoader;
+
         protected ConcreteEntitiesAssert assertions;
 
         protected BaseTests(Nodes.DbNodeBuilder... builders) {
+            this.dataLoader = Mockito.mock(Nodes.class);
+            testCase(builders);
+        }
+
+        protected void testCase(Nodes.DbNodeBuilder... builders) {
             this.assertions = new ConcreteEntitiesAssert(
                     IntStream.range(0, builders.length)
                             .mapToObj(idx -> builders[idx].id(idx + 1).build())
-                            .collect(Collectors.toList())
+                            .collect(Collectors.toList()),
+                    dataLoader
             );
+        }
+
+        @AfterEach
+        void tearDown() {
+            Mockito.verifyNoMoreInteractions(dataLoader);
         }
     }
 
@@ -155,6 +171,77 @@ class AbstractEntitiesAssertTests {
     }
 
     @Nested
+    @DisplayName("filteredOnPropertyExists")
+    class FilteredOnPropertyValueTests extends BaseTests {
+
+        FilteredOnPropertyValueTests() {
+            super(
+                    Drivers.node(),
+                    Drivers.node().property("prop", "other-val-1"),
+                    Drivers.node().property("prop", "val"),
+                    Drivers.node().property("prop", "other-val-2")
+            );
+        }
+
+        @Test
+        void should_filter_entities_having_the_property() {
+            // WHEN
+            ConcreteEntitiesAssert result = assertions.filteredOnPropertyValue("prop", "val");
+
+            // THEN
+            assertThat(result).isNotSameAs(assertions);
+            assertThat(result.getActual())
+                    .hasSize(1)
+                    .extracting(DbEntity::getId)
+                    .contains(3L);
+        }
+
+        @Test
+        void should_be_navigable() {
+            // WHEN
+            ConcreteEntitiesAssert result = assertions.filteredOnPropertyExists("prop");
+
+            // THEN
+            assertThat(result.toParentAssert()).as("parent").isSameAs(assertions);
+            assertThat(result.toRootAssert()).as("root").isSameAs(assertions);
+        }
+
+    }
+
+    @Nested
+    @DisplayName("isEmpty")
+    class IsEmptyTests extends BaseTests {
+
+        @Test
+        void should_failed() {
+            // GIVEN
+            testCase(Drivers.node().id(1));
+            when(dataLoader.query()).thenReturn(new Query("MATCH (n) RETURN n"));
+
+            // WHEN
+            final Throwable result = catchThrowable(() ->assertions.isEmpty());
+
+            // THEN
+            verify(dataLoader).query();
+            assertThat(result)
+                    .isInstanceOf(AssertionError.class)
+                    .hasMessageContainingAll(
+                            "Expecting query:",
+                            "to return no nodes but got:"
+                    );
+        }
+
+        @Test
+        void should_pass() {
+            // WHEN
+            final ConcreteEntitiesAssert result = assertions.isEmpty();
+
+            // THEN
+            assertThat(result).isSameAs(assertions);
+        }
+    }
+
+    @Nested
     @DisplayName("haveListPropertyOfType")
     class HaveListPropertyOfTypeTest extends BaseTests {
 
@@ -162,11 +249,16 @@ class AbstractEntitiesAssertTests {
             super(
                     Drivers.node()
                             .property("prop", Arrays.asList(1, 2))
-                            .property("mixed", 1),
-                    Drivers.node().property("prop", Arrays.asList(1, 2, 3))
-                            .property("mixed", "val"),
-                    Drivers.node().property("prop", Arrays.asList(1, 2, 3, 4))
+                            .property("mixed", 1)
+                            .property("mixed-list", Arrays.asList(1.1, 1.2)),
+                    Drivers.node()
+                            .property("prop", Arrays.asList(1, 2, 3))
+                            .property("mixed", "val")
+                            .property("mixed-list", Arrays.asList(true, false, true)),
+                    Drivers.node()
+                            .property("prop", Arrays.asList(1, 2, 3, 4))
                             .property("mixed", Arrays.asList(1, 2))
+                            .property("mixed-list", Arrays.asList(1, 2, 3, 4))
                             .property("missing", Arrays.asList(1, 2))
             );
         }
@@ -182,13 +274,14 @@ class AbstractEntitiesAssertTests {
             assertThat(throwable)
                     .isInstanceOf(AssertionError.class)
                     .hasMessageContainingAll(
-                            "to have all the following property keys:",
-                            "but some property keys were missing on:"
+                            "Expecting nodes:",
+                            "to have properties with keys:",
+                            "but some nodes don't have this properties:"
                     );
         }
 
         @Test
-        void should_fail_when_property_is_not_all_list_value() {
+        void should_fail_when_property_are_not_all_list_value() {
             // WHEN
             final Throwable throwable = catchThrowable(
                     () -> assertions.haveListPropertyOfType("mixed", ValueType.STRING)
@@ -198,17 +291,33 @@ class AbstractEntitiesAssertTests {
             assertThat(throwable)
                     .isInstanceOf(AssertionError.class)
                     .hasMessageContainingAll(
-                            "to have property \"mixed\" with type:",
-                            "but some nodes have for the property \"mixed\" another type:"
+                            "Expecting nodes:",
+                            "to have a property \"mixed\" with a value type:",
+                            "but some nodes have a different property value type:"
+                    );
+        }
+
+        @Test
+        void should_fail_when_property_are_not_all_of_expected_type() {
+            // WHEN
+            final Throwable throwable = catchThrowable(
+                    () -> assertions.haveListPropertyOfType("mixed-list", ValueType.STRING)
+            );
+
+            // THEN
+            assertThat(throwable)
+                    .isInstanceOf(AssertionError.class)
+                    .hasMessageContainingAll(
+                            "Expecting nodes:",
+                            "to have a composite property list named \"mixed-list\" containing only type:",
+                            "but some nodes have a composite list containing others type:"
                     );
         }
 
         @Test
         void should_pass() {
             // WHEN
-            final ConcreteEntitiesAssert result = assertions.haveListPropertyOfType("prop", ValueType.STRING);
-
-            // FIXME: BAD ERROR MESSAGE
+            final ConcreteEntitiesAssert result = assertions.haveListPropertyOfType("prop", ValueType.INTEGER);
 
             // THEN
             assertThat(result).isSameAs(assertions);
@@ -224,13 +333,13 @@ class AbstractEntitiesAssertTests {
             super(
                     Drivers.node()
                             .property("prop", "val")
-                            .property("inc", "val-1"),
+                            .property("prop-1", "val-1"),
                     Drivers.node()
                             .property("prop", "val")
-                            .property("inc", "val-1"),
+                            .property("prop-1", "val-1"),
                     Drivers.node()
                             .property("prop", "val")
-                            .property("inc", "val-1")
+                            .property("prop-1", "val-1")
                             .property("missing", "val")
             );
         }
@@ -244,20 +353,25 @@ class AbstractEntitiesAssertTests {
             assertThat(throwable)
                     .isInstanceOf(AssertionError.class)
                     .hasMessageContainingAll(
-                            "to have all the following property keys:",
-                            "but some property keys were missing on:"
+                            "Expecting nodes:",
+                            "to have properties with keys:",
+                            "but some nodes don't have this properties:"
                     );
         }
 
         @Test
         void should_fail_when_property_dont_have_the_expected_value() {
             // WHEN
-            final Throwable throwable = catchThrowable(() -> assertions.haveProperty("inc", "val-0"));
+            final Throwable throwable = catchThrowable(() -> assertions.haveProperty("prop-1", "val-0"));
 
             // THEN
             assertThat(throwable)
-                    .isInstanceOf(IllegalArgumentException.class)
-                    .hasMessage("The property keys to look for should not be null or empty");
+                    .isInstanceOf(AssertionError.class)
+                    .hasMessageContainingAll(
+                            "Expecting nodes:",
+                            "to have a property named \"prop-1\" with value:",
+                            "but some nodes have a different value for this property:"
+                    );
         }
 
         @Test
@@ -291,7 +405,11 @@ class AbstractEntitiesAssertTests {
             // THEN
             assertThat(throwable)
                     .isInstanceOf(AssertionError.class)
-                    .hasMessageContaining("TODO");
+                    .hasMessageContainingAll(
+                            "Expecting nodes:",
+                            "to have a property size:",
+                            "but some nodes have another property size:"
+                    );
         }
 
         @Test
@@ -338,8 +456,9 @@ class AbstractEntitiesAssertTests {
             assertThat(throwable)
                     .isInstanceOf(AssertionError.class)
                     .hasMessageContainingAll(
-                            "to have all the following property keys:",
-                            "but some property keys were missing on:"
+                            "Expecting nodes:",
+                            "to have properties with keys:",
+                            "but some nodes don't have this properties:"
                     );
         }
 
@@ -354,8 +473,9 @@ class AbstractEntitiesAssertTests {
             assertThat(throwable)
                     .isInstanceOf(AssertionError.class)
                     .hasMessageContainingAll(
-                            "to have all the following property keys:",
-                            "but some property keys were missing on:"
+                            "Expecting nodes:",
+                            "to have property value \"mixed\" instance of:",
+                            "but some nodes have a property value which is not an instance of the expected class:"
                     );
         }
 
@@ -397,7 +517,11 @@ class AbstractEntitiesAssertTests {
             // THEN
             assertThat(throwable)
                     .isInstanceOf(AssertionError.class)
-                    .hasMessageContainingAll("Expecting nodes:", "but some property keys were missing on:");
+                    .hasMessageContainingAll(
+                            "Expecting nodes:",
+                            "to have properties with keys:",
+                            "but some nodes don't have this properties:"
+                    );
         }
 
         @Test
@@ -412,27 +536,31 @@ class AbstractEntitiesAssertTests {
     }
 
     @Nested
-    @DisplayName("havePropertyValueMatching")
+    @DisplayName("havePropertyValueMatching(String, Predicate)")
     class HavePropertyValueMatchingTests extends BaseTests {
 
         HavePropertyValueMatchingTests() {
-            super(Drivers.node().property("prop", "val-1"), Drivers.node().property("prop", "val-2"),
-                    Drivers.node().property("prop", "val-3"));
+            super(
+                    Drivers.node().property("prop", "val").property("prop-inc", "val-1"),
+                    Drivers.node().property("prop", "val").property("prop-inc", "val-2"),
+                    Drivers.node().property("prop", "val").property("prop-inc", "val-3").property("missing", true)
+            );
         }
 
         @Test
         void should_fail_when_property_is_missing() {
             // WHEN
             final Throwable throwable = catchThrowable(
-                    () -> assertions.havePropertyValueMatching("prop-mixed", (o) -> true)
+                    () -> assertions.havePropertyValueMatching("missing", (o) -> true)
             );
 
             // THEN
             assertThat(throwable)
                     .isInstanceOf(AssertionError.class)
                     .hasMessageContainingAll(
-                            "toto",
-                            ""
+                            "Expecting nodes:",
+                            "to have properties with keys:",
+                            "but some nodes don't have this properties:"
                     );
         }
 
@@ -440,22 +568,98 @@ class AbstractEntitiesAssertTests {
         void should_fail_when_not_matching() {
             // WHEN
             final Throwable throwable = catchThrowable(
-                    () -> assertions.havePropertyValueMatching("prop-mixed", (o) -> false)
+                    () -> assertions.havePropertyValueMatching("prop-inc", (o) -> Objects.equals("val", o))
             );
 
             // THEN
             assertThat(throwable)
                     .isInstanceOf(AssertionError.class)
                     .hasMessageContainingAll(
-                            "toto",
-                            ""
+                            "Expecting nodes:",
+                            "to have a for the property \"prop-inc\" matching the condition but nodes:",
+                            "did not:"
                     );
         }
 
         @Test
         void should_pass() {
             // WHEN
-            final ConcreteEntitiesAssert result = assertions.havePropertyValueMatching("key", (o) -> true);
+            final ConcreteEntitiesAssert result = assertions
+                    .havePropertyValueMatching("prop", (o) -> Objects.equals("val", o));
+
+            // THEN
+            assertThat(result).isSameAs(assertions);
+        }
+    }
+
+    @Nested
+    @DisplayName("havePropertyValueMatching(String, Class, Predicate)")
+    class HavePropertyValueMatchingTypedTests extends BaseTests {
+
+        HavePropertyValueMatchingTypedTests() {
+            super(
+                    Drivers.node().property("prop", 1).property("prop-mixed", true),
+                    Drivers.node().property("prop", 2).property("prop-mixed", 3.14),
+                    Drivers.node().property("prop", 3).property("prop-mixed", "val").property("missing", true)
+            );
+        }
+
+        @Test
+        void should_fail_when_property_is_missing() {
+            // WHEN
+            final Throwable throwable = catchThrowable(
+                    () -> assertions.havePropertyValueMatching("missing", Boolean.class, (o) -> true)
+            );
+
+            // THEN
+            assertThat(throwable)
+                    .isInstanceOf(AssertionError.class)
+                    .hasMessageContainingAll(
+                            "Expecting nodes:",
+                            "to have properties with keys:",
+                            "but some nodes don't have this properties:"
+                    );
+        }
+
+        @Test
+        void should_fail_when_property_value_dont_have_the_correct_type() {
+            // WHEN
+            final Throwable throwable = catchThrowable(
+                    () -> assertions.havePropertyValueMatching("prop-mixed", Boolean.class, (o) -> true)
+            );
+
+            // THEN
+            assertThat(throwable)
+                    .isInstanceOf(AssertionError.class)
+                    .hasMessageContainingAll(
+                            "Expecting nodes:",
+                            "to have property value \"prop-mixed\" instance of:",
+                            "but some nodes have a property value which is not an instance of the expected class:"
+                    );
+        }
+
+        @Test
+        void should_fail_when_not_matching() {
+            // WHEN
+            final Throwable throwable = catchThrowable(
+                    () -> assertions.havePropertyValueMatching("prop", Long.class, (i) -> i < 0)
+            );
+
+            // THEN
+            assertThat(throwable)
+                    .isInstanceOf(AssertionError.class)
+                    .hasMessageContainingAll(
+                            "Expecting nodes:",
+                            "to have a for the property \"prop\" matching the condition but nodes:",
+                            "did not:"
+                    );
+        }
+
+        @Test
+        void should_pass() {
+            // WHEN
+            final ConcreteEntitiesAssert result = assertions
+                    .havePropertyValueMatching("prop", Long.class, (i) -> i < 10);
 
             // THEN
             assertThat(result).isSameAs(assertions);
@@ -492,8 +696,9 @@ class AbstractEntitiesAssertTests {
             assertThat(throwable)
                     .isInstanceOf(AssertionError.class)
                     .hasMessageContainingAll(
-                            "to have all the following property keys:",
-                            "but some property keys were missing on:"
+                            "Expecting nodes:",
+                            "to have properties with keys:",
+                            "but some nodes don't have this properties:"
                     );
         }
 
@@ -508,8 +713,9 @@ class AbstractEntitiesAssertTests {
             assertThat(throwable)
                     .isInstanceOf(AssertionError.class)
                     .hasMessageContainingAll(
-                            "to have property \"mixed\" with type:",
-                            "but some nodes have for the property \"mixed\" another type:"
+                            "Expecting nodes:",
+                            "to have a property \"mixed\" with a value type:",
+                            "but some nodes have a different property value type:"
                     );
         }
 

@@ -19,7 +19,7 @@ import org.neo4j.driver.Query;
 import java.util.List;
 
 /**
- * @author patouche - 02/11/2020
+ * @author Patrick Allain - 02/11/2020
  */
 @Deprecated
 public class ShouldHaveRecordType extends BasicErrorMessageFactory {

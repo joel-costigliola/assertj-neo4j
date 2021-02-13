@@ -22,7 +22,7 @@ import org.junit.jupiter.api.Test;
 /**
  * https://insights.stackoverflow.com/survey/2020#correlated-technologies
  *
- * @author patouche - 5/26/20.
+ * @author Patrick Allain - 5/26/20.
  */
 class SampleRelationshipsIntegrationTests extends IntegrationTests.DatasetTests {
 
@@ -32,7 +32,7 @@ class SampleRelationshipsIntegrationTests extends IntegrationTests.DatasetTests 
 
     @Test
     public void full() {
-        final Relationships relationships = new Relationships(driver, "KNOWS");
+        final Relationships relationships = Relationships.of(driver, "KNOWS");
         DriverAssertions.assertThat(relationships)
                 .hasSize(18)
                 .haveType("KNOWS")
@@ -43,21 +43,21 @@ class SampleRelationshipsIntegrationTests extends IntegrationTests.DatasetTests 
 
     @Test
     public void ignoringIds() {
-        final Relationships relationships = new Relationships(driver, "KNOWS");
+        final Relationships relationships = Relationships.of(driver, "KNOWS");
         DriverAssertions.assertThat(relationships)
                 .ignoringIds()
-                .contains(relationships.create().property("level", 5).build());
+                .contains(Drivers.relation("KNOWS").property("level", 5).build());
     }
 
     @Test
     public void haveType() {
-        final Relationships relationships = new Relationships(driver, "KNOWS");
+        final Relationships relationships = Relationships.of(driver, "KNOWS");
         DriverAssertions.assertThat(relationships).haveType("KNOWS");
     }
 
     @Test
     public void havePropertyKeys() {
-        final Relationships relationships = new Relationships(driver, "KNOWS");
+        final Relationships relationships = Relationships.of(driver, "KNOWS");
         DriverAssertions.assertThat(relationships).havePropertyKeys("level");
     }
 

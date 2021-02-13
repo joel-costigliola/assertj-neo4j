@@ -17,7 +17,7 @@ package org.assertj.neo4j.api.beta.util;
  *
  * TODO : SHOULD BE DELETED !
  *
- * @author patouche - 14/11/2020
+ * @author Patrick Allain - 14/11/2020
  */
 public class Wip {
 

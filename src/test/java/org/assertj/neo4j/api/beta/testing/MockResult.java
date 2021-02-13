@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * @author patouche - 11/11/2020
+ * @author Patrick Allain - 11/11/2020
  */
 public class MockResult implements Result {
 

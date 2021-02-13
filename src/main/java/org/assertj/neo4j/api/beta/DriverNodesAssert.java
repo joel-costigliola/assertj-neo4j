@@ -19,7 +19,7 @@ import org.assertj.neo4j.api.beta.type.Nodes;
 import java.util.List;
 
 /**
- * @author patouche - 08/11/2020
+ * @author Patrick Allain - 08/11/2020
  */
 public final class DriverNodesAssert
         extends AbstractNodesAssert<DriverNodesAssert, DriverNodesAssert, DriverNodesAssert> {
@@ -33,6 +33,11 @@ public final class DriverNodesAssert
         this(nodes.load(), nodes, false, null);
     }
 
+    /**
+     * FIXME : To be removed.
+     *
+     * @param entities
+     */
     @VisibleForTesting
     protected DriverNodesAssert(final List<Nodes.DbNode> entities) {
         this(entities, null, false, null);
@@ -47,12 +52,13 @@ public final class DriverNodesAssert
                 entities,
                 nodes,
                 ignoreIds,
-                DriverNodesAssert::new, parent,
+                DriverNodesAssert::new,
+                parent,
                 Navigable.rootAssert(parent)
         );
     }
 
-    /** {@inheritDoc}*/
+    /** {@inheritDoc} */
     @Override
     public DriverNodesAssert toRootAssert() {
         return rootAssert().orElse(this);

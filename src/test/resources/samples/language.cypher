@@ -2,6 +2,9 @@
 // ALL OF VALUES DESCRIBE BELLOW IS NOT REAL AND HAVE BEEN DEFINE ONLY TO HAVE
 // A DATASET TO RUN SOME INTEGRATION TESTS
 
+// The original idea came just after the publication of Stack Overflow survey
+// https://insights.stackoverflow.com/survey/2020#correlated-technologies
+
 // Nodes
 
 CREATE
@@ -123,7 +126,6 @@ CREATE
     owner: 'grafana',
     url: 'https://github.com/grafana/tempo',
     creation_date: localdatetime('2020-01-24T18:05:02'),
-    onboarding_duration: duration({  minutes: 25 }),
     active_branches: ['main'],
     stats_items: ['branches', 'tags', 'stars', 'fork'],
     stats_values: [17, 42, 3450, 345]
@@ -133,7 +135,6 @@ CREATE
     owner: 'prometheus',
     url: 'https://github.com/prometheus/prometheus',
     creation_date: localdatetime('2012-11-24T11:14:12'),
-    onboarding_duration: duration({  minutes: 25 }),
     active_branches: ['master'],
     stats_items: ['branches', 'tags', 'stars', 'fork'],
     stats_values: [17, 42, 3450, 345]
@@ -191,16 +192,16 @@ CREATE
   (KTurner)-[:KNOWS {level: 1}]->(Java)
 
 CREATE
-  (Assertj_AssertjCore)-[:IS {percent: ['99.7']}]->(Java),
-  (Assertj_AssertjCore)-[:IS {percent: ['0.3']}]->(Shell),
-  (Neo4j_Neo4j)-[:IS {percent: ['76.8']}]->(Java),
-  (Neo4j_Neo4j)-[:IS {percent: ['0.2']}]->(Shell),
-  (JunitTeam_Junit5)-[:IS {percent: ['97.5']}]->(Java),
-  (JunitTeam_Junit5)-[:IS {percent: ['2.1']}]->(Kotlin),
-  (Urfave_Cli)-[:IS {percent: ['99.8']}]->(Go),
-  (Urfave_Cli)-[:IS {percent: ['0.2']}]->(Shell),
-  (Ktorio_Ktor)-[:IS {percent: ['0.2']}]->(Shell),
-  (Kubernetes_Kubernetes)-[:IS {percent: ['90.3']}]->(Go),
-  (Kubernetes_Kubernetes)-[:IS {percent: ['2.8']}]->(Shell),
-  (Pallets_Click)-[:IS {percent: ['100']}]->(Python),
-  (Pallets_Flask)-[:IS {percent: ['99.9']}]->(Python)
+  (Assertj_AssertjCore)-[:WRITTEN {percent: ['99.7']}]->(Java),
+  (Assertj_AssertjCore)-[:WRITTEN {percent: ['0.3']}]->(Shell),
+  (Neo4j_Neo4j)-[:WRITTEN {percent: ['76.8']}]->(Java),
+  (Neo4j_Neo4j)-[:WRITTEN {percent: ['0.2']}]->(Shell),
+  (JunitTeam_Junit5)-[:WRITTEN {percent: ['97.5']}]->(Java),
+  (JunitTeam_Junit5)-[:WRITTEN {percent: ['2.1']}]->(Kotlin),
+  (Urfave_Cli)-[:WRITTEN {percent: ['99.8']}]->(Go),
+  (Urfave_Cli)-[:WRITTEN {percent: ['0.2']}]->(Shell),
+  (Ktorio_Ktor)-[:WRITTEN {percent: ['0.2']}]->(Shell),
+  (Kubernetes_Kubernetes)-[:WRITTEN {percent: ['90.3']}]->(Go),
+  (Kubernetes_Kubernetes)-[:WRITTEN {percent: ['2.8']}]->(Shell),
+  (Pallets_Click)-[:WRITTEN {percent: ['100']}]->(Python),
+  (Pallets_Flask)-[:WRITTEN {percent: ['99.9']}]->(Python)

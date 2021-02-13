@@ -12,17 +12,10 @@
  */
 package org.assertj.neo4j.api.beta.type;
 
-import org.assertj.core.util.Lists;
 import org.neo4j.driver.Driver;
-import org.neo4j.driver.Record;
-import org.neo4j.driver.Result;
-import org.neo4j.driver.Session;
-import org.neo4j.driver.TransactionConfig;
-import org.neo4j.driver.Value;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,48 +23,21 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- * @author patouche - 31/10/2020
+ * {@link Nodes.DbNode} entities loader definition.
+ *
+ * @author Patrick Allain - 31/10/2020
  */
-public class Nodes extends AbstractDataLoader<Nodes.DbNode> {
+public interface Nodes extends DataLoader<Nodes.DbNode> {
 
-    /** The node labels. */
-    private final List<String> labels;
-
-    /**
-     * Class constructor for {@link Nodes}.
-     * <p>
-     * This will allow you to write easy assertions on your database nodes.
-     *
-     * @param driver the neo4j driver
-     * @param labels the nodes labels to watch
-     */
-    public Nodes(final Driver driver, final String... labels) {
-        super(driver, RecordType.NODE);
-        this.labels = Arrays.asList(labels);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public List<DbNode> load() {
-        try (Session session = this.driver.session()) {
-            final String queryLabels = labels.stream().map(i -> ":" + i).collect(Collectors.joining(""));
-            final String query = String.format("MATCH (n %s) RETURN n", queryLabels);
-            final Result result = session.run(query, TransactionConfig.builder().build());
-            final List<Record> records = result.list();
-            return records.stream()
-                    .map(Record::values)
-                    .flatMap(Collection::stream)
-                    .map(Value::asNode)
-                    .map(n -> new DbNode(n.id(), Lists.newArrayList(n.labels()), ValueType.convertMap(n.asMap())))
-                    .collect(Collectors.toList());
-        }
+    static Nodes of(Driver driver, String... labels) {
+        return new NodeLoader(driver, labels);
     }
 
     /**
-     * TODO : Maybe extract method here in a interface to be able to decorate a Node from driver
-     *   - This may have impact for comparing node.
+     * TODO : Maybe extract method here in a interface to be able to decorate a Node from driver - This may have impact
+     * for comparing node.
      */
-    public static class DbNode extends DbEntity<DbNode> {
+    class DbNode extends DbEntity<DbNode> {
 
         protected List<String> labels;
 
@@ -121,7 +87,10 @@ public class Nodes extends AbstractDataLoader<Nodes.DbNode> {
         }
     }
 
-    public static class DbNodeBuilder {
+    /**
+     * Builder for {@link DbNode}.
+     */
+    class DbNodeBuilder {
 
         private Long id = null;
 
@@ -148,6 +117,11 @@ public class Nodes extends AbstractDataLoader<Nodes.DbNode> {
 
         public DbNodeBuilder label(final String label) {
             this.labels.add(label);
+            return this;
+        }
+
+        public DbNodeBuilder labels(final String... labels) {
+            Arrays.stream(labels).forEach(this::label);
             return this;
         }
 

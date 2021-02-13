@@ -33,7 +33,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * For org.assertj.neo4j.api.beta.testing purpose...
  *
- * @author patouche
+ * @author Patrick Allain
  */
 public final class Neo4JDataSet {
 

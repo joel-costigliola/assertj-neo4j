@@ -19,7 +19,7 @@ import org.assertj.core.api.ObjectAssert;
 import java.util.Map;
 
 /**
- * @author patouche - 26/01/2021
+ * @author Patrick Allain - 26/01/2021
  */
 public class RecordMapAssert extends AbstractAssert<RecordMapAssert, Map<String, Object>> {
 

@@ -12,21 +12,23 @@
  */
 package org.assertj.neo4j.api.beta.type;
 
-import org.neo4j.driver.Driver;
+import org.neo4j.driver.Query;
 
 import java.util.List;
 
 /**
- * @author patouche - 27/01/2021
+ * Data loader.
+ *
+ * @author Patrick Allain - 27/01/2021
  */
 public interface DataLoader<ENTITY> {
 
     /**
-     * Get the driver use to load the data.
+     * Get que the query use to load the entities
      *
-     * @return the neo4j driver.
+     * @return the query use to load the entities
      */
-    Driver getDriver();
+    Query query();
 
     /**
      * Load a list of records.
@@ -34,4 +36,17 @@ public interface DataLoader<ENTITY> {
      * @return the list of records transform into a expected type
      */
     List<ENTITY> load();
+
+    /**
+     * Chain current assertion with the creation of an other {@link DataLoader}.
+     * <p/>
+     * A new query will be executed bellow which will load mode entities.
+     *
+     * @param factory the factory
+     * @param <E>     the entity type
+     * @param <D>     the data loader type
+     * @return the data loader
+     */
+    <E, D extends DataLoader<E>> D chain(LoaderFactory<E, D> factory);
+
 }

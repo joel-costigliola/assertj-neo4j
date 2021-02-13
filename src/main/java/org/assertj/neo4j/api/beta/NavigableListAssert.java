@@ -20,11 +20,11 @@ import org.assertj.core.api.ObjectAssert;
 import java.util.List;
 
 /**
- * @author patouche - 26/01/2021
+ * @author Patrick Allain - 26/01/2021
  */
 //@formatter:off
 public class NavigableListAssert<ACTUAL, PARENT, ROOT>
-    extends AbstractListAssert<NavigableListAssert<ACTUAL, PARENT, ROOT> , List<ACTUAL>, ACTUAL, ObjectAssert<ACTUAL>>
+        extends AbstractListAssert<NavigableListAssert<ACTUAL, PARENT, ROOT>, List<ACTUAL>, ACTUAL, ObjectAssert<ACTUAL>>
         implements Navigable<PARENT, ROOT> {
 //@formatter:on
 public NavigableListAssert(List<  ACTUAL> actual) {

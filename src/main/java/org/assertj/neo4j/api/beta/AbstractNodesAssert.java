@@ -12,19 +12,22 @@
  */
 package org.assertj.neo4j.api.beta;
 
-import org.assertj.neo4j.api.beta.error.ElementsShouldHaveLabels;
+import org.assertj.neo4j.api.beta.error.ShouldHaveNodeLabels;
+import org.assertj.neo4j.api.beta.error.ShouldNodeHaveNoRelatedRelationships;
 import org.assertj.neo4j.api.beta.type.DataLoader;
+import org.assertj.neo4j.api.beta.type.LoaderFactory;
 import org.assertj.neo4j.api.beta.type.Nodes;
 import org.assertj.neo4j.api.beta.type.RecordType;
 import org.assertj.neo4j.api.beta.type.Relationships;
 import org.assertj.neo4j.api.beta.util.Checks;
-import org.assertj.neo4j.api.beta.util.NodeLabels;
-import org.assertj.neo4j.api.beta.util.Wip;
+import org.assertj.neo4j.api.beta.util.EntityUtils;
+import org.assertj.neo4j.api.beta.util.NodeUtils;
+import org.assertj.neo4j.api.beta.util.Predicates;
 
 import java.util.List;
 
 /**
- * @author patouche - 08/11/2020
+ * @author Patrick Allain - 08/11/2020
  */
 //@formatter:off
 public abstract class AbstractNodesAssert<SELF extends AbstractNodesAssert<SELF,  PARENT_ASSERT, ROOT_ASSERT>,
@@ -84,34 +87,52 @@ public abstract class AbstractNodesAssert<SELF extends AbstractNodesAssert<SELF,
     public SELF haveLabels(final Iterable<String> expectedLabels) {
         final List<String> labels = Checks
                 .notNullOrEmpty(expectedLabels, "The iterable of values to look for should not be empty");
-        if (NodeLabels.haveLabels(actual, expectedLabels)) {
-            throwAssertionError(ElementsShouldHaveLabels.create(actual, labels, NodeLabels.missing(actual, labels)));
-        }
-        return myself;
+        return shouldAllVerify(
+                Predicates.labelsExists(expectedLabels),
+                (notSatisfies) -> ShouldHaveNodeLabels.elements(actual, labels).notSatisfies(notSatisfies)
+        );
     }
 
     /**
      * Create a new assertions on incoming relationships
-     * @param type the relation type
+     *
+     * @param types the relation types
      * @return a
      */
-    public ChildrenDriverRelationshipsAssert<SELF, ROOT_ASSERT> incomingRelationships(final String type) {
+    public ChildrenDriverRelationshipsAssert<SELF, ROOT_ASSERT> incomingRelationships(final String... types) {
         final List<Long> nodeIds = entityIds();
-        final Relationships relationships = new Relationships(this.dataLoader.getDriver(), type);
-        return new ChildrenDriverRelationshipsAssert<>(relationships.load(), relationships, false, myself, toRootAssert())
-                .filteredOn(r -> nodeIds.contains(r.getId()))
+        final Relationships relationships = this.dataLoader.chain(LoaderFactory.relationships(types));
+        return new ChildrenDriverRelationshipsAssert<>(relationships.load(), relationships, false, myself,
+                toRootAssert())
+                .filteredOn(r -> nodeIds.contains(r.getEnd()))
                 .withParent(myself);
     }
 
-    public ChildrenDriverRelationshipsAssert<SELF, ROOT_ASSERT> outgoingRelationships(String type) {
-        throw Wip.TODO(this);
+    public ChildrenDriverRelationshipsAssert<SELF, ROOT_ASSERT> outgoingRelationships(final String... types) {
+        final List<Long> nodeIds = entityIds();
+        final Relationships relationships = this.dataLoader.chain(LoaderFactory.relationships(types));
+        return new ChildrenDriverRelationshipsAssert<>(relationships.load(), relationships, false, myself,
+                toRootAssert())
+                .filteredOn(r -> nodeIds.contains(r.getStart()))
+                .withParent(myself);
     }
 
-    public SELF haveNoIncomingRelationships(String ... types) {
-        throw Wip.TODO(this);
+    public SELF haveNoIncomingRelationships(String... types) {
+        return incomingRelationships(types)
+                .isEmpty((relationships) -> ShouldNodeHaveNoRelatedRelationships
+                        .incomingElements(actual, relationships)
+                        .notSatisfies(EntityUtils.havingIncomingRelationships(actual, relationships))
+                )
+                .toParentAssert();
     }
 
-    public SELF haveNoOutgoingRelationships(String ... types) {
-        throw Wip.TODO(this);
+    public SELF haveNoOutgoingRelationships(String... types) {
+        return outgoingRelationships(types)
+                .isEmpty((relationships) -> ShouldNodeHaveNoRelatedRelationships
+                        .outgoingElements(actual, relationships)
+                        .notSatisfies(EntityUtils.havingOutgoingRelationships(actual, relationships))
+                )
+                .toParentAssert();
     }
+
 }

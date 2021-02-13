@@ -19,11 +19,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.neo4j.driver.Driver;
+import org.neo4j.driver.Query;
+import org.neo4j.driver.Record;
 import org.neo4j.driver.Result;
 import org.neo4j.driver.Session;
 import org.neo4j.driver.TransactionConfig;
 import org.neo4j.driver.Values;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -37,7 +40,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 /**
- * @author patouche - 24/11/2020
+ * @author Patrick Allain - 24/11/2020
  */
 @ExtendWith(MockitoExtension.class)
 class RelationshipsTests {
@@ -56,19 +59,17 @@ class RelationshipsTests {
     @Test
     void load() {
         // GIVEN
-        final Relationships relationships = new Relationships(driver, "KNOWS");
-        final Result result;
-        result = Mocks.result()
-                .record(Mocks.record()
+        final Relationships relationships = Relationships.of(driver, "KNOWS");
+        final List<Record> result = Arrays.asList(
+                Mocks.record()
                         .key("key")
                         .relation(Mocks.relation("SAMPLE")
                                 .id(1)
                                 .properties("prop-0", Values.value(true))
                                 .build()
                         )
-                        .build()
-                )
-                .record(Mocks.record()
+                        .build(),
+                Mocks.record()
                         .key("key")
                         .relation(Mocks.relation("SAMPLE")
                                 .id(2)
@@ -76,11 +77,10 @@ class RelationshipsTests {
                                 .build()
                         )
                         .build()
-                )
-                .build();
+        );
 
         doReturn(session).when(driver).session();
-        doReturn(result).when(session).run(anyString(), any(TransactionConfig.class));
+        doReturn(result).when(session).readTransaction(any(), any(TransactionConfig.class));
 
         // WHEN
         final List<Relationships.DbRelationship> dbRelationships = relationships.load();
@@ -92,9 +92,10 @@ class RelationshipsTests {
                         Drivers.relation("SAMPLE").id(1).property("prop-0", true).build(),
                         Drivers.relation("SAMPLE").id(2).property("prop-1", false).build()
                 );
+        assertThat(relationships.query()).isEqualTo(new Query("MATCH ()-[r :KNOWS]->() RETURN r"));
 
         verify(driver).session();
-        verify(session).run(eq("MATCH ()-[r:KNOWS]->() RETURN r"), any(TransactionConfig.class));
+        verify(session).readTransaction(any(), any(TransactionConfig.class));
         verify(session).close();
     }
 

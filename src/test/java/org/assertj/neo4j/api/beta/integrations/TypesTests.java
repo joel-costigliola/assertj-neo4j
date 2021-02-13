@@ -24,7 +24,7 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 /**
- * @author patouche - 28/12/2020
+ * @author Patrick Allain - 28/12/2020
  */
 @DisplayName("Neo4j Property Types")
 @Tag(TestTags.INTEGRATION)
@@ -40,7 +40,7 @@ class TypesTests {
 
         @Test
         void should_property_have_the_right_type() {
-            Nodes nodes = new Nodes(driver, "Types");
+            Nodes nodes = Nodes.of(driver, "Types");
             DriverAssertions.assertThat(nodes)
                     // Simple property types
                     .havePropertyOfType("type_boolean", ValueType.BOOLEAN)

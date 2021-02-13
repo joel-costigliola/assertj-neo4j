@@ -27,7 +27,7 @@ import org.testcontainers.junit.jupiter.Testcontainers;
 /**
  * https://insights.stackoverflow.com/survey/2020#correlated-technologies
  *
- * @author patouche - 5/26/20.
+ * @author Patrick Allain - 5/26/20.
  */
 @Testcontainers
 @IntegrationTests.ToBeImplemented

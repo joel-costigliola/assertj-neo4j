@@ -13,7 +13,7 @@
 package org.assertj.neo4j.api.beta.testing;
 
 /**
- * @author patouche - 28/12/2020
+ * @author Patrick Allain - 28/12/2020
  */
 public interface TestTags {
 

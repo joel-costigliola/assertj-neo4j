@@ -15,7 +15,7 @@ package org.assertj.neo4j.api.beta;
 /**
  * Children assertions can be adopt by another parent assertions after it has been properly created.
  *
- * @author patouche - 27/01/2021
+ * @author Patrick Allain - 27/01/2021
  */
 public interface Adoptable<SELF, PARENT_ASSERT> {
 

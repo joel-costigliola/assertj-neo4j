@@ -17,7 +17,7 @@ import org.assertj.neo4j.api.beta.type.Request;
 import org.assertj.neo4j.api.beta.util.Wip;
 
 /**
- * @author patouche - 27/11/2020
+ * @author Patrick Allain - 27/11/2020
  */
 public class DriverRequestAssert extends AbstractAssert<DriverRequestAssert, Request> {
 

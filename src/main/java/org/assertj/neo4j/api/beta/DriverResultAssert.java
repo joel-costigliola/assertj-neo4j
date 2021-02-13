@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author patouche - 26/01/2021
+ * @author Patrick Allain - 26/01/2021
  */
 public class DriverResultAssert  extends AbstractIterableAssert<
         DriverResultAssert, List<Map<String, Object>>, Map<String, Object>, RecordMapAssert> {
@@ -33,8 +33,6 @@ public class DriverResultAssert  extends AbstractIterableAssert<
     public DriverResultAssert(final Result result) {
         super(result.list(Record::asMap), DriverResultAssert.class);
     }
-
-
 
     public DriverResultAssert hasColumnNumber(int i) {
         return myself;

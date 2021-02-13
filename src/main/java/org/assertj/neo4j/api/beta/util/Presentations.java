@@ -15,13 +15,11 @@ package org.assertj.neo4j.api.beta.util;
 import org.assertj.core.util.Streams;
 import org.assertj.neo4j.api.beta.type.DbEntity;
 
-import java.util.Comparator;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
- * @author patouche - 25/11/2020
+ * @author Patrick Allain - 25/11/2020
  */
 public final class Presentations {
 
@@ -45,7 +43,7 @@ public final class Presentations {
      */
     public static <E extends DbEntity<E>> List<String> outputIds(final Iterable<E> entities) {
         return Streams.stream(entities)
-                .sorted(Comparator.comparing(i -> Optional.ofNullable(i.getId()).orElse(Long.MIN_VALUE)))
+                .sorted(EntityUtils.comparator())
                 .map(Presentations::outputId)
                 .collect(Collectors.toList());
     }

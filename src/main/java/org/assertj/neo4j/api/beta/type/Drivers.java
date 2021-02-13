@@ -12,12 +12,10 @@
  */
 package org.assertj.neo4j.api.beta.type;
 
-import org.neo4j.driver.TransactionWork;
-
 /**
  * Create builder for generating object to compare
  *
- * @author patouche - 27/11/2020
+ * @author Patrick Allain - 27/11/2020
  */
 public final class Drivers {
 
@@ -41,8 +39,8 @@ public final class Drivers {
     }
 
     /**
-     * Create a new {@link Relationships.DbRelationshipBuilder} with a specified type to compare with the
-     * relationships you have in the database.
+     * Create a new {@link Relationships.DbRelationshipBuilder} with a specified type to compare with the relationships
+     * you have in the database.
      *
      * @param type the relationships type
      * @return a new {@link Relationships.DbRelationshipBuilder} instance
@@ -50,6 +48,5 @@ public final class Drivers {
     public static Relationships.DbRelationshipBuilder relation(final String type) {
         return relation().type(type);
     }
-
 
 }

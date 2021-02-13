@@ -30,7 +30,7 @@ import java.lang.annotation.Target;
 /**
  * Integration tests support.
  *
- * @author patouche - 26/12/2020
+ * @author Patrick Allain - 26/12/2020
  */
 public interface IntegrationTests {
 

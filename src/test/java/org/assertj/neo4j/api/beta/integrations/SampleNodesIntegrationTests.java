@@ -29,9 +29,7 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 
 /**
- * https://insights.stackoverflow.com/survey/2020#correlated-technologies
- *
- * @author patouche - 5/26/20.
+ * @author Patrick Allain - 5/26/20.
  */
 @Tag(TestTags.INTEGRATION)
 class SampleNodesIntegrationTests {
@@ -46,7 +44,7 @@ class SampleNodesIntegrationTests {
 
         @Test
         public void contains() {
-            final Nodes nodes = new Nodes(driver, "Language");
+            final Nodes nodes = Nodes.of(driver, "Language");
             DriverAssertions.assertThat(nodes)
                     .contains(Drivers.node().id(6).label("Language").property("name", "Scala").build());
         }
@@ -64,26 +62,26 @@ class SampleNodesIntegrationTests {
 
         @Test
         void haveLabels() {
-            final Nodes nodes = new Nodes(driver, "Language");
+            final Nodes nodes = Nodes.of(driver, "Language");
             DriverAssertions.assertThat(nodes).haveLabels("OtherLabel", "AnotherLabel");
         }
 
         @Test
         void haveSize() {
-            final Nodes nodes = new Nodes(driver, "Language");
+            final Nodes nodes = Nodes.of(driver, "Language");
             DriverAssertions.assertThat(nodes).hasSize(42);
         }
 
         @Test
         void havePropertyKeys() {
-            final Nodes nodes = new Nodes(driver, "Repo");
+            final Nodes nodes = Nodes.of(driver, "Repo");
             DriverAssertions.assertThat(nodes)
                     .havePropertyKeys("prop_1", "prop_2", "prop_3", "prop_4");
         }
 
         @Test
         void havePropertyOfType() {
-            final Nodes nodes = new Nodes(driver, "Repo");
+            final Nodes nodes = Nodes.of(driver, "Repo");
             DriverAssertions.assertThat(nodes)
                     .havePropertyOfType("name", ValueType.DATE_TIME)
                     .havePropertyOfType("creation_date", ValueType.DURATION)
@@ -93,7 +91,7 @@ class SampleNodesIntegrationTests {
 
         @Test
         void haveProperty() {
-            final Nodes nodes = new Nodes(driver, "Repo");
+            final Nodes nodes = Nodes.of(driver, "Repo");
             DriverAssertions.assertThat(nodes)
                     .haveProperty("name", "value");
         }
@@ -109,7 +107,7 @@ class SampleNodesIntegrationTests {
 
         @Test
         void full() {
-            final Nodes nodes = new Nodes(driver, "Repo");
+            final Nodes nodes = Nodes.of(driver, "Repo");
             //@formatter:off
             DriverAssertions.assertThat(nodes)
                     .hasSize(12)
@@ -134,7 +132,7 @@ class SampleNodesIntegrationTests {
 
         @Test
         void ignoringIds() {
-            final Nodes nodes = new Nodes(driver, "Language");
+            final Nodes nodes = Nodes.of(driver, "Language");
             DriverAssertions.assertThat(nodes)
                     .ignoringIds()
                     .contains(Drivers.node().label("Language").property("name", "Scala").build());
@@ -142,20 +140,20 @@ class SampleNodesIntegrationTests {
 
         @Test
         void haveLabels() {
-            final Nodes nodes = new Nodes(driver, "Language");
+            final Nodes nodes = Nodes.of(driver, "Language");
             DriverAssertions.assertThat(nodes).haveLabels("Language");
         }
 
         @Test
         void havePropertyKeys() {
-            final Nodes nodes = new Nodes(driver, "Repo");
+            final Nodes nodes = Nodes.of(driver, "Repo");
             DriverAssertions.assertThat(nodes)
                     .havePropertyKeys("name", "owner", "url", "creation_date");
         }
 
         @Test
         void havePropertyOfType() {
-            final Nodes nodes = new Nodes(driver, "Repo");
+            final Nodes nodes = Nodes.of(driver, "Repo");
             DriverAssertions.assertThat(nodes)
                     .havePropertyOfType("name", ValueType.STRING)
                     .havePropertyOfType("creation_date", ValueType.LOCAL_DATE_TIME)
@@ -163,24 +161,73 @@ class SampleNodesIntegrationTests {
         }
 
         @Test
-        void haveListPropertyContainingType() {
-            final Nodes nodes = new Nodes(driver, "Repo");
+        void haveListPropertyOfType() {
+            final Nodes nodes = Nodes.of(driver, "Repo");
             DriverAssertions.assertThat(nodes)
                     .haveListPropertyOfType("active_branches", ValueType.STRING);
         }
 
         @Test
         void haveProperty() {
-            final Nodes nodes = new Nodes(driver, "Repo");
+            final Nodes nodes = Nodes.of(driver, "Repo");
             DriverAssertions.assertThat(nodes)
-                    .haveProperty("name", "value");
+                    .filteredOnPropertyValue("name", "ktor")
+                    .haveProperty("owner", "ktorio");
         }
 
         @Test
         void filteredOn() {
-            final Nodes nodes = new Nodes(driver, "Repo");
+            final Nodes nodes = Nodes.of(driver, "Repo");
             DriverAssertions.assertThat(nodes)
                     .filteredOn(n -> Objects.equals(n.getPropertyValue("owner"), "pallets"))
+                    .hasSize(2);
+        }
+
+        @Test
+        void filteredOnPropertyExists() {
+            final Nodes nodes = Nodes.of(driver, "Repo");
+            DriverAssertions.assertThat(nodes)
+                    .hasSize(4)
+                    .filteredOnPropertyExists("onboarding_duration")
+                    .havePropertyOfType("onboarding_duration", ValueType.DURATION)
+                    .hasSize(10);
+        }
+
+        @Test
+        void filteredOnPropertyValue() {
+            final Nodes nodes = Nodes.of(driver, "Repo");
+            DriverAssertions.assertThat(nodes)
+                    .filteredOnPropertyValue("owner", "pallets")
+                    .hasSize(2);
+        }
+
+        @Test
+        void haveNoIncomingRelationships() {
+            final Nodes nodes = Nodes.of(driver, "Repo");
+            DriverAssertions.assertThat(nodes)
+                    .filteredOnPropertyValue("name", "neo4j")
+                    .haveNoIncomingRelationships()
+                    .hasSize(2);
+        }
+
+        @Test
+        void incomingRelationships() {
+            final Nodes nodes = Nodes.of(driver, "Language");
+            DriverAssertions.assertThat(nodes)
+                    .filteredOnPropertyValue("name", "Java")
+                    .incomingRelationships("KNOWS", "WRITTEN")
+                    .hasSize(8)
+                    .toParentAssert()
+                    .incomingRelationships("WRITTEN")
+                    .hasSize(3);
+        }
+
+        @Test
+        void outgoingRelationships() {
+            final Nodes nodes = Nodes.of(driver, "Repo");
+            DriverAssertions.assertThat(nodes)
+                    .filteredOnPropertyValue("name", "neo4j")
+                    .outgoingRelationships("WRITTEN")
                     .hasSize(2);
         }
     }

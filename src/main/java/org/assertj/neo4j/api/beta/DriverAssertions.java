@@ -18,7 +18,7 @@ import org.assertj.neo4j.api.beta.type.Request;
 import org.neo4j.driver.Result;
 
 /**
- * @author patouche - 5/26/20.
+ * @author Patrick Allain - 5/26/20.
  */
 public class DriverAssertions {
 

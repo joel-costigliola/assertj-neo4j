@@ -28,7 +28,7 @@ import org.neo4j.driver.Value;
 import org.neo4j.driver.Values;
 
 /**
- * @author patouche - 26/01/2021
+ * @author Patrick Allain - 26/01/2021
  */
 class SampleResultIntegrationTests extends IntegrationTests.DatasetTests {
 

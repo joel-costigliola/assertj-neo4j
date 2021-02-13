@@ -12,26 +12,30 @@
  */
 package org.assertj.neo4j.api.beta.testing;
 
-import org.assertj.neo4j.api.beta.type.Relationships;
+import org.assertj.neo4j.api.beta.testing.builders.NodeBuilder;
+import org.assertj.neo4j.api.beta.testing.builders.RecordBuilder;
+import org.assertj.neo4j.api.beta.testing.builders.RelationshipBuilder;
+import org.assertj.neo4j.api.beta.testing.builders.ResultBuilder;
 
 /**
- * @author patouche - 11/11/2020
+ * @author Patrick Allain - 11/11/2020
  */
-public final class Mocks {
+public interface Mocks {
 
-    public static ResultBuilder result() {
+    static ResultBuilder result() {
         return new ResultBuilder();
     }
 
-    public static RecordBuilder record() {
+    static RecordBuilder record() {
         return new RecordBuilder();
     }
 
-    public static NodeBuilder node() {
+    static NodeBuilder node() {
         return new NodeBuilder();
     }
 
-    public static RelationshipBuilder relation(final String type) {
+    static RelationshipBuilder relation(final String type) {
         return new RelationshipBuilder(type);
     }
+
 }

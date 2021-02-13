@@ -30,7 +30,7 @@ import java.util.stream.Stream;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * @author patouche - 25/11/2020
+ * @author Patrick Allain - 25/11/2020
  */
 class PresentationsTests {
 

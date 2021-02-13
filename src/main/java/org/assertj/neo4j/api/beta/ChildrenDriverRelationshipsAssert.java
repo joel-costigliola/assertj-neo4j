@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * @author patouche - 02/01/2021
+ * @author Patrick Allain - 02/01/2021
  */
 //@formatter:off
 public class ChildrenDriverRelationshipsAssert<PARENT_ASSERT, ROOT_ASSERT>
@@ -72,7 +72,6 @@ public class ChildrenDriverRelationshipsAssert<PARENT_ASSERT, ROOT_ASSERT>
     /** {@inheritDoc} */
     @Override
     public ROOT_ASSERT toRootAssert() {
-        return rootAssert()
-                .orElseThrow(() -> new IllegalArgumentException("Root assertion shouldn't be null !"));
+        return rootAssert().orElseThrow(() -> new IllegalArgumentException("Root assertion shouldn't be null !"));
     }
 }

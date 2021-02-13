@@ -19,7 +19,7 @@ import org.assertj.neo4j.api.beta.type.Relationships;
 import java.util.List;
 
 /**
- * @author patouche - 24/11/2020
+ * @author Patrick Allain - 24/11/2020
  */
 //@formatter:off
 public class DriverRelationshipsAssert
@@ -37,6 +37,11 @@ public class DriverRelationshipsAssert
         this(relationships.load(), relationships, false, null);
     }
 
+    /**
+     * FIXME : To be removed.
+     *
+     * @param entities
+     */
     @VisibleForTesting
     protected DriverRelationshipsAssert(final List<Relationships.DbRelationship> entities) {
         this(entities, null, false, null);

@@ -15,6 +15,7 @@ package org.assertj.neo4j.api.beta.type;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
+import org.assertj.neo4j.api.beta.testing.Samples;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -33,23 +34,20 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
- * @author patouche - 27/12/2020
+ * @author Patrick Allain - 27/12/2020
  */
 class DbEntityTests {
-
-    private static final ZonedDateTime SAMPLE_TIME = ZonedDateTime.of(2020, 2, 3, 4, 5, 6, 7, ZoneId.of("Australia"
-                                                                                                        + "/Sydney"));
 
     public static final Nodes.DbNode SAMPLE_NODE = Drivers.node()
             .property("boolean", true)
             .property("string", "str-value")
             .property("long", 42)
             .property("double", 4.2)
-            .property("date", SAMPLE_TIME.toLocalDate())
-            .property("datetime", SAMPLE_TIME)
-            .property("localdatetime", SAMPLE_TIME.toLocalDateTime())
-            .property("time", SAMPLE_TIME.toLocalTime().atOffset(ZoneOffset.UTC))
-            .property("localtime", SAMPLE_TIME.toLocalTime())
+            .property("date", Samples.LOCAL_DATE)
+            .property("datetime", Samples.ZONED_DATE_TIME)
+            .property("localdatetime", Samples.LOCAL_DATE_TIME)
+            .property("time", Samples.TIME)
+            .property("localtime", Samples.LOCAL_TIME)
             .property("duration", Duration.ofDays(3))
             .property("point_2d", Values.point(0, 42L, 12L).asObject())
             .property("point_3d", Values.point(0, 42L, 12L, 69L).asObject())
@@ -75,7 +73,7 @@ class DbEntityTests {
     }
 
     private static <T> List<T> timeList(final Function<ZonedDateTime, T> func) {
-        return IntStream.range(0, 10).mapToObj(SAMPLE_TIME::plusHours).map(func).collect(Collectors.toList());
+        return IntStream.range(0, 10).mapToObj(Samples.ZONED_DATE_TIME::plusHours).map(func).collect(Collectors.toList());
     }
 
     @Nested
@@ -118,11 +116,11 @@ class DbEntityTests {
             softly.assertThat(SAMPLE_NODE.getPropertyValue("string")).isEqualTo("str-value");
             softly.assertThat(SAMPLE_NODE.getPropertyValue("long")).isEqualTo(42L);
             softly.assertThat(SAMPLE_NODE.getPropertyValue("double")).isEqualTo(4.2);
-            softly.assertThat(SAMPLE_NODE.getPropertyValue("date")).isEqualTo(SAMPLE_TIME.toLocalDate());
-            softly.assertThat(SAMPLE_NODE.getPropertyValue("datetime")).isEqualTo(SAMPLE_TIME);
-            softly.assertThat(SAMPLE_NODE.getPropertyValue("localdatetime")).isEqualTo(SAMPLE_TIME.toLocalDateTime());
-            softly.assertThat(SAMPLE_NODE.getPropertyValue("time")).isEqualTo(SAMPLE_TIME.toLocalTime().atOffset(ZoneOffset.UTC));
-            softly.assertThat(SAMPLE_NODE.getPropertyValue("localtime")).isEqualTo(SAMPLE_TIME.toLocalTime());
+            softly.assertThat(SAMPLE_NODE.getPropertyValue("date")).isEqualTo(Samples.LOCAL_DATE);
+            softly.assertThat(SAMPLE_NODE.getPropertyValue("datetime")).isEqualTo(Samples.ZONED_DATE_TIME);
+            softly.assertThat(SAMPLE_NODE.getPropertyValue("localdatetime")).isEqualTo(Samples.LOCAL_DATE_TIME);
+            softly.assertThat(SAMPLE_NODE.getPropertyValue("time")).isEqualTo(Samples.TIME);
+            softly.assertThat(SAMPLE_NODE.getPropertyValue("localtime")).isEqualTo(Samples.LOCAL_TIME);
             softly.assertThat(SAMPLE_NODE.getPropertyValue("duration")).isEqualTo(Values.value(Duration.ofDays(3)).asObject());
             softly.assertThat(SAMPLE_NODE.getPropertyValue("point_2d")).isEqualTo(Values.point(0, 42, 12).asPoint());
             softly.assertThat(SAMPLE_NODE.getPropertyValue("point_3d")).isEqualTo(Values.point(0, 42, 12, 69).asPoint());

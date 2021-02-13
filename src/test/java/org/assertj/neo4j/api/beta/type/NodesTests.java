@@ -19,11 +19,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.neo4j.driver.Driver;
+import org.neo4j.driver.Query;
+import org.neo4j.driver.Record;
 import org.neo4j.driver.Result;
 import org.neo4j.driver.Session;
 import org.neo4j.driver.TransactionConfig;
 import org.neo4j.driver.Values;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -35,7 +38,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 
 /**
- * @author patouche - 11/11/2020
+ * @author Patrick Allain - 11/11/2020
  */
 @ExtendWith(MockitoExtension.class)
 class NodesTests {
@@ -52,24 +55,22 @@ class NodesTests {
     }
 
     @Test
-    void load_whenNoLabels() {
+    void load_when_no_labels() {
         // GIVEN
-        final Nodes nodes = new Nodes(driver);
-        final Result result = Mocks.result()
-                .record(Mocks.record()
+        final Nodes nodes = Nodes.of(driver);
+        final List<Record> result = Arrays.asList(
+                Mocks.record()
                         .key("key")
                         .node(Mocks.node().labels("Sample").properties("prop-0", Values.value(true)).build())
-                        .build()
-                )
-                .record(Mocks.record()
+                        .build(),
+                Mocks.record()
                         .key("key")
                         .node(Mocks.node().id(1).labels("Sample").properties("prop-1", Values.value(false)).build())
                         .build()
-                )
-                .build();
+        );
 
         doReturn(session).when(driver).session();
-        doReturn(result).when(session).run(anyString(), any(TransactionConfig.class));
+        doReturn(result).when(session).readTransaction(any(), any(TransactionConfig.class));
 
         // WHEN
         final List<Nodes.DbNode> dbNodes = nodes.load();
@@ -81,32 +82,32 @@ class NodesTests {
                         Drivers.node().id(0).label("Sample").property("prop-0", true).build(),
                         Drivers.node().id(1).label("Sample").property("prop-1", false).build()
                 );
+        assertThat(nodes.query()).isEqualTo(new Query("MATCH (n ) RETURN n"));
 
         verify(driver).session();
-        verify(session).run(eq("MATCH (n ) RETURN n"), any(TransactionConfig.class));
+        verify(session).readTransaction(any(), any(TransactionConfig.class));
         verify(session).close();
     }
 
     @Test
-    void load_whenMultiLabels() {
+    void load_when_multi_labels() {
         // GIVEN
-        final Nodes nodes = new Nodes(driver, "Lbl1", "Lbl2");
-        final Result result = Mocks.result()
-                .record(Mocks.record()
+        final Nodes nodes = Nodes.of(driver, "Lbl1", "Lbl2");
+        final List<Record> result = Arrays.asList(
+                Mocks.record()
                         .key("key")
-                        .node(Mocks.node().id(0).labels("Lbl1").labels("Lbl2").properties("prop-0", Values.value(true)).build())
-                        .build()
-                )
-                .record(Mocks.record()
+                        .node(Mocks.node().id(0).labels("Lbl1").labels("Lbl2").properties("prop-0",
+                                Values.value(true)).build())
+                        .build(),
+                Mocks.record()
                         .key("key")
                         .node(Mocks.node().id(1).labels("Lbl1").labels("Lbl2").properties("prop-1",
                                 Values.value(false)).build())
                         .build()
-                )
-                .build();
+        );
 
         doReturn(session).when(driver).session();
-        doReturn(result).when(session).run(anyString(), any(TransactionConfig.class));
+        doReturn(result).when(session).readTransaction(any(), any(TransactionConfig.class));
 
         // WHEN
         final List<Nodes.DbNode> dbNodes = nodes.load();
@@ -115,12 +116,13 @@ class NodesTests {
         assertThat(dbNodes)
                 .hasSize(2)
                 .contains(
-                        Drivers.node().id(0).label("Lbl1").label( "Lbl2").property("prop-0", true).build(),
-                        Drivers.node().id(1).label("Lbl1").label( "Lbl2").property("prop-1", false).build()
+                        Drivers.node().id(0).label("Lbl1").label("Lbl2").property("prop-0", true).build(),
+                        Drivers.node().id(1).label("Lbl1").label("Lbl2").property("prop-1", false).build()
                 );
+        assertThat(nodes.query()).isEqualTo(new Query("MATCH (n :Lbl1:Lbl2) RETURN n"));
 
         verify(driver).session();
-        verify(session).run(eq("MATCH (n :Lbl1:Lbl2) RETURN n"), any(TransactionConfig.class));
+        verify(session).readTransaction(any(), any(TransactionConfig.class));
         verify(session).close();
     }
 

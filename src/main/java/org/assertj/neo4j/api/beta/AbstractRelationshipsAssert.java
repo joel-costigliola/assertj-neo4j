@@ -12,16 +12,16 @@
  */
 package org.assertj.neo4j.api.beta;
 
-import org.assertj.neo4j.api.beta.error.ElementsShouldHaveType;
+import org.assertj.neo4j.api.beta.error.ShouldRelationshipHaveType;
 import org.assertj.neo4j.api.beta.type.DataLoader;
 import org.assertj.neo4j.api.beta.type.RecordType;
 import org.assertj.neo4j.api.beta.type.Relationships;
-import org.assertj.neo4j.api.beta.util.RelationshipTypes;
+import org.assertj.neo4j.api.beta.util.Predicates;
 
 import java.util.List;
 
 /**
- * @author patouche - 24/11/2020
+ * @author Patrick Allain - 24/11/2020
  */
 //@formatter:off
 public abstract class AbstractRelationshipsAssert<SELF extends AbstractRelationshipsAssert<SELF,PARENT_ASSERT, ROOT_ASSERT>,
@@ -49,10 +49,10 @@ public abstract class AbstractRelationshipsAssert<SELF extends AbstractRelations
      * @return
      */
     public SELF haveType(final String expectedType) {
-        if (!RelationshipTypes.are(expectedType, actual)) {
-            throwAssertionError(ElementsShouldHaveType.create(actual, expectedType));
-        }
-        return myself;
+        return shouldAllVerify(
+                Predicates.isType(expectedType),
+                (notSatisfies -> ShouldRelationshipHaveType.elements(actual, expectedType).notSatisfies(notSatisfies))
+        );
     }
 
 

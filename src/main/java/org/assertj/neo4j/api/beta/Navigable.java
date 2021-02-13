@@ -15,11 +15,11 @@ package org.assertj.neo4j.api.beta;
 import java.util.Optional;
 
 /**
- * @author patouche - 01/01/2021
+ * Indicate that an assertion can be navigable.
+ *
+ * @author Patrick Allain - 01/01/2021
  */
 public interface Navigable<PARENT_ASSERT, ROOT_ASSERT> {
-
-
 
     PARENT_ASSERT toParentAssert();
 
