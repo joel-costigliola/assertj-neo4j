@@ -21,7 +21,6 @@ import org.assertj.neo4j.api.beta.type.RecordType;
 import org.assertj.neo4j.api.beta.type.Relationships;
 import org.assertj.neo4j.api.beta.util.Checks;
 import org.assertj.neo4j.api.beta.util.EntityUtils;
-import org.assertj.neo4j.api.beta.util.NodeUtils;
 import org.assertj.neo4j.api.beta.util.Predicates;
 
 import java.util.List;
@@ -30,19 +29,21 @@ import java.util.List;
  * @author Patrick Allain - 08/11/2020
  */
 //@formatter:off
-public abstract class AbstractNodesAssert<SELF extends AbstractNodesAssert<SELF,  PARENT_ASSERT, ROOT_ASSERT>,
+public abstract class AbstractNodesAssert<SELF extends AbstractNodesAssert<SELF, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT>,
+                                          NEW_SELF extends Navigable<SELF, ROOT_ASSERT>,
                                           PARENT_ASSERT,
                                           ROOT_ASSERT>
-        extends AbstractEntitiesAssert<SELF, Nodes.DbNode, PARENT_ASSERT, ROOT_ASSERT> {
+        extends AbstractEntitiesAssert<SELF, Nodes.DbNode, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT> {
 //@formatter:on
 
-    protected AbstractNodesAssert(final Class<SELF> selfType,
-                                  final List<Nodes.DbNode> entities,
-                                  final DataLoader<Nodes.DbNode> dataLoader,
-                                  final boolean ignoreIds,
-                                  final EntitiesAssertFactory<SELF, Nodes.DbNode, PARENT_ASSERT, ROOT_ASSERT> factory,
-                                  final PARENT_ASSERT parentAssert,
-                                  final ROOT_ASSERT rootAssert) {
+    protected AbstractNodesAssert(
+            final Class<SELF> selfType,
+            final List<Nodes.DbNode> entities,
+            final DataLoader<Nodes.DbNode> dataLoader,
+            final boolean ignoreIds,
+            final EntitiesAssertFactory<SELF, Nodes.DbNode, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT> factory,
+            final PARENT_ASSERT parentAssert,
+            final ROOT_ASSERT rootAssert) {
         super(RecordType.NODE, selfType, dataLoader, entities, ignoreIds, factory, parentAssert, rootAssert);
     }
 

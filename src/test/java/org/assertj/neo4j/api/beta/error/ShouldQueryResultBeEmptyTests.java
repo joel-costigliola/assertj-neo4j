@@ -27,61 +27,31 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author patouche - 13/02/2021
  */
-class ShouldBeEmptyQueryResultTests {
+class ShouldQueryResultBeEmptyTests {
 
     @Nested
     class CreateTests {
-
-        @Test
-        void should_generate_error_message() {
-            // GIVEN
-            final Query query = new Query("MATCH (n) RETURN n");
-            final DbNode actual = Drivers.node().id(42).build();
-
-            // WHEN
-            final ErrorMessageFactory error = ShouldBeEmptyQueryResult.create(actual, query);
-
-            // THEN
-            assertThat(error.create()).isEqualToNormalizingNewlines(
-                    "\n"
-                    + "Expecting query:\n"
-                    + "  <Query{text='MATCH (n) RETURN n', parameters={}}>\n"
-                    + "to return a empty list but got:\n"
-                    + "  <NODE{id=42}>"
-            );
-        }
-
-    }
-
-    @Nested
-    class ElementsTests {
 
         @Test
         void should_generate_an_aggregate_error_message() {
             // GIVEN
             final Query query = new Query("MATCH (n) RETURN n");
             final DbNode node1 = Drivers.node().id(22).build();
-            final DbNode node2 = Drivers.node().id(49).build();
+            final DbNode node2 = Drivers.node().id(29).build();
             final DbNode node3 = Drivers.node().id(35).build();
-            final DbNode node4 = Drivers.node().id(42).build();
-            final DbNode node5 = Drivers.node().id(56).build();
-            final List<DbNode> actual = Randomize.listOf(node1, node2, node3, node4, node5);
+            final DbNode node4 = Drivers.node().id(56).build();
+            final List<DbNode> actual = Randomize.listOf(node1, node2, node3, node4);
 
             // WHEN
-            final ErrorMessageFactory error = ShouldBeEmptyQueryResult.elements(actual, query)
-                    .notSatisfies(Randomize.listOf(node1, node2));
+            final ErrorMessageFactory error = ShouldQueryResultBeEmpty.create(actual, query);
 
             // THEN
             assertThat(error.create()).isEqualToNormalizingNewlines(
                     "\n"
                     + "Expecting query:\n"
                     + "  <Query{text='MATCH (n) RETURN n', parameters={}}>\n"
-                    + "to return no nodes but got:\n"
-                    + "  <[\"NODE{id=22}\", \"NODE{id=35}\", \"NODE{id=42}\", \"NODE{id=49}\", \"NODE{id=56}\"]>\n"
-                    + "\n"
-                    + "  1) NODE{id=22}\n"
-                    + "\n"
-                    + "  2) NODE{id=49}"
+                    + "to return an empty list of nodes got:\n"
+                    + "  <[\"NODE{id=22}\", \"NODE{id=29}\", \"NODE{id=35}\", \"NODE{id=56}\"]>"
             );
         }
     }

@@ -24,10 +24,11 @@ import java.util.List;
  * @author Patrick Allain - 24/11/2020
  */
 //@formatter:off
-public abstract class AbstractRelationshipsAssert<SELF extends AbstractRelationshipsAssert<SELF,PARENT_ASSERT, ROOT_ASSERT>,
+public abstract class AbstractRelationshipsAssert<SELF extends AbstractRelationshipsAssert<SELF, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT>,
+                                                  NEW_SELF extends Navigable<SELF, ROOT_ASSERT>,
                                                   PARENT_ASSERT,
                                                   ROOT_ASSERT>
-        extends AbstractEntitiesAssert<SELF, Relationships.DbRelationship, PARENT_ASSERT, ROOT_ASSERT>
+        extends AbstractEntitiesAssert<SELF, Relationships.DbRelationship, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT>
         implements Navigable<PARENT_ASSERT, ROOT_ASSERT> {
 //@formatter:on
 
@@ -36,10 +37,11 @@ public abstract class AbstractRelationshipsAssert<SELF extends AbstractRelations
             final List<Relationships.DbRelationship> dbRelationships,
             final DataLoader<Relationships.DbRelationship> dbData,
             final boolean ignoringIds,
-            final EntitiesAssertFactory<SELF, Relationships.DbRelationship, PARENT_ASSERT, ROOT_ASSERT> factory,
+            final EntitiesAssertFactory<SELF, Relationships.DbRelationship, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT> factory,
             final PARENT_ASSERT parentAssert,
             final ROOT_ASSERT rootAssert) {
-        super(RecordType.RELATIONSHIP, selfType, dbData, dbRelationships, ignoringIds, factory, parentAssert, rootAssert);
+        super(RecordType.RELATIONSHIP, selfType, dbData, dbRelationships, ignoringIds, factory, parentAssert,
+                rootAssert);
     }
 
     /**
@@ -54,7 +56,5 @@ public abstract class AbstractRelationshipsAssert<SELF extends AbstractRelations
                 (notSatisfies -> ShouldRelationshipHaveType.elements(actual, expectedType).notSatisfies(notSatisfies))
         );
     }
-
-
 
 }

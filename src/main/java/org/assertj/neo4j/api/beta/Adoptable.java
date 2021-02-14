@@ -17,7 +17,7 @@ package org.assertj.neo4j.api.beta;
  *
  * @author Patrick Allain - 27/01/2021
  */
-public interface Adoptable<SELF, PARENT_ASSERT> {
+public interface Adoptable<ROOT_ASSERT> {
 
     /**
      * Set the parent of the children entities
@@ -25,6 +25,6 @@ public interface Adoptable<SELF, PARENT_ASSERT> {
      * @param parentAssert the parent assert
      * @return the self type
      */
-    SELF withParent(PARENT_ASSERT parentAssert);
+    <NEW_PARENT> Navigable<NEW_PARENT, ROOT_ASSERT> withParent(NEW_PARENT parentAssert);
 
 }

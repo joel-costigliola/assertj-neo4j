@@ -15,13 +15,9 @@ package org.assertj.neo4j.api.beta.util;
 import org.assertj.core.util.IterableUtil;
 import org.assertj.core.util.Lists;
 import org.assertj.core.util.Streams;
-import org.assertj.neo4j.api.beta.type.DbEntity;
-import org.assertj.neo4j.api.beta.type.Nodes;
-import org.assertj.neo4j.api.beta.type.Relationships;
 
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 

@@ -113,18 +113,23 @@ class SampleNodesIntegrationTests {
                     .hasSize(12)
                     .haveLabels("Repo")
                     .havePropertyKeys("name")
-                    .havePropertySize(1)
+                    .filteredOnPropertyExists("onboarding_duration")
+                        .havePropertySize(8)
+                        .toParentAssert()
                     .havePropertyOfType("name", ValueType.STRING)
                     .ignoringIds()
-                        .contains(Drivers.node().label("Language").property("name", "Scala").build())
-                        .filteredOnPropertyExists("key")
-                        .havePropertyValueMatching("key", LocalDateTime.class::isInstance)
+                        .filteredOnPropertyValue("name", "junit5")
+                            .havePropertyValueMatching("creation_date", LocalDateTime.class::isInstance)
+                            .toParentAssert()
                         .toParentAssert()
                     .incomingRelationships("TYPE")
                         .ignoringIds()
-                        .contains(Drivers.relation("TYPE").build())
+                            .contains(Drivers.relation("TYPE").build())
+                            .toParentAssert()
                         .toParentAssert()
                     .toRootAssert()
+                    .hasSize(12)
+                    .haveLabels("Repo")
 //            .havePropertyMatching()
             ;
             //@formatter:on
@@ -187,7 +192,7 @@ class SampleNodesIntegrationTests {
         void filteredOnPropertyExists() {
             final Nodes nodes = Nodes.of(driver, "Repo");
             DriverAssertions.assertThat(nodes)
-                    .hasSize(4)
+                    .hasSize(12)
                     .filteredOnPropertyExists("onboarding_duration")
                     .havePropertyOfType("onboarding_duration", ValueType.DURATION)
                     .hasSize(10);
@@ -207,7 +212,7 @@ class SampleNodesIntegrationTests {
             DriverAssertions.assertThat(nodes)
                     .filteredOnPropertyValue("name", "neo4j")
                     .haveNoIncomingRelationships()
-                    .hasSize(2);
+                    .hasSize(1);
         }
 
         @Test

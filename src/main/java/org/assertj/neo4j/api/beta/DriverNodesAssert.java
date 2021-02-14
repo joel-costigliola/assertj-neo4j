@@ -12,7 +12,6 @@
  */
 package org.assertj.neo4j.api.beta;
 
-import org.assertj.core.util.VisibleForTesting;
 import org.assertj.neo4j.api.beta.type.DataLoader;
 import org.assertj.neo4j.api.beta.type.Nodes;
 
@@ -22,7 +21,7 @@ import java.util.List;
  * @author Patrick Allain - 08/11/2020
  */
 public final class DriverNodesAssert
-        extends AbstractNodesAssert<DriverNodesAssert, DriverNodesAssert, DriverNodesAssert> {
+        extends AbstractNodesAssert<DriverNodesAssert, DriverNodesAssert, DriverNodesAssert, DriverNodesAssert> {
 
     /**
      * Create new assertions on {@link Nodes}.
@@ -31,16 +30,6 @@ public final class DriverNodesAssert
      */
     public DriverNodesAssert(final Nodes nodes) {
         this(nodes.load(), nodes, false, null);
-    }
-
-    /**
-     * FIXME : To be removed.
-     *
-     * @param entities
-     */
-    @VisibleForTesting
-    protected DriverNodesAssert(final List<Nodes.DbNode> entities) {
-        this(entities, null, false, null);
     }
 
     private DriverNodesAssert(final List<Nodes.DbNode> entities,

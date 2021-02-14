@@ -25,6 +25,7 @@ import java.util.List;
 public class DriverRelationshipsAssert
         extends AbstractRelationshipsAssert<DriverRelationshipsAssert,
                                             DriverRelationshipsAssert,
+                                            DriverRelationshipsAssert,
                                             DriverRelationshipsAssert> {
 //@formatter:on
 

@@ -44,9 +44,11 @@ import static org.mockito.Mockito.when;
  */
 class AbstractEntitiesAssertTests {
 
-    private static class ConcreteEntitiesAssert
-            extends AbstractEntitiesAssert<ConcreteEntitiesAssert, Nodes.DbNode, ConcreteEntitiesAssert,
-            ConcreteEntitiesAssert> {
+    //@formatter:off
+    private static class ConcreteEntitiesAssert extends AbstractEntitiesAssert<ConcreteEntitiesAssert, Nodes.DbNode, ConcreteEntitiesAssert,
+                                                                               ConcreteEntitiesAssert,
+                                                                               ConcreteEntitiesAssert> {
+    //@formatter:on
 
         protected ConcreteEntitiesAssert(List<Nodes.DbNode> entities, DataLoader<Nodes.DbNode> loader) {
             this(entities, loader, false, null);
@@ -219,7 +221,7 @@ class AbstractEntitiesAssertTests {
             when(dataLoader.query()).thenReturn(new Query("MATCH (n) RETURN n"));
 
             // WHEN
-            final Throwable result = catchThrowable(() ->assertions.isEmpty());
+            final Throwable result = catchThrowable(() -> assertions.isEmpty());
 
             // THEN
             verify(dataLoader).query();
@@ -227,7 +229,7 @@ class AbstractEntitiesAssertTests {
                     .isInstanceOf(AssertionError.class)
                     .hasMessageContainingAll(
                             "Expecting query:",
-                            "to return no nodes but got:"
+                            "to return an empty list of nodes got:"
                     );
         }
 
@@ -235,6 +237,39 @@ class AbstractEntitiesAssertTests {
         void should_pass() {
             // WHEN
             final ConcreteEntitiesAssert result = assertions.isEmpty();
+
+            // THEN
+            assertThat(result).isSameAs(assertions);
+        }
+    }
+
+    @Nested
+    @DisplayName("isNotEmpty")
+    class IsNotEmptyTests extends BaseTests {
+
+        @Test
+        void should_fail() {
+            // WHEN
+            final Throwable result = catchThrowable(() -> assertions.isNotEmpty());
+
+            // THEN
+            verify(dataLoader).query();
+            assertThat(result)
+                    .isInstanceOf(AssertionError.class)
+                    .hasMessageContainingAll(
+                            "Expecting query:",
+                            "to return a non empty result list of nodes but got no result."
+                    );
+        }
+
+        @Test
+        void should_pass() {
+            // GIVEN
+            testCase(Drivers.node().id(1));
+            when(dataLoader.query()).thenReturn(new Query("MATCH (n) RETURN n"));
+
+            // WHEN
+            final ConcreteEntitiesAssert result = assertions.isNotEmpty();
 
             // THEN
             assertThat(result).isSameAs(assertions);

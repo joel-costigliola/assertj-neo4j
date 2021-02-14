@@ -13,8 +13,10 @@
 package org.assertj.neo4j.api.beta.util;
 
 import org.assertj.core.util.IterableUtil;
+import org.assertj.core.util.Streams;
 import org.assertj.neo4j.api.beta.type.DbEntity;
 import org.assertj.neo4j.api.beta.type.Nodes.DbNode;
+import org.assertj.neo4j.api.beta.type.RecordType;
 import org.assertj.neo4j.api.beta.type.Relationships.DbRelationship;
 
 import java.util.Comparator;
@@ -29,6 +31,13 @@ public class EntityUtils {
 
     public static final Comparator<? extends DbEntity<?>> ENTITY_COMPARATOR = Comparator
             .comparing(DbEntity::getId, Comparator.nullsFirst(Comparator.naturalOrder()));
+
+    public static <E extends DbEntity<E>> RecordType type(final Iterable<E> entities) {
+        return Streams.stream(entities)
+                .findFirst()
+                .map(DbEntity::getRecordType)
+                .orElse(null);
+    }
 
     @SuppressWarnings("unchecked")
     public static <E extends DbEntity<E>> Comparator<? super E> comparator() {
