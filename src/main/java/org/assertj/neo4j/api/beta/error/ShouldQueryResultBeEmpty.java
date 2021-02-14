@@ -16,7 +16,6 @@ import org.assertj.core.error.BasicErrorMessageFactory;
 import org.assertj.neo4j.api.beta.type.DbEntity;
 import org.assertj.neo4j.api.beta.util.EntityUtils;
 import org.assertj.neo4j.api.beta.util.Presentations;
-import org.assertj.neo4j.api.beta.util.Utils;
 import org.neo4j.driver.Query;
 
 import java.util.List;

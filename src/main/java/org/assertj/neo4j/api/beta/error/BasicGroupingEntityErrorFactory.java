@@ -20,7 +20,6 @@ import org.assertj.neo4j.api.beta.type.RecordType;
 import org.assertj.neo4j.api.beta.util.Checks;
 import org.assertj.neo4j.api.beta.util.EntityUtils;
 import org.assertj.neo4j.api.beta.util.Presentations;
-import org.assertj.neo4j.api.beta.util.Utils;
 
 import java.util.Arrays;
 import java.util.List;

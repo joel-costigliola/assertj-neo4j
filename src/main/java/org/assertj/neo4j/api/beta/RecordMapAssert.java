@@ -13,8 +13,6 @@
 package org.assertj.neo4j.api.beta;
 
 import org.assertj.core.api.AbstractAssert;
-import org.assertj.core.api.MapAssert;
-import org.assertj.core.api.ObjectAssert;
 
 import java.util.Map;
 

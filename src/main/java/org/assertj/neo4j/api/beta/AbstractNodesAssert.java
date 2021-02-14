@@ -95,10 +95,10 @@ public abstract class AbstractNodesAssert<SELF extends AbstractNodesAssert<SELF,
     }
 
     /**
-     * Create a new assertions on incoming relationships
+     * Create a new assertions on incoming relationships.
      *
      * @param types the relation types
-     * @return a
+     * @return a new assertions on incoming relationships
      */
     public ChildrenDriverRelationshipsAssert<SELF, ROOT_ASSERT> incomingRelationships(final String... types) {
         final List<Long> nodeIds = entityIds();

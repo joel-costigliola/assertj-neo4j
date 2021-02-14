@@ -16,7 +16,6 @@ import org.assertj.core.util.Streams;
 import org.assertj.neo4j.api.beta.type.DbEntity;
 import org.assertj.neo4j.api.beta.type.DbValue;
 import org.assertj.neo4j.api.beta.type.Nodes.DbNode;
-import org.assertj.neo4j.api.beta.type.Relationships;
 import org.assertj.neo4j.api.beta.type.Relationships.DbRelationship;
 import org.assertj.neo4j.api.beta.type.ValueType;
 

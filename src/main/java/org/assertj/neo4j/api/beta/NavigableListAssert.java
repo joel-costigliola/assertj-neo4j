@@ -13,8 +13,6 @@
 package org.assertj.neo4j.api.beta;
 
 import org.assertj.core.api.AbstractListAssert;
-import org.assertj.core.api.IndexedObjectEnumerableAssert;
-import org.assertj.core.api.ListAssert;
 import org.assertj.core.api.ObjectAssert;
 
 import java.util.List;

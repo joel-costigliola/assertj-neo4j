@@ -12,17 +12,13 @@
  */
 package org.assertj.neo4j.api.beta.type;
 
-import org.assertj.core.util.Lists;
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.Query;
 import org.neo4j.driver.Record;
 import org.neo4j.driver.Session;
 import org.neo4j.driver.TransactionConfig;
-import org.neo4j.driver.Value;
 
-import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Abstract class for data loader.

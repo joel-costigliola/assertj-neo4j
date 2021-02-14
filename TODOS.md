@@ -8,16 +8,16 @@
 class SampleTests {
     @Test
     void nodes() {
-      assertThat(new Nodes(driver, "LABEL"))
-              .hasSize(5)
-              .haveLabels("LABEL_1", "LABEL_2")
-              .havePropertyKeys("KEY_1", "KEY_2")
-              .ignoringIds()
-              .contains(
-                      Drivers.node().label("LABEL_1").property("prop-1", "value-1").build(),
-                      Drivers.node().label("LABEL_1").property("prop-1", "value-1").build()
-              )
-              .toParent();
+        assertThat(new Nodes(driver, "LABEL"))
+                .hasSize(5)
+                .haveLabels("LABEL_1", "LABEL_2")
+                .havePropertyKeys("KEY_1", "KEY_2")
+                .ignoringIds()
+                .contains(
+                        Drivers.node().label("LABEL_1").property("prop-1", "value-1").build(),
+                        Drivers.node().label("LABEL_1").property("prop-1", "value-1").build()
+                )
+                .toParent();
     }
 }
 
@@ -33,11 +33,13 @@ class SampleTests {
   * [ ] `isRelationships`
   * [ ] ``
 * [ ] Provider assertions on query results
-  * [ ] Should support both String 
+  * [ ] Should support both String
   * [ ] Cypher-DSL constructs
 * [ ] Provider higher level experience à la AssertJ-DB
   * [ ] Entities (commons nodes & relationships) :
     * [X] `toParentAssert` : Go to the parent assertion
+    * [X] `isEmpty` : Verify that the actual list is empty
+    * [X] `isNotEmpty` : Verify that the actual list is not empty
     * [X] `ignoringIds`: Create a new assertion that will not compare the entity with theirs ids
     * [X] `havePropertyKeys`: Verify that all entities have the expected keys
     * [X] `havePropertyOfType` : Verify that all entities have a property with a value matching the provided type
@@ -74,7 +76,7 @@ class SampleTests {
   * [ ] Request : See bellow
   * [ ] Changes :
     * [ ] ``
-  
+
 ### Others
 
 * [ ] Simplify error message factory

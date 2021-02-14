@@ -14,7 +14,6 @@ package org.assertj.neo4j.api.beta.util;
 
 import org.assertj.core.util.Arrays;
 import org.assertj.core.util.IterableUtil;
-import org.assertj.core.util.Lists;
 import org.assertj.core.util.Streams;
 
 import java.util.List;

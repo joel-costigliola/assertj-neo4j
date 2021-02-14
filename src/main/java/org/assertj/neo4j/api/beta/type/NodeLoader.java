@@ -17,17 +17,10 @@ import org.assertj.neo4j.api.beta.type.Nodes.DbNode;
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.Query;
 import org.neo4j.driver.Record;
-import org.neo4j.driver.Session;
-import org.neo4j.driver.TransactionConfig;
 import org.neo4j.driver.Value;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
