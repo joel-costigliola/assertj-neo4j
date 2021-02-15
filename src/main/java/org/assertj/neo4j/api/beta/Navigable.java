@@ -21,11 +21,30 @@ import java.util.Optional;
  */
 public interface Navigable<PARENT_ASSERT, ROOT_ASSERT> {
 
+    /**
+     * Return to the parent assertion.
+     *
+     * @return the parent assertion
+     */
     PARENT_ASSERT toParentAssert();
 
+    /**
+     * Return to the root assertion.
+     *
+     * @return the root assertion
+     */
     ROOT_ASSERT toRootAssert();
 
-    static <INST extends Navigable<PARENT, ROOT>, PARENT, ROOT> ROOT rootAssert(final INST parent) {
+    /**
+     * From a parent assertion, retrieve the root assertion of null, if there is no parent.
+     *
+     * @param parent   the parent assertion
+     * @param <ASSERT> the current assertion type
+     * @param <PARENT> the parent assertion type
+     * @param <ROOT>   the root assertion type
+     * @return the root assertion based on the parent provided
+     */
+    static <ASSERT extends Navigable<PARENT, ROOT>, PARENT, ROOT> ROOT rootAssert(final ASSERT parent) {
         return Optional.ofNullable(parent).map(Navigable::toRootAssert).orElse(null);
     }
 }

@@ -27,7 +27,7 @@ import java.util.stream.Stream;
  * @param <ENTITY> the entity type
  * @author Patrick Allain - 03/02/2021
  */
-class BasicEntityErrorMessageFactory<ENTITY extends DbEntity<ENTITY>>
+class BasicEntityErrorMessageFactory<ENTITY extends DbEntity>
         extends BasicErrorMessageFactory
         implements EntityErrorMessageFactory<ENTITY> {
 
@@ -56,7 +56,7 @@ class BasicEntityErrorMessageFactory<ENTITY extends DbEntity<ENTITY>>
      * @param details the error details
      * @return an array for the provided arguments
      */
-    protected static <E extends DbEntity<E>> Object[] toArguments(final E entity, final ArgDetail... details) {
+    protected static <E extends DbEntity> Object[] toArguments(final E entity, final ArgDetail... details) {
         return Stream
                 .concat(
                         Stream.of(unquotedString(Presentations.outputId(entity))),

@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * @author Patrick Allain - 05/02/2021
  */
-public interface GroupingEntityErrorFactory<ENTITY extends DbEntity<ENTITY>> {
+public interface GroupingEntityErrorFactory<ENTITY extends DbEntity> {
 
     /**
      * Create a new {@link ErrorMessageFactory} for a group of entities.

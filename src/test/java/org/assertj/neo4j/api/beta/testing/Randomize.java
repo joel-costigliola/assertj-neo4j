@@ -12,11 +12,14 @@
  */
 package org.assertj.neo4j.api.beta.testing;
 
+import org.assertj.core.util.Streams;
+
 import java.security.SecureRandom;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Patrick Allain - 07/02/2021
@@ -29,7 +32,19 @@ public class Randomize {
         return (o1, o2) -> SECURE_RANDOM.nextInt(3) - 1;
     }
 
-    public static <T> List<T> listOf(T... items) {
+    public static <T> List<T> listOf(final T... items) {
         return Arrays.stream(items).sorted(Randomize.comparator()).collect(Collectors.toList());
+    }
+
+    public static <T> List<T> listOf(final Iterable<T> items) {
+        return Streams.stream(items).sorted(Randomize.comparator()).collect(Collectors.toList());
+    }
+
+    public static <T> T[] arrayOf(final T... items) {
+        return (T[]) Arrays.stream(items).sorted(Randomize.comparator()).toArray( );
+    }
+
+    public static <T> T[] arrayOf(final Iterable<T> items) {
+        return (T[])  Streams.stream(items).sorted(Randomize.comparator()).toArray();
     }
 }

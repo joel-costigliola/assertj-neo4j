@@ -27,11 +27,11 @@ public class ShouldHaveNodeLabels extends BasicEntityErrorMessageFactory<DbNode>
     private ShouldHaveNodeLabels(final DbNode actual, final Iterable<String> labels) {
         super(
                 "%nExpecting %s which have labels:\n"
-                + "  <[\"LBL_1\", \"LBL_4\"]>\n"
+                + "  <%s>\n"
                 + "to have labels:\n"
-                + "  <[\"LBL_1\", \"LBL_2\", \"LBL_3\", \"LBL_4\"]>\n"
+                + "  <%s>\n"
                 + "but the following labels cannot be found:\n"
-                + "  <[\"LBL_2\", \"LBL_3\"]>",
+                + "  <%s>",
                 actual,
                 ArgDetail.included("Actual labels", Utils.sorted(actual.getLabels())),
                 ArgDetail.excluded(Utils.sorted(labels)),

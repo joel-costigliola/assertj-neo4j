@@ -34,7 +34,7 @@ import java.util.stream.Stream;
  *
  * @author Patrick Allain - 05/02/2021
  */
-public class BasicGroupingEntityErrorFactory<ENTITY extends DbEntity<ENTITY>>
+public class BasicGroupingEntityErrorFactory<ENTITY extends DbEntity>
         implements GroupingEntityErrorFactory<ENTITY> {
 
     private final List<ENTITY> actual;
@@ -100,7 +100,7 @@ public class BasicGroupingEntityErrorFactory<ENTITY extends DbEntity<ENTITY>>
                 .collect(Collectors.joining(String.format("%n")));
     }
 
-    private static class GroupingEntityErrorMessageFactory<E extends DbEntity<E>>
+    private static class GroupingEntityErrorMessageFactory<E extends DbEntity>
             extends BasicErrorMessageFactory {
 
         public GroupingEntityErrorMessageFactory(
@@ -112,13 +112,13 @@ public class BasicGroupingEntityErrorFactory<ENTITY extends DbEntity<ENTITY>>
             super(format, toArguments(actual, notSatisfies, type, arguments));
         }
 
-        private static <E extends DbEntity<E>> Object[] toArguments(
+        private static <E extends DbEntity> Object[] toArguments(
                 final List<E> actual, final List<E> notSatisfies, final RecordType type, final Object[] arguments) {
             return Stream
                     .concat(
                             Stream.of(
-                                    Presentations.outputIds(actual),
-                                    Presentations.outputIds(notSatisfies),
+                                    actual,
+                                    notSatisfies,
                                     unquotedString(type.pluralForm())
                             ),
                             Arrays.stream(arguments)

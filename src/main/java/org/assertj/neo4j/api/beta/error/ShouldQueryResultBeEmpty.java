@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * @author patouche - 13/02/2021
  */
-public class ShouldQueryResultBeEmpty<ENTITY extends DbEntity<ENTITY>> extends BasicErrorMessageFactory {
+public class ShouldQueryResultBeEmpty<ENTITY extends DbEntity> extends BasicErrorMessageFactory {
 
     private ShouldQueryResultBeEmpty(final List<ENTITY> actual, final Query query) {
         super(
@@ -37,7 +37,7 @@ public class ShouldQueryResultBeEmpty<ENTITY extends DbEntity<ENTITY>> extends B
         );
     }
 
-    public static <E extends DbEntity<E>> ShouldQueryResultBeEmpty<E> create(final List<E> actual, final Query query) {
+    public static <E extends DbEntity> ShouldQueryResultBeEmpty<E> create(final List<E> actual, final Query query) {
         return new ShouldQueryResultBeEmpty<>(actual, query);
     }
 

@@ -14,7 +14,6 @@ package org.assertj.neo4j.api.beta.type;
 
 import org.neo4j.driver.Driver;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -32,15 +31,11 @@ public interface Relationships extends DataLoader<Relationships.DbRelationship> 
      * TODO : Maybe extract method here in a interface to be able to decorate a Relationship from driver - This may have
      * impact for comparing relationship.
      */
-    class DbRelationship extends DbEntity<DbRelationship> {
+    class DbRelationship extends DbEntity {
 
         private final Long start;
         private final Long end;
         private final String type;
-
-        DbRelationship(final String type, final Map<String, DbValue> properties) {
-            this(null, type, null, null, properties);
-        }
 
         DbRelationship(final Long id, final String type, final Long start, final Long end,
                        final Map<String, DbValue> properties) {
@@ -67,37 +62,16 @@ public interface Relationships extends DataLoader<Relationships.DbRelationship> 
             return entityRepresentation("type='" + type + "', start=" + start + ", end=" + end);
         }
 
-        @Override
-        public DbRelationship withoutId() {
-            return new DbRelationship(null, this.type, this.start, this.end, this.properties);
-        }
-
     }
 
-    class DbRelationshipBuilder {
+    class DbRelationshipBuilder extends DbEntity.DbEntityBuilder<DbRelationship, DbRelationshipBuilder> {
 
-        private Long id;
         private String type;
         private Long start;
         private Long end;
 
-        private final Map<String, DbValue> properties = new HashMap<>();
-
-        DbRelationshipBuilder() {
-        }
-
-        public DbRelationshipBuilder id(final int id) {
-            return this.id((long) id);
-        }
-
-        public DbRelationshipBuilder id(final Long id) {
-            this.id = id;
-            return this;
-        }
-
-        public DbRelationshipBuilder property(final String key, final Object value) {
-            this.properties.put(key, ValueType.convert(value));
-            return this;
+        protected DbRelationshipBuilder() {
+            super(DbRelationshipBuilder.class);
         }
 
         public DbRelationshipBuilder type(final String type) {

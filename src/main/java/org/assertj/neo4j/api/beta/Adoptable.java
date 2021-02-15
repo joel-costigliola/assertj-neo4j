@@ -25,6 +25,6 @@ public interface Adoptable<ROOT_ASSERT> {
      * @param parentAssert the parent assert
      * @return the self type
      */
-    <NEW_PARENT> Navigable<NEW_PARENT, ROOT_ASSERT> withParent(NEW_PARENT parentAssert);
+    <NEW_PARENT extends ParentAssert> Navigable<NEW_PARENT, ROOT_ASSERT> withParent(NEW_PARENT parentAssert);
 
 }

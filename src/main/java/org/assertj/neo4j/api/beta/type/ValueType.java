@@ -118,7 +118,7 @@ public enum ValueType {
      * @param <T>    the object type
      * @return a new instance of {@link DbValue}
      */
-    static <T> DbValue convert(final T object) {
+    public static <T> DbValue convert(final T object) {
         if (object == null) {
             return null;
         }

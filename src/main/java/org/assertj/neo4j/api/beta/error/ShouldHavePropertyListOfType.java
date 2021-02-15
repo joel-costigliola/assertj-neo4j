@@ -15,6 +15,7 @@ package org.assertj.neo4j.api.beta.error;
 import org.assertj.neo4j.api.beta.type.DbEntity;
 import org.assertj.neo4j.api.beta.type.DbValue;
 import org.assertj.neo4j.api.beta.type.ValueType;
+import org.assertj.neo4j.api.beta.util.EntityUtils;
 
 import java.util.List;
 
@@ -25,8 +26,7 @@ import java.util.List;
  * @param <ENTITY> the entity type
  * @author Patrick ALLAIN  - 29/09/2020
  */
-public class ShouldHavePropertyListOfType<ENTITY extends DbEntity<ENTITY>>
-        extends BasicEntityErrorMessageFactory<ENTITY> {
+public class ShouldHavePropertyListOfType<ENTITY extends DbEntity> extends BasicEntityErrorMessageFactory<ENTITY> {
 
     private ShouldHavePropertyListOfType(final ENTITY actual, final String key, final ValueType type) {
         super(
@@ -40,22 +40,22 @@ public class ShouldHavePropertyListOfType<ENTITY extends DbEntity<ENTITY>>
                 ArgDetail.excluded(key),
                 ArgDetail.excluded(type),
                 ArgDetail.included("Actual list value type",
-                        actual.getPropertyList(key)
+                        EntityUtils.propertyList(actual, key)
                                 .stream()
                                 .findFirst()
                                 .map(DbValue::getType)
                                 .orElse(null)
                 ),
-                ArgDetail.included("Actual value", actual.getPropertyListValues(key))
+                ArgDetail.included("Actual value", EntityUtils.properlyListValues(actual, key))
         );
     }
 
-    public static <E extends DbEntity<E>> ShouldHavePropertyListOfType<E> create(
+    public static <E extends DbEntity> ShouldHavePropertyListOfType<E> create(
             final E node, final String key, final ValueType type) {
         return new ShouldHavePropertyListOfType<>(node, key, type);
     }
 
-    public static <E extends DbEntity<E>> GroupingEntityErrorFactory<E> elements(
+    public static <E extends DbEntity> GroupingEntityErrorFactory<E> elements(
             final List<E> actual, final String key, final ValueType type) {
         return new BasicGroupingEntityErrorFactory<>(
                 actual,

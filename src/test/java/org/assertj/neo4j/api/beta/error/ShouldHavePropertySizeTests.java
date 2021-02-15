@@ -87,10 +87,10 @@ class ShouldHavePropertySizeTests {
                     .build();
 
             final List<DbNode> actual = Randomize.listOf(node1, node2, node3, node4, node5, node6);
-            final GroupingEntityErrorFactory<DbNode> elements = ShouldHavePropertySize.elements(actual, 3);
 
             // WHEN
-            final ErrorMessageFactory error = elements
+            final ErrorMessageFactory error = ShouldHavePropertySize
+                    .elements(actual, 3)
                     .notSatisfies(Randomize.listOf(node1, node2, node3, node4, node5));
 
             // THEN

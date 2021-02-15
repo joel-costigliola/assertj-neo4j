@@ -22,7 +22,7 @@ import java.util.Objects;
  * @author Patrick Allain - 02/01/2021
  */
 //@formatter:off
-public class ChildrenDriverRelationshipsAssert<PARENT_ASSERT, ROOT_ASSERT>
+public class ChildrenDriverRelationshipsAssert<PARENT_ASSERT extends ParentAssert, ROOT_ASSERT>
         extends AbstractRelationshipsAssert<ChildrenDriverRelationshipsAssert<PARENT_ASSERT, ROOT_ASSERT>,
                                             ChildrenDriverRelationshipsAssert<ChildrenDriverRelationshipsAssert<PARENT_ASSERT, ROOT_ASSERT>, ROOT_ASSERT>,
                                             PARENT_ASSERT,
@@ -47,7 +47,7 @@ public class ChildrenDriverRelationshipsAssert<PARENT_ASSERT, ROOT_ASSERT>
     }
 
     //@formatter:off
-    private static <ROOT_ASSERT, PARENT_ASSERT> EntitiesAssertFactory<
+    private static <PARENT_ASSERT extends ParentAssert, ROOT_ASSERT> EntitiesAssertFactory<
             ChildrenDriverRelationshipsAssert<PARENT_ASSERT, ROOT_ASSERT>,
             Relationships.DbRelationship,
             ChildrenDriverRelationshipsAssert<ChildrenDriverRelationshipsAssert<PARENT_ASSERT, ROOT_ASSERT>, ROOT_ASSERT>,
@@ -65,7 +65,7 @@ public class ChildrenDriverRelationshipsAssert<PARENT_ASSERT, ROOT_ASSERT>
 
     /** {@inheritDoc} */
     @Override
-    public <NEW_PARENT> ChildrenDriverRelationshipsAssert<NEW_PARENT, ROOT_ASSERT> withParent(NEW_PARENT parentAssert) {
+    public <NEW_PARENT extends ParentAssert> ChildrenDriverRelationshipsAssert<NEW_PARENT, ROOT_ASSERT> withParent(final NEW_PARENT parentAssert) {
         return new ChildrenDriverRelationshipsAssert<>(actual, dataLoader, ignoreIds, parentAssert, toRootAssert());
     }
 

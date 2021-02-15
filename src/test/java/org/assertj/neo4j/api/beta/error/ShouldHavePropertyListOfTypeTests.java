@@ -68,13 +68,12 @@ class ShouldHavePropertyListOfTypeTests {
             final DbNode node2 = Drivers.node().id(2).property("key", singletonList("v-2.1.1")).build();
             final DbNode node3 = Drivers.node().id(3).property("key", asList(3.11, 3.12)).build();
             final DbNode node4 = Drivers.node().id(4).property("key", asList(4, 5, 6)).build();
-
             final List<DbNode> actual = Randomize.listOf(node1, node2, node3, node4);
-            final GroupingEntityErrorFactory<DbNode> elements = ShouldHavePropertyListOfType
-                    .elements(actual, "key", ValueType.STRING);
 
             // WHEN
-            final ErrorMessageFactory error = elements.notSatisfies(Randomize.listOf(node3, node4));
+            final ErrorMessageFactory error = ShouldHavePropertyListOfType
+                    .elements(actual, "key", ValueType.STRING)
+                    .notSatisfies(Randomize.listOf(node3, node4));
 
             // THEN
             assertThat(error.create()).isEqualToNormalizingNewlines(

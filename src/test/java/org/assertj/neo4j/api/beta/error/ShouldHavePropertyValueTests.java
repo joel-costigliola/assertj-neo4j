@@ -69,13 +69,11 @@ class ShouldHavePropertyValueTests {
             final DbNode node4 = Drivers.node().id(4).property("key", Values.point(1, 22.29, 56.35).asObject()).build();
             final DbNode node5 = Drivers.node().id(5).property("key", Samples.ZONED_DATE_TIME).build();
             final DbNode node6 = Drivers.node().id(6).property("key", true).build();
-
             final List<DbNode> actual = Randomize.listOf(node1, node2, node3, node4, node5, node6);
-            final GroupingEntityErrorFactory<DbNode> elements = ShouldHavePropertyValue
-                    .elements(actual, "key", true);
 
             // WHEN
-            final ErrorMessageFactory result = elements
+            final ErrorMessageFactory result = ShouldHavePropertyValue
+                    .elements(actual, "key", true)
                     .notSatisfies(Randomize.listOf(node1, node2, node3, node4, node5));
 
             // THEN

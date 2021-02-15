@@ -24,7 +24,7 @@ import java.util.List;
  * @param <ENTITY> the entity type
  * @author Patrick Allain  - 29/09/2020
  */
-public class ShouldHavePropertyKeys<ENTITY extends DbEntity<ENTITY>> extends BasicEntityErrorMessageFactory<ENTITY> {
+public class ShouldHavePropertyKeys<ENTITY extends DbEntity> extends BasicEntityErrorMessageFactory<ENTITY> {
 
     private ShouldHavePropertyKeys(final ENTITY actual, final Iterable<String> keys) {
         super(
@@ -41,12 +41,12 @@ public class ShouldHavePropertyKeys<ENTITY extends DbEntity<ENTITY>> extends Bas
         );
     }
 
-    public static <E extends DbEntity<E>> EntityErrorMessageFactory<E> create(
+    public static <E extends DbEntity> EntityErrorMessageFactory<E> create(
             final E actual, final Iterable<String> keys) {
         return new ShouldHavePropertyKeys<>(actual, keys);
     }
 
-    public static <E extends DbEntity<E>> GroupingEntityErrorFactory<E> elements(
+    public static <E extends DbEntity> GroupingEntityErrorFactory<E> elements(
             final List<E> actual, final Iterable<String> keys) {
         return new BasicGroupingEntityErrorFactory<>(
                 actual,

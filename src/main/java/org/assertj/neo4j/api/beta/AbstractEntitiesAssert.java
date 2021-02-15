@@ -17,7 +17,10 @@ import org.assertj.core.error.ErrorMessageFactory;
 import org.assertj.core.error.ShouldContain;
 import org.assertj.core.error.ShouldHaveSize;
 import org.assertj.core.internal.ComparisonStrategy;
+import org.assertj.core.internal.Iterables;
 import org.assertj.core.internal.StandardComparisonStrategy;
+import org.assertj.core.presentation.Representation;
+import org.assertj.core.presentation.StandardRepresentation;
 import org.assertj.core.util.VisibleForTesting;
 import org.assertj.neo4j.api.beta.error.ShouldHavePropertyInstanceOf;
 import org.assertj.neo4j.api.beta.error.ShouldHavePropertyKeys;
@@ -33,6 +36,7 @@ import org.assertj.neo4j.api.beta.type.DbEntity;
 import org.assertj.neo4j.api.beta.type.RecordType;
 import org.assertj.neo4j.api.beta.type.ValueType;
 import org.assertj.neo4j.api.beta.util.Checks;
+import org.assertj.neo4j.api.beta.util.EntityRepresentation;
 import org.assertj.neo4j.api.beta.util.Predicates;
 import org.assertj.neo4j.api.beta.util.Presentations;
 import org.assertj.neo4j.api.beta.util.Utils;
@@ -46,6 +50,10 @@ import java.util.stream.Collectors;
 
 /**
  * Abstract entities assertions.
+ * <p/>
+ * This class don't extends {@link org.assertj.core.api.AbstractIterableAssert} to offer the navigation on all kind of
+ * {@link #filteredOn(Predicate)} methods. Each methods that will return a new {@link NEW_SELF} create a new assertion
+ * which will be the same kind as {@link SELF}
  *
  * @param <SELF>          the current assertions type.
  * @param <ENTITY>        the entity type
@@ -59,12 +67,12 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
                                                                                  NEW_SELF,
                                                                                  PARENT_ASSERT,
                                                                                  ROOT_ASSERT>,
-                                             ENTITY extends DbEntity<ENTITY>,
+                                             ENTITY extends DbEntity,
                                              NEW_SELF extends Navigable<SELF, ROOT_ASSERT>,
-                                             PARENT_ASSERT,
+                                             PARENT_ASSERT extends ParentAssert,
                                              ROOT_ASSERT>
         extends AbstractAssert<SELF, List<ENTITY>>
-        implements Navigable<PARENT_ASSERT, ROOT_ASSERT> {
+        implements Navigable<PARENT_ASSERT, ROOT_ASSERT>, ParentAssert {
 //@formatter:on
 
     /** The record type */
@@ -72,6 +80,8 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
 
     /** The data loader. */
     protected final DataLoader<ENTITY> dataLoader;
+
+    protected final Iterables iterables = Iterables.instance();
 
     // /** Comparison strategy. */
     protected final ComparisonStrategy comparisonStrategy = StandardComparisonStrategy.instance();
@@ -108,10 +118,10 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
             final PARENT_ASSERT parentAssert,
             final ROOT_ASSERT rootAssert) {
         super(entities, selfType);
-        this.recordType = recordType;
+        this.recordType = Objects.requireNonNull(recordType);
         this.dataLoader = dataLoader;
         this.ignoreIds = ignoreIds;
-        this.factory = factory;
+        this.factory = Objects.requireNonNull(factory);
         this.parentAssert = parentAssert;
         this.rootAssert = rootAssert;
     }
@@ -126,6 +136,12 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
         return Optional.ofNullable(this.rootAssert);
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public Representation representation() {
+        return info.representation();
+    }
+
     /**
      * Get the actual entities for assertions.
      *
@@ -134,6 +150,30 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
     @VisibleForTesting
     protected List<ENTITY> getActual() {
         return this.actual;
+    }
+
+    /**
+     * Provide a easy way to create new assertions on the current list of {@link ENTITY} without specifying the {@link
+     * ENTITY#getId()}
+     * <p/>
+     * With node entities:
+     * <pre><code class='java'>
+     * Nodes relationships = new Nodes(driver, "Developer");
+     * assertThat(nodes)
+     *     .ignoringIds()
+     *     .contains(Drivers.node().label("Developer").build());</code></pre>
+     * <p/>
+     * With relationship entities:
+     * <pre><code class='java'>
+     * Relationships relationships = new Relationships(driver, "KNOW");
+     * assertThat(relationships)
+     *     .ignoringIds()
+     *     .contains(Drivers.relation("KNOW").build());</code></pre>
+     *
+     * @return a new instance of {@link DriverNodesAssert}
+     */
+    public NEW_SELF ignoringIds() {
+        return factory.create(actual, dataLoader, true, myself);
     }
 
     /**
@@ -213,12 +253,7 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
      * @return {@code this} assertion object.
      */
     public SELF hasSize(final int expectedSize) {
-        final int actualSize = actual.size();
-        if (actualSize != expectedSize) {
-            throwAssertionError(
-                    ShouldHaveSize.shouldHaveSize(Presentations.outputIds(actual), actualSize, expectedSize)
-            );
-        }
+        iterables.assertHasSize(info, actual, expectedSize);
         return myself;
     }
 
@@ -246,18 +281,7 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
      * @throws AssertionError if one of the expected entities cannot be found in the actual list of entities
      */
     public SELF contains(final ENTITY... expectedEntities) {
-        List<ENTITY> entities = actual;
-        if (this.ignoreIds) {
-            entities = actual.stream().map(DbEntity::withoutId).collect(Collectors.toList());
-        }
-        final List<ENTITY> notSatisfies = Arrays.stream(expectedEntities)
-                .filter(e -> !comparisonStrategy.iterableContains(actual, e))
-                .collect(Collectors.toList());
-        if (notSatisfies.isEmpty()) {
-            throwAssertionError(
-                    ShouldContain.shouldContain(actual, expectedEntities, notSatisfies, comparisonStrategy)
-            );
-        }
+        iterables.assertContains(info, actual, expectedEntities);
         return myself;
     }
 
@@ -337,30 +361,6 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
                 Objects.requireNonNull(key, "The property key cannot be null"),
                 value
         ));
-    }
-
-    /**
-     * Provide a easy way to create new assertions on the current list of {@link ENTITY} without specifying the {@link
-     * ENTITY#getId()}
-     * <p/>
-     * With node entities:
-     * <pre><code class='java'>
-     * Nodes relationships = new Nodes(driver, "Developer");
-     * assertThat(nodes)
-     *     .ignoringIds()
-     *     .contains(Drivers.node().label("Developer").build());</code></pre>
-     * <p/>
-     * With relationship entities:
-     * <pre><code class='java'>
-     * Relationships relationships = new Relationships(driver, "KNOW");
-     * assertThat(relationships)
-     *     .ignoringIds()
-     *     .contains(Drivers.relation("KNOW").build());</code></pre>
-     *
-     * @return a new instance of {@link DriverNodesAssert}
-     */
-    public NEW_SELF ignoringIds() {
-        return factory.create(actual, dataLoader, true, myself);
     }
 
     /**

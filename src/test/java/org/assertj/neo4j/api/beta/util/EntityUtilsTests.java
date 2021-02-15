@@ -12,17 +12,25 @@
  */
 package org.assertj.neo4j.api.beta.util;
 
-import org.assertj.core.api.Assertions;
+import org.assertj.core.api.SoftAssertions;
+import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.assertj.neo4j.api.beta.testing.Randomize;
+import org.assertj.neo4j.api.beta.testing.Samples;
+import org.assertj.neo4j.api.beta.type.DbValue;
 import org.assertj.neo4j.api.beta.type.Drivers;
 import org.assertj.neo4j.api.beta.type.Nodes.DbNode;
 import org.assertj.neo4j.api.beta.type.Relationships.DbRelationship;
+import org.assertj.neo4j.api.beta.type.ValueType;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.util.List;
+import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
  * @author patouche - 13/02/2021
@@ -187,7 +195,21 @@ class EntityUtilsTests {
 
         @Test
         void should_return_the_start_node_ids() {
+            // GIVEN
+            final DbRelationship relationship1 = Drivers.relation().id(1).start(22).build();
+            final DbRelationship relationship2 = Drivers.relation().id(2).start(29).build();
+            final DbRelationship relationship3 = Drivers.relation().id(3).start(35).build();
+            final DbRelationship relationship4 = Drivers.relation().id(4).start(42).build();
+            final DbRelationship relationship5 = Drivers.relation().id(5).start(56).build();
+            final DbRelationship relationship6 = Drivers.relation().id(6).start(42).build();
+            final List<DbRelationship> relationships = Randomize
+                    .listOf(relationship1, relationship2, relationship3, relationship4, relationship5, relationship6);
 
+            // WHEN
+            final List<Long> result = EntityUtils.startNodeIds(relationships);
+
+            // THEN
+            assertThat(result).containsExactly(22L, 29L, 35L, 42L, 42L, 56L);
         }
 
     }
@@ -197,7 +219,52 @@ class EntityUtilsTests {
 
         @Test
         void should_return_the_end_node_ids() {
+            // GIVEN
+            final DbRelationship relationship1 = Drivers.relation().id(1).end(22).build();
+            final DbRelationship relationship2 = Drivers.relation().id(2).end(29).build();
+            final DbRelationship relationship3 = Drivers.relation().id(3).end(35).build();
+            final DbRelationship relationship4 = Drivers.relation().id(4).end(42).build();
+            final DbRelationship relationship5 = Drivers.relation().id(5).end(56).build();
+            final DbRelationship relationship6 = Drivers.relation().id(6).end(42).build();
+            final List<DbRelationship> relationships = Randomize
+                    .listOf(relationship1, relationship2, relationship3, relationship4, relationship5, relationship6);
 
+            // WHEN
+            final List<Long> result = EntityUtils.endNodeIds(relationships);
+
+            // THEN
+            assertThat(result).containsExactly(22L, 29L, 35L, 42L, 42L, 56L);
+        }
+
+    }
+
+    @Nested
+    @DisplayName("getPropertyList")
+    @ExtendWith(SoftAssertionsExtension.class)
+    class PropertyListTests {
+
+        @Test
+        void should_throw_an_exception() {
+            // WHEN & THEN
+            assertThatThrownBy(() -> EntityUtils.propertyList(Samples.NODE_LIST, "key_doesnt_exist"))
+                    .hasMessage("Property key \"key_doesnt_exist\" doesn't exist")
+                    .hasNoCause();
+        }
+
+        @Test
+        void should_return_the_right_property_type(final SoftAssertions softly) {
+            // WHEN & THEN
+            softly.assertThat(EntityUtils.propertyList(Samples.NODE_LIST, "list_long"))
+                    .hasSize(10)
+                    .contains(IntStream.range(0, 10).mapToObj(ValueType::convert).toArray(DbValue[]::new));
+
+            softly.assertThat(EntityUtils.propertyList(Samples.NODE_LIST, "list_string"))
+                    .hasSize(3)
+                    .contains(
+                            ValueType.convert("str-1"),
+                            ValueType.convert("str-2"),
+                            ValueType.convert("str-3")
+                    );
         }
 
     }

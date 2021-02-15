@@ -13,6 +13,7 @@
 package org.assertj.neo4j.api.beta;
 
 import org.assertj.core.api.AbstractIterableAssert;
+import org.assertj.neo4j.api.beta.util.Wip;
 import org.neo4j.driver.Record;
 import org.neo4j.driver.Result;
 
@@ -22,20 +23,29 @@ import java.util.Map;
 /**
  * @author Patrick Allain - 26/01/2021
  */
-public class DriverResultAssert  extends AbstractIterableAssert<
-        DriverResultAssert, List<Map<String, Object>>, Map<String, Object>, RecordMapAssert> {
-
-    private Result result;
+//@formatter:off
+public class DriverResultAssert extends AbstractIterableAssert<DriverResultAssert,
+                                                               List<Map<String, Object>>,
+                                                               Map<String, Object>,
+                                                               RecordMapAssert> {
+//@formatter:on
 
     public DriverResultAssert(final Result result) {
         super(result.list(Record::asMap), DriverResultAssert.class);
     }
 
-    public DriverResultAssert hasColumnNumber(int i) {
+    public DriverResultAssert hasColumnNumber(int expectedColumn) {
+        Wip.TODO(this);
+        return myself;
+    }
+
+    public DriverResultAssert hasColumns(final String... names) {
+        Wip.TODO(this);
         return myself;
     }
 
     public DriverResultAssert isNode(String n) {
+        Wip.TODO(this);
         return myself;
     }
 

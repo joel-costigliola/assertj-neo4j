@@ -23,8 +23,7 @@ import java.util.List;
  * @param <ENTITY> the entity type
  * @author Patrick Allain - 30/01/2021
  */
-public class ShouldHavePropertyInstanceOf<ENTITY extends DbEntity<ENTITY>>
-        extends BasicEntityErrorMessageFactory<ENTITY> {
+public class ShouldHavePropertyInstanceOf<ENTITY extends DbEntity> extends BasicEntityErrorMessageFactory<ENTITY> {
 
     private ShouldHavePropertyInstanceOf(final ENTITY actual, final String key, final Class<?> expectedClass) {
         super(
@@ -43,12 +42,12 @@ public class ShouldHavePropertyInstanceOf<ENTITY extends DbEntity<ENTITY>>
         );
     }
 
-    public static <E extends DbEntity<E>> ShouldHavePropertyInstanceOf<E> create(
+    public static <E extends DbEntity> ShouldHavePropertyInstanceOf<E> create(
             final E actual, final String key, final Class<?> expectedClass) {
         return new ShouldHavePropertyInstanceOf<>(actual, key, expectedClass);
     }
 
-    public static <E extends DbEntity<E>> GroupingEntityErrorFactory<E> elements(
+    public static <E extends DbEntity> GroupingEntityErrorFactory<E> elements(
             final List<E> actual, final String key, final Class<?> expectedClass) {
         return new BasicGroupingEntityErrorFactory<>(
                 actual,

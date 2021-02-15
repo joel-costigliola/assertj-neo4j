@@ -24,8 +24,7 @@ import java.util.function.Function;
 /**
  * @author patouche - 13/02/2021
  */
-public class ShouldNodeHaveNoRelatedRelationships
-        extends BasicEntityErrorMessageFactory<DbNode> {
+public class ShouldNodeHaveNoRelatedRelationships extends BasicEntityErrorMessageFactory<DbNode> {
 
     protected ShouldNodeHaveNoRelatedRelationships(
             final String direction,

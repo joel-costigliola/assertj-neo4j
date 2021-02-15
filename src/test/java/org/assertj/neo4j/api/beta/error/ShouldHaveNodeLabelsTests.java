@@ -68,10 +68,10 @@ public class ShouldHaveNodeLabelsTests {
             final Nodes.DbNode node6 = Drivers.node().id(95).labels("LBL_1", "LBL_2", "LBL_3", "LBL_4").build();
 
             final List<Nodes.DbNode> nodes = Randomize.listOf(node1, node2, node3, node4, node5, node6);
-            final GroupingEntityErrorFactory<Nodes.DbNode> elements = ShouldHaveNodeLabels.elements(nodes, LABELS);
 
             // WHEN
-            final ErrorMessageFactory error = elements
+            final ErrorMessageFactory error = ShouldHaveNodeLabels
+                    .elements(nodes, LABELS)
                     .notSatisfies(Randomize.listOf(node1, node2, node3, node4, node5));
 
             // THEN

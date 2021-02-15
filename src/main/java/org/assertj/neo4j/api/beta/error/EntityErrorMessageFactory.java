@@ -26,7 +26,7 @@ import java.util.Objects;
  *
  * @author Patrick Allain - 03/02/2021
  */
-interface EntityErrorMessageFactory<ENTITY extends DbEntity<ENTITY>> extends ErrorMessageFactory {
+interface EntityErrorMessageFactory<ENTITY extends DbEntity> extends ErrorMessageFactory {
 
     /**
      * Retrieve the actual entity that will is related to the {@link ErrorMessageFactory}.

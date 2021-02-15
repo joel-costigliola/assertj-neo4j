@@ -70,12 +70,11 @@ class ShouldHavePropertyKeysTests {
             final DbNode node4 = Drivers.node().id(51).property("k-1", 1).property("k-3", 3).build();
             final DbNode node5 = Drivers.node().id(69).property("k-2", 2).property("k-3", 3).build();
             final DbNode node6 = Drivers.node().id(95).property("k-1", 1).property("k-2", 2).property("k-3", 4).build();
-
             final List<DbNode> entities = Randomize.listOf(node1, node2, node3, node4, node5, node6);
-            final GroupingEntityErrorFactory<DbNode> elements = ShouldHavePropertyKeys.elements(entities, keys);
 
             // WHEN
-            final ErrorMessageFactory error = elements
+            final ErrorMessageFactory error = ShouldHavePropertyKeys
+                    .elements(entities, keys)
                     .notSatisfies(Randomize.listOf(node1, node2, node3, node4, node5));
 
             // THEN

@@ -63,6 +63,7 @@ public class DriverRelationshipsAssert
         );
     }
 
+    /** {@inheritDoc} */
     @Override
     public DriverRelationshipsAssert toRootAssert() {
         return rootAssert().orElse(this);

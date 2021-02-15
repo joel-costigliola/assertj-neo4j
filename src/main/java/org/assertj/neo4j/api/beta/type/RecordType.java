@@ -22,6 +22,8 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
+ * Record type.
+ *
  * @author Patrick Allain - 02/11/2020
  */
 public enum RecordType {

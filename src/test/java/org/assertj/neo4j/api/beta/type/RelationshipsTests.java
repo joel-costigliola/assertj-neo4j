@@ -12,7 +12,7 @@
  */
 package org.assertj.neo4j.api.beta.type;
 
-import org.assertj.neo4j.api.beta.testing.Mocks;
+import org.assertj.neo4j.api.beta.testing.Builders;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -21,7 +21,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.Query;
 import org.neo4j.driver.Record;
-import org.neo4j.driver.Result;
 import org.neo4j.driver.Session;
 import org.neo4j.driver.TransactionConfig;
 import org.neo4j.driver.Values;
@@ -30,10 +29,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.neo4j.api.beta.testing.Mocks.record;
-import static org.assertj.neo4j.api.beta.testing.Mocks.relation;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
@@ -61,17 +57,17 @@ class RelationshipsTests {
         // GIVEN
         final Relationships relationships = Relationships.of(driver, "KNOWS");
         final List<Record> result = Arrays.asList(
-                Mocks.record()
+                Builders.record()
                         .key("key")
-                        .relation(Mocks.relation("SAMPLE")
+                        .relation(Builders.relation("SAMPLE")
                                 .id(1)
                                 .properties("prop-0", Values.value(true))
                                 .build()
                         )
                         .build(),
-                Mocks.record()
+                Builders.record()
                         .key("key")
-                        .relation(Mocks.relation("SAMPLE")
+                        .relation(Builders.relation("SAMPLE")
                                 .id(2)
                                 .properties("prop-1", Values.value(false))
                                 .build()

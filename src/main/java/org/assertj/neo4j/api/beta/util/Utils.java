@@ -66,7 +66,14 @@ public final class Utils {
                 .collect(Collectors.toList());
     }
 
-    public static List<String> sorted(final Iterable<String> items) {
+    /**
+     * Sort an iterable of comparable.
+     *
+     * @param items the items
+     * @param <T>   the type of element in the the iterator
+     * @return a sorted list
+     */
+    public static <T extends Comparable<T>> List<T> sorted(final Iterable<T> items) {
         return Streams.stream(items).sorted().collect(Collectors.toList());
     }
 

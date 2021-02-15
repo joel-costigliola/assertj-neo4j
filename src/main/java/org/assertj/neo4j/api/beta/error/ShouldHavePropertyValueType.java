@@ -24,8 +24,7 @@ import java.util.List;
  * @param <ENTITY> the entity type
  * @author Patrick Allain - 31/01/2021
  */
-public class ShouldHavePropertyValueType<ENTITY extends DbEntity<ENTITY>>
-        extends BasicEntityErrorMessageFactory<ENTITY> {
+public class ShouldHavePropertyValueType<ENTITY extends DbEntity> extends BasicEntityErrorMessageFactory<ENTITY> {
 
     private ShouldHavePropertyValueType(final ENTITY actual, final String key, final ValueType expectedType) {
         super(
@@ -43,12 +42,12 @@ public class ShouldHavePropertyValueType<ENTITY extends DbEntity<ENTITY>>
         );
     }
 
-    public static <E extends DbEntity<E>> ShouldHavePropertyValueType<E> create(
+    public static <E extends DbEntity> ShouldHavePropertyValueType<E> create(
             final E actual, final String key, final ValueType expectedType) {
         return new ShouldHavePropertyValueType<>(actual, key, expectedType);
     }
 
-    public static <E extends DbEntity<E>> GroupingEntityErrorFactory<E> elements(
+    public static <E extends DbEntity> GroupingEntityErrorFactory<E> elements(
             final List<E> actual, final String key, final ValueType expectedType) {
         return new BasicGroupingEntityErrorFactory<>(
                 actual,

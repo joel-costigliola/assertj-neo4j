@@ -14,13 +14,13 @@ package org.assertj.neo4j.api.beta.type;
 
 import org.neo4j.driver.Driver;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 /**
  * {@link Nodes.DbNode} entities loader definition.
@@ -37,34 +37,17 @@ public interface Nodes extends DataLoader<Nodes.DbNode> {
      * TODO : Maybe extract method here in a interface to be able to decorate a Node from driver - This may have impact
      * for comparing node.
      */
-    class DbNode extends DbEntity<DbNode> {
+    class DbNode extends DbEntity {
 
-        protected List<String> labels;
+        protected SortedSet<String> labels;
 
-        DbNode(final List<String> labels, final Map<String, DbValue> properties) {
-            this(null, labels, properties);
-        }
-
-        DbNode(final Long id, final List<String> labels, final Map<String, DbValue> properties) {
+        DbNode(final Long id, final Set<String> labels, final Map<String, DbValue> properties) {
             super(RecordType.NODE, id, properties);
-            this.labels = labels;
+            this.labels = new TreeSet<>(labels);
         }
 
-        public List<String> getLabels() {
+        public SortedSet<String> getLabels() {
             return labels;
-        }
-
-        public List<String> getSortedLabels() {
-            return labels.stream().sorted().collect(Collectors.toList());
-        }
-
-        public void setLabels(final List<String> labels) {
-            this.labels = labels;
-        }
-
-        @Override
-        public DbNode withoutId() {
-            return new DbNode(this.labels, this.properties);
         }
 
         @Override
@@ -90,29 +73,12 @@ public interface Nodes extends DataLoader<Nodes.DbNode> {
     /**
      * Builder for {@link DbNode}.
      */
-    class DbNodeBuilder {
+    class DbNodeBuilder extends DbEntity.DbEntityBuilder<DbNode, DbNodeBuilder> {
 
-        private Long id = null;
-
-        private final List<String> labels = new ArrayList<>();
-
-        private final Map<String, DbValue> properties = new HashMap<>();
+        private final Set<String> labels = new HashSet<>();
 
         protected DbNodeBuilder() {
-        }
-
-        public DbNodeBuilder id(final int id) {
-            return this.id((long) id);
-        }
-
-        public DbNodeBuilder id(final Long id) {
-            this.id = id;
-            return this;
-        }
-
-        public DbNodeBuilder property(final String key, final Object value) {
-            this.properties.put(key, ValueType.convert(value));
-            return this;
+            super(DbNodeBuilder.class);
         }
 
         public DbNodeBuilder label(final String label) {

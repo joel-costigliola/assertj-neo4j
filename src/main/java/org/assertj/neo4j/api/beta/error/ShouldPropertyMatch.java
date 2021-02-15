@@ -19,8 +19,7 @@ import java.util.List;
 /**
  * @author Patrick Allain - 10/02/2021
  */
-public class ShouldPropertyMatch<ENTITY extends DbEntity<ENTITY>>
-        extends BasicEntityErrorMessageFactory<ENTITY> {
+public class ShouldPropertyMatch<ENTITY extends DbEntity> extends BasicEntityErrorMessageFactory<ENTITY> {
 
     protected ShouldPropertyMatch(final ENTITY actual, final String key) {
         super(
@@ -36,12 +35,12 @@ public class ShouldPropertyMatch<ENTITY extends DbEntity<ENTITY>>
         );
     }
 
-    public static <E extends DbEntity<E>> ShouldPropertyMatch<E> create(final E actual, final String key) {
+    public static <E extends DbEntity> ShouldPropertyMatch<E> create(final E actual, final String key) {
         return new ShouldPropertyMatch<>(actual, key);
     }
 
-    public static <E extends DbEntity<E>> GroupingEntityErrorFactory<E> elements(final List<E> actual,
-                                                                                 final String key) {
+    public static <E extends DbEntity> GroupingEntityErrorFactory<E> elements(final List<E> actual,
+                                                                              final String key) {
         return new BasicGroupingEntityErrorFactory<>(
                 actual,
                 (e) -> create(e, key),

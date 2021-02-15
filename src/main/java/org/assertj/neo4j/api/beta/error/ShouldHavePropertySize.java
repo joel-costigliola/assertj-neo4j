@@ -23,7 +23,7 @@ import java.util.List;
  * @param <ENTITY> the entity type
  * @author Patrick Allain - 01/02/2021
  */
-public class ShouldHavePropertySize<ENTITY extends DbEntity<ENTITY>> extends BasicEntityErrorMessageFactory<ENTITY> {
+public class ShouldHavePropertySize<ENTITY extends DbEntity> extends BasicEntityErrorMessageFactory<ENTITY> {
 
     private ShouldHavePropertySize(final ENTITY actual, final int size) {
         super(
@@ -40,11 +40,11 @@ public class ShouldHavePropertySize<ENTITY extends DbEntity<ENTITY>> extends Bas
         );
     }
 
-    public static <E extends DbEntity<E>> ShouldHavePropertySize<E> create(final E actual, final int size) {
+    public static <E extends DbEntity> ShouldHavePropertySize<E> create(final E actual, final int size) {
         return new ShouldHavePropertySize<>(actual, size);
     }
 
-    public static <E extends DbEntity<E>> GroupingEntityErrorFactory<E> elements(final List<E> actual, final int size) {
+    public static <E extends DbEntity> GroupingEntityErrorFactory<E> elements(final List<E> actual, final int size) {
         return new BasicGroupingEntityErrorFactory<>(
                 actual,
                 (e) -> create(e, size),

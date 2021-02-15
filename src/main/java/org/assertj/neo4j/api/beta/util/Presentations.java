@@ -30,7 +30,7 @@ public final class Presentations {
      * @param <E>    the type of entity
      * @return a string representing the entity with its {@link E#getId()}.
      */
-    public static <E extends DbEntity<E>> String outputId(final E entity) {
+    public static <E extends DbEntity> String outputId(final E entity) {
         return entity.getRecordType() + "{id=" + entity.getId() + "}";
     }
 
@@ -41,7 +41,7 @@ public final class Presentations {
      * @param <E>      the type of entity
      * @return a list of string representing entities with theirs {@link E#getId()}.
      */
-    public static <E extends DbEntity<E>> List<String> outputIds(final Iterable<E> entities) {
+    public static <E extends DbEntity> List<String> outputIds(final Iterable<E> entities) {
         return Streams.stream(entities)
                 .sorted(EntityUtils.comparator())
                 .map(Presentations::outputId)

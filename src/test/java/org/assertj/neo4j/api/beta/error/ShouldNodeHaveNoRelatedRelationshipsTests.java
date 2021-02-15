@@ -42,8 +42,8 @@ class ShouldNodeHaveNoRelatedRelationshipsTests {
             final DbNode actual = Drivers.node().id(42).build();
 
             // WHEN
-            final ErrorMessageFactory error = ShouldNodeHaveNoRelatedRelationships.createIncoming(actual,
-                    relationships);
+            final ErrorMessageFactory error = ShouldNodeHaveNoRelatedRelationships
+                    .createIncoming(actual, relationships);
 
             // THEN
             assertThat(error.create()).isEqualToNormalizingNewlines(
@@ -72,8 +72,8 @@ class ShouldNodeHaveNoRelatedRelationshipsTests {
             final DbNode actual = Drivers.node().id(42).build();
 
             // WHEN
-            final ErrorMessageFactory error = ShouldNodeHaveNoRelatedRelationships.createOutgoing(actual,
-                    relationships);
+            final ErrorMessageFactory error = ShouldNodeHaveNoRelatedRelationships
+                    .createOutgoing(actual, relationships);
 
             // THEN
             assertThat(error.create()).isEqualToNormalizingNewlines(

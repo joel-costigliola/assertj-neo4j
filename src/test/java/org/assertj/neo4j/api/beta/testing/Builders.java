@@ -15,16 +15,15 @@ package org.assertj.neo4j.api.beta.testing;
 import org.assertj.neo4j.api.beta.testing.builders.NodeBuilder;
 import org.assertj.neo4j.api.beta.testing.builders.RecordBuilder;
 import org.assertj.neo4j.api.beta.testing.builders.RelationshipBuilder;
-import org.assertj.neo4j.api.beta.testing.builders.ResultBuilder;
+import org.assertj.neo4j.api.beta.type.Drivers;
+import org.assertj.neo4j.api.beta.type.Nodes;
+import org.assertj.neo4j.api.beta.type.Relationships;
+import org.assertj.neo4j.api.beta.util.EntityUtils;
 
 /**
  * @author Patrick Allain - 11/11/2020
  */
-public interface Mocks {
-
-    static ResultBuilder result() {
-        return new ResultBuilder();
-    }
+public interface Builders {
 
     static RecordBuilder record() {
         return new RecordBuilder();
@@ -36,6 +35,22 @@ public interface Mocks {
 
     static RelationshipBuilder relation(final String type) {
         return new RelationshipBuilder(type);
+    }
+
+    static Nodes.DbNodeBuilder rebuild(Nodes.DbNode node) {
+        return Drivers.node()
+                .id(node.getId())
+                .labels(node.getLabels().toArray(new String[0]))
+                .properties(EntityUtils.propertyObjects(node));
+    }
+
+    static Relationships.DbRelationshipBuilder rebuild(Relationships.DbRelationship relationship) {
+        return Drivers.relation()
+                .id(relationship.getId())
+                .type(relationship.getType())
+                .start(relationship.getStart())
+                .end(relationship.getEnd())
+                .properties(EntityUtils.propertyObjects(relationship));
     }
 
 }

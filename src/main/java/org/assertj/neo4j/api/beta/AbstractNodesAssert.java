@@ -31,7 +31,7 @@ import java.util.List;
 //@formatter:off
 public abstract class AbstractNodesAssert<SELF extends AbstractNodesAssert<SELF, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT>,
                                           NEW_SELF extends Navigable<SELF, ROOT_ASSERT>,
-                                          PARENT_ASSERT,
+                                          PARENT_ASSERT extends ParentAssert,
                                           ROOT_ASSERT>
         extends AbstractEntitiesAssert<SELF, Nodes.DbNode, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT> {
 //@formatter:on
@@ -109,6 +109,12 @@ public abstract class AbstractNodesAssert<SELF extends AbstractNodesAssert<SELF,
                 .withParent(myself);
     }
 
+    /**
+     * Create a new assertions on outgoing relationships.
+     *
+     * @param types the type of relationship.
+     * @return a new assertions on incoming relationships
+     */
     public ChildrenDriverRelationshipsAssert<SELF, ROOT_ASSERT> outgoingRelationships(final String... types) {
         final List<Long> nodeIds = entityIds();
         final Relationships relationships = this.dataLoader.chain(LoaderFactory.relationships(types));
@@ -118,6 +124,12 @@ public abstract class AbstractNodesAssert<SELF extends AbstractNodesAssert<SELF,
                 .withParent(myself);
     }
 
+    /**
+     * Verify that there is no incoming relationships on all actual nodes.
+     *
+     * @param types the type of relationship
+     * @return {@code this} assertion object.
+     */
     public SELF haveNoIncomingRelationships(String... types) {
         return incomingRelationships(types)
                 .isEmpty((relationships) -> ShouldNodeHaveNoRelatedRelationships
@@ -127,6 +139,12 @@ public abstract class AbstractNodesAssert<SELF extends AbstractNodesAssert<SELF,
                 .toParentAssert();
     }
 
+    /**
+     * Verify that there is no outgoing relationships on all actual nodes.
+     *
+     * @param types the type of relationship
+     * @return {@code this} assertion object.
+     */
     public SELF haveNoOutgoingRelationships(String... types) {
         return outgoingRelationships(types)
                 .isEmpty((relationships) -> ShouldNodeHaveNoRelatedRelationships
