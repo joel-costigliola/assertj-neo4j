@@ -22,12 +22,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.neo4j.driver.Values;
 
 import java.time.Duration;
-import java.time.ZonedDateTime;
-import java.util.List;
-import java.util.function.Function;
-import java.util.function.IntFunction;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -81,7 +75,7 @@ class DbEntityTests {
             softly.assertThat(Samples.NODE.getPropertyValue("date")).isEqualTo(Samples.LOCAL_DATE);
             softly.assertThat(Samples.NODE.getPropertyValue("datetime")).isEqualTo(Samples.ZONED_DATE_TIME);
             softly.assertThat(Samples.NODE.getPropertyValue("localdatetime")).isEqualTo(Samples.LOCAL_DATE_TIME);
-            softly.assertThat(Samples.NODE.getPropertyValue("time")).isEqualTo(Samples.TIME);
+            softly.assertThat(Samples.NODE.getPropertyValue("time")).isEqualTo(Samples.OFFSET_TIME);
             softly.assertThat(Samples.NODE.getPropertyValue("localtime")).isEqualTo(Samples.LOCAL_TIME);
             softly.assertThat(Samples.NODE.getPropertyValue("duration")).isEqualTo(Values.value(Duration.ofDays(3)).asObject());
             softly.assertThat(Samples.NODE.getPropertyValue("point_2d")).isEqualTo(Values.point(0, 42, 12).asPoint());

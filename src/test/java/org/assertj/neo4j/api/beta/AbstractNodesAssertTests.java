@@ -20,6 +20,7 @@ import org.assertj.neo4j.api.beta.type.LoaderFactory;
 import org.assertj.neo4j.api.beta.type.Nodes;
 import org.assertj.neo4j.api.beta.type.Relationships;
 import org.assertj.neo4j.api.beta.type.Relationships.DbRelationship;
+import org.assertj.neo4j.api.beta.util.EntityRepresentation;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -153,10 +154,10 @@ class AbstractNodesAssertTests {
     }
 
     @Nested
-    @DisplayName("ignoringIds")
-    class IgnoringIdsTests extends BaseNodesTests {
+    @DisplayName("usingNoEntityIdComparison")
+    class UsingNoEntityIdComparisonTests extends BaseNodesTests {
 
-        public IgnoringIdsTests() {
+        public UsingNoEntityIdComparisonTests() {
             super(
                     Drivers.node().id(22).labels("lbl", "lbl-1"),
                     Drivers.node().id(56).labels("lbl", "lbl-2")
@@ -166,15 +167,17 @@ class AbstractNodesAssertTests {
         @Test
         void should_return_a_list_of_nodes_without_ids() {
             // WHEN
-            final DriverNodesAssert result = assertions.ignoringIds();
+            final DriverNodesAssert result = assertions.usingNoEntityIdComparison();
 
             // THEN
+            verify(dataLoader).load();
             assertThat(result.getActual())
                     .extracting(DbEntity::getId)
                     .doesNotContainNull();
             Assertions.assertDoesNotThrow(() -> result
-                    .contains(Drivers.node().label("lbl-1").build())
-                    .contains(Drivers.node().id(35).label("lbl-2").build())
+                    .withFullEntityRepresentation()
+                    .contains(Drivers.node().labels("lbl", "lbl-1").build())
+                    .contains(Drivers.node().id(35).labels("lbl", "lbl-2").build())
             );
         }
     }

@@ -14,12 +14,14 @@ package org.assertj.neo4j.api.beta.testing;
 
 import org.assertj.neo4j.api.beta.type.Drivers;
 import org.assertj.neo4j.api.beta.type.Nodes;
+import org.assertj.neo4j.api.beta.type.Relationships;
 import org.neo4j.driver.Values;
 
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -43,13 +45,17 @@ public final class Samples {
 
     public static final LocalDate LOCAL_DATE = ZONED_DATE_TIME.toLocalDate();
 
-    public static final OffsetTime TIME = ZONED_DATE_TIME.toLocalTime().atOffset(ZoneOffset.UTC);
+    public static final OffsetTime OFFSET_TIME = ZONED_DATE_TIME.toLocalTime().atOffset(ZoneOffset.UTC);
+
+    public static final OffsetDateTime OFFSET_DATE_TIME = ZONED_DATE_TIME.toOffsetDateTime();
 
     public static final LocalTime LOCAL_TIME = ZONED_DATE_TIME.toLocalTime();
 
     public static final List<String> LABELS = Randomize.listOf("LBL_1", "LBL_2", "LBL_3", "LBL_4");
 
     public static final Nodes.DbNode NODE = Drivers.node()
+            .id(42)
+            .labels(LABELS.toArray(new String[0]))
             .property("boolean", true)
             .property("string", "str-value")
             .property("long", 42)
@@ -57,7 +63,24 @@ public final class Samples {
             .property("date", Samples.LOCAL_DATE)
             .property("datetime", Samples.ZONED_DATE_TIME)
             .property("localdatetime", Samples.LOCAL_DATE_TIME)
-            .property("time", Samples.TIME)
+            .property("time", Samples.OFFSET_TIME)
+            .property("localtime", Samples.LOCAL_TIME)
+            .property("duration", Duration.ofDays(3))
+            .property("point_2d", Values.point(0, 42L, 12L).asObject())
+            .property("point_3d", Values.point(0, 42L, 12L, 69L).asObject())
+            .build();
+
+    public static final Relationships.DbRelationship RELATIONSHIP = Drivers.relation()
+            .id(42)
+            .type("SAMPLE_TYPE")
+            .property("boolean", true)
+            .property("string", "str-value")
+            .property("long", 42)
+            .property("double", 4.2)
+            .property("date", Samples.LOCAL_DATE)
+            .property("datetime", Samples.ZONED_DATE_TIME)
+            .property("localdatetime", Samples.LOCAL_DATE_TIME)
+            .property("time", Samples.OFFSET_TIME)
             .property("localtime", Samples.LOCAL_TIME)
             .property("duration", Duration.ofDays(3))
             .property("point_2d", Values.point(0, 42L, 12L).asObject())
@@ -65,6 +88,8 @@ public final class Samples {
             .build();
 
     public static final Nodes.DbNode NODE_LIST = Drivers.node()
+            .id(69)
+            .labels(LABELS.toArray(new String[0]))
             .property("list_boolean", Arrays.asList(true, false))
             .property("list_string", Arrays.asList("str-1", "str-2", "str-3"))
             .property("list_long", intList(i -> i))

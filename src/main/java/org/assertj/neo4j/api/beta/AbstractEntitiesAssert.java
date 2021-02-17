@@ -14,13 +14,9 @@ package org.assertj.neo4j.api.beta;
 
 import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.error.ErrorMessageFactory;
-import org.assertj.core.error.ShouldContain;
-import org.assertj.core.error.ShouldHaveSize;
 import org.assertj.core.internal.ComparisonStrategy;
 import org.assertj.core.internal.Iterables;
-import org.assertj.core.internal.StandardComparisonStrategy;
 import org.assertj.core.presentation.Representation;
-import org.assertj.core.presentation.StandardRepresentation;
 import org.assertj.core.util.VisibleForTesting;
 import org.assertj.neo4j.api.beta.error.ShouldHavePropertyInstanceOf;
 import org.assertj.neo4j.api.beta.error.ShouldHavePropertyKeys;
@@ -36,12 +32,13 @@ import org.assertj.neo4j.api.beta.type.DbEntity;
 import org.assertj.neo4j.api.beta.type.RecordType;
 import org.assertj.neo4j.api.beta.type.ValueType;
 import org.assertj.neo4j.api.beta.util.Checks;
+import org.assertj.neo4j.api.beta.util.EntityComparisonStrategy;
 import org.assertj.neo4j.api.beta.util.EntityRepresentation;
+import org.assertj.neo4j.api.beta.util.NodeComparisonStrategy;
 import org.assertj.neo4j.api.beta.util.Predicates;
-import org.assertj.neo4j.api.beta.util.Presentations;
+import org.assertj.neo4j.api.beta.util.RelationshipComparisonStrategy;
 import org.assertj.neo4j.api.beta.util.Utils;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -62,17 +59,14 @@ import java.util.stream.Collectors;
  * @author Patrick Allain - 24/11/2020
  */
 //@formatter:off
-public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert<SELF,
-                                                                                 ENTITY,
-                                                                                 NEW_SELF,
-                                                                                 PARENT_ASSERT,
-                                                                                 ROOT_ASSERT>,
+public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert<SELF, ENTITY, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT>,
                                              ENTITY extends DbEntity,
                                              NEW_SELF extends Navigable<SELF, ROOT_ASSERT>,
-                                             PARENT_ASSERT extends ParentAssert,
+                                             PARENT_ASSERT extends ParentalAssert,
                                              ROOT_ASSERT>
         extends AbstractAssert<SELF, List<ENTITY>>
-        implements Navigable<PARENT_ASSERT, ROOT_ASSERT>, ParentAssert {
+        implements Navigable<PARENT_ASSERT, ROOT_ASSERT>,
+                   ParentalAssert {
 //@formatter:on
 
     /** The record type */
@@ -81,14 +75,8 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
     /** The data loader. */
     protected final DataLoader<ENTITY> dataLoader;
 
-    protected final Iterables iterables = Iterables.instance();
-
-    // /** Comparison strategy. */
-    protected final ComparisonStrategy comparisonStrategy = StandardComparisonStrategy.instance();
-
-    /** True if comparison should be made ignoring ids. */
-    /** TODO: Check if it's possible to use a ComparisonStrategy instead. */
-    protected final boolean ignoreIds;
+    /** Iterable to factorize assertions on iterable. */
+    protected Iterables iterables = Iterables.instance();
 
     /** Factory for creating new assertions on restricted list of entities. */
     private final EntitiesAssertFactory<SELF, ENTITY, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT> factory;
@@ -113,22 +101,27 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
             final Class<?> selfType,
             final DataLoader<ENTITY> dataLoader,
             final List<ENTITY> entities,
-            final boolean ignoreIds,
             final EntitiesAssertFactory<SELF, ENTITY, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT> factory,
             final PARENT_ASSERT parentAssert,
             final ROOT_ASSERT rootAssert) {
         super(entities, selfType);
         this.recordType = Objects.requireNonNull(recordType);
         this.dataLoader = dataLoader;
-        this.ignoreIds = ignoreIds;
         this.factory = Objects.requireNonNull(factory);
         this.parentAssert = parentAssert;
         this.rootAssert = rootAssert;
+        if (parentAssert != null) {
+            this.info.useRepresentation(parentAssert.representation());
+            // TODO : Copy the parent comparison strategy ?
+        }
     }
 
     /** {@inheritDoc} */
     @Override
     public PARENT_ASSERT toParentAssert() {
+        if (this.parentAssert == null) {
+            return (PARENT_ASSERT) toRootAssert();
+        }
         return this.parentAssert;
     }
 
@@ -143,6 +136,56 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
     }
 
     /**
+     * Customize the display of an error message providing the full entity description.
+     *
+     * @return {@code this} assertion object.
+     */
+    public SELF withFullEntityRepresentation() {
+        return withRepresentation(EntityRepresentation.full());
+    }
+
+    /**
+     * Customize the display of an error message providing an abbreviate entity description.
+     *
+     * @return {@code this} assertion object.
+     */
+    public SELF withAbbreviateEntityRepresentation() {
+        return withRepresentation(EntityRepresentation.full());
+    }
+
+    /**
+     * Using a comparison without any entity ids. This provide a easy way to create new assertions on the current list
+     * of {@link ENTITY} without specifying the {@link ENTITY#getId()}
+     * <p/>
+     * Example:
+     * <pre><code class='java'> // for nodes
+     * Nodes relationships = new Nodes(driver, "Developer");
+     * assertThat(nodes)
+     *     .usingNoEntityIdComparison()
+     *     .contains(Drivers.node().label("Developer").build());</code></pre>
+     * <p/>
+     * TODO : as a alternative, this may be declare in typed entity assertions. ?
+     *
+     * @return {@code this} assertion object.
+     */
+    public SELF usingNoEntityIdComparison() {
+        final ComparisonStrategy comparison = EntityComparisonStrategy.composite(
+                NodeComparisonStrategy.builder().ignoreId(true).build(),
+                RelationshipComparisonStrategy.builder().ignoreId(true).ignoreStartId(true).ignoreEndId(true).build()
+        );
+        objects = new org.assertj.core.internal.Objects(comparison);
+        iterables = new Iterables(comparison);
+        return myself;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public SELF usingDefaultComparator() {
+        iterables = Iterables.instance();
+        return super.usingDefaultComparator();
+    }
+
+    /**
      * Get the actual entities for assertions.
      *
      * @return a list of entities.
@@ -150,30 +193,6 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
     @VisibleForTesting
     protected List<ENTITY> getActual() {
         return this.actual;
-    }
-
-    /**
-     * Provide a easy way to create new assertions on the current list of {@link ENTITY} without specifying the {@link
-     * ENTITY#getId()}
-     * <p/>
-     * With node entities:
-     * <pre><code class='java'>
-     * Nodes relationships = new Nodes(driver, "Developer");
-     * assertThat(nodes)
-     *     .ignoringIds()
-     *     .contains(Drivers.node().label("Developer").build());</code></pre>
-     * <p/>
-     * With relationship entities:
-     * <pre><code class='java'>
-     * Relationships relationships = new Relationships(driver, "KNOW");
-     * assertThat(relationships)
-     *     .ignoringIds()
-     *     .contains(Drivers.relation("KNOW").build());</code></pre>
-     *
-     * @return a new instance of {@link DriverNodesAssert}
-     */
-    public NEW_SELF ignoringIds() {
-        return factory.create(actual, dataLoader, true, myself);
     }
 
     /**
@@ -195,6 +214,7 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
      */
     protected SELF shouldAllVerify(final Predicate<ENTITY> predicate,
                                    final ErrorMessageCallback<ENTITY> callback) {
+        // TODO : OR => iterables.assertAllMatch(info, actual, predicate, new PredicateDescription("TOTO"));?
         isNotEmpty();
         final List<ENTITY> notSatisfies = actual.stream().filter(predicate.negate()).collect(Collectors.toList());
         if (!notSatisfies.isEmpty()) {
@@ -214,6 +234,7 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
      * @return {@code this} assertion object.
      */
     public SELF isEmpty() {
+        // OR : iterables.assertEmpty(info,actual);
         return isEmpty((entities) -> ShouldQueryResultBeEmpty.create(entities, dataLoader.query()));
     }
 
@@ -235,6 +256,7 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
      * @return {@code this} assertion object.
      */
     public SELF isNotEmpty() {
+        // TODO: OR => iterables.assertNotEmpty(info, actual); ?
         if (actual.isEmpty()) {
             throwAssertionError(ShouldQueryResultBeNotEmpty.create(recordType, dataLoader.query()));
         }
@@ -301,7 +323,7 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
      */
     public NEW_SELF filteredOn(final Predicate<ENTITY> predicate) {
         final List<ENTITY> entities = this.actual.stream().filter(predicate).collect(Collectors.toList());
-        return factory.create(entities, dataLoader, ignoreIds, myself);
+        return factory.create(entities, dataLoader, myself);
     }
 
     /**
@@ -451,9 +473,8 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
      * @throws AssertionError if the actual value is not equal to the given one.
      */
     public SELF havePropertyOfType(final String key, final ValueType expectedType) {
-        Objects.requireNonNull(key, "The property key shouldn't be null");
+        havePropertyKeys(Objects.requireNonNull(key, "The property key shouldn't be null"));
         final ValueType type = Objects.requireNonNull(expectedType, "The expected value type shouldn't be null");
-        havePropertyKeys(key);
         return shouldAllVerify(
                 Predicates.propertyValueType(key, type),
                 (notSatisfies) -> ShouldHavePropertyValueType.elements(actual, key, type).notSatisfies(notSatisfies)
@@ -482,9 +503,8 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
      * @throws AssertionError if the actual value is not equal to the given one.
      */
     public SELF havePropertyInstanceOf(final String key, final Class<?> expectedClass) {
-        Objects.requireNonNull(key, "The property key shouldn't be null");
+        havePropertyKeys(Objects.requireNonNull(key, "The property key shouldn't be null"));
         final Class<?> clazz = Objects.requireNonNull(expectedClass, "The expected class shouldn't be null");
-        havePropertyKeys(key);
         return shouldAllVerify(
                 Predicates.propertyValueInstanceOf(key, clazz),
                 (notSatisfies) -> ShouldHavePropertyInstanceOf.elements(actual, key, clazz).notSatisfies(notSatisfies)
@@ -503,12 +523,12 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
      * </code></pre>
      *
      * @param key          the property key all entities should have.
-     * @param expectedType the expected type for the property
+     * @param expectedType the expected type for the property.
      * @return {@code this} assertion object.
      * @throws AssertionError if the actual value is not equal to the given one.
      */
     public SELF haveListPropertyOfType(final String key, final ValueType expectedType) {
-        havePropertyKeys(key);
+        havePropertyKeys(Objects.requireNonNull(key, "The property key shouldn't be null"));
         havePropertyOfType(key, ValueType.LIST);
         final ValueType type = Objects.requireNonNull(expectedType, "The expected value type shouldn't be null");
         return shouldAllVerify(
@@ -517,18 +537,61 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
         );
     }
 
+    /**
+     * Verifies that all actual entities (nodes or a relationships) have a property named {@code key} of which validate
+     * the provided {@link Predicate}.
+     * <p/>
+     * To have a proper typed {@link Predicate}, you can use as an alternative the {@link
+     * #havePropertyValueMatching(String, Class, Predicate)} which will first check if the property value is of the
+     * expected class before executing the predicate.
+     * <p/>
+     * Example :
+     * <pre><code class='java'> // assertions on nodes
+     * Nodes nodes = new Nodes(driver, "Person");
+     * assertThat(nodes)
+     *   .havePropertyValueMatching("nicknames", s -> {
+     *       if (!(s instanceof String)) {
+     *           return false;
+     *       }
+     *       return ((String) s).length() > 3
+     *   })
+     * </code></pre>
+     *
+     * @param key       the property key all entities should have.
+     * @param predicate the expected predicate that the property value should match
+     * @return {@code this} assertion object.
+     * @throws AssertionError if the actual value is not equal to the given one.
+     */
     public SELF havePropertyValueMatching(final String key, final Predicate<Object> predicate) {
-        havePropertyKeys(key);
+        havePropertyKeys(Objects.requireNonNull(key, "The property key shouldn't be null"));
         return shouldAllVerify(
                 Predicates.propertyValueMatch(key, predicate),
                 (notSatisfies) -> ShouldPropertyMatch.elements(actual, key).notSatisfies(notSatisfies)
         );
     }
 
+    /**
+     * Verifies that all actual entities (nodes or a relationships) have a property named {@code key} of which validate
+     * the provided {@link Predicate}.
+     * <p/>
+     * Example :
+     * <pre><code class='java'> // assertions on nodes
+     * Nodes nodes = new Nodes(driver, "Person");
+     * assertThat(nodes)
+     *   .havePropertyValueMatching("nicknames", String.class, s -> s.length() > 3)
+     * </code></pre>
+     *
+     * @param key           the property key all entities should have.
+     * @param expectedClass the expected type that the property value should have
+     * @param predicate     the expected predicate that the property value should match
+     * @param <T>           the type of the expected property value
+     * @return {@code this} assertion object.
+     * @throws AssertionError if the actual value is not equal to the given one.
+     */
     public <T> SELF havePropertyValueMatching(final String key, final Class<T> expectedClass,
                                               final Predicate<T> predicate) {
-        havePropertyKeys(key);
-        havePropertyInstanceOf(key, expectedClass);
+        havePropertyKeys(Objects.requireNonNull(key, "The property key shouldn't be null"));
+        havePropertyInstanceOf(key, Objects.requireNonNull(expectedClass, "The expected class shouldn't be null"));
         return shouldAllVerify(
                 Predicates.propertyValueMatch(key, predicate),
                 (notSatisfies) -> ShouldPropertyMatch.elements(actual, key).notSatisfies(notSatisfies)
@@ -551,7 +614,7 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
      * @return {@code this} assertion object.
      */
     public SELF haveProperty(final String key, final Object expectedValue) {
-        havePropertyKeys(key);
+        havePropertyKeys(Objects.requireNonNull(key, "The property key shouldn't be null"));
         return shouldAllVerify(
                 Predicates.propertyValue(key, expectedValue),
                 (notSatisfies) -> ShouldHavePropertyValue
@@ -568,23 +631,22 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
      */
     //@formatter:off
     @FunctionalInterface
-    protected interface EntitiesAssertFactory<SELF extends Navigable<PARENT_ASSERT, ROOT_ASSERT>,
+    protected interface EntitiesAssertFactory<SELF extends Navigable<PARENT_ASSERT, ROOT_ASSERT> & ParentalAssert,
                                               ENTITY,
                                               NEW_SELF extends Navigable<SELF,ROOT_ASSERT>,
-                                              PARENT_ASSERT,
+                                              PARENT_ASSERT extends ParentalAssert,
                                               ROOT_ASSERT> {
     //@formatter:on
 
         /**
          * Create a new assertions on a restricted part of entities.
          *
-         * @param entities    the filtered entities
-         * @param loader      the data loader
-         * @param ignoringIds if true, the ids will be ignore when using compare.
-         * @param current     the current assertions
+         * @param entities the filtered entities
+         * @param loader   the data loader
+         * @param current  the current assertions
          * @return a new assertion of the current type
          */
-        NEW_SELF create(List<ENTITY> entities, DataLoader<ENTITY> loader, boolean ignoringIds, SELF current);
+        NEW_SELF create(List<ENTITY> entities, DataLoader<ENTITY> loader, SELF current);
 
     }
 

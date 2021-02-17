@@ -10,21 +10,24 @@
  *
  * Copyright 2013-2020 the original author or authors.
  */
-package org.assertj.neo4j.api.beta.testing;
+package org.assertj.neo4j.api.beta;
 
-import org.assertj.neo4j.api.beta.testing.builders.RelationshipsLoaderBuilder;
-import org.assertj.neo4j.api.beta.type.Relationships;
+import org.assertj.core.presentation.Representation;
 
 /**
- * @author Patrick Allain - 12/02/2021
+ * Interface for assertion which can be a parent assertion of another assertion.
+ * <p/>
+ * This interface indicate which behavior a children assertion will be able to retrieve from its parent.
+ *
+ * @author Patrick Allain - 15/02/2021
  */
-public interface Loaders {
+public interface ParentalAssert {
 
-    static RelationshipsLoaderBuilder relationships() {
-        return new RelationshipsLoaderBuilder();
-    }
+    /**
+     * Retrieve the {@link Representation} for render any object in error message.
+     *
+     * @return the currently use representation.
+     */
+    Representation representation();
 
-    static Relationships relationships(Relationships.DbRelationship... entities) {
-        return relationships().entities(entities).build();
-    }
 }

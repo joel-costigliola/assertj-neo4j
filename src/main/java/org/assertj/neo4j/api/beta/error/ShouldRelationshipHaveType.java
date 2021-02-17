@@ -30,12 +30,8 @@ public class ShouldRelationshipHaveType extends BasicEntityErrorMessageFactory<D
      */
     public ShouldRelationshipHaveType(final DbRelationship actual, final String expectedType) {
         super(
-                "%nExpecting relationship:%n"
-                + "  <%s>%n"
-                + "to have type:%n"
-                + "  <%s>%n"
-                + "but actual type is:%n"
-                + "  <%s>",
+                "%nExpecting relationship to have type:%n <%2$s>%n"
+                + "but actual type is:%n <%3$s>%n",
                 actual,
                 ArgDetail.excluded(expectedType),
                 ArgDetail.included("Actual type", actual.getType())

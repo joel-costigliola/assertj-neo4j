@@ -14,6 +14,7 @@ package org.assertj.neo4j.api.beta;
 
 import org.assertj.neo4j.api.beta.type.DataLoader;
 import org.assertj.neo4j.api.beta.type.Nodes;
+import org.assertj.neo4j.api.beta.util.EntityRepresentation;
 
 import java.util.List;
 
@@ -29,18 +30,17 @@ public final class DriverNodesAssert
      * @param nodes the nodes to assert
      */
     public DriverNodesAssert(final Nodes nodes) {
-        this(nodes.load(), nodes, false, null);
+        this(nodes.load(), nodes, null);
+        this.info.useRepresentation(EntityRepresentation.abbreviate());
     }
 
     private DriverNodesAssert(final List<Nodes.DbNode> entities,
                               final DataLoader<Nodes.DbNode> nodes,
-                              final boolean ignoreIds,
                               final DriverNodesAssert parent) {
         super(
                 DriverNodesAssert.class,
                 entities,
                 nodes,
-                ignoreIds,
                 DriverNodesAssert::new,
                 parent,
                 Navigable.rootAssert(parent)

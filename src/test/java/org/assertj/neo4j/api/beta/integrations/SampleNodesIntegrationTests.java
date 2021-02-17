@@ -20,12 +20,14 @@ import org.assertj.neo4j.api.beta.testing.Version;
 import org.assertj.neo4j.api.beta.type.Drivers;
 import org.assertj.neo4j.api.beta.type.Nodes;
 import org.assertj.neo4j.api.beta.type.ValueType;
+import org.assertj.neo4j.api.beta.util.EntityRepresentation;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.Objects;
 
 /**
@@ -52,7 +54,7 @@ class SampleNodesIntegrationTests {
     }
 
     @Nested
-    // @IntegrationTests.FailingTests
+    @IntegrationTests.FailingTests
     @DisplayName("Should failed")
     class ShouldFailedTests extends IntegrationTests.DatasetTests {
 
@@ -75,8 +77,7 @@ class SampleNodesIntegrationTests {
         @Test
         void havePropertyKeys() {
             final Nodes nodes = Nodes.of(driver, "Repo");
-            DriverAssertions.assertThat(nodes)
-                    .havePropertyKeys("prop_1", "prop_2", "prop_3", "prop_4");
+            DriverAssertions.assertThat(nodes).havePropertyKeys("prop_1", "prop_2", "prop_3", "prop_4");
         }
 
         @Test
@@ -92,8 +93,78 @@ class SampleNodesIntegrationTests {
         @Test
         void haveProperty() {
             final Nodes nodes = Nodes.of(driver, "Repo");
+            DriverAssertions.assertThat(nodes).haveProperty("name", "value");
+        }
+
+        @Test
+        void haveListPropertyOfType() {
+            final Nodes nodes = Nodes.of(driver, "Repo");
+            DriverAssertions.assertThat(nodes).haveListPropertyOfType("active_branches", ValueType.INTEGER);
+        }
+
+        @Test
+        void filteredOn() {
+            final Nodes nodes = Nodes.of(driver, "Repo");
             DriverAssertions.assertThat(nodes)
-                    .haveProperty("name", "value");
+                    .filteredOn(n -> Objects.equals(n.getPropertyValue("owner"), "pallets"))
+                    .hasSize(3);
+        }
+
+        @Test
+        void filteredOnPropertyExists() {
+            final Nodes nodes = Nodes.of(driver, "Repo");
+            DriverAssertions.assertThat(nodes)
+                    .hasSize(12)
+                    .filteredOnPropertyExists("onboarding_duration")
+                    .havePropertyOfType("onboarding_duration", ValueType.STRING);
+        }
+
+        @Test
+        void filteredOnPropertyValue() {
+            final Nodes nodes = Nodes.of(driver, "Repo");
+            DriverAssertions.assertThat(nodes)
+                    .filteredOnPropertyValue("owner", "pallets")
+                    .hasSize(3);
+        }
+
+        @Test
+        void haveNoIncomingRelationships() {
+            final Nodes nodes = Nodes.of(driver, "Repo");
+            DriverAssertions.assertThat(nodes)
+                    .filteredOnPropertyValue("name", "neo4j")
+                    .haveNoIncomingRelationships()
+                    .hasSize(2);
+        }
+
+        @Test
+        void incomingRelationships() {
+            final Nodes nodes = Nodes.of(driver, "Language");
+            DriverAssertions.assertThat(nodes)
+                    .filteredOnPropertyValue("name", "Java")
+                    .incomingRelationships("KNOWS", "WRITTEN")
+                    .hasSize(8)
+                    .toParentAssert()
+                    .incomingRelationships("WRITTEN")
+                    .hasSize(4);
+        }
+
+        @Test
+        void outgoingRelationships() {
+            final Nodes nodes = Nodes.of(driver, "Repo");
+            DriverAssertions.assertThat(nodes)
+                    .filteredOnPropertyValue("name", "neo4j")
+                    .outgoingRelationships("WRITTEN")
+                    .hasSize(3);
+        }
+
+        @Test
+        void withRepresentation() {
+            final Nodes nodes = Nodes.of(driver, "Repo");
+            DriverAssertions.assertThat(nodes)
+                    .withRepresentation(EntityRepresentation.full())
+                    .hasSize(12)
+                    .filteredOnPropertyExists("onboarding_duration")
+                    .havePropertyOfType("onboarding_duration", ValueType.STRING);
         }
     }
 
@@ -111,23 +182,26 @@ class SampleNodesIntegrationTests {
             //@formatter:off
             DriverAssertions.assertThat(nodes)
                     .hasSize(12)
+                    .withFullEntityRepresentation()
                     .haveLabels("Repo")
                     .havePropertyKeys("name")
                     .filteredOnPropertyExists("onboarding_duration")
                         .havePropertySize(8)
                         .toParentAssert()
                     .havePropertyOfType("name", ValueType.STRING)
-                    .ignoringIds()
-                        .filteredOnPropertyValue("name", "junit5")
-                            .havePropertyValueMatching("creation_date", LocalDateTime.class::isInstance)
+                    .usingNoEntityIdComparison()
+                    .filteredOnPropertyExists("name")
+                        .havePropertyValueMatching("creation_date", LocalDateTime.class::isInstance)
+                            .filteredOnPropertyValue("owner", "pallets")
+                            .havePropertyValueMatching("url", String.class, (s) -> s.startsWith("https://github.com/pallets/"))
+                            .toRootAssert()
+                    .filteredOnPropertyValue("name", "junit5")
+                        .hasSize(1)
+                        .outgoingRelationships()
+                            .usingNoEntityIdComparison()
+                            .contains(Drivers.relation("WRITTEN").property("percent", Collections.singletonList("97.5")).build())
                             .toParentAssert()
                         .toParentAssert()
-                    .incomingRelationships("TYPE")
-                        .ignoringIds()
-                            .contains(Drivers.relation("TYPE").build())
-                            .toParentAssert()
-                        .toParentAssert()
-                    .toRootAssert()
                     .hasSize(12)
                     .haveLabels("Repo")
 //            .havePropertyMatching()
@@ -139,7 +213,7 @@ class SampleNodesIntegrationTests {
         void ignoringIds() {
             final Nodes nodes = Nodes.of(driver, "Language");
             DriverAssertions.assertThat(nodes)
-                    .ignoringIds()
+                    .usingNoEntityIdComparison()
                     .contains(Drivers.node().label("Language").property("name", "Scala").build());
         }
 
@@ -166,18 +240,18 @@ class SampleNodesIntegrationTests {
         }
 
         @Test
-        void haveListPropertyOfType() {
-            final Nodes nodes = Nodes.of(driver, "Repo");
-            DriverAssertions.assertThat(nodes)
-                    .haveListPropertyOfType("active_branches", ValueType.STRING);
-        }
-
-        @Test
         void haveProperty() {
             final Nodes nodes = Nodes.of(driver, "Repo");
             DriverAssertions.assertThat(nodes)
                     .filteredOnPropertyValue("name", "ktor")
                     .haveProperty("owner", "ktorio");
+        }
+
+        @Test
+        void haveListPropertyOfType() {
+            final Nodes nodes = Nodes.of(driver, "Repo");
+            DriverAssertions.assertThat(nodes)
+                    .haveListPropertyOfType("active_branches", ValueType.STRING);
         }
 
         @Test

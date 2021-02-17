@@ -51,17 +51,16 @@ class AbstractEntitiesAssertTests {
     //@formatter:on
 
         protected ConcreteEntitiesAssert(List<Nodes.DbNode> entities, DataLoader<Nodes.DbNode> loader) {
-            this(entities, loader, false, null);
+            this(entities, loader, null);
         }
 
         protected ConcreteEntitiesAssert(List<Nodes.DbNode> entities, DataLoader<Nodes.DbNode> loader,
-                                         boolean ignoringIds, ConcreteEntitiesAssert parent) {
+                                         ConcreteEntitiesAssert parent) {
             super(
                     RecordType.NODE,
                     ConcreteEntitiesAssert.class,
                     loader,
                     entities,
-                    ignoringIds,
                     ConcreteEntitiesAssert::new,
                     parent,
                     Navigable.rootAssert(parent)

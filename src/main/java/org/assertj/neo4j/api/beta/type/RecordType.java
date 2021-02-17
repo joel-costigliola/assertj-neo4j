@@ -54,6 +54,9 @@ public enum RecordType {
         return null;
     }
 
+    public String singularForm() {
+        return name().toLowerCase();
+    }
     public String pluralForm() {
         return pluralForm;
     }

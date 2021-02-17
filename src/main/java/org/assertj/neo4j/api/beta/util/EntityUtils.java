@@ -28,7 +28,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
- * @author patouche - 13/02/2021
+ * @author Patrick Allain - 13/02/2021
  */
 public class EntityUtils {
 
@@ -36,17 +36,29 @@ public class EntityUtils {
     public static final Comparator<? extends DbEntity> ENTITY_COMPARATOR = Comparator
             .comparing(DbEntity::getId, Comparator.nullsFirst(Comparator.naturalOrder()));
 
+    public static <E extends DbEntity> String recordTypeSingular(final E actual) {
+        return actual.getRecordType().name().toLowerCase();
+    }
+
+    public static <E extends DbEntity> String recordTypePlural(final E actual) {
+        return recordTypeSingular(actual) + "s";
+    }
+
+    public static <E extends DbEntity> String recordTypePlural(final Iterable<E> iterable) {
+        return recordType(iterable).name().toLowerCase() + "s";
+    }
+
     /**
      * Return the {@link RecordType} of entities.
      *
-     * @param entities the entitites list
+     * @param iterable the entities iterable
      * @param <E>      the type of entity
      * @return the record type.
      */
-    public static <E extends DbEntity> RecordType type(final Iterable<E> entities) {
-        return Streams.stream(entities)
-                .findFirst()
+    public static <E extends DbEntity> RecordType recordType(final Iterable<E> iterable) {
+        return Streams.stream(iterable)
                 .map(DbEntity::getRecordType)
+                .findFirst()
                 .orElse(null);
     }
 
@@ -73,6 +85,13 @@ public class EntityUtils {
             throw new IllegalArgumentException("Property key \"" + key + "\" is not a list composite type");
         }
         return (List<DbValue>) content;
+    }
+
+    public static <E extends DbEntity> ValueType properlyLisType(final E entity, final String key) {
+        return propertyList(entity, key).stream()
+                .map(DbValue::getType)
+                .findFirst()
+                .orElse(null);
     }
 
     public static <E extends DbEntity> List<Object> properlyListValues(final E entity, final String key) {

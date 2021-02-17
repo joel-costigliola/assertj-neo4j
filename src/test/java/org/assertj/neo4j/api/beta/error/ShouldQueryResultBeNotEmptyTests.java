@@ -22,7 +22,7 @@ import org.neo4j.driver.Query;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * @author patouche - 14/02/2021
+ * @author Patrick Allain - 14/02/2021
  */
 class ShouldQueryResultBeNotEmptyTests {
 

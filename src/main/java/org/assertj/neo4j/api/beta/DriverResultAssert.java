@@ -13,6 +13,7 @@
 package org.assertj.neo4j.api.beta;
 
 import org.assertj.core.api.AbstractIterableAssert;
+import org.assertj.core.presentation.Representation;
 import org.assertj.neo4j.api.beta.util.Wip;
 import org.neo4j.driver.Record;
 import org.neo4j.driver.Result;
@@ -27,11 +28,17 @@ import java.util.Map;
 public class DriverResultAssert extends AbstractIterableAssert<DriverResultAssert,
                                                                List<Map<String, Object>>,
                                                                Map<String, Object>,
-                                                               RecordMapAssert> {
+                                                               RecordMapAssert>
+        implements ParentalAssert {
 //@formatter:on
 
     public DriverResultAssert(final Result result) {
         super(result.list(Record::asMap), DriverResultAssert.class);
+    }
+
+    @Override
+    public Representation representation() {
+        return this.info.representation();
     }
 
     public DriverResultAssert hasColumnNumber(int expectedColumn) {
@@ -66,4 +73,5 @@ public class DriverResultAssert extends AbstractIterableAssert<DriverResultAsser
     protected DriverResultAssert newAbstractIterableAssert(Iterable<? extends Map<String, Object>> iterable) {
         return null;
     }
+
 }

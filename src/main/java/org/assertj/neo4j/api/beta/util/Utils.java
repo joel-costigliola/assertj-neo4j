@@ -19,6 +19,9 @@ import org.assertj.core.util.Streams;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
+import java.util.function.BiPredicate;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -77,8 +80,20 @@ public final class Utils {
         return Streams.stream(items).sorted().collect(Collectors.toList());
     }
 
-    public static String title(final String str) {
-        return str.substring(0, 1).toUpperCase() + str.substring(1);
+    public static <I, O> BiPredicate<I, I> lazyDeepEquals(final boolean skipped, final Function<I, O> fn) {
+        if (skipped) {
+            return (l, r) -> true;
+        }
+        return lazyDeepEquals(fn);
+    }
+
+    public static <I, O> BiPredicate<I, I> lazyDeepEquals(final Function<I, O> fn) {
+        return (l, r) -> Objects.deepEquals(fn.apply(l), fn.apply(r));
+    }
+
+    @SafeVarargs
+    protected static <E> BiPredicate<E, E> combine(final BiPredicate<E, E>... predicates) {
+        return Arrays.stream(predicates).reduce((a, o) -> true, BiPredicate::and);
     }
 
     private Utils() {

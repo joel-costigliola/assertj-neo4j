@@ -25,7 +25,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * @author patouche - 13/02/2021
+ * @author Patrick Allain - 13/02/2021
  */
 class ShouldNodeHaveNoRelatedRelationshipsTests {
 
@@ -47,13 +47,12 @@ class ShouldNodeHaveNoRelatedRelationshipsTests {
 
             // THEN
             assertThat(error.create()).isEqualToNormalizingNewlines(
-                    "\n"
-                    + "Expecting node:\n"
-                    + "  <NODE{id=42}>\n"
+                    "\nExpecting node:\n"
+                    + " <NODE{id=42L, labels=[], properties={}}>\n"
                     + "to have no incoming relationships but found:\n"
-                    + "  <[RELATIONSHIP{id=1, type='null', start=null, end=42, properties={}},\n"
-                    + "    RELATIONSHIP{id=2, type='null', start=null, end=42, properties={}},\n"
-                    + "    RELATIONSHIP{id=3, type='null', start=null, end=42, properties={}}]>"
+                    + "  <[RELATIONSHIP{id=1L, type='null', start=null, end=42, properties={}},\n"
+                    + "    RELATIONSHIP{id=2L, type='null', start=null, end=42, properties={}},\n"
+                    + "    RELATIONSHIP{id=3L, type='null', start=null, end=42, properties={}}]>\n"
             );
         }
 
@@ -77,13 +76,12 @@ class ShouldNodeHaveNoRelatedRelationshipsTests {
 
             // THEN
             assertThat(error.create()).isEqualToNormalizingNewlines(
-                    "\n"
-                    + "Expecting node:\n"
-                    + "  <NODE{id=42}>\n"
+                    "\nExpecting node:\n"
+                    + " <NODE{id=42L, labels=[], properties={}}>\n"
                     + "to have no outgoing relationships but found:\n"
-                    + "  <[RELATIONSHIP{id=1, type='null', start=42, end=null, properties={}},\n"
-                    + "    RELATIONSHIP{id=2, type='null', start=42, end=null, properties={}},\n"
-                    + "    RELATIONSHIP{id=3, type='null', start=42, end=null, properties={}}]>"
+                    + "  <[RELATIONSHIP{id=1L, type='null', start=42, end=null, properties={}},\n"
+                    + "    RELATIONSHIP{id=2L, type='null', start=42, end=null, properties={}},\n"
+                    + "    RELATIONSHIP{id=3L, type='null', start=42, end=null, properties={}}]>\n"
             );
         }
 
@@ -114,29 +112,30 @@ class ShouldNodeHaveNoRelatedRelationshipsTests {
 
             // THEN
             assertThat(error.create()).isEqualToNormalizingNewlines(
-                    "\n"
-                    + "Expecting nodes:\n"
-                    + "  <[\"NODE{id=22}\",\n"
-                    + "    \"NODE{id=29}\",\n"
-                    + "    \"NODE{id=35}\",\n"
-                    + "    \"NODE{id=42}\",\n"
-                    + "    \"NODE{id=56}\",\n"
-                    + "    \"NODE{id=69}\"]>\n"
+                    "\nExpecting nodes:\n"
+                    + "  <[NODE{id=22L, labels=[], properties={}},\n"
+                    + "    NODE{id=29L, labels=[], properties={}},\n"
+                    + "    NODE{id=35L, labels=[], properties={}},\n"
+                    + "    NODE{id=42L, labels=[], properties={}},\n"
+                    + "    NODE{id=56L, labels=[], properties={}},\n"
+                    + "    NODE{id=69L, labels=[], properties={}}]>\n"
                     + "to have no incoming relationships but found:\n"
-                    + "  <[\"RELATIONSHIP{id=1}\", \"RELATIONSHIP{id=2}\", \"RELATIONSHIP{id=3}\"]>\n"
+                    + "  <[RELATIONSHIP{id=1L, type='null', start=null, end=22, properties={}},\n"
+                    + "    RELATIONSHIP{id=2L, type='null', start=null, end=42, properties={}},\n"
+                    + "    RELATIONSHIP{id=3L, type='null', start=null, end=69, properties={}}]>\n"
                     + "which are incoming relationships to nodes:\n"
                     + "\n"
-                    + "  1) NODE{id=22}\n"
-                    + "    - Incoming relationships:: [RELATIONSHIP{id=1, type='null', start=null, end=22, "
+                    + "  1) NODE{id=22L, labels=[], properties={}}\n"
+                    + "    - Incoming relationships:: [RELATIONSHIP{id=1L, type='null', start=null, end=22, "
                     + "properties={}}]\n"
                     + "\n"
-                    + "  2) NODE{id=42}\n"
-                    + "    - Incoming relationships:: [RELATIONSHIP{id=2, type='null', start=null, end=42, "
+                    + "  2) NODE{id=42L, labels=[], properties={}}\n"
+                    + "    - Incoming relationships:: [RELATIONSHIP{id=2L, type='null', start=null, end=42, "
                     + "properties={}}]\n"
                     + "\n"
-                    + "  3) NODE{id=69}\n"
-                    + "    - Incoming relationships:: [RELATIONSHIP{id=3, type='null', start=null, end=69, "
-                    + "properties={}}]"
+                    + "  3) NODE{id=69L, labels=[], properties={}}\n"
+                    + "    - Incoming relationships:: [RELATIONSHIP{id=3L, type='null', start=null, end=69, "
+                    + "properties={}}]\n"
             );
         }
     }
@@ -166,29 +165,30 @@ class ShouldNodeHaveNoRelatedRelationshipsTests {
 
             // THEN
             assertThat(error.create()).isEqualToNormalizingNewlines(
-                    "\n"
-                    + "Expecting nodes:\n"
-                    + "  <[\"NODE{id=22}\",\n"
-                    + "    \"NODE{id=29}\",\n"
-                    + "    \"NODE{id=35}\",\n"
-                    + "    \"NODE{id=42}\",\n"
-                    + "    \"NODE{id=56}\",\n"
-                    + "    \"NODE{id=69}\"]>\n"
+                    "\nExpecting nodes:\n"
+                    + "  <[NODE{id=22L, labels=[], properties={}},\n"
+                    + "    NODE{id=29L, labels=[], properties={}},\n"
+                    + "    NODE{id=35L, labels=[], properties={}},\n"
+                    + "    NODE{id=42L, labels=[], properties={}},\n"
+                    + "    NODE{id=56L, labels=[], properties={}},\n"
+                    + "    NODE{id=69L, labels=[], properties={}}]>\n"
                     + "to have no outgoing relationships but found:\n"
-                    + "  <[\"RELATIONSHIP{id=1}\", \"RELATIONSHIP{id=2}\", \"RELATIONSHIP{id=3}\"]>\n"
+                    + "  <[RELATIONSHIP{id=1L, type='null', start=22, end=null, properties={}},\n"
+                    + "    RELATIONSHIP{id=2L, type='null', start=42, end=null, properties={}},\n"
+                    + "    RELATIONSHIP{id=3L, type='null', start=69, end=null, properties={}}]>\n"
                     + "which are outgoing relationships to nodes:\n"
                     + "\n"
-                    + "  1) NODE{id=22}\n"
-                    + "    - Outgoing relationships:: [RELATIONSHIP{id=1, type='null', start=22, end=null, "
+                    + "  1) NODE{id=22L, labels=[], properties={}}\n"
+                    + "    - Outgoing relationships:: [RELATIONSHIP{id=1L, type='null', start=22, end=null, "
                     + "properties={}}]\n"
                     + "\n"
-                    + "  2) NODE{id=42}\n"
-                    + "    - Outgoing relationships:: [RELATIONSHIP{id=2, type='null', start=42, end=null, "
+                    + "  2) NODE{id=42L, labels=[], properties={}}\n"
+                    + "    - Outgoing relationships:: [RELATIONSHIP{id=2L, type='null', start=42, end=null, "
                     + "properties={}}]\n"
                     + "\n"
-                    + "  3) NODE{id=69}\n"
-                    + "    - Outgoing relationships:: [RELATIONSHIP{id=3, type='null', start=69, end=null, "
-                    + "properties={}}]"
+                    + "  3) NODE{id=69L, labels=[], properties={}}\n"
+                    + "    - Outgoing relationships:: [RELATIONSHIP{id=3L, type='null', start=69, end=null, "
+                    + "properties={}}]\n"
             );
         }
     }

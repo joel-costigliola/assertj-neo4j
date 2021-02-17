@@ -42,12 +42,11 @@ class ShouldPropertyMatchTests {
 
             // THEN
             assertThat(error.create()).isEqualToNormalizingNewlines(
-                    "\n"
-                    + "Expecting NODE{id=2} to have property:\n"
-                    + "  <\"key\">\n"
+                    "\nExpecting node to have property:\n"
+                    + " <\"key\">\n"
                     + "matching the provided condition for its value:\n"
-                    + "  <2020-02-03T04:05:06.000000007 (java.time.LocalDateTime)>\n"
-                    + "but this value of type LOCAL_DATE_TIME did not"
+                    + " <2020-02-03T04:05:06.000000007 (java.time.LocalDateTime)>\n"
+                    + "but this value of type LOCAL_DATE_TIME did not.\n"
             );
         }
     }
@@ -70,20 +69,22 @@ class ShouldPropertyMatchTests {
 
             // THEN
             assertThat(error.create()).isEqualToNormalizingNewlines(
-                    "\n"
-                    + "Expecting nodes:\n"
-                    + "  <[\"NODE{id=1}\", \"NODE{id=2}\", \"NODE{id=3}\"]>\n"
+                    "\nExpecting nodes:\n"
+                    + "  <[NODE{id=1L, labels=[], properties={key=STRING{\"value-1\"}}},\n"
+                    + "    NODE{id=2L, labels=[], properties={key=LOCAL_DATE_TIME{2020-02-03T04:05:06.000000007}}},\n"
+                    + "    NODE{id=3L, labels=[], properties={key=INTEGER{1}}}]>\n"
                     + "to have a for the property \"key\" matching the condition but nodes:\n"
-                    + "  <[\"NODE{id=1}\", \"NODE{id=2}\"]>\n"
+                    + "  <[NODE{id=1L, labels=[], properties={key=STRING{\"value-1\"}}},\n"
+                    + "    NODE{id=2L, labels=[], properties={key=LOCAL_DATE_TIME{2020-02-03T04:05:06.000000007}}}]>\n"
                     + "did not:\n"
                     + "\n"
-                    + "  1) NODE{id=1}\n"
-                    + "    - Actual property value: value-1\n"
+                    + "  1) NODE{id=1L, labels=[], properties={key=STRING{\"value-1\"}}}\n"
+                    + "    - Actual property value: \"value-1\"\n"
                     + "    - Actual property type: STRING\n"
                     + "\n"
-                    + "  2) NODE{id=2}\n"
-                    + "    - Actual property value: 2020-02-03T04:05:06.000000007\n"
-                    + "    - Actual property type: LOCAL_DATE_TIME"
+                    + "  2) NODE{id=2L, labels=[], properties={key=LOCAL_DATE_TIME{2020-02-03T04:05:06.000000007}}}\n"
+                    + "    - Actual property value: 2020-02-03T04:05:06.000000007 (java.time.LocalDateTime)\n"
+                    + "    - Actual property type: LOCAL_DATE_TIME\n"
             );
         }
 

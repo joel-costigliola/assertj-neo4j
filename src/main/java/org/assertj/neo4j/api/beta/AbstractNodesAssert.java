@@ -31,7 +31,7 @@ import java.util.List;
 //@formatter:off
 public abstract class AbstractNodesAssert<SELF extends AbstractNodesAssert<SELF, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT>,
                                           NEW_SELF extends Navigable<SELF, ROOT_ASSERT>,
-                                          PARENT_ASSERT extends ParentAssert,
+                                          PARENT_ASSERT extends ParentalAssert,
                                           ROOT_ASSERT>
         extends AbstractEntitiesAssert<SELF, Nodes.DbNode, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT> {
 //@formatter:on
@@ -40,11 +40,10 @@ public abstract class AbstractNodesAssert<SELF extends AbstractNodesAssert<SELF,
             final Class<SELF> selfType,
             final List<Nodes.DbNode> entities,
             final DataLoader<Nodes.DbNode> dataLoader,
-            final boolean ignoreIds,
             final EntitiesAssertFactory<SELF, Nodes.DbNode, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT> factory,
             final PARENT_ASSERT parentAssert,
             final ROOT_ASSERT rootAssert) {
-        super(RecordType.NODE, selfType, dataLoader, entities, ignoreIds, factory, parentAssert, rootAssert);
+        super(RecordType.NODE, selfType, dataLoader, entities, factory, parentAssert, rootAssert);
     }
 
     /**
@@ -103,7 +102,7 @@ public abstract class AbstractNodesAssert<SELF extends AbstractNodesAssert<SELF,
     public ChildrenDriverRelationshipsAssert<SELF, ROOT_ASSERT> incomingRelationships(final String... types) {
         final List<Long> nodeIds = entityIds();
         final Relationships relationships = this.dataLoader.chain(LoaderFactory.relationships(types));
-        return new ChildrenDriverRelationshipsAssert<>(relationships.load(), relationships, false, myself,
+        return new ChildrenDriverRelationshipsAssert<>(relationships.load(), relationships, myself,
                 toRootAssert())
                 .filteredOn(r -> nodeIds.contains(r.getEnd()))
                 .withParent(myself);
@@ -118,7 +117,7 @@ public abstract class AbstractNodesAssert<SELF extends AbstractNodesAssert<SELF,
     public ChildrenDriverRelationshipsAssert<SELF, ROOT_ASSERT> outgoingRelationships(final String... types) {
         final List<Long> nodeIds = entityIds();
         final Relationships relationships = this.dataLoader.chain(LoaderFactory.relationships(types));
-        return new ChildrenDriverRelationshipsAssert<>(relationships.load(), relationships, false, myself,
+        return new ChildrenDriverRelationshipsAssert<>(relationships.load(), relationships, myself,
                 toRootAssert())
                 .filteredOn(r -> nodeIds.contains(r.getStart()))
                 .withParent(myself);

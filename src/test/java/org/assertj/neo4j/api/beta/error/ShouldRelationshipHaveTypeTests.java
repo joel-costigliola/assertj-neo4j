@@ -44,13 +44,10 @@ class ShouldRelationshipHaveTypeTests {
 
             // THEN
             assertThat(error.create()).isEqualToNormalizingNewlines(
-                    "\n"
-                    + "Expecting relationship:\n"
-                    + "  <RELATIONSHIP{id=2}>\n"
-                    + "to have type:\n"
-                    + "  <\"TYPE\">\n"
+                    "\nExpecting relationship to have type:\n"
+                    + " <\"TYPE\">\n"
                     + "but actual type is:\n"
-                    + "  <\"BAD_TYPE\">"
+                    + " <\"BAD_TYPE\">\n"
             );
 
         }
@@ -81,24 +78,24 @@ class ShouldRelationshipHaveTypeTests {
             assertThat(error.create()).isEqualToNormalizingNewlines(
                     "\n"
                     + "Expecting relationships:\n"
-                    + "  <[\"RELATIONSHIP{id=1}\",\n"
-                    + "    \"RELATIONSHIP{id=2}\",\n"
-                    + "    \"RELATIONSHIP{id=3}\",\n"
-                    + "    \"RELATIONSHIP{id=4}\",\n"
-                    + "    \"RELATIONSHIP{id=5}\",\n"
-                    + "    \"RELATIONSHIP{id=6}\"]>\n"
+                    + "  <[RELATIONSHIP{id=1L, type='TYPE', start=null, end=null, properties={}},\n"
+                    + "    RELATIONSHIP{id=2L, type='OTHER_TYPE_1', start=null, end=null, properties={}},\n"
+                    + "    RELATIONSHIP{id=3L, type='TYPE', start=null, end=null, properties={}},\n"
+                    + "    RELATIONSHIP{id=4L, type='OTHER_TYPE_2', start=null, end=null, properties={}},\n"
+                    + "    RELATIONSHIP{id=5L, type='OTHER_TYPE_3', start=null, end=null, properties={}},\n"
+                    + "    RELATIONSHIP{id=6L, type='TYPE', start=null, end=null, properties={}}]>\n"
                     + "to have type:\n"
                     + "  <\"TYPE\">\n"
                     + "but found other types for some relationships:\n"
                     + "\n"
-                    + "  1) RELATIONSHIP{id=2}\n"
-                    + "    - Actual type: OTHER_TYPE_1\n"
+                    + "  1) RELATIONSHIP{id=2L, type='OTHER_TYPE_1', start=null, end=null, properties={}}\n"
+                    + "    - Actual type: \"OTHER_TYPE_1\"\n"
                     + "\n"
-                    + "  2) RELATIONSHIP{id=4}\n"
-                    + "    - Actual type: OTHER_TYPE_2\n"
+                    + "  2) RELATIONSHIP{id=4L, type='OTHER_TYPE_2', start=null, end=null, properties={}}\n"
+                    + "    - Actual type: \"OTHER_TYPE_2\"\n"
                     + "\n"
-                    + "  3) RELATIONSHIP{id=5}\n"
-                    + "    - Actual type: OTHER_TYPE_3"
+                    + "  3) RELATIONSHIP{id=5L, type='OTHER_TYPE_3', start=null, end=null, properties={}}\n"
+                    + "    - Actual type: \"OTHER_TYPE_3\"\n"
             );
 
         }

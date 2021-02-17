@@ -30,12 +30,10 @@ public class ShouldHavePropertyListOfType<ENTITY extends DbEntity> extends Basic
 
     private ShouldHavePropertyListOfType(final ENTITY actual, final String key, final ValueType type) {
         super(
-                "%nExpected %s to have a composite property list named %s containing only type:%n"
-                + "  <%s>%n"
-                + "but this composite property list contains type:%n"
-                + "  <%s>%n"
-                + "with actual value:%n"
-                + "  <%s>",
+                "%nExpected " + EntityUtils.recordTypeSingular(actual)
+                + " to have a composite property list named %2$s containing only type:%n <%3$s>%n"
+                + "but this composite property list contains type:%n <%4$s>%n"
+                + "with actual value:%n <%5$s>%n",
                 actual,
                 ArgDetail.excluded(key),
                 ArgDetail.excluded(type),
@@ -60,10 +58,8 @@ public class ShouldHavePropertyListOfType<ENTITY extends DbEntity> extends Basic
         return new BasicGroupingEntityErrorFactory<>(
                 actual,
                 (e) -> create(e, key, type),
-                "%nExpecting %3$s:%n"
-                + "  <%1$s>%n"
-                + "to have a composite property list named %4$s containing only type:%n"
-                + "  <%5$s>%n"
+                "%nExpecting %3$s:%n <%1$s>%n"
+                + "to have a composite property list named %4$s containing only type:%n <%5$s>%n"
                 + "but some %3$s have a composite list containing others type:",
                 key,
                 type

@@ -13,6 +13,7 @@
 package org.assertj.neo4j.api.beta.error;
 
 import org.assertj.neo4j.api.beta.type.DbEntity;
+import org.assertj.neo4j.api.beta.util.EntityUtils;
 
 import java.util.List;
 
@@ -23,11 +24,9 @@ public class ShouldPropertyMatch<ENTITY extends DbEntity> extends BasicEntityErr
 
     protected ShouldPropertyMatch(final ENTITY actual, final String key) {
         super(
-                "%nExpecting %s to have property:%n"
-                + "  <%s>%n"
-                + "matching the provided condition for its value:%n"
-                + "  <%s>%n"
-                + "but this value of type %s did not",
+                "%nExpecting " + EntityUtils.recordTypeSingular(actual) + " to have property:%n <%2$s>%n"
+                + "matching the provided condition for its value:%n <%3$s>%n"
+                + "but this value of type %4$s did not.%n",
                 actual,
                 ArgDetail.excluded(key),
                 ArgDetail.included("Actual property value", actual.getPropertyValue(key)),

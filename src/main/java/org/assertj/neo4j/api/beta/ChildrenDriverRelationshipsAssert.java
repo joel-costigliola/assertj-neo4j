@@ -22,7 +22,7 @@ import java.util.Objects;
  * @author Patrick Allain - 02/01/2021
  */
 //@formatter:off
-public class ChildrenDriverRelationshipsAssert<PARENT_ASSERT extends ParentAssert, ROOT_ASSERT>
+public class ChildrenDriverRelationshipsAssert<PARENT_ASSERT extends ParentalAssert, ROOT_ASSERT>
         extends AbstractRelationshipsAssert<ChildrenDriverRelationshipsAssert<PARENT_ASSERT, ROOT_ASSERT>,
                                             ChildrenDriverRelationshipsAssert<ChildrenDriverRelationshipsAssert<PARENT_ASSERT, ROOT_ASSERT>, ROOT_ASSERT>,
                                             PARENT_ASSERT,
@@ -32,14 +32,12 @@ public class ChildrenDriverRelationshipsAssert<PARENT_ASSERT extends ParentAsser
 
     protected ChildrenDriverRelationshipsAssert(final List<Relationships.DbRelationship> entities,
                                                 final DataLoader<Relationships.DbRelationship> loader,
-                                                final boolean ignoringIds,
                                                 final PARENT_ASSERT parentAssert,
                                                 final ROOT_ASSERT rootAssert) {
         super(
                 ChildrenDriverRelationshipsAssert.class,
                 entities,
                 loader,
-                ignoringIds,
                 factory(),
                 parentAssert,
                 Objects.requireNonNull(rootAssert)
@@ -47,26 +45,20 @@ public class ChildrenDriverRelationshipsAssert<PARENT_ASSERT extends ParentAsser
     }
 
     //@formatter:off
-    private static <PARENT_ASSERT extends ParentAssert, ROOT_ASSERT> EntitiesAssertFactory<
+    private static <PARENT_ASSERT extends ParentalAssert, ROOT_ASSERT> EntitiesAssertFactory<
             ChildrenDriverRelationshipsAssert<PARENT_ASSERT, ROOT_ASSERT>,
             Relationships.DbRelationship,
             ChildrenDriverRelationshipsAssert<ChildrenDriverRelationshipsAssert<PARENT_ASSERT, ROOT_ASSERT>, ROOT_ASSERT>,
             PARENT_ASSERT,
             ROOT_ASSERT> factory() {
     //@formatter:on
-        return (entities, loader, ignoringIds, self) -> new ChildrenDriverRelationshipsAssert<>(
-                entities,
-                loader,
-                ignoringIds,
-                self,
-                self.toRootAssert()
-        );
+        return (entities, loader, s) -> new ChildrenDriverRelationshipsAssert<>(entities, loader, s, s.toRootAssert());
     }
 
     /** {@inheritDoc} */
     @Override
-    public <NEW_PARENT extends ParentAssert> ChildrenDriverRelationshipsAssert<NEW_PARENT, ROOT_ASSERT> withParent(final NEW_PARENT parentAssert) {
-        return new ChildrenDriverRelationshipsAssert<>(actual, dataLoader, ignoreIds, parentAssert, toRootAssert());
+    public <NEW_PARENT extends ParentalAssert> ChildrenDriverRelationshipsAssert<NEW_PARENT, ROOT_ASSERT> withParent(final NEW_PARENT parentAssert) {
+        return new ChildrenDriverRelationshipsAssert<>(actual, dataLoader, parentAssert, toRootAssert());
     }
 
     /** {@inheritDoc} */

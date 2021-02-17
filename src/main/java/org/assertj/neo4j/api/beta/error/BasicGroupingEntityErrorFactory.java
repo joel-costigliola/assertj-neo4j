@@ -12,14 +12,14 @@
  */
 package org.assertj.neo4j.api.beta.error;
 
+import org.assertj.core.description.Description;
 import org.assertj.core.error.BasicErrorMessageFactory;
 import org.assertj.core.error.ErrorMessageFactory;
-import org.assertj.core.util.Strings;
+import org.assertj.core.presentation.Representation;
 import org.assertj.neo4j.api.beta.type.DbEntity;
 import org.assertj.neo4j.api.beta.type.RecordType;
 import org.assertj.neo4j.api.beta.util.Checks;
 import org.assertj.neo4j.api.beta.util.EntityUtils;
-import org.assertj.neo4j.api.beta.util.Presentations;
 
 import java.util.Arrays;
 import java.util.List;
@@ -28,14 +28,15 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static org.assertj.core.configuration.ConfigurationProvider.CONFIGURATION_PROVIDER;
+
 /**
  * Grouping entity error factory in design to create a new {@link ErrorMessageFactory} based on a list of failing
  * entities provided in an {@link EntityErrorMessageFactory}.
  *
  * @author Patrick Allain - 05/02/2021
  */
-public class BasicGroupingEntityErrorFactory<ENTITY extends DbEntity>
-        implements GroupingEntityErrorFactory<ENTITY> {
+public class BasicGroupingEntityErrorFactory<ENTITY extends DbEntity> implements GroupingEntityErrorFactory<ENTITY> {
 
     private final List<ENTITY> actual;
     private final Function<ENTITY, EntityErrorMessageFactory<ENTITY>> mapper;
@@ -72,57 +73,84 @@ public class BasicGroupingEntityErrorFactory<ENTITY extends DbEntity>
 
     @Override
     public ErrorMessageFactory notSatisfies(final List<ENTITY> notSatisfies) {
-        final RecordType type = Checks.first(this.actual, "The entity list cannot be empty").getRecordType();
-        final List<ENTITY> sortedNotSatisfies = EntityUtils.sorted(notSatisfies);
         return new GroupingEntityErrorMessageFactory<>(
-                this.format + "%n%n" + Strings.escapePercent(this.formatItems(sortedNotSatisfies)),
+                this.mapper,
+                this.format,
                 EntityUtils.sorted(this.actual),
-                sortedNotSatisfies,
-                type,
+                EntityUtils.sorted(notSatisfies),
+                EntityUtils.recordType(this.actual),
                 arguments
         );
-    }
-
-    private String formatItems(final List<ENTITY> notSatisfies) {
-        return IntStream.range(0, notSatisfies.size())
-                .mapToObj(idx -> this.formatItem(idx, notSatisfies.get(idx)))
-                .collect(Collectors.joining(String.format("%n%n")));
-    }
-
-    private String formatItem(final int index, final ENTITY entity) {
-        final List<EntityErrorMessageFactory.ArgDetail> details = this.mapper.apply(entity).details();
-        return Stream
-                .concat(
-                        Stream.of(String.format("%d) %s", index + 1, Presentations.outputId(entity))),
-                        details.stream().map(i -> String.format("  - %s: %s", i.title(), i.value()))
-                )
-                .map(i -> "  " + i)
-                .collect(Collectors.joining(String.format("%n")));
     }
 
     private static class GroupingEntityErrorMessageFactory<E extends DbEntity>
             extends BasicErrorMessageFactory {
 
+        private final List<EntityErrorMessageFactory<E>> entityErrorMessageFactories;
+
         public GroupingEntityErrorMessageFactory(
+                final Function<E, EntityErrorMessageFactory<E>> mapper,
                 final String format,
                 final List<E> actual,
                 final List<E> notSatisfies,
                 final RecordType type,
                 Object... arguments) {
             super(format, toArguments(actual, notSatisfies, type, arguments));
+            this.entityErrorMessageFactories = notSatisfies.stream().map(mapper).collect(Collectors.toList());
         }
 
         private static <E extends DbEntity> Object[] toArguments(
                 final List<E> actual, final List<E> notSatisfies, final RecordType type, final Object[] arguments) {
             return Stream
                     .concat(
-                            Stream.of(
-                                    actual,
-                                    notSatisfies,
-                                    unquotedString(type.pluralForm())
-                            ),
+                            Stream.of(actual, notSatisfies, unquotedString(type.pluralForm())),
                             Arrays.stream(arguments)
                     ).toArray();
+        }
+
+        private String withItemDetails(Representation representation, String message) {
+            return message + String.format("%n%n") + this.formatItems(representation) + String.format("%n");
+        }
+
+        @Override
+        public String create() {
+            return withItemDetails(CONFIGURATION_PROVIDER.representation(), super.create());
+        }
+
+        @Override
+        public String create(Description d) {
+            return withItemDetails(CONFIGURATION_PROVIDER.representation(), super.create(d));
+        }
+
+        @Override
+        public String create(Description d, Representation representation) {
+            return withItemDetails(representation, super.create(d, representation));
+        }
+
+        private String formatItems(final Representation representation) {
+            return IntStream.range(0, this.entityErrorMessageFactories.size())
+                    .mapToObj(idx -> this.formatItem(idx, representation, this.entityErrorMessageFactories.get(idx)))
+                    .collect(Collectors.joining(String.format("%n%n")));
+        }
+
+        private String formatItem(
+                final int index,
+                final Representation representation,
+                final EntityErrorMessageFactory<E> entityErrorMessageFactory) {
+            final List<EntityErrorMessageFactory.ArgDetail> details = entityErrorMessageFactory.details();
+            return Stream
+                    .concat(
+                            Stream.of(String.format(
+                                    "%d) %s",
+                                    index + 1, representation.toStringOf(entityErrorMessageFactory.entity())
+                            )),
+                            details.stream().map(i -> String.format(
+                                    "  - %s: %s",
+                                    i.title(), representation.toStringOf(i.value())
+                            ))
+                    )
+                    .map(i -> "  " + i)
+                    .collect(Collectors.joining(String.format("%n")));
         }
     }
 

@@ -12,6 +12,7 @@
  */
 package org.assertj.neo4j.api.beta.type;
 
+import org.assertj.neo4j.api.beta.util.Formats;
 import org.neo4j.driver.Driver;
 
 import java.util.Arrays;
@@ -52,7 +53,7 @@ public interface Nodes extends DataLoader<Nodes.DbNode> {
 
         @Override
         public String toString() {
-            return entityRepresentation("labels=" + labels);
+            return entityRepresentation("labels=" + Formats.strings(labels));
         }
 
         @Override

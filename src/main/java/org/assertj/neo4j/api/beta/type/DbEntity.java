@@ -12,6 +12,8 @@
  */
 package org.assertj.neo4j.api.beta.type;
 
+import org.assertj.neo4j.api.beta.util.Formats;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,14 +73,15 @@ public abstract class DbEntity {
         return Optional.ofNullable(properties.get(key)).map(DbValue::getType).orElse(null);
     }
 
+    public String abbreviate() {
+        return recordType + "{id=" + Formats.number(id) + '}';
+    }
+
     /**
      * Design for unified {@link #toString()} representation.
      */
     protected String entityRepresentation(final String prefix) {
-        if (id == null) {
-            return recordType + "{" + prefix + ", properties=" + properties + '}';
-        }
-        return recordType + "{id=" + id + ", " + prefix + ", properties=" + properties + '}';
+        return recordType + "{id=" + Formats.number(id) + ", " + prefix + ", properties=" + properties + '}';
     }
 
     @Override

@@ -13,6 +13,7 @@
 package org.assertj.neo4j.api.beta.error;
 
 import org.assertj.neo4j.api.beta.type.DbEntity;
+import org.assertj.neo4j.api.beta.util.EntityUtils;
 
 import java.util.List;
 
@@ -27,10 +28,9 @@ public class ShouldHavePropertyValue<ENTITY extends DbEntity> extends BasicEntit
 
     private ShouldHavePropertyValue(final ENTITY actual, final String key, final Object value) {
         super(
-                "%nExpecting %s to have a property %s with value:%n"
-                + "  <%s>%n"
-                + "but current value of this property is:%n"
-                + "  <%s>",
+                "%nExpecting " + EntityUtils.recordTypeSingular(actual)
+                + " to have a property %2$s with value:%n <%3$s>%n"
+                + "but current value of this property is:%n <%4$s>%n",
                 actual,
                 ArgDetail.excluded(key),
                 ArgDetail.excluded(value),

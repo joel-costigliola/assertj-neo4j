@@ -15,25 +15,21 @@ package org.assertj.neo4j.api.beta.error;
 import org.assertj.core.error.BasicErrorMessageFactory;
 import org.assertj.neo4j.api.beta.type.DbEntity;
 import org.assertj.neo4j.api.beta.util.EntityUtils;
-import org.assertj.neo4j.api.beta.util.Presentations;
 import org.neo4j.driver.Query;
 
 import java.util.List;
 
 /**
- * @author patouche - 13/02/2021
+ * @author Patrick Allain - 13/02/2021
  */
 public class ShouldQueryResultBeEmpty<ENTITY extends DbEntity> extends BasicErrorMessageFactory {
 
     private ShouldQueryResultBeEmpty(final List<ENTITY> actual, final Query query) {
         super(
-                "%nExpecting query:%n"
-                + "  <%s>%n"
-                + "to return an empty list of %s got:%n"
-                + "  <%s>",
+                "%nExpecting query:%n  <%s>%n"
+                + "to return an empty list of " + EntityUtils.recordTypePlural(actual) + " got:%n  <%s>",
                 query,
-                unquotedString(EntityUtils.type(actual).pluralForm()),
-                Presentations.outputIds(actual)
+                EntityUtils.sorted(actual)
         );
     }
 

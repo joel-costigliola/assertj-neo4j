@@ -33,7 +33,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 /**
- * @author patouche - 13/02/2021
+ * @author Patrick Allain - 13/02/2021
  */
 class EntityUtilsTests {
 

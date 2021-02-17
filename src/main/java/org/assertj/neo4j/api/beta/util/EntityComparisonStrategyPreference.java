@@ -10,21 +10,21 @@
  *
  * Copyright 2013-2020 the original author or authors.
  */
-package org.assertj.neo4j.api.beta.testing;
+package org.assertj.neo4j.api.beta.util;
 
-import org.assertj.neo4j.api.beta.testing.builders.RelationshipsLoaderBuilder;
-import org.assertj.neo4j.api.beta.type.Relationships;
+import org.assertj.core.internal.ComparisonStrategy;
 
 /**
- * @author Patrick Allain - 12/02/2021
+ * @author patouche - 17/02/2021
  */
-public interface Loaders {
+public interface EntityComparisonStrategyPreference extends ComparisonStrategy {
 
-    static RelationshipsLoaderBuilder relationships() {
-        return new RelationshipsLoaderBuilder();
-    }
+    /**
+     * Return true if the comparator is the preferred one.
+     *
+     * @param obj the object to compare
+     * @return true if the current instance is the preferred one for comparison strategy.
+     */
+    boolean preferred(final Object obj);
 
-    static Relationships relationships(Relationships.DbRelationship... entities) {
-        return relationships().entities(entities).build();
-    }
 }

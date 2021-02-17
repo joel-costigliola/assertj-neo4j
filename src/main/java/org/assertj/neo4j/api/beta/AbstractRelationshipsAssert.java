@@ -26,7 +26,7 @@ import java.util.List;
 //@formatter:off
 public abstract class AbstractRelationshipsAssert<SELF extends AbstractRelationshipsAssert<SELF, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT>,
                                                   NEW_SELF extends Navigable<SELF, ROOT_ASSERT>,
-                                                  PARENT_ASSERT extends ParentAssert,
+                                                  PARENT_ASSERT extends ParentalAssert,
                                                   ROOT_ASSERT>
         extends AbstractEntitiesAssert<SELF, Relationships.DbRelationship, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT>
         implements Navigable<PARENT_ASSERT, ROOT_ASSERT> {
@@ -36,12 +36,10 @@ public abstract class AbstractRelationshipsAssert<SELF extends AbstractRelations
             final Class<?> selfType,
             final List<Relationships.DbRelationship> dbRelationships,
             final DataLoader<Relationships.DbRelationship> dbData,
-            final boolean ignoringIds,
             final EntitiesAssertFactory<SELF, Relationships.DbRelationship, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT> factory,
             final PARENT_ASSERT parentAssert,
             final ROOT_ASSERT rootAssert) {
-        super(RecordType.RELATIONSHIP, selfType, dbData, dbRelationships, ignoringIds, factory, parentAssert,
-                rootAssert);
+        super(RecordType.RELATIONSHIP, selfType, dbData, dbRelationships, factory, parentAssert, rootAssert);
     }
 
     /**

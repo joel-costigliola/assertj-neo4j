@@ -35,7 +35,7 @@ public class DriverRelationshipsAssert
      * @param relationships the relationships to assert
      */
     public DriverRelationshipsAssert(final Relationships relationships) {
-        this(relationships.load(), relationships, false, null);
+        this(relationships.load(), relationships, null);
     }
 
     /**
@@ -45,18 +45,16 @@ public class DriverRelationshipsAssert
      */
     @VisibleForTesting
     protected DriverRelationshipsAssert(final List<Relationships.DbRelationship> entities) {
-        this(entities, null, false, null);
+        this(entities, null, null);
     }
 
     private DriverRelationshipsAssert(final List<Relationships.DbRelationship> entities,
                                       final DataLoader<Relationships.DbRelationship> loader,
-                                      final boolean ignorindIds,
                                       final DriverRelationshipsAssert parent) {
         super(
                 DriverRelationshipsAssert.class,
                 entities,
                 loader,
-                ignorindIds,
                 DriverRelationshipsAssert::new,
                 parent,
                 Navigable.rootAssert(parent)

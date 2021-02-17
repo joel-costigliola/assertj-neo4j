@@ -18,7 +18,7 @@ import org.assertj.neo4j.api.beta.type.RecordType;
 import org.neo4j.driver.Query;
 
 /**
- * @author patouche - 14/02/2021
+ * @author Patrick Allain - 14/02/2021
  */
 public class ShouldQueryResultBeNotEmpty extends BasicErrorMessageFactory {
 

@@ -13,6 +13,7 @@
 package org.assertj.neo4j.api.beta.error;
 
 import org.assertj.neo4j.api.beta.type.DbEntity;
+import org.assertj.neo4j.api.beta.util.EntityUtils;
 
 import java.util.List;
 
@@ -27,17 +28,15 @@ public class ShouldHavePropertyInstanceOf<ENTITY extends DbEntity> extends Basic
 
     private ShouldHavePropertyInstanceOf(final ENTITY actual, final String key, final Class<?> expectedClass) {
         super(
-                "%nExpecting %s to have property value %s instance of:%n"
-                + "  <%s>%n"
-                + "but the actual property value for this key is a :%n"
-                + "  <%s>%n"
+                "%nExpecting " + EntityUtils.recordTypeSingular(actual)
+                + " to have property value %2$s instance of:%n <%3$s>%n"
+                + "but the actual property value for this key has class :%n <%4$s>%n"
                 + "which is not an instance of the expected class.%n%n"
-                + "Actual value for this property is:%n"
-                + "  <%s>",
+                + "Actual value for this property is:%n <%5$s>%n",
                 actual,
                 ArgDetail.excluded(key),
                 ArgDetail.excluded(expectedClass),
-                ArgDetail.included("Actual value class", actual.getPropertyValue(key).getClass().getName()),
+                ArgDetail.included("Actual value class", actual.getPropertyValue(key).getClass()),
                 ArgDetail.included("Actual value", actual.getPropertyValue(key))
         );
     }

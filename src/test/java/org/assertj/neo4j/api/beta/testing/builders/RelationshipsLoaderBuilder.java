@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * @author patouche - 12/02/2021
+ * @author Patrick Allain - 12/02/2021
  */
 public class RelationshipsLoaderBuilder {
     private DataLoader<?> factoryResult;

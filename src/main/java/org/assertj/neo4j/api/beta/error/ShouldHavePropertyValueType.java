@@ -14,6 +14,7 @@ package org.assertj.neo4j.api.beta.error;
 
 import org.assertj.neo4j.api.beta.type.DbEntity;
 import org.assertj.neo4j.api.beta.type.ValueType;
+import org.assertj.neo4j.api.beta.util.EntityUtils;
 
 import java.util.List;
 
@@ -28,12 +29,10 @@ public class ShouldHavePropertyValueType<ENTITY extends DbEntity> extends BasicE
 
     private ShouldHavePropertyValueType(final ENTITY actual, final String key, final ValueType expectedType) {
         super(
-                "%nExpecting %s to have property value type for key %s:%n"
-                + "  <%s>%n"
-                + "but actual value type for this property key is:%n"
-                + "  <%s>%n%n"
-                + "Actual property value:%n"
-                + "  <%s>",
+                "%nExpecting " + EntityUtils.recordTypeSingular(actual)
+                + " to have property value type for key %2$s:%n <%3$s>%n"
+                + "but actual value type for this property key is:%n <%4$s>%n%n"
+                + "Actual property value:%n <%5$s>%n",
                 actual,
                 ArgDetail.excluded(key),
                 ArgDetail.excluded(expectedType),

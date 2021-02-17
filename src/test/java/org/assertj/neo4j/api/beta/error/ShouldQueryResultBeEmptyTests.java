@@ -25,7 +25,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * @author patouche - 13/02/2021
+ * @author Patrick Allain - 13/02/2021
  */
 class ShouldQueryResultBeEmptyTests {
 
@@ -51,7 +51,10 @@ class ShouldQueryResultBeEmptyTests {
                     + "Expecting query:\n"
                     + "  <Query{text='MATCH (n) RETURN n', parameters={}}>\n"
                     + "to return an empty list of nodes got:\n"
-                    + "  <[\"NODE{id=22}\", \"NODE{id=29}\", \"NODE{id=35}\", \"NODE{id=56}\"]>"
+                    + "  <[NODE{id=22L, labels=[], properties={}},\n"
+                    + "    NODE{id=29L, labels=[], properties={}},\n"
+                    + "    NODE{id=35L, labels=[], properties={}},\n"
+                    + "    NODE{id=56L, labels=[], properties={}}]>"
             );
         }
     }

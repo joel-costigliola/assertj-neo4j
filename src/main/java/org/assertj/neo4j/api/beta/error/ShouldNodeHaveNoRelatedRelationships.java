@@ -15,14 +15,13 @@ package org.assertj.neo4j.api.beta.error;
 import org.assertj.neo4j.api.beta.type.Nodes.DbNode;
 import org.assertj.neo4j.api.beta.type.Relationships.DbRelationship;
 import org.assertj.neo4j.api.beta.util.EntityUtils;
-import org.assertj.neo4j.api.beta.util.Presentations;
-import org.assertj.neo4j.api.beta.util.Utils;
+import org.assertj.neo4j.api.beta.util.Formats;
 
 import java.util.List;
 import java.util.function.Function;
 
 /**
- * @author patouche - 13/02/2021
+ * @author Patrick Allain - 13/02/2021
  */
 public class ShouldNodeHaveNoRelatedRelationships extends BasicEntityErrorMessageFactory<DbNode> {
 
@@ -31,12 +30,10 @@ public class ShouldNodeHaveNoRelatedRelationships extends BasicEntityErrorMessag
             final DbNode actual,
             final List<DbRelationship> relationships) {
         super(
-                "%nExpecting node:%n"
-                + "  <%s>%n"
-                + "to have no " + direction + " relationships but found:%n"
-                + "  <%s>",
+                "%nExpecting node:%n <%s>%n"
+                + "to have no " + direction + " relationships but found:%n  <%s>%n",
                 actual,
-                ArgDetail.included(Utils.title(direction) + " relationships:", EntityUtils.sorted(relationships)));
+                ArgDetail.included(Formats.title(direction) + " relationships:", EntityUtils.sorted(relationships)));
     }
 
     public static ShouldNodeHaveNoRelatedRelationships createIncoming(final DbNode actual,
@@ -62,7 +59,7 @@ public class ShouldNodeHaveNoRelatedRelationships extends BasicEntityErrorMessag
                 + "to have no " + direction + " relationships but found:%n"
                 + "  <%4$s>%n"
                 + "which are " + direction + " relationships to nodes:",
-                Presentations.outputIds(relationships)
+                EntityUtils.sorted(relationships)
         );
     }
 

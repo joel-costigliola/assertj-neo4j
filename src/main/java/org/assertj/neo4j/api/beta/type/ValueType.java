@@ -48,53 +48,64 @@ import static java.util.stream.Stream.concat;
  */
 public enum ValueType {
 
-    INTEGER(Long.class, Function.identity(),
+    INTEGER(Long.class, String::valueOf, Function.identity(),
             new Converter<>(Integer.class, Integer::longValue),
             new Converter<>(Short.class, Short::longValue),
             new Converter<>(Byte.class, Byte::longValue)
     ),
 
-    FLOAT(Double.class, Function.identity(), new Converter<>(Float.class, Float::doubleValue)),
+    FLOAT(Double.class, String::valueOf, Function.identity(),
+            new Converter<>(Float.class, Float::doubleValue)
+    ),
 
-    STRING(String.class, Function.identity(), new Converter<>(Character.class, Object::toString)),
+    STRING(String.class, (v) -> String.format("\"%s\"", v), Function.identity(),
+            new Converter<>(Character.class, Object::toString)
+    ),
 
-    BOOLEAN(Boolean.class, Function.identity()),
+    BOOLEAN(Boolean.class, String::valueOf, Function.identity()),
 
-    DATE(LocalDate.class, Function.identity()),
+    DATE(LocalDate.class, String::valueOf, Function.identity()),
 
-    DATE_TIME(ZonedDateTime.class, Function.identity(), new Converter<>(OffsetDateTime.class,
-            OffsetDateTime::toZonedDateTime)),
+    DATE_TIME(ZonedDateTime.class, String::valueOf, Function.identity(),
+            new Converter<>(OffsetDateTime.class, OffsetDateTime::toZonedDateTime)
+    ),
 
-    LOCAL_DATE_TIME(LocalDateTime.class, Function.identity()),
+    LOCAL_DATE_TIME(LocalDateTime.class, String::valueOf, Function.identity()),
 
-    TIME(OffsetTime.class, Function.identity()),
+    TIME(OffsetTime.class, String::valueOf, Function.identity()),
 
-    LOCAL_TIME(LocalTime.class, Function.identity()),
+    LOCAL_TIME(LocalTime.class, String::valueOf, Function.identity()),
 
-    DURATION(IsoDuration.class, Function.identity(),
+    DURATION(IsoDuration.class, String::valueOf, Function.identity(),
             new Converter<>(Duration.class, i -> Values.value(i).asIsoDuration()),
             new Converter<>(Period.class, i -> Values.value(i).asIsoDuration())
     ),
 
-    POINT(Point.class, Function.identity()),
+    POINT(Point.class, String::valueOf, Function.identity()),
 
-    LIST(List.class, listFactory());
+    LIST(List.class, ValueType::listFormatter, ValueType::listFactory);
 
     private final Class<?> targetClass;
+    private final Function<Object, String> formatter;
     private final Function<Object, Object> objectFactory;
     private final List<Converter<?, ?>> converters;
 
     /**
      * Enum constructor.
      *
-     * @param targetClass   the target class
-     * @param objectFactory the object factory to create
+     * @param targetClass   the target class.
+     * @param formatter     the formatter for a string representation of a value object.
+     * @param objectFactory the object factory to apply for the {@link DbValue} content.
      * @param converters    the converter that will convert from the provided input type into the target type.
      * @param <T>           the target class type
      */
     @SafeVarargs
-    <T> ValueType(final Class<T> targetClass, final Function<T, ?> objectFactory, final Converter<?, T>... converters) {
+    <T> ValueType(final Class<T> targetClass,
+                  final Function<T, String> formatter,
+                  final Function<T, ?> objectFactory,
+                  final Converter<?, T>... converters) {
         this.targetClass = targetClass;
+        this.formatter = (Function<Object, String>) formatter;
         this.objectFactory = (Function<Object, Object>) objectFactory;
         this.converters = converters(targetClass, converters);
     }
@@ -107,8 +118,26 @@ public enum ValueType {
         ).collect(Collectors.toList());
     }
 
-    private static Function<List, List<DbValue>> listFactory() {
-        return l -> (List<DbValue>) l.stream().map(ValueType::convert).collect(Collectors.toList());
+    private static <T> String listFormatter(final List<T> values) {
+        if (values.isEmpty()) {
+            return "EMPTY";
+        }
+        if (values.stream().allMatch(DbValue.class::isInstance)) {
+            final List<DbValue> dbValues = values.stream().map(DbValue.class::cast).collect(Collectors.toList());
+            final ValueType valueType = dbValues.stream().map(DbValue::getType).findFirst().orElse(null);
+            if (valueType != null && dbValues.stream().map(DbValue::getType).allMatch(i -> i == valueType)) {
+                final List<String> stringValues = dbValues.stream()
+                        .map(DbValue::getContent)
+                        .map(valueType.formatter)
+                        .collect(Collectors.toList());
+                return String.format("%sS%s", valueType, stringValues);
+            }
+        }
+        return "UNDEFINED" + values;
+    }
+
+    private static <T> List<DbValue> listFactory(final List<T> list) {
+        return list.stream().map(ValueType::convert).collect(Collectors.toList());
     }
 
     /**
@@ -148,6 +177,10 @@ public enum ValueType {
             result.put(entry.getKey(), convert(entry.getValue()));
         }
         return result;
+    }
+
+    public String format(final Object value) {
+        return String.format("%s{%s}", name(), this.formatter.apply(value));
     }
 
     /**

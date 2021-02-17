@@ -13,6 +13,7 @@
 package org.assertj.neo4j.api.beta.error;
 
 import org.assertj.neo4j.api.beta.type.DbEntity;
+import org.assertj.neo4j.api.beta.util.EntityUtils;
 import org.assertj.neo4j.api.beta.util.Utils;
 
 import java.util.List;
@@ -28,12 +29,9 @@ public class ShouldHavePropertyKeys<ENTITY extends DbEntity> extends BasicEntity
 
     private ShouldHavePropertyKeys(final ENTITY actual, final Iterable<String> keys) {
         super(
-                "%nExpecting %s with property keys:%n"
-                + "  <%s>%n"
-                + "to have property keys:%n"
-                + "  <%s>%n"
-                + "but the following property keys cannot be found:%n"
-                + "  <%s>",
+                "%nExpecting " + EntityUtils.recordTypeSingular(actual) + " with property keys:%n <%2$s>%n"
+                + "to have property keys:%n <%3$s>%n"
+                + "but the following property keys cannot be found:%n <%4$s>%n",
                 actual,
                 ArgDetail.included("Actual property keys", actual.getPropertyKeys()),
                 ArgDetail.excluded(Utils.sorted(keys)),

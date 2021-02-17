@@ -12,12 +12,10 @@
  */
 package org.assertj.neo4j.api.beta;
 
-import org.assertj.neo4j.api.beta.testing.Randomize;
 import org.assertj.neo4j.api.beta.type.DataLoader;
 import org.assertj.neo4j.api.beta.type.DbEntity;
 import org.assertj.neo4j.api.beta.type.Drivers;
 import org.assertj.neo4j.api.beta.type.LoaderFactory;
-import org.assertj.neo4j.api.beta.type.Nodes;
 import org.assertj.neo4j.api.beta.type.Relationships;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
@@ -85,8 +83,8 @@ class DriverRelationshipsAssertTests {
     }
 
     @Nested
-    @DisplayName("ignoringIds")
-    class IgnoringIdsTests {
+    @DisplayName("usingNoEntityIdComparison")
+    class UsingNoEntityIdComparisonTests {
 
         @Test
         void should_return_a_list_of_nodes_without_ids() {
@@ -98,7 +96,7 @@ class DriverRelationshipsAssertTests {
             final DriverRelationshipsAssert relationshipsAssert = new DriverRelationshipsAssert(relationships);
 
             // WHEN
-            final DriverRelationshipsAssert result = relationshipsAssert.ignoringIds();
+            final DriverRelationshipsAssert result = relationshipsAssert.usingNoEntityIdComparison();
 
             // THEN
             assertThat(result.getActual())

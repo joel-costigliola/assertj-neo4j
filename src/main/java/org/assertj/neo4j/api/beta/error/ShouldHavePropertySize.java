@@ -13,6 +13,7 @@
 package org.assertj.neo4j.api.beta.error;
 
 import org.assertj.neo4j.api.beta.type.DbEntity;
+import org.assertj.neo4j.api.beta.util.EntityUtils;
 
 import java.util.List;
 
@@ -27,12 +28,9 @@ public class ShouldHavePropertySize<ENTITY extends DbEntity> extends BasicEntity
 
     private ShouldHavePropertySize(final ENTITY actual, final int size) {
         super(
-                "%nExpecting %s to have property size:%n"
-                + "  <%s>%n"
-                + "but actual property size is:%n"
-                + "  <%s>%n"
-                + "containing the following property keys:%n"
-                + "  <%s>",
+                "%nExpecting " + EntityUtils.recordTypeSingular(actual) + " to have property size:%n <%2$s>%n"
+                + "but actual property size is:%n <%3$s>%n"
+                + "containing the following property keys:%n <%4$s>%n",
                 actual,
                 ArgDetail.excluded(size),
                 ArgDetail.included("Actual property size", actual.getPropertyKeys().size()),

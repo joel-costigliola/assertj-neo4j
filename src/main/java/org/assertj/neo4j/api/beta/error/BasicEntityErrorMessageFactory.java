@@ -14,7 +14,6 @@ package org.assertj.neo4j.api.beta.error;
 
 import org.assertj.core.error.BasicErrorMessageFactory;
 import org.assertj.neo4j.api.beta.type.DbEntity;
-import org.assertj.neo4j.api.beta.util.Presentations;
 
 import java.util.Arrays;
 import java.util.List;
@@ -59,7 +58,7 @@ class BasicEntityErrorMessageFactory<ENTITY extends DbEntity>
     protected static <E extends DbEntity> Object[] toArguments(final E entity, final ArgDetail... details) {
         return Stream
                 .concat(
-                        Stream.of(unquotedString(Presentations.outputId(entity))),
+                        Stream.of(entity),
                         Arrays.stream(details).map(ArgDetail::value)
                 )
                 .toArray();

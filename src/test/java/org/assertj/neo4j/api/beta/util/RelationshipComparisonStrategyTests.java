@@ -15,21 +15,21 @@ package org.assertj.neo4j.api.beta.util;
 import org.assertj.neo4j.api.beta.testing.Builders;
 import org.assertj.neo4j.api.beta.testing.Samples;
 import org.assertj.neo4j.api.beta.type.Drivers;
-import org.assertj.neo4j.api.beta.type.Nodes.DbNode;
+import org.assertj.neo4j.api.beta.type.Relationships.DbRelationship;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.neo4j.api.beta.util.NodeComparisonStrategy.builder;
+import static org.assertj.neo4j.api.beta.util.RelationshipComparisonStrategy.builder;
 
 /**
- * @author Patrick Allain - 15/02/2021
+ * @author patouche - 17/02/2021
  */
-class NodeComparisonStrategyTests {
+class RelationshipComparisonStrategyTests {
 
-    private static final DbNode SAMPLE_NODE = Drivers.node()
+    public static final DbRelationship SAMPLE_RELATIONSHIP = Drivers.relation()
             .id(22)
-            .labels("LBL_1", "LBL_2", "LBL_3")
+            .type("TYPE")
             .property("prop-1", "val-1")
             .property("prop-2", 2)
             .property("prop-3", 3.14)
@@ -42,11 +42,11 @@ class NodeComparisonStrategyTests {
         @Test
         void should_return_true() {
             // GIVEN
-            final DbNode other = Builders.rebuild(SAMPLE_NODE).build();
-            final NodeComparisonStrategy strategy = builder().build();
+            final DbRelationship other = Builders.rebuild(SAMPLE_RELATIONSHIP).build();
+            final RelationshipComparisonStrategy strategy = builder().build();
 
             // WHEN
-            final boolean result = strategy.areEqual(SAMPLE_NODE, other);
+            final boolean result = strategy.areEqual(SAMPLE_RELATIONSHIP, other);
 
             // THEN
             assertThat(result).isTrue();
@@ -55,11 +55,11 @@ class NodeComparisonStrategyTests {
         @Test
         void should_return_true_when_ignore_ids() {
             // GIVEN
-            final DbNode other = Builders.rebuild(SAMPLE_NODE).id(42).build();
-            final NodeComparisonStrategy strategy = builder().ignoreId(true).build();
+            final DbRelationship other = Builders.rebuild(SAMPLE_RELATIONSHIP).id(42).build();
+            final RelationshipComparisonStrategy strategy = builder().ignoreId(true).build();
 
             // WHEN
-            final boolean result = strategy.areEqual(SAMPLE_NODE, other);
+            final boolean result = strategy.areEqual(SAMPLE_RELATIONSHIP, other);
 
             // THEN
             assertThat(result).isTrue();
@@ -68,11 +68,11 @@ class NodeComparisonStrategyTests {
         @Test
         void should_return_false_when_ignore_ids() {
             // GIVEN
-            final DbNode other = Builders.rebuild(SAMPLE_NODE).id(42).label("LBL_4").build();
-            final NodeComparisonStrategy strategy = builder().ignoreId(true).build();
+            final DbRelationship other = Builders.rebuild(SAMPLE_RELATIONSHIP).id(42).type("OTHER_TYPE").build();
+            final RelationshipComparisonStrategy strategy = builder().ignoreId(true).build();
 
             // WHEN
-            final boolean result = strategy.areEqual(SAMPLE_NODE, other);
+            final boolean result = strategy.areEqual(SAMPLE_RELATIONSHIP, other);
 
             // THEN
             assertThat(result).isFalse();
@@ -81,14 +81,15 @@ class NodeComparisonStrategyTests {
         @Test
         void should_return_false_when_ignore_properties() {
             // GIVEN
-            final DbNode other = Builders.rebuild(SAMPLE_NODE)
+            final DbRelationship other = Builders.rebuild(SAMPLE_RELATIONSHIP)
                     .property("prop-3", 21.14)
                     .property("prop-4", Samples.LOCAL_DATE.plusDays(1))
                     .build();
-            final NodeComparisonStrategy strategy = builder().ignoreProperties("prop-3").build();
+            final RelationshipComparisonStrategy strategy =
+                    builder().ignoreProperties("prop-3").build();
 
             // WHEN
-            final boolean result = strategy.areEqual(SAMPLE_NODE, other);
+            final boolean result = strategy.areEqual(SAMPLE_RELATIONSHIP, other);
 
             // THEN
             assertThat(result).isFalse();
@@ -97,45 +98,44 @@ class NodeComparisonStrategyTests {
         @Test
         void should_return_true_when_ignore_properties() {
             // GIVEN
-            final DbNode other = Builders.rebuild(SAMPLE_NODE)
+            final DbRelationship other = Builders.rebuild(SAMPLE_RELATIONSHIP)
                     .property("prop-3", 21.14)
                     .property("prop-4", Samples.LOCAL_DATE.plusDays(1))
                     .build();
-            final NodeComparisonStrategy strategy = builder().ignoreProperties("prop-3", "prop-4").build();
+            final RelationshipComparisonStrategy strategy = builder().ignoreProperties("prop-3", "prop-4").build();
 
             // WHEN
-            final boolean result = strategy.areEqual(SAMPLE_NODE, other);
+            final boolean result = strategy.areEqual(SAMPLE_RELATIONSHIP, other);
 
             // THEN
             assertThat(result).isTrue();
         }
 
         @Test
-        void should_return_false_when_ignore_labels() {
+        void should_return_false_when_ignore_type() {
             // GIVEN
-            final DbNode other = Builders.rebuild(SAMPLE_NODE).labels("IGN_LBL", "NO_IGN_LBL").build();
-            final NodeComparisonStrategy strategy = builder().ignoreLabels("IGN_LBL").build();
+            final DbRelationship other = Builders.rebuild(SAMPLE_RELATIONSHIP).id(42).type("OTHER_TYPE").build();
+            final RelationshipComparisonStrategy strategy = builder().ignoreType(true).build();
 
             // WHEN
-            final boolean result = strategy.areEqual(SAMPLE_NODE, other);
+            final boolean result = strategy.areEqual(SAMPLE_RELATIONSHIP, other);
 
             // THEN
             assertThat(result).isFalse();
         }
 
         @Test
-        void should_return_true_when_ignore_labels() {
+        void should_return_true_when_ignore_type() {
             // GIVEN
-            final DbNode other = Builders.rebuild(SAMPLE_NODE).labels("IGN_LBL").build();
-            final NodeComparisonStrategy strategy = builder().ignoreLabels("IGN_LBL").build();
+            final DbRelationship other = Builders.rebuild(SAMPLE_RELATIONSHIP).type("OTHER_TYPE").build();
+            final RelationshipComparisonStrategy strategy = builder().ignoreType(true).build();
 
             // WHEN
-            final boolean result = strategy.areEqual(SAMPLE_NODE, other);
+            final boolean result = strategy.areEqual(SAMPLE_RELATIONSHIP, other);
 
             // THEN
             assertThat(result).isTrue();
         }
 
     }
-
 }

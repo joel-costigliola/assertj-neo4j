@@ -24,8 +24,8 @@ public class DbValue {
     private final ValueType type;
     private final Object content;
 
-    private DbValue(ValueType type, Object content) {
-        this.type = type;
+    DbValue(final ValueType type, final Object content) {
+        this.type = Objects.requireNonNull(type);
         this.content = content;
     }
 
@@ -56,6 +56,6 @@ public class DbValue {
 
     @Override
     public String toString() {
-        return "PropertyValue{type=" + type + ", content=" + content + '}';
+        return type.format(content);
     }
 }

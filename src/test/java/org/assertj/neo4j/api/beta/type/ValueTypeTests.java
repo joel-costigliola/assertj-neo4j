@@ -12,11 +12,13 @@
  */
 package org.assertj.neo4j.api.beta.type;
 
+import org.assertj.neo4j.api.beta.testing.Samples;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.aggregator.ArgumentsAccessor;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.ArgumentsProvider;
 import org.junit.jupiter.params.provider.ArgumentsSource;
@@ -31,10 +33,10 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.time.Period;
-import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
@@ -43,42 +45,70 @@ import static org.assertj.neo4j.api.beta.type.DbValue.propValue;
 
 class ValueTypeTests {
 
-    private static final ZonedDateTime SYDNEY_NOW = ZonedDateTime.now(ZoneId.of("Australia/Sydney"));
-
     static class TypeArgumentProvider implements ArgumentsProvider {
 
-        private static <S> Arguments testCase(S object, ValueType type) {
+        private static <S> Arguments testCase(final ValueType type, final S object, final String representation) {
             final Class<S> fromClass = (Class<S>) object.getClass();
-            return testCase(fromClass, object, type);
+            return testCase(type, fromClass, object, representation);
         }
 
-        private static <S> Arguments testCase(final Class<S> fromClass, S object, ValueType type) {
-            return Arguments.arguments(fromClass, object, propValue(type, Values.value(object).asObject()));
+        private static <S> Arguments testCase(final ValueType type, final Class<S> fromClass, final S object,
+                                              final String representation) {
+            return Arguments.arguments(
+                    type,
+                    fromClass,
+                    object,
+                    propValue(type, Values.value(object).asObject()),
+                    representation
+            );
         }
 
         @Override
         public Stream<? extends Arguments> provideArguments(ExtensionContext extensionContext) {
             return Stream.of(
-                    testCase(true, ValueType.BOOLEAN),
-                    testCase("value", ValueType.STRING),
-                    testCase('c', ValueType.STRING),
-                    testCase(42L, ValueType.INTEGER),
-                    testCase((short) 42, ValueType.INTEGER),
-                    testCase((byte) 42, ValueType.INTEGER),
-                    testCase(42, ValueType.INTEGER),
-                    testCase(3.141592653589793, ValueType.FLOAT),
-                    testCase(3.14159F, ValueType.FLOAT),
-                    testCase(LocalDate.class, SYDNEY_NOW.toLocalDate(), ValueType.DATE),
-                    testCase(OffsetTime.class, SYDNEY_NOW.toOffsetDateTime().toOffsetTime(), ValueType.TIME),
-                    testCase(LocalTime.class, SYDNEY_NOW.toLocalTime(), ValueType.LOCAL_TIME),
-                    testCase(LocalDateTime.class, SYDNEY_NOW.toLocalDateTime(), ValueType.LOCAL_DATE_TIME),
-                    testCase(OffsetDateTime.class, SYDNEY_NOW.toOffsetDateTime(), ValueType.DATE_TIME),
-                    testCase(ZonedDateTime.class, SYDNEY_NOW, ValueType.DATE_TIME),
-                    testCase(Values.isoDuration(1, 2, 3, 4).asIsoDuration(), ValueType.DURATION),
-                    testCase(Period.ofYears(1).plusMonths(2).plusDays(3), ValueType.DURATION),
-                    testCase(Duration.ofDays(2).plusHours(3).plusMinutes(4).plusSeconds(5).plusNanos(6), ValueType.DURATION),
-                    testCase(Values.point(1, 48.868829858, 2.309832094).asPoint(), ValueType.POINT),
-                    testCase(Values.point(1, 48.868829858, 2.309832094, 12.1234).asPoint(), ValueType.POINT)
+                    testCase(ValueType.BOOLEAN, true, "BOOLEAN{true}"),
+                    testCase(ValueType.STRING, "value", "STRING{value}"),
+                    testCase(ValueType.STRING, 'c', "STRING{c}"),
+                    testCase(ValueType.INTEGER, 42L, "INTEGER{42}"),
+                    testCase(ValueType.INTEGER, (short) 42, "INTEGER{42}"),
+                    testCase(ValueType.INTEGER, (byte) 42, "INTEGER{42}"),
+                    testCase(ValueType.INTEGER, 42, "INTEGER{42}"),
+                    testCase(ValueType.FLOAT, 3.141592653589793, "FLOAT{3.141592653589793}"),
+                    testCase(ValueType.FLOAT, 3.14159F, "FLOAT{3.141590118408203}"),
+                    testCase(ValueType.DATE, LocalDate.class, Samples.LOCAL_DATE, "DATE{2020-02-03}"),
+                    testCase(ValueType.TIME, OffsetTime.class, Samples.OFFSET_TIME, "TIME{04:05:06.000000007Z}"),
+                    testCase(ValueType.LOCAL_TIME, LocalTime.class, Samples.LOCAL_TIME, "LOCAL_TIME{04:05:06"
+                                                                                        + ".000000007}"),
+                    testCase(ValueType.LOCAL_DATE_TIME, LocalDateTime.class, Samples.LOCAL_DATE_TIME,
+                            "LOCAL_DATE_TIME{2020-02-03T04:05:06.000000007}"),
+                    testCase(ValueType.DATE_TIME, OffsetDateTime.class, Samples.OFFSET_DATE_TIME, "DATE_TIME{2020-02"
+                                                                                                  + "-03T04:05:06"
+                                                                                                  + ".000000007+11:00"
+                                                                                                  + "}"),
+                    testCase(ValueType.DATE_TIME, ZonedDateTime.class, Samples.ZONED_DATE_TIME, "DATE_TIME{2020-02"
+                                                                                                + "-03T04:05:06"
+                                                                                                + ".000000007+11:00"
+                                                                                                + "[Australia/Sydney"
+                                                                                                + "]}"),
+                    testCase(ValueType.DURATION, Values.isoDuration(1, 2, 3, 4).asIsoDuration(), "DURATION{P1M2DT3"
+                                                                                                 + ".000000004S}"),
+                    testCase(ValueType.DURATION, Period.ofYears(1).plusMonths(2).plusDays(3), "DURATION{P14M3DT0S}"),
+                    testCase(ValueType.DURATION,
+                            Duration.ofDays(2).plusHours(3).plusMinutes(4).plusSeconds(5).plusNanos(6),
+                            "DURATION{P0M0DT183845.000000006S}"),
+                    testCase(ValueType.POINT, Values.point(1, 48.868829858, 2.309832094).asPoint(), "POINT{Point{srid"
+                                                                                                    + "=1, x=48"
+                                                                                                    + ".868829858, "
+                                                                                                    + "y=2.309832094"
+                                                                                                    + "}}"),
+                    testCase(ValueType.POINT, Values.point(1, 48.868829858, 2.309832094, 12.1234).asPoint(), "POINT"
+                                                                                                             +
+                                                                                                             "{Point"
+                                                                                                             + "{srid"
+                                                                                                             + "=1, "
+                                                                                                             + "x=48"
+                                                                                                             +
+                                                                                                             ".868829858, y=2.309832094, z=12.1234}}")
             );
         }
     }
@@ -87,9 +117,14 @@ class ValueTypeTests {
     @DisplayName("#convert")
     class ConvertTests {
 
-        @ParameterizedTest(name = "[{index}] {0} : {1} => {2}")
+        @ParameterizedTest(name = "[{index}] {0} : {1}({2}) => {3}")
         @ArgumentsSource(TypeArgumentProvider.class)
-        void should_convert_from_target_type(Class<?> fromClass, Object object, DbValue value) {
+        void should_convert_from_target_type(ArgumentsAccessor accessor) {
+            // GIVEN
+            final Class<?> fromClass = accessor.get(1, Class.class);
+            final Object object = accessor.get(2);
+            final DbValue value = accessor.get(3, DbValue.class);
+
             // WHEN
             DbValue result = ValueType.convert(object);
 
@@ -97,6 +132,24 @@ class ValueTypeTests {
             assertThat(result)
                     .as("convert from %s into => %s", fromClass.getName(), value.getType())
                     .isEqualTo(value);
+        }
+
+        @Test
+        void should_convert_list_type() {
+            // GIVEN
+            final List<Integer> object = Arrays.asList(1, 2, 3, 4);
+
+            // WHEN
+            DbValue result = ValueType.convert(object);
+
+            // THEN
+            assertThat(result)
+                    .isEqualTo(new DbValue(ValueType.LIST, Arrays.asList(
+                            ValueType.convert(1),
+                            ValueType.convert(2),
+                            ValueType.convert(3),
+                            ValueType.convert(4)
+                    )));
         }
     }
 
@@ -123,12 +176,12 @@ class ValueTypeTests {
             map.put("k-6", (byte) 64);
             map.put("k-7", 3.14159F);
             map.put("k-8", 3.141592653589793);
-            map.put("k-9", SYDNEY_NOW.toLocalDate());
-            map.put("k-10", SYDNEY_NOW.toOffsetDateTime().toOffsetTime());
-            map.put("k-11", SYDNEY_NOW.toLocalTime());
-            map.put("k-12", SYDNEY_NOW.toLocalDateTime());
-            map.put("k-13", SYDNEY_NOW.toOffsetDateTime());
-            map.put("k-14", SYDNEY_NOW);
+            map.put("k-9", Samples.LOCAL_DATE);
+            map.put("k-10", Samples.OFFSET_TIME);
+            map.put("k-11", Samples.LOCAL_TIME);
+            map.put("k-12", Samples.LOCAL_DATE_TIME);
+            map.put("k-13", Samples.OFFSET_DATE_TIME);
+            map.put("k-14", Samples.ZONED_DATE_TIME);
             map.put("k-15", isoDuration);
             map.put("k-16", duration);
             map.put("k-17", period);
@@ -152,12 +205,13 @@ class ValueTypeTests {
                     .containsEntry("k-6", propValue(ValueType.INTEGER, 64L))
                     .containsEntry("k-7", propValue(ValueType.FLOAT, 3.141590118408203))
                     .containsEntry("k-8", propValue(ValueType.FLOAT, 3.141592653589793))
-                    .containsEntry("k-9", propValue(ValueType.DATE, SYDNEY_NOW.toLocalDate()))
-                    .containsEntry("k-10", propValue(ValueType.TIME, SYDNEY_NOW.toOffsetDateTime().toOffsetTime()))
-                    .containsEntry("k-11", propValue(ValueType.LOCAL_TIME, SYDNEY_NOW.toLocalTime()))
-                    .containsEntry("k-12", propValue(ValueType.LOCAL_DATE_TIME, SYDNEY_NOW.toLocalDateTime()))
-                    .containsEntry("k-13", propValue(ValueType.DATE_TIME, SYDNEY_NOW.toOffsetDateTime().toZonedDateTime()))
-                    .containsEntry("k-14", propValue(ValueType.DATE_TIME, SYDNEY_NOW))
+                    .containsEntry("k-9", propValue(ValueType.DATE, Samples.LOCAL_DATE))
+                    .containsEntry("k-10", propValue(ValueType.TIME, Samples.OFFSET_TIME))
+                    .containsEntry("k-11", propValue(ValueType.LOCAL_TIME, Samples.LOCAL_TIME))
+                    .containsEntry("k-12", propValue(ValueType.LOCAL_DATE_TIME, Samples.LOCAL_DATE_TIME))
+                    .containsEntry("k-13", propValue(ValueType.DATE_TIME,
+                            Samples.ZONED_DATE_TIME.toOffsetDateTime().toZonedDateTime()))
+                    .containsEntry("k-14", propValue(ValueType.DATE_TIME, Samples.ZONED_DATE_TIME))
                     .containsEntry("k-15", propValue(ValueType.DURATION, isoDuration))
                     .containsEntry("k-16", propValue(ValueType.DURATION, Values.value(duration).asIsoDuration()))
                     .containsEntry("k-17", propValue(ValueType.DURATION, Values.value(period).asIsoDuration()))

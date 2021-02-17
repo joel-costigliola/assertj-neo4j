@@ -26,7 +26,7 @@ import org.junit.jupiter.api.Test;
  */
 class SampleRelationshipsIntegrationTests extends IntegrationTests.DatasetTests {
 
-    public SampleRelationshipsIntegrationTests() {
+    SampleRelationshipsIntegrationTests() {
         super(Dataset.GITHUB_LANGUAGE);
     }
 
@@ -37,15 +37,15 @@ class SampleRelationshipsIntegrationTests extends IntegrationTests.DatasetTests 
                 .hasSize(18)
                 .haveType("KNOWS")
                 .havePropertyKeys("level")
-                .ignoringIds()
+                .usingNoEntityIdComparison()
                 .contains(Drivers.relation("KNOWS").property("level", 5).build());
     }
 
     @Test
-    public void ignoringIds() {
+    public void usingNoEntityIdComparison() {
         final Relationships relationships = Relationships.of(driver, "KNOWS");
         DriverAssertions.assertThat(relationships)
-                .ignoringIds()
+                .usingNoEntityIdComparison()
                 .contains(Drivers.relation("KNOWS").property("level", 5).build());
     }
 

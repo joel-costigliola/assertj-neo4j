@@ -42,16 +42,14 @@ class ShouldHavePropertyValueTests {
             final DbNode actual = Drivers.node().id(1).property("key", "value").build();
 
             // WHEN
-            final ErrorMessageFactory error = ShouldHavePropertyValue
-                    .create(actual, "key", "other-value");
+            final ErrorMessageFactory error = ShouldHavePropertyValue.create(actual, "key", "other-value");
 
             // THEN
             assertThat(error.create()).isEqualToNormalizingNewlines(
-                    "\n"
-                    + "Expecting NODE{id=1} to have a property \"key\" with value:\n"
-                    + "  <\"other-value\">\n"
+                    "\nExpecting node to have a property \"key\" with value:\n"
+                    + " <\"other-value\">\n"
                     + "but current value of this property is:\n"
-                    + "  <\"value\">"
+                    + " <\"value\">\n"
             );
         }
 
@@ -78,37 +76,39 @@ class ShouldHavePropertyValueTests {
 
             // THEN
             assertThat(result.create()).isEqualToNormalizingNewlines(
-                    "\n"
-                    + "Expecting nodes:\n"
-                    + "  <[\"NODE{id=1}\",\n"
-                    + "    \"NODE{id=2}\",\n"
-                    + "    \"NODE{id=3}\",\n"
-                    + "    \"NODE{id=4}\",\n"
-                    + "    \"NODE{id=5}\",\n"
-                    + "    \"NODE{id=6}\"]>\n"
+                    "\nExpecting nodes:\n"
+                    + "  <[NODE{id=1L, labels=[], properties={key=STRING{\"value-1\"}}},\n"
+                    + "    NODE{id=2L, labels=[], properties={key=LOCAL_DATE_TIME{2020-02-03T04:05:06.000000007}}},\n"
+                    + "    NODE{id=3L, labels=[], properties={key=INTEGER{1}}},\n"
+                    + "    NODE{id=4L, labels=[], properties={key=POINT{Point{srid=1, x=22.29, y=56.35}}}},\n"
+                    + "    NODE{id=5L, labels=[], properties={key=DATE_TIME{2020-02-03T04:05:06"
+                    + ".000000007+11:00[Australia/Sydney]}}},\n"
+                    + "    NODE{id=6L, labels=[], properties={key=BOOLEAN{true}}}]>\n"
                     + "to have a property named \"key\" with value:\n"
                     + "  <true>\n"
                     + "but some nodes have a different value for this property:\n"
                     + "\n"
-                    + "  1) NODE{id=1}\n"
-                    + "    - Actual value: value-1\n"
+                    + "  1) NODE{id=1L, labels=[], properties={key=STRING{\"value-1\"}}}\n"
+                    + "    - Actual value: \"value-1\"\n"
                     + "    - Actual type: STRING\n"
                     + "\n"
-                    + "  2) NODE{id=2}\n"
-                    + "    - Actual value: 2020-02-03T04:05:06.000000007\n"
+                    + "  2) NODE{id=2L, labels=[], properties={key=LOCAL_DATE_TIME{2020-02-03T04:05:06.000000007}}}\n"
+                    + "    - Actual value: 2020-02-03T04:05:06.000000007 (java.time.LocalDateTime)\n"
                     + "    - Actual type: LOCAL_DATE_TIME\n"
                     + "\n"
-                    + "  3) NODE{id=3}\n"
-                    + "    - Actual value: 1\n"
+                    + "  3) NODE{id=3L, labels=[], properties={key=INTEGER{1}}}\n"
+                    + "    - Actual value: 1L\n"
                     + "    - Actual type: INTEGER\n"
                     + "\n"
-                    + "  4) NODE{id=4}\n"
+                    + "  4) NODE{id=4L, labels=[], properties={key=POINT{Point{srid=1, x=22.29, y=56.35}}}}\n"
                     + "    - Actual value: Point{srid=1, x=22.29, y=56.35}\n"
                     + "    - Actual type: POINT\n"
                     + "\n"
-                    + "  5) NODE{id=5}\n"
-                    + "    - Actual value: 2020-02-03T04:05:06.000000007+11:00[Australia/Sydney]\n"
-                    + "    - Actual type: DATE_TIME"
+                    + "  5) NODE{id=5L, labels=[], properties={key=DATE_TIME{2020-02-03T04:05:06"
+                    + ".000000007+11:00[Australia/Sydney]}}}\n"
+                    + "    - Actual value: 2020-02-03T04:05:06.000000007+11:00[Australia/Sydney] (java.time"
+                    + ".ZonedDateTime)\n"
+                    + "    - Actual type: DATE_TIME\n"
             );
         }
     }

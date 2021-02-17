@@ -20,7 +20,7 @@ import java.util.function.BiFunction;
 /**
  * Generic {@link LoaderFactory} that wrap a query to be executed on the provided driver.
  *
- * @author patouche - 12/02/2021
+ * @author Patrick Allain - 12/02/2021
  */
 class LoaderFactoryGeneric<ENTITY, LOADER extends DataLoader<ENTITY>> implements LoaderFactory<ENTITY, LOADER> {
 

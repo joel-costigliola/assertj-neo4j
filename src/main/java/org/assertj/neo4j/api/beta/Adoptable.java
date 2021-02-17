@@ -20,11 +20,12 @@ package org.assertj.neo4j.api.beta;
 public interface Adoptable<ROOT_ASSERT> {
 
     /**
-     * Set the parent of the children entities
+     * Set the parent of a children assertion.
      *
-     * @param parentAssert the parent assert
-     * @return the self type
+     * @param parentAssert the parent assert.
+     * @param <NEW_PARENT> the new parent type.
+     * @return a new {@link Navigable} assertion.
      */
-    <NEW_PARENT extends ParentAssert> Navigable<NEW_PARENT, ROOT_ASSERT> withParent(NEW_PARENT parentAssert);
+    <NEW_PARENT extends ParentalAssert> Navigable<NEW_PARENT, ROOT_ASSERT> withParent(NEW_PARENT parentAssert);
 
 }

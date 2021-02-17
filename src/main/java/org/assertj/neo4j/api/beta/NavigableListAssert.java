@@ -21,7 +21,7 @@ import java.util.List;
  * @author Patrick Allain - 26/01/2021
  */
 //@formatter:off
-public class NavigableListAssert<ACTUAL, PARENT, ROOT>
+public class NavigableListAssert<ACTUAL, PARENT extends ParentalAssert, ROOT>
         extends AbstractListAssert<NavigableListAssert<ACTUAL, PARENT, ROOT>, List<ACTUAL>, ACTUAL, ObjectAssert<ACTUAL>>
         implements Navigable<PARENT, ROOT> {
 //@formatter:on
