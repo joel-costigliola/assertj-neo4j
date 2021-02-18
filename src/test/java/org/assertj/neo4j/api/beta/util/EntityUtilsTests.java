@@ -16,11 +16,10 @@ import org.assertj.core.api.SoftAssertions;
 import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.assertj.neo4j.api.beta.testing.Randomize;
 import org.assertj.neo4j.api.beta.testing.Samples;
+import org.assertj.neo4j.api.beta.type.DbNode;
+import org.assertj.neo4j.api.beta.type.DbRelationship;
 import org.assertj.neo4j.api.beta.type.DbValue;
-import org.assertj.neo4j.api.beta.type.Drivers;
-import org.assertj.neo4j.api.beta.type.Nodes.DbNode;
-import org.assertj.neo4j.api.beta.type.Relationships.DbRelationship;
-import org.assertj.neo4j.api.beta.type.ValueType;
+import org.assertj.neo4j.api.beta.type.Models;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -43,12 +42,12 @@ class EntityUtilsTests {
         @Test
         void should_sort_entities_by_ids() {
             // GIVEN
-            final DbNode node1 = Drivers.node().id(11).build();
-            final DbNode node2 = Drivers.node().id(16).build();
-            final DbNode node3 = Drivers.node().id(42).build();
-            final DbNode node4 = Drivers.node().id(64).build();
-            final DbNode node5 = Drivers.node().id(69).build();
-            final DbNode node6 = Drivers.node().id(98).build();
+            final DbNode node1 = Models.node().id(11).build();
+            final DbNode node2 = Models.node().id(16).build();
+            final DbNode node3 = Models.node().id(42).build();
+            final DbNode node4 = Models.node().id(64).build();
+            final DbNode node5 = Models.node().id(69).build();
+            final DbNode node6 = Models.node().id(98).build();
             final Iterable<DbNode> entities = Randomize.listOf(node1, node2, node3, node4, node5, node6);
 
             // WHEN
@@ -61,12 +60,12 @@ class EntityUtilsTests {
         @Test
         void should_support_null_ids() {
             // GIVEN
-            final DbNode node1 = Drivers.node().id(11).build();
-            final DbNode node2 = Drivers.node().build();
-            final DbNode node3 = Drivers.node().id(42).build();
-            final DbNode node4 = Drivers.node().build();
-            final DbNode node5 = Drivers.node().id(69).build();
-            final DbNode node6 = Drivers.node().id(98).build();
+            final DbNode node1 = Models.node().id(11).build();
+            final DbNode node2 = Models.node().build();
+            final DbNode node3 = Models.node().id(42).build();
+            final DbNode node4 = Models.node().build();
+            final DbNode node5 = Models.node().id(69).build();
+            final DbNode node6 = Models.node().id(98).build();
             final Iterable<DbNode> entities = Randomize.listOf(node1, node2, node3, node4, node5, node6);
 
             // WHEN
@@ -88,13 +87,13 @@ class EntityUtilsTests {
         @Test
         void should_filter_only_incoming_relationships_of_node() {
             // GIVEN
-            final DbNode node = Drivers.node().id(42).build();
-            final DbRelationship relationship1 = Drivers.relation().id(1).end(22).build();
-            final DbRelationship relationship2 = Drivers.relation().id(2).end(29).build();
-            final DbRelationship relationship3 = Drivers.relation().id(3).end(35).build();
-            final DbRelationship relationship4 = Drivers.relation().id(4).end(42).build();
-            final DbRelationship relationship5 = Drivers.relation().id(5).end(56).build();
-            final DbRelationship relationship6 = Drivers.relation().id(6).end(42).build();
+            final DbNode node = Models.node().id(42).build();
+            final DbRelationship relationship1 = Models.relation().id(1).end(22).build();
+            final DbRelationship relationship2 = Models.relation().id(2).end(29).build();
+            final DbRelationship relationship3 = Models.relation().id(3).end(35).build();
+            final DbRelationship relationship4 = Models.relation().id(4).end(42).build();
+            final DbRelationship relationship5 = Models.relation().id(5).end(56).build();
+            final DbRelationship relationship6 = Models.relation().id(6).end(42).build();
             final List<DbRelationship> relationships = Randomize
                     .listOf(relationship1, relationship2, relationship3, relationship4, relationship5, relationship6);
 
@@ -112,13 +111,13 @@ class EntityUtilsTests {
         @Test
         void should_filter_only_outgoing_relationships_of_node() {
             // GIVEN
-            final DbNode node = Drivers.node().id(42).build();
-            final DbRelationship relationship1 = Drivers.relation().id(1).start(22).build();
-            final DbRelationship relationship2 = Drivers.relation().id(2).start(29).build();
-            final DbRelationship relationship3 = Drivers.relation().id(3).start(35).build();
-            final DbRelationship relationship4 = Drivers.relation().id(4).start(42).build();
-            final DbRelationship relationship5 = Drivers.relation().id(5).start(56).build();
-            final DbRelationship relationship6 = Drivers.relation().id(6).start(42).build();
+            final DbNode node = Models.node().id(42).build();
+            final DbRelationship relationship1 = Models.relation().id(1).start(22).build();
+            final DbRelationship relationship2 = Models.relation().id(2).start(29).build();
+            final DbRelationship relationship3 = Models.relation().id(3).start(35).build();
+            final DbRelationship relationship4 = Models.relation().id(4).start(42).build();
+            final DbRelationship relationship5 = Models.relation().id(5).start(56).build();
+            final DbRelationship relationship6 = Models.relation().id(6).start(42).build();
             final List<DbRelationship> relationships = Randomize
                     .listOf(relationship1, relationship2, relationship3, relationship4, relationship5, relationship6);
 
@@ -136,19 +135,19 @@ class EntityUtilsTests {
         @Test
         void should_filter_only_node_with_incoming_relationships() {
             // GIVEN
-            final DbNode node1 = Drivers.node().id(22).build();
-            final DbNode node2 = Drivers.node().id(23).build();
-            final DbNode node3 = Drivers.node().id(42).build();
-            final DbNode node4 = Drivers.node().id(74).build();
-            final DbNode node5 = Drivers.node().id(98).build();
+            final DbNode node1 = Models.node().id(22).build();
+            final DbNode node2 = Models.node().id(23).build();
+            final DbNode node3 = Models.node().id(42).build();
+            final DbNode node4 = Models.node().id(74).build();
+            final DbNode node5 = Models.node().id(98).build();
             final List<DbNode> nodes = Randomize.listOf(node1, node2, node3, node4, node5);
 
-            final DbRelationship relationship1 = Drivers.relation().id(1).end(22).build();
-            final DbRelationship relationship2 = Drivers.relation().id(2).end(29).build();
-            final DbRelationship relationship3 = Drivers.relation().id(3).end(35).build();
-            final DbRelationship relationship4 = Drivers.relation().id(4).end(42).build();
-            final DbRelationship relationship5 = Drivers.relation().id(5).end(56).build();
-            final DbRelationship relationship6 = Drivers.relation().id(6).end(42).build();
+            final DbRelationship relationship1 = Models.relation().id(1).end(22).build();
+            final DbRelationship relationship2 = Models.relation().id(2).end(29).build();
+            final DbRelationship relationship3 = Models.relation().id(3).end(35).build();
+            final DbRelationship relationship4 = Models.relation().id(4).end(42).build();
+            final DbRelationship relationship5 = Models.relation().id(5).end(56).build();
+            final DbRelationship relationship6 = Models.relation().id(6).end(42).build();
             final List<DbRelationship> relationships = Randomize
                     .listOf(relationship1, relationship2, relationship3, relationship4, relationship5, relationship6);
 
@@ -166,19 +165,19 @@ class EntityUtilsTests {
         @Test
         void should_filter_only_node_with_outgoing_relationships() {
             // GIVEN
-            final DbNode node1 = Drivers.node().id(22).build();
-            final DbNode node2 = Drivers.node().id(23).build();
-            final DbNode node3 = Drivers.node().id(42).build();
-            final DbNode node4 = Drivers.node().id(74).build();
-            final DbNode node5 = Drivers.node().id(98).build();
+            final DbNode node1 = Models.node().id(22).build();
+            final DbNode node2 = Models.node().id(23).build();
+            final DbNode node3 = Models.node().id(42).build();
+            final DbNode node4 = Models.node().id(74).build();
+            final DbNode node5 = Models.node().id(98).build();
             final List<DbNode> nodes = Randomize.listOf(node1, node2, node3, node4, node5);
 
-            final DbRelationship relationship1 = Drivers.relation().id(1).start(22).build();
-            final DbRelationship relationship2 = Drivers.relation().id(2).start(29).build();
-            final DbRelationship relationship3 = Drivers.relation().id(3).start(35).build();
-            final DbRelationship relationship4 = Drivers.relation().id(4).start(42).build();
-            final DbRelationship relationship5 = Drivers.relation().id(5).start(56).build();
-            final DbRelationship relationship6 = Drivers.relation().id(6).start(42).build();
+            final DbRelationship relationship1 = Models.relation().id(1).start(22).build();
+            final DbRelationship relationship2 = Models.relation().id(2).start(29).build();
+            final DbRelationship relationship3 = Models.relation().id(3).start(35).build();
+            final DbRelationship relationship4 = Models.relation().id(4).start(42).build();
+            final DbRelationship relationship5 = Models.relation().id(5).start(56).build();
+            final DbRelationship relationship6 = Models.relation().id(6).start(42).build();
             final List<DbRelationship> relationships = Randomize
                     .listOf(relationship1, relationship2, relationship3, relationship4, relationship5, relationship6);
 
@@ -196,12 +195,12 @@ class EntityUtilsTests {
         @Test
         void should_return_the_start_node_ids() {
             // GIVEN
-            final DbRelationship relationship1 = Drivers.relation().id(1).start(22).build();
-            final DbRelationship relationship2 = Drivers.relation().id(2).start(29).build();
-            final DbRelationship relationship3 = Drivers.relation().id(3).start(35).build();
-            final DbRelationship relationship4 = Drivers.relation().id(4).start(42).build();
-            final DbRelationship relationship5 = Drivers.relation().id(5).start(56).build();
-            final DbRelationship relationship6 = Drivers.relation().id(6).start(42).build();
+            final DbRelationship relationship1 = Models.relation().id(1).start(22).build();
+            final DbRelationship relationship2 = Models.relation().id(2).start(29).build();
+            final DbRelationship relationship3 = Models.relation().id(3).start(35).build();
+            final DbRelationship relationship4 = Models.relation().id(4).start(42).build();
+            final DbRelationship relationship5 = Models.relation().id(5).start(56).build();
+            final DbRelationship relationship6 = Models.relation().id(6).start(42).build();
             final List<DbRelationship> relationships = Randomize
                     .listOf(relationship1, relationship2, relationship3, relationship4, relationship5, relationship6);
 
@@ -220,12 +219,12 @@ class EntityUtilsTests {
         @Test
         void should_return_the_end_node_ids() {
             // GIVEN
-            final DbRelationship relationship1 = Drivers.relation().id(1).end(22).build();
-            final DbRelationship relationship2 = Drivers.relation().id(2).end(29).build();
-            final DbRelationship relationship3 = Drivers.relation().id(3).end(35).build();
-            final DbRelationship relationship4 = Drivers.relation().id(4).end(42).build();
-            final DbRelationship relationship5 = Drivers.relation().id(5).end(56).build();
-            final DbRelationship relationship6 = Drivers.relation().id(6).end(42).build();
+            final DbRelationship relationship1 = Models.relation().id(1).end(22).build();
+            final DbRelationship relationship2 = Models.relation().id(2).end(29).build();
+            final DbRelationship relationship3 = Models.relation().id(3).end(35).build();
+            final DbRelationship relationship4 = Models.relation().id(4).end(42).build();
+            final DbRelationship relationship5 = Models.relation().id(5).end(56).build();
+            final DbRelationship relationship6 = Models.relation().id(6).end(42).build();
             final List<DbRelationship> relationships = Randomize
                     .listOf(relationship1, relationship2, relationship3, relationship4, relationship5, relationship6);
 
@@ -256,14 +255,14 @@ class EntityUtilsTests {
             // WHEN & THEN
             softly.assertThat(EntityUtils.propertyList(Samples.NODE_LIST, "list_long"))
                     .hasSize(10)
-                    .contains(IntStream.range(0, 10).mapToObj(ValueType::convert).toArray(DbValue[]::new));
+                    .contains(IntStream.range(0, 10).mapToObj(DbValue::fromObject).toArray(DbValue[]::new));
 
             softly.assertThat(EntityUtils.propertyList(Samples.NODE_LIST, "list_string"))
                     .hasSize(3)
                     .contains(
-                            ValueType.convert("str-1"),
-                            ValueType.convert("str-2"),
-                            ValueType.convert("str-3")
+                            DbValue.fromObject("str-1"),
+                            DbValue.fromObject("str-2"),
+                            DbValue.fromObject("str-3")
                     );
         }
 

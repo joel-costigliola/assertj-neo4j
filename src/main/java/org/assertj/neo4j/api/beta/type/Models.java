@@ -17,36 +17,38 @@ package org.assertj.neo4j.api.beta.type;
  *
  * @author Patrick Allain - 27/11/2020
  */
-public final class Drivers {
+public final class Models {
 
     /**
-     * Create a new {@link Nodes.DbNodeBuilder} to compare with the node you have in the database.
+     * Create a new {@link DbNode.DbNodeBuilder} to compare with the node you have in the database.
      *
-     * @return a new {@link Nodes.DbNodeBuilder} instance
+     * @return a new {@link DbNode.DbNodeBuilder} instance
      */
-    public static Nodes.DbNodeBuilder node() {
-        return new Nodes.DbNodeBuilder();
+    public static DbNode.DbNodeBuilder node() {
+        return new DbNode.DbNodeBuilder();
     }
 
     /**
-     * Create a new {@link Relationships.DbRelationshipBuilder} to compare with the relationships you have in the
+     * Create a new {@link DbRelationship.DbRelationshipBuilder} to compare with the relationships you have in the
      * database.
      *
-     * @return a new {@link Relationships.DbRelationshipBuilder} instance
+     * @return a new {@link DbRelationship.DbRelationshipBuilder} instance
      */
-    public static Relationships.DbRelationshipBuilder relation() {
-        return new Relationships.DbRelationshipBuilder();
+    public static DbRelationship.DbRelationshipBuilder relation() {
+        return new DbRelationship.DbRelationshipBuilder();
     }
 
     /**
-     * Create a new {@link Relationships.DbRelationshipBuilder} with a specified type to compare with the relationships
+     * Create a new {@link DbRelationship.DbRelationshipBuilder} with a specified type to compare with the relationships
      * you have in the database.
      *
      * @param type the relationships type
-     * @return a new {@link Relationships.DbRelationshipBuilder} instance
+     * @return a new {@link DbRelationship.DbRelationshipBuilder} instance
      */
-    public static Relationships.DbRelationshipBuilder relation(final String type) {
+    public static DbRelationship.DbRelationshipBuilder relation(final String type) {
         return relation().type(type);
     }
+
+    private Models() {}
 
 }

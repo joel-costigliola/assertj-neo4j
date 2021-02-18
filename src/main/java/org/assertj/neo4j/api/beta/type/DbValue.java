@@ -12,6 +12,9 @@
  */
 package org.assertj.neo4j.api.beta.type;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -19,7 +22,7 @@ import java.util.Objects;
  *
  * @author Patrick Allain - 23/12/2020
  */
-public class DbValue {
+public class DbValue implements Representable {
 
     private final ValueType type;
     private final Object content;
@@ -31,6 +34,50 @@ public class DbValue {
 
     static DbValue propValue(final ValueType type, final Object value) {
         return new DbValue(type, value);
+    }
+
+    /**
+     * Convert a object into a {@link DbValue}.
+     *
+     * @param object the object to convert
+     * @param <T>    the object type
+     * @return a new instance of {@link DbValue}
+     */
+    public static <T> DbValue fromObject(final T object) {
+        if (object == null) {
+            return null;
+        }
+
+        return Arrays.stream(ValueType.values())
+                .filter(v -> v.support(object))
+                .map(v -> new DbValue(v, v.convert(object)))
+                .filter(dbValue -> dbValue.getContent() != null)
+                .findFirst()
+                .orElse(null);
+    }
+
+    /**
+     * Convert a {@code properties} {@link Map} into a {@link DbValue} map.
+     *
+     * @param properties the properties map to be converted
+     * @return a map having the same keys than the provided one with {@link DbValue} values.
+     */
+    public static Map<String, DbValue> fromMap(final Map<String, Object> properties) {
+        Map<String, DbValue> result = new HashMap<>();
+        for (Map.Entry<String, Object> entry : properties.entrySet()) {
+            result.put(entry.getKey(), fromObject(entry.getValue()));
+        }
+        return result;
+    }
+
+    @Override
+    public String abbreviate() {
+        return "VALUE";
+    }
+
+    @Override
+    public String detailed() {
+        return null;
     }
 
     public ValueType getType() {
@@ -58,4 +105,5 @@ public class DbValue {
     public String toString() {
         return type.format(content);
     }
+
 }

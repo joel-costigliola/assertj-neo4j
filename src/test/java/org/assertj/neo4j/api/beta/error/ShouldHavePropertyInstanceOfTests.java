@@ -15,14 +15,11 @@ package org.assertj.neo4j.api.beta.error;
 import org.assertj.core.error.ErrorMessageFactory;
 import org.assertj.neo4j.api.beta.testing.Randomize;
 import org.assertj.neo4j.api.beta.testing.Samples;
-import org.assertj.neo4j.api.beta.type.Drivers;
-import org.assertj.neo4j.api.beta.type.Nodes;
+import org.assertj.neo4j.api.beta.type.DbNode;
+import org.assertj.neo4j.api.beta.type.Models;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,7 +35,7 @@ class ShouldHavePropertyInstanceOfTests {
         @Test
         void should_generate_error_message() {
             // GIVEN
-            final Nodes.DbNode actual = Drivers.node().id(1).property("key", "value-1").build();
+            final DbNode actual = Models.node().id(1).property("key", "value-1").build();
 
             // WHEN
             final ErrorMessageFactory error = ShouldHavePropertyInstanceOf.create(actual, "key", Long.class);
@@ -63,14 +60,14 @@ class ShouldHavePropertyInstanceOfTests {
         @Test
         void should_generate_an_aggregate_error_message() {
             // GIVEN
-            final Nodes.DbNode node1 = Drivers.node().id(1).property("key", "value-1").build();
-            final Nodes.DbNode node2 = Drivers.node().id(2).property("key", Samples.LOCAL_DATE_TIME).build();
-            final Nodes.DbNode node3 = Drivers.node().id(3).property("key", 3.14).build();
-            final Nodes.DbNode node4 = Drivers.node().id(4).property("key", 4).build();
-            final Nodes.DbNode node5 = Drivers.node().id(5).property("key", Samples.ZONED_DATE_TIME).build();
-            final Nodes.DbNode node6 = Drivers.node().id(6).property("key", true).build();
+            final DbNode node1 = Models.node().id(1).property("key", "value-1").build();
+            final DbNode node2 = Models.node().id(2).property("key", Samples.LOCAL_DATE_TIME).build();
+            final DbNode node3 = Models.node().id(3).property("key", 3.14).build();
+            final DbNode node4 = Models.node().id(4).property("key", 4).build();
+            final DbNode node5 = Models.node().id(5).property("key", Samples.ZONED_DATE_TIME).build();
+            final DbNode node6 = Models.node().id(6).property("key", true).build();
 
-            final List<Nodes.DbNode> actual = Randomize.listOf(node1, node2, node3, node4, node5, node6);
+            final List<DbNode> actual = Randomize.listOf(node1, node2, node3, node4, node5, node6);
 
             // WHEN
             final ErrorMessageFactory error = ShouldHavePropertyInstanceOf

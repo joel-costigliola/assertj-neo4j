@@ -12,7 +12,7 @@
  */
 package org.assertj.neo4j.api.beta.util;
 
-import org.assertj.neo4j.api.beta.type.Nodes;
+import org.assertj.neo4j.api.beta.type.DbNode;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -21,23 +21,23 @@ import java.util.Set;
 /**
  * @author Patrick Allain - 14/02/2021
  */
-public class NodeComparisonStrategy extends EntityComparisonStrategy<Nodes.DbNode> {
+public class NodeComparisonStrategy extends EntityComparisonStrategy<DbNode> {
 
     private final Set<String> ignoreLabels;
 
     private NodeComparisonStrategy(final boolean ignoreId, final Set<String> ignoreLabels,
                                    final Set<String> ignoreProperties) {
-        super(Nodes.DbNode.class, ignoreId, ignoreProperties);
+        super(DbNode.class, ignoreId, ignoreProperties);
         this.ignoreLabels = ignoreLabels;
     }
 
     /** {@inheritDoc} */
     @Override
-    protected boolean areEntityEqual(final Nodes.DbNode actual, final Nodes.DbNode other) {
+    protected boolean areEntityEqual(final DbNode actual, final DbNode other) {
         return Utils.lazyDeepEquals(this::nonIgnoredLabels).test(actual, other);
     }
 
-    private Set<String> nonIgnoredLabels(final Nodes.DbNode entity) {
+    private Set<String> nonIgnoredLabels(final DbNode entity) {
         final HashSet<String> labels = new HashSet<>(entity.getLabels());
         ignoreLabels.forEach(labels::remove);
         return labels;
@@ -54,7 +54,7 @@ public class NodeComparisonStrategy extends EntityComparisonStrategy<Nodes.DbNod
 
     //@formatter:off
     public static class NodeComparisonStrategyBuilder
-            extends EntityComparisonStrategyBuilder<Nodes.DbNode,
+            extends EntityComparisonStrategyBuilder<DbNode,
                                                     NodeComparisonStrategy,
                                                     NodeComparisonStrategyBuilder> {
     //@formatter:on

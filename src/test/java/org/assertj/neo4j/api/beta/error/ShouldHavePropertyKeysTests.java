@@ -14,15 +14,13 @@ package org.assertj.neo4j.api.beta.error;
 
 import org.assertj.core.error.ErrorMessageFactory;
 import org.assertj.neo4j.api.beta.testing.Randomize;
-import org.assertj.neo4j.api.beta.type.Drivers;
-import org.assertj.neo4j.api.beta.type.Nodes.DbNode;
+import org.assertj.neo4j.api.beta.type.DbNode;
+import org.assertj.neo4j.api.beta.type.Models;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -39,7 +37,7 @@ class ShouldHavePropertyKeysTests {
         @Test
         void should_generate_error_message() {
             // GIVEN
-            final DbNode entity = Drivers.node().id(42).property("k-1", 1).property("k-4", 4).build();
+            final DbNode entity = Models.node().id(42).property("k-1", 1).property("k-4", 4).build();
 
             // WHEN
             final ErrorMessageFactory error = ShouldHavePropertyKeys.create(entity, KEYS);
@@ -64,12 +62,12 @@ class ShouldHavePropertyKeysTests {
         void should_generate_an_aggregate_error_message() {
             // GIVEN
             final List<String> keys = Arrays.asList("k-1", "k-2", "k-3");
-            final DbNode node1 = Drivers.node().id(12).property("k-1", 1).build();
-            final DbNode node2 = Drivers.node().id(18).property("k-2", 2).build();
-            final DbNode node3 = Drivers.node().id(42).property("k-3", 3).build();
-            final DbNode node4 = Drivers.node().id(51).property("k-1", 1).property("k-3", 3).build();
-            final DbNode node5 = Drivers.node().id(69).property("k-2", 2).property("k-3", 3).build();
-            final DbNode node6 = Drivers.node().id(95).property("k-1", 1).property("k-2", 2).property("k-3", 4).build();
+            final DbNode node1 = Models.node().id(12).property("k-1", 1).build();
+            final DbNode node2 = Models.node().id(18).property("k-2", 2).build();
+            final DbNode node3 = Models.node().id(42).property("k-3", 3).build();
+            final DbNode node4 = Models.node().id(51).property("k-1", 1).property("k-3", 3).build();
+            final DbNode node5 = Models.node().id(69).property("k-2", 2).property("k-3", 3).build();
+            final DbNode node6 = Models.node().id(95).property("k-1", 1).property("k-2", 2).property("k-3", 4).build();
             final List<DbNode> entities = Randomize.listOf(node1, node2, node3, node4, node5, node6);
 
             // WHEN

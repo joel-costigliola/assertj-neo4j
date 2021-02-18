@@ -18,6 +18,10 @@ import org.assertj.neo4j.api.beta.util.EntityUtils;
 import java.util.List;
 
 /**
+ * Creates an error message indicating that an assertion that verifies a {@link ENTITY} property value don't match a
+ * predicate.
+ *
+ * @param <ENTITY> the entity type
  * @author Patrick Allain - 10/02/2021
  */
 public class ShouldPropertyMatch<ENTITY extends DbEntity> extends BasicEntityErrorMessageFactory<ENTITY> {

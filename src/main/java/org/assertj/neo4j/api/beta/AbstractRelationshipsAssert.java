@@ -13,11 +13,12 @@
 package org.assertj.neo4j.api.beta;
 
 import org.assertj.neo4j.api.beta.error.ShouldRelationshipHaveType;
-import org.assertj.neo4j.api.beta.type.DataLoader;
+import org.assertj.neo4j.api.beta.type.DbRelationship;
 import org.assertj.neo4j.api.beta.type.RecordType;
-import org.assertj.neo4j.api.beta.type.Relationships;
+import org.assertj.neo4j.api.beta.type.loader.DataLoader;
 import org.assertj.neo4j.api.beta.util.Predicates;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -28,15 +29,15 @@ public abstract class AbstractRelationshipsAssert<SELF extends AbstractRelations
                                                   NEW_SELF extends Navigable<SELF, ROOT_ASSERT>,
                                                   PARENT_ASSERT extends ParentalAssert,
                                                   ROOT_ASSERT>
-        extends AbstractEntitiesAssert<SELF, Relationships.DbRelationship, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT>
+        extends AbstractEntitiesAssert<SELF, DbRelationship, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT>
         implements Navigable<PARENT_ASSERT, ROOT_ASSERT> {
 //@formatter:on
 
     protected AbstractRelationshipsAssert(
             final Class<?> selfType,
-            final List<Relationships.DbRelationship> dbRelationships,
-            final DataLoader<Relationships.DbRelationship> dbData,
-            final EntitiesAssertFactory<SELF, Relationships.DbRelationship, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT> factory,
+            final List<DbRelationship> dbRelationships,
+            final DataLoader<DbRelationship> dbData,
+            final EntitiesAssertFactory<SELF, DbRelationship, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT> factory,
             final PARENT_ASSERT parentAssert,
             final ROOT_ASSERT rootAssert) {
         super(RecordType.RELATIONSHIP, selfType, dbData, dbRelationships, factory, parentAssert, rootAssert);
@@ -45,13 +46,28 @@ public abstract class AbstractRelationshipsAssert<SELF extends AbstractRelations
     /**
      * Is it really useful ?
      *
-     * @param expectedType
-     * @return
+     * @param expectedType the expected type
+     * @return {@code this} assertion object
      */
     public SELF haveType(final String expectedType) {
         return shouldAllVerify(
                 Predicates.isType(expectedType),
                 (notSatisfies -> ShouldRelationshipHaveType.elements(actual, expectedType).notSatisfies(notSatisfies))
+        );
+    }
+
+    /**
+     * Is it really useful ?
+     *
+     * @param types the expected types
+     * @return {@code this} assertion object
+     */
+    public SELF haveAnyOfTypes(final String... types) {
+        return shouldAllVerify(
+                Predicates.isAnyOfTypes(types),
+                (notSatisfies -> ShouldRelationshipHaveType
+                        .elements(actual, Arrays.asList(types))
+                        .notSatisfies(notSatisfies))
         );
     }
 

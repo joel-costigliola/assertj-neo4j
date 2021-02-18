@@ -15,8 +15,8 @@ package org.assertj.neo4j.api.beta.error;
 import org.assertj.core.error.ErrorMessageFactory;
 import org.assertj.neo4j.api.beta.testing.Randomize;
 import org.assertj.neo4j.api.beta.testing.Samples;
-import org.assertj.neo4j.api.beta.type.Drivers;
-import org.assertj.neo4j.api.beta.type.Nodes;
+import org.assertj.neo4j.api.beta.type.DbNode;
+import org.assertj.neo4j.api.beta.type.Models;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -35,7 +35,7 @@ class ShouldPropertyMatchTests {
         @Test
         void should_generate_error_message() {
             // GIVEN
-            final Nodes.DbNode actual = Drivers.node().id(2).property("key", Samples.LOCAL_DATE_TIME).build();
+            final DbNode actual = Models.node().id(2).property("key", Samples.LOCAL_DATE_TIME).build();
 
             // WHEN
             final ErrorMessageFactory error = ShouldPropertyMatch.create(actual, "key");
@@ -57,10 +57,10 @@ class ShouldPropertyMatchTests {
         @Test
         void should_generate_an_aggregate_error_message() {
             // GIVEN
-            final Nodes.DbNode node1 = Drivers.node().id(1).property("key", "value-1").build();
-            final Nodes.DbNode node2 = Drivers.node().id(2).property("key", Samples.LOCAL_DATE_TIME).build();
-            final Nodes.DbNode node3 = Drivers.node().id(3).property("key", 1).build();
-            final List<Nodes.DbNode> actual = Randomize.listOf(node1, node2, node3);
+            final DbNode node1 = Models.node().id(1).property("key", "value-1").build();
+            final DbNode node2 = Models.node().id(2).property("key", Samples.LOCAL_DATE_TIME).build();
+            final DbNode node3 = Models.node().id(3).property("key", 1).build();
+            final List<DbNode> actual = Randomize.listOf(node1, node2, node3);
 
             // WHEN
             final ErrorMessageFactory error = ShouldPropertyMatch

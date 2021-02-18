@@ -10,9 +10,11 @@
  *
  * Copyright 2013-2020 the original author or authors.
  */
-package org.assertj.neo4j.api.beta.type;
+package org.assertj.neo4j.api.beta.type.loader;
 
 import org.assertj.neo4j.api.beta.testing.Builders;
+import org.assertj.neo4j.api.beta.type.DbNode;
+import org.assertj.neo4j.api.beta.type.Models;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,7 +32,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -71,14 +72,14 @@ class NodesTests {
         doReturn(result).when(session).readTransaction(any(), any(TransactionConfig.class));
 
         // WHEN
-        final List<Nodes.DbNode> dbNodes = nodes.load();
+        final List<DbNode> dbNodes = nodes.load();
 
         // THEN
         assertThat(dbNodes)
                 .hasSize(2)
                 .contains(
-                        Drivers.node().id(0).label("Sample").property("prop-0", true).build(),
-                        Drivers.node().id(1).label("Sample").property("prop-1", false).build()
+                        Models.node().id(0).label("Sample").property("prop-0", true).build(),
+                        Models.node().id(1).label("Sample").property("prop-1", false).build()
                 );
         assertThat(nodes.query()).isEqualTo(new Query("MATCH (n ) RETURN n"));
 
@@ -108,14 +109,14 @@ class NodesTests {
         doReturn(result).when(session).readTransaction(any(), any(TransactionConfig.class));
 
         // WHEN
-        final List<Nodes.DbNode> dbNodes = nodes.load();
+        final List<DbNode> dbNodes = nodes.load();
 
         // THEN
         assertThat(dbNodes)
                 .hasSize(2)
                 .contains(
-                        Drivers.node().id(0).label("Lbl1").label("Lbl2").property("prop-0", true).build(),
-                        Drivers.node().id(1).label("Lbl1").label("Lbl2").property("prop-1", false).build()
+                        Models.node().id(0).label("Lbl1").label("Lbl2").property("prop-0", true).build(),
+                        Models.node().id(1).label("Lbl1").label("Lbl2").property("prop-1", false).build()
                 );
         assertThat(nodes.query()).isEqualTo(new Query("MATCH (n :Lbl1:Lbl2) RETURN n"));
 

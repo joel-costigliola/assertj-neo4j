@@ -14,9 +14,9 @@ package org.assertj.neo4j.api.beta.error;
 
 import org.assertj.core.error.ErrorMessageFactory;
 import org.assertj.neo4j.api.beta.testing.Randomize;
-import org.assertj.neo4j.api.beta.type.Drivers;
-import org.assertj.neo4j.api.beta.type.Nodes.DbNode;
-import org.assertj.neo4j.api.beta.type.Relationships.DbRelationship;
+import org.assertj.neo4j.api.beta.type.DbNode;
+import org.assertj.neo4j.api.beta.type.DbRelationship;
+import org.assertj.neo4j.api.beta.type.Models;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -35,11 +35,11 @@ class ShouldNodeHaveNoRelatedRelationshipsTests {
         @Test
         void should_generate_error_message() {
             // GIVEN
-            final DbRelationship relationship1 = Drivers.relation().id(1).end(42).build();
-            final DbRelationship relationship2 = Drivers.relation().id(2).end(42).build();
-            final DbRelationship relationship3 = Drivers.relation().id(3).end(42).build();
+            final DbRelationship relationship1 = Models.relation().id(1).end(42).build();
+            final DbRelationship relationship2 = Models.relation().id(2).end(42).build();
+            final DbRelationship relationship3 = Models.relation().id(3).end(42).build();
             final List<DbRelationship> relationships = Randomize.listOf(relationship1, relationship2, relationship3);
-            final DbNode actual = Drivers.node().id(42).build();
+            final DbNode actual = Models.node().id(42).build();
 
             // WHEN
             final ErrorMessageFactory error = ShouldNodeHaveNoRelatedRelationships
@@ -64,11 +64,11 @@ class ShouldNodeHaveNoRelatedRelationshipsTests {
         @Test
         void should_generate_error_message() {
             // GIVEN
-            final DbRelationship relationship1 = Drivers.relation().id(1).start(42).build();
-            final DbRelationship relationship2 = Drivers.relation().id(2).start(42).build();
-            final DbRelationship relationship3 = Drivers.relation().id(3).start(42).build();
+            final DbRelationship relationship1 = Models.relation().id(1).start(42).build();
+            final DbRelationship relationship2 = Models.relation().id(2).start(42).build();
+            final DbRelationship relationship3 = Models.relation().id(3).start(42).build();
             final List<DbRelationship> relationships = Randomize.listOf(relationship1, relationship2, relationship3);
-            final DbNode actual = Drivers.node().id(42).build();
+            final DbNode actual = Models.node().id(42).build();
 
             // WHEN
             final ErrorMessageFactory error = ShouldNodeHaveNoRelatedRelationships
@@ -93,16 +93,16 @@ class ShouldNodeHaveNoRelatedRelationshipsTests {
         @Test
         void should_generate_an_aggregate_error_message() {
             // GIVEN
-            final DbRelationship relationship1 = Drivers.relation().id(1).end(22).build();
-            final DbRelationship relationship2 = Drivers.relation().id(2).end(42).build();
-            final DbRelationship relationship3 = Drivers.relation().id(3).end(69).build();
+            final DbRelationship relationship1 = Models.relation().id(1).end(22).build();
+            final DbRelationship relationship2 = Models.relation().id(2).end(42).build();
+            final DbRelationship relationship3 = Models.relation().id(3).end(69).build();
             final List<DbRelationship> relationships = Randomize.listOf(relationship1, relationship2, relationship3);
-            final DbNode node1 = Drivers.node().id(22).build();
-            final DbNode node2 = Drivers.node().id(29).build();
-            final DbNode node3 = Drivers.node().id(35).build();
-            final DbNode node4 = Drivers.node().id(42).build();
-            final DbNode node5 = Drivers.node().id(56).build();
-            final DbNode node6 = Drivers.node().id(69).build();
+            final DbNode node1 = Models.node().id(22).build();
+            final DbNode node2 = Models.node().id(29).build();
+            final DbNode node3 = Models.node().id(35).build();
+            final DbNode node4 = Models.node().id(42).build();
+            final DbNode node5 = Models.node().id(56).build();
+            final DbNode node6 = Models.node().id(69).build();
             final List<DbNode> actual = Randomize.listOf(node1, node2, node3, node4, node5, node6);
 
             // WHEN
@@ -146,16 +146,16 @@ class ShouldNodeHaveNoRelatedRelationshipsTests {
         @Test
         void should_generate_an_aggregate_error_message() {
             // GIVEN
-            final DbRelationship relationship1 = Drivers.relation().id(1).start(22).build();
-            final DbRelationship relationship2 = Drivers.relation().id(2).start(42).build();
-            final DbRelationship relationship3 = Drivers.relation().id(3).start(69).build();
+            final DbRelationship relationship1 = Models.relation().id(1).start(22).build();
+            final DbRelationship relationship2 = Models.relation().id(2).start(42).build();
+            final DbRelationship relationship3 = Models.relation().id(3).start(69).build();
             final List<DbRelationship> relationships = Randomize.listOf(relationship1, relationship2, relationship3);
-            final DbNode node1 = Drivers.node().id(22).build();
-            final DbNode node2 = Drivers.node().id(29).build();
-            final DbNode node3 = Drivers.node().id(35).build();
-            final DbNode node4 = Drivers.node().id(42).build();
-            final DbNode node5 = Drivers.node().id(56).build();
-            final DbNode node6 = Drivers.node().id(69).build();
+            final DbNode node1 = Models.node().id(22).build();
+            final DbNode node2 = Models.node().id(29).build();
+            final DbNode node3 = Models.node().id(35).build();
+            final DbNode node4 = Models.node().id(42).build();
+            final DbNode node5 = Models.node().id(56).build();
+            final DbNode node6 = Models.node().id(69).build();
             final List<DbNode> actual = Randomize.listOf(node1, node2, node3, node4, node5, node6);
 
             // WHEN

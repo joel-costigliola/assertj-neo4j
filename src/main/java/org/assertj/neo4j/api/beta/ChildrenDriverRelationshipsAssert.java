@@ -12,8 +12,8 @@
  */
 package org.assertj.neo4j.api.beta;
 
-import org.assertj.neo4j.api.beta.type.DataLoader;
-import org.assertj.neo4j.api.beta.type.Relationships;
+import org.assertj.neo4j.api.beta.type.DbRelationship;
+import org.assertj.neo4j.api.beta.type.loader.DataLoader;
 
 import java.util.List;
 import java.util.Objects;
@@ -30,8 +30,8 @@ public class ChildrenDriverRelationshipsAssert<PARENT_ASSERT extends ParentalAss
         implements Adoptable<ROOT_ASSERT> {
 //@formatter:on
 
-    protected ChildrenDriverRelationshipsAssert(final List<Relationships.DbRelationship> entities,
-                                                final DataLoader<Relationships.DbRelationship> loader,
+    protected ChildrenDriverRelationshipsAssert(final List<DbRelationship> entities,
+                                                final DataLoader<DbRelationship> loader,
                                                 final PARENT_ASSERT parentAssert,
                                                 final ROOT_ASSERT rootAssert) {
         super(
@@ -47,7 +47,7 @@ public class ChildrenDriverRelationshipsAssert<PARENT_ASSERT extends ParentalAss
     //@formatter:off
     private static <PARENT_ASSERT extends ParentalAssert, ROOT_ASSERT> EntitiesAssertFactory<
             ChildrenDriverRelationshipsAssert<PARENT_ASSERT, ROOT_ASSERT>,
-            Relationships.DbRelationship,
+            DbRelationship,
             ChildrenDriverRelationshipsAssert<ChildrenDriverRelationshipsAssert<PARENT_ASSERT, ROOT_ASSERT>, ROOT_ASSERT>,
             PARENT_ASSERT,
             ROOT_ASSERT> factory() {

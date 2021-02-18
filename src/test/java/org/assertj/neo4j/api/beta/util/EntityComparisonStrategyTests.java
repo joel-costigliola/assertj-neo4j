@@ -14,8 +14,8 @@ package org.assertj.neo4j.api.beta.util;
 
 import org.assertj.neo4j.api.beta.testing.Builders;
 import org.assertj.neo4j.api.beta.testing.Samples;
-import org.assertj.neo4j.api.beta.type.Nodes;
-import org.assertj.neo4j.api.beta.type.Relationships.DbRelationship;
+import org.assertj.neo4j.api.beta.type.DbNode;
+import org.assertj.neo4j.api.beta.type.DbRelationship;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -32,8 +32,8 @@ class EntityComparisonStrategyTests {
         @Test
         void should_return_true_when_node_without_id_comparison() {
             // GIVEN
-            final Nodes.DbNode obj1 = Builders.rebuild(Samples.NODE).id(22).build();
-            final Nodes.DbNode obj2 = Builders.rebuild(Samples.NODE).id(29).build();
+            final DbNode obj1 = Builders.rebuild(Samples.NODE).id(22).build();
+            final DbNode obj2 = Builders.rebuild(Samples.NODE).id(29).build();
             final NodeComparisonStrategy s1 = NodeComparisonStrategy.builder().ignoreId(true).build();
             final RelationshipComparisonStrategy s2 = RelationshipComparisonStrategy.builder().ignoreId(false).build();
 
@@ -62,8 +62,8 @@ class EntityComparisonStrategyTests {
         @Test
         void should_return_false_when_node_without_id_comparison() {
             // GIVEN
-            final Nodes.DbNode obj1 = Builders.rebuild(Samples.NODE).id(22).labels("OTHER").build();
-            final Nodes.DbNode obj2 = Builders.rebuild(Samples.NODE).id(29).build();
+            final DbNode obj1 = Builders.rebuild(Samples.NODE).id(22).labels("OTHER").build();
+            final DbNode obj2 = Builders.rebuild(Samples.NODE).id(29).build();
             final NodeComparisonStrategy s1 = NodeComparisonStrategy.builder().ignoreId(false).build();
             final RelationshipComparisonStrategy s2 = RelationshipComparisonStrategy.builder().ignoreId(true).build();
 

@@ -14,8 +14,8 @@ package org.assertj.neo4j.api.beta.error;
 
 import org.assertj.core.error.ErrorMessageFactory;
 import org.assertj.neo4j.api.beta.testing.Randomize;
-import org.assertj.neo4j.api.beta.type.Drivers;
-import org.assertj.neo4j.api.beta.type.Nodes;
+import org.assertj.neo4j.api.beta.type.DbNode;
+import org.assertj.neo4j.api.beta.type.Models;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -36,7 +36,7 @@ public class ShouldHaveNodeLabelsTests {
         @Test
         void should_generate_error_message() {
             // GIVEN
-            final Nodes.DbNode entity = Drivers.node().id(42).labels("LBL_4", "LBL_1").build();
+            final DbNode entity = Models.node().id(42).labels("LBL_4", "LBL_1").build();
 
             // WHEN
             final ErrorMessageFactory error = ShouldHaveNodeLabels.create(entity, LABELS);
@@ -60,14 +60,14 @@ public class ShouldHaveNodeLabelsTests {
         @Test
         void should_generate_an_aggregate_error_message() {
             // GIVEN
-            final Nodes.DbNode node1 = Drivers.node().id(12).labels("LBL_1").build();
-            final Nodes.DbNode node2 = Drivers.node().id(18).labels("LBL_2").build();
-            final Nodes.DbNode node3 = Drivers.node().id(42).labels("LBL_3").build();
-            final Nodes.DbNode node4 = Drivers.node().id(51).labels("LBL_4", "LBL_1").build();
-            final Nodes.DbNode node5 = Drivers.node().id(69).labels("LBL_4", "LBL_2").build();
-            final Nodes.DbNode node6 = Drivers.node().id(95).labels("LBL_1", "LBL_2", "LBL_3", "LBL_4").build();
+            final DbNode node1 = Models.node().id(12).labels("LBL_1").build();
+            final DbNode node2 = Models.node().id(18).labels("LBL_2").build();
+            final DbNode node3 = Models.node().id(42).labels("LBL_3").build();
+            final DbNode node4 = Models.node().id(51).labels("LBL_4", "LBL_1").build();
+            final DbNode node5 = Models.node().id(69).labels("LBL_4", "LBL_2").build();
+            final DbNode node6 = Models.node().id(95).labels("LBL_1", "LBL_2", "LBL_3", "LBL_4").build();
 
-            final List<Nodes.DbNode> nodes = Randomize.listOf(node1, node2, node3, node4, node5, node6);
+            final List<DbNode> nodes = Randomize.listOf(node1, node2, node3, node4, node5, node6);
 
             // WHEN
             final ErrorMessageFactory error = ShouldHaveNodeLabels

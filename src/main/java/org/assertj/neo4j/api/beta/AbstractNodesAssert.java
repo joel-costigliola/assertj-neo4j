@@ -14,11 +14,11 @@ package org.assertj.neo4j.api.beta;
 
 import org.assertj.neo4j.api.beta.error.ShouldHaveNodeLabels;
 import org.assertj.neo4j.api.beta.error.ShouldNodeHaveNoRelatedRelationships;
-import org.assertj.neo4j.api.beta.type.DataLoader;
-import org.assertj.neo4j.api.beta.type.LoaderFactory;
-import org.assertj.neo4j.api.beta.type.Nodes;
+import org.assertj.neo4j.api.beta.type.DbNode;
 import org.assertj.neo4j.api.beta.type.RecordType;
-import org.assertj.neo4j.api.beta.type.Relationships;
+import org.assertj.neo4j.api.beta.type.loader.DataLoader;
+import org.assertj.neo4j.api.beta.type.loader.LoaderFactory;
+import org.assertj.neo4j.api.beta.type.loader.Relationships;
 import org.assertj.neo4j.api.beta.util.Checks;
 import org.assertj.neo4j.api.beta.util.EntityUtils;
 import org.assertj.neo4j.api.beta.util.Predicates;
@@ -33,17 +33,17 @@ public abstract class AbstractNodesAssert<SELF extends AbstractNodesAssert<SELF,
                                           NEW_SELF extends Navigable<SELF, ROOT_ASSERT>,
                                           PARENT_ASSERT extends ParentalAssert,
                                           ROOT_ASSERT>
-        extends AbstractEntitiesAssert<SELF, Nodes.DbNode, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT> {
+        extends AbstractEntitiesAssert<SELF, DbNode, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT> {
 //@formatter:on
 
     protected AbstractNodesAssert(
             final Class<SELF> selfType,
-            final List<Nodes.DbNode> entities,
-            final DataLoader<Nodes.DbNode> dataLoader,
-            final EntitiesAssertFactory<SELF, Nodes.DbNode, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT> factory,
+            final List<DbNode> entities,
+            final DataLoader<DbNode> dataLoader,
+            final EntitiesAssertFactory<SELF, DbNode, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT> newSelfFactory,
             final PARENT_ASSERT parentAssert,
             final ROOT_ASSERT rootAssert) {
-        super(RecordType.NODE, selfType, dataLoader, entities, factory, parentAssert, rootAssert);
+        super(RecordType.NODE, selfType, dataLoader, entities, newSelfFactory, parentAssert, rootAssert);
     }
 
     /**

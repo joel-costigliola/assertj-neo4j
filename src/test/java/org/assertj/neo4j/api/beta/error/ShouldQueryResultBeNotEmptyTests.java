@@ -12,7 +12,6 @@
  */
 package org.assertj.neo4j.api.beta.error;
 
-import org.assertj.core.api.Assertions;
 import org.assertj.core.error.ErrorMessageFactory;
 import org.assertj.neo4j.api.beta.type.RecordType;
 import org.junit.jupiter.api.Nested;

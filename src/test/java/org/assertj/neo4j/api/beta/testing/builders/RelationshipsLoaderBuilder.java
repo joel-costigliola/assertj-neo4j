@@ -12,9 +12,10 @@
  */
 package org.assertj.neo4j.api.beta.testing.builders;
 
-import org.assertj.neo4j.api.beta.type.DataLoader;
-import org.assertj.neo4j.api.beta.type.LoaderFactory;
-import org.assertj.neo4j.api.beta.type.Relationships;
+import org.assertj.neo4j.api.beta.type.DbRelationship;
+import org.assertj.neo4j.api.beta.type.loader.DataLoader;
+import org.assertj.neo4j.api.beta.type.loader.LoaderFactory;
+import org.assertj.neo4j.api.beta.type.loader.Relationships;
 import org.neo4j.driver.Query;
 
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ import java.util.List;
  */
 public class RelationshipsLoaderBuilder {
     private DataLoader<?> factoryResult;
-    private List<Relationships.DbRelationship> entities = new ArrayList<>();
+    private List<DbRelationship> entities = new ArrayList<>();
     private Query query;
 
     public RelationshipsLoaderBuilder factoryResult(DataLoader<?> factoryResult) {
@@ -34,7 +35,7 @@ public class RelationshipsLoaderBuilder {
         return this;
     }
 
-    public RelationshipsLoaderBuilder entities(Relationships.DbRelationship... entities) {
+    public RelationshipsLoaderBuilder entities(DbRelationship... entities) {
         this.entities = Arrays.asList(entities);
         return this;
     }

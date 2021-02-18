@@ -12,12 +12,13 @@
  */
 package org.assertj.neo4j.api.beta;
 
-import org.assertj.neo4j.api.beta.type.DataLoader;
 import org.assertj.neo4j.api.beta.type.DbEntity;
-import org.assertj.neo4j.api.beta.type.Drivers;
-import org.assertj.neo4j.api.beta.type.Nodes;
+import org.assertj.neo4j.api.beta.type.DbNode;
+import org.assertj.neo4j.api.beta.type.Models;
 import org.assertj.neo4j.api.beta.type.RecordType;
 import org.assertj.neo4j.api.beta.type.ValueType;
+import org.assertj.neo4j.api.beta.type.loader.DataLoader;
+import org.assertj.neo4j.api.beta.type.loader.Nodes;
 import org.assertj.neo4j.api.beta.util.Predicates;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
@@ -45,16 +46,16 @@ import static org.mockito.Mockito.when;
 class AbstractEntitiesAssertTests {
 
     //@formatter:off
-    private static class ConcreteEntitiesAssert extends AbstractEntitiesAssert<ConcreteEntitiesAssert, Nodes.DbNode, ConcreteEntitiesAssert,
+    private static class ConcreteEntitiesAssert extends AbstractEntitiesAssert<ConcreteEntitiesAssert, DbNode, ConcreteEntitiesAssert,
                                                                                ConcreteEntitiesAssert,
                                                                                ConcreteEntitiesAssert> {
     //@formatter:on
 
-        protected ConcreteEntitiesAssert(List<Nodes.DbNode> entities, DataLoader<Nodes.DbNode> loader) {
+        protected ConcreteEntitiesAssert(List<DbNode> entities, DataLoader<DbNode> loader) {
             this(entities, loader, null);
         }
 
-        protected ConcreteEntitiesAssert(List<Nodes.DbNode> entities, DataLoader<Nodes.DbNode> loader,
+        protected ConcreteEntitiesAssert(List<DbNode> entities, DataLoader<DbNode> loader,
                                          ConcreteEntitiesAssert parent) {
             super(
                     RecordType.NODE,
@@ -79,12 +80,12 @@ class AbstractEntitiesAssertTests {
 
         protected ConcreteEntitiesAssert assertions;
 
-        protected BaseTests(Nodes.DbNodeBuilder... builders) {
+        protected BaseTests(DbNode.DbNodeBuilder... builders) {
             this.dataLoader = Mockito.mock(Nodes.class);
             testCase(builders);
         }
 
-        protected void testCase(Nodes.DbNodeBuilder... builders) {
+        protected void testCase(DbNode.DbNodeBuilder... builders) {
             this.assertions = new ConcreteEntitiesAssert(
                     IntStream.range(0, builders.length)
                             .mapToObj(idx -> builders[idx].id(idx + 1).build())
@@ -105,9 +106,9 @@ class AbstractEntitiesAssertTests {
 
         FilteredOnTests() {
             super(
-                    Drivers.node(),
-                    Drivers.node().property("prop", "v-2"),
-                    Drivers.node().property("prop", "v-3")
+                    Models.node(),
+                    Models.node().property("prop", "v-2"),
+                    Models.node().property("prop", "v-3")
             );
         }
 
@@ -143,7 +144,11 @@ class AbstractEntitiesAssertTests {
     class FilteredOnPropertyExistsTests extends BaseTests {
 
         FilteredOnPropertyExistsTests() {
-            super(Drivers.node(), Drivers.node().property("prop", "val-2"), Drivers.node().property("prop", "val-3"));
+            super(
+                    Models.node(),
+                    Models.node().property("prop", "val-2"),
+                    Models.node().property("prop", "val-3")
+            );
         }
 
         @Test
@@ -177,10 +182,10 @@ class AbstractEntitiesAssertTests {
 
         FilteredOnPropertyValueTests() {
             super(
-                    Drivers.node(),
-                    Drivers.node().property("prop", "other-val-1"),
-                    Drivers.node().property("prop", "val"),
-                    Drivers.node().property("prop", "other-val-2")
+                    Models.node(),
+                    Models.node().property("prop", "other-val-1"),
+                    Models.node().property("prop", "val"),
+                    Models.node().property("prop", "other-val-2")
             );
         }
 
@@ -214,9 +219,9 @@ class AbstractEntitiesAssertTests {
     class IsEmptyTests extends BaseTests {
 
         @Test
-        void should_failed() {
+        void should_fail() {
             // GIVEN
-            testCase(Drivers.node().id(1));
+            testCase(Models.node().id(1));
             when(dataLoader.query()).thenReturn(new Query("MATCH (n) RETURN n"));
 
             // WHEN
@@ -264,7 +269,7 @@ class AbstractEntitiesAssertTests {
         @Test
         void should_pass() {
             // GIVEN
-            testCase(Drivers.node().id(1));
+            testCase(Models.node().id(1));
             when(dataLoader.query()).thenReturn(new Query("MATCH (n) RETURN n"));
 
             // WHEN
@@ -281,15 +286,15 @@ class AbstractEntitiesAssertTests {
 
         HaveListPropertyOfTypeTest() {
             super(
-                    Drivers.node()
+                    Models.node()
                             .property("prop", Arrays.asList(1, 2))
                             .property("mixed", 1)
                             .property("mixed-list", Arrays.asList(1.1, 1.2)),
-                    Drivers.node()
+                    Models.node()
                             .property("prop", Arrays.asList(1, 2, 3))
                             .property("mixed", "val")
                             .property("mixed-list", Arrays.asList(true, false, true)),
-                    Drivers.node()
+                    Models.node()
                             .property("prop", Arrays.asList(1, 2, 3, 4))
                             .property("mixed", Arrays.asList(1, 2))
                             .property("mixed-list", Arrays.asList(1, 2, 3, 4))
@@ -365,13 +370,13 @@ class AbstractEntitiesAssertTests {
 
         HavePropertyTests() {
             super(
-                    Drivers.node()
+                    Models.node()
                             .property("prop", "val")
                             .property("prop-1", "val-1"),
-                    Drivers.node()
+                    Models.node()
                             .property("prop", "val")
                             .property("prop-1", "val-1"),
-                    Drivers.node()
+                    Models.node()
                             .property("prop", "val")
                             .property("prop-1", "val-1")
                             .property("missing", "val")
@@ -425,9 +430,9 @@ class AbstractEntitiesAssertTests {
 
         HavePropertySizeTests() {
             super(
-                    Drivers.node().property("p-1", "v-1.1").property("p-2", "v-2.1"),
-                    Drivers.node().property("p-1", "v-1.1").property("p-2", "v-2.1"),
-                    Drivers.node().property("p-1", "v-1.1").property("p-2", "v-2.1").property("p-3", "v-3.1")
+                    Models.node().property("p-1", "v-1.1").property("p-2", "v-2.1"),
+                    Models.node().property("p-1", "v-1.1").property("p-2", "v-2.1"),
+                    Models.node().property("p-1", "v-1.1").property("p-2", "v-2.1").property("p-3", "v-3.1")
             );
         }
 
@@ -466,13 +471,13 @@ class AbstractEntitiesAssertTests {
 
         HavePropertyInstanceOfTests() {
             super(
-                    Drivers.node()
+                    Models.node()
                             .property("prop", LocalDateTime.now().plusDays(1))
                             .property("mixed", "val"),
-                    Drivers.node()
+                    Models.node()
                             .property("prop", LocalDateTime.now().plusDays(2))
                             .property("mixed", 1.5),
-                    Drivers.node()
+                    Models.node()
                             .property("prop", LocalDateTime.now().plusDays(3))
                             .property("mixed", LocalDate.now())
                             .property("missing", "val")
@@ -528,8 +533,11 @@ class AbstractEntitiesAssertTests {
     class HavePropertyKeysTests extends BaseTests {
 
         HavePropertyKeysTests() {
-            super(Drivers.node().property("prop", "val-1"), Drivers.node().property("prop", "val-2"),
-                    Drivers.node().property("prop", "val-3"));
+            super(
+                    Models.node().property("prop", "val-1"),
+                    Models.node().property("prop", "val-2"),
+                    Models.node().property("prop", "val-3")
+            );
         }
 
         @Test
@@ -575,9 +583,9 @@ class AbstractEntitiesAssertTests {
 
         HavePropertyValueMatchingTests() {
             super(
-                    Drivers.node().property("prop", "val").property("prop-inc", "val-1"),
-                    Drivers.node().property("prop", "val").property("prop-inc", "val-2"),
-                    Drivers.node().property("prop", "val").property("prop-inc", "val-3").property("missing", true)
+                    Models.node().property("prop", "val").property("prop-inc", "val-1"),
+                    Models.node().property("prop", "val").property("prop-inc", "val-2"),
+                    Models.node().property("prop", "val").property("prop-inc", "val-3").property("missing", true)
             );
         }
 
@@ -632,9 +640,9 @@ class AbstractEntitiesAssertTests {
 
         HavePropertyValueMatchingTypedTests() {
             super(
-                    Drivers.node().property("prop", 1).property("prop-mixed", true),
-                    Drivers.node().property("prop", 2).property("prop-mixed", 3.14),
-                    Drivers.node().property("prop", 3).property("prop-mixed", "val").property("missing", true)
+                    Models.node().property("prop", 1).property("prop-mixed", true),
+                    Models.node().property("prop", 2).property("prop-mixed", 3.14),
+                    Models.node().property("prop", 3).property("prop-mixed", "val").property("missing", true)
             );
         }
 
@@ -706,13 +714,13 @@ class AbstractEntitiesAssertTests {
 
         HavePropertyOfTypeTests() {
             super(
-                    Drivers.node()
+                    Models.node()
                             .property("prop", "val-1")
                             .property("mixed", "val"),
-                    Drivers.node()
+                    Models.node()
                             .property("prop", "val-2")
                             .property("mixed", 1.5),
-                    Drivers.node()
+                    Models.node()
                             .property("prop", "val-3")
                             .property("mixed", LocalDate.now())
                             .property("missing", "val")

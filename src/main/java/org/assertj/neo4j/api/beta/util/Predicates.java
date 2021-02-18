@@ -14,11 +14,12 @@ package org.assertj.neo4j.api.beta.util;
 
 import org.assertj.core.util.Streams;
 import org.assertj.neo4j.api.beta.type.DbEntity;
+import org.assertj.neo4j.api.beta.type.DbNode;
+import org.assertj.neo4j.api.beta.type.DbRelationship;
 import org.assertj.neo4j.api.beta.type.DbValue;
-import org.assertj.neo4j.api.beta.type.Nodes.DbNode;
-import org.assertj.neo4j.api.beta.type.Relationships.DbRelationship;
 import org.assertj.neo4j.api.beta.type.ValueType;
 
+import java.util.Arrays;
 import java.util.Objects;
 import java.util.function.Predicate;
 
@@ -83,15 +84,16 @@ public interface Predicates {
 
     }
 
-    static <E extends DbEntity, T> Predicate<E> propertyValueMatch(
-            final String key, final Predicate<T> predicate) {
+    @SuppressWarnings("unchecked")
+    static <E extends DbEntity, T> Predicate<E> propertyValueMatch(final String key, final Predicate<T> predicate) {
         return (e) -> predicate.test((T) e.getPropertyValue(key));
     }
 
     /**
      * Predicate to check if a {@link DbNode} has the a {@code label}.
      * <p/>
-     * This predicate will return {@code true} if the label exist. {@code false} otherwise.
+     * This predicate will return {@code true} if a {@link DbNode} have all the label provided. {@code false}
+     * otherwise.
      *
      * @return the predicate to test a node
      */
@@ -102,24 +104,39 @@ public interface Predicates {
     /**
      * Predicate to check if a {@link DbNode} have all the {@code labels}.
      * <p/>
-     * This predicate will return {@code true} if all the labels exist. {@code false} otherwise.
+     * This predicate will return {@code true} if a {@link DbNode} have all the labels. {@code false} otherwise.
      *
      * @return the predicate to test a node
      */
     static Predicate<DbNode> labelsExists(final Iterable<String> labels) {
-        return Streams.stream(labels)
-                .map(Predicates::labelExists)
-                .reduce(x -> true, Predicate::and);
+        return Streams.stream(labels).map(Predicates::labelExists).reduce(x -> true, Predicate::and);
     }
 
     /**
      * Predicate to check if a {@link DbRelationship} is of the expected {@code type}.
      * <p/>
-     * This predicate will return {@code true} if the relationship is the one we expected. {@code false} otherwise.
+     * This predicate will return {@code true} if a {@link DbRelationship} has the {@link DbRelationship#getType()}
+     * equals to the {@code type} provided. {@code false} otherwise.
      *
      * @return the predicate to test a relationship
      */
     static Predicate<DbRelationship> isType(final String type) {
         return (r) -> Objects.equals(r.getType(), type);
+    }
+
+    /**
+     * Predicate to check if a {@link DbRelationship} is one of the expected {@code types}.
+     * <p/>
+     * This predicate will return {@code true} if a {@link DbRelationship} has the {@link DbRelationship#getType()} is
+     * in the {@code types} list. {@code false} otherwise.
+     *
+     * @return the predicate to test a relationship
+     */
+    static Predicate<DbRelationship> isAnyOfTypes(final String... types) {
+        return Arrays.stream(types).map(Predicates::isType).reduce(x -> false, Predicate::or);
+    }
+
+    static Predicate<DbValue> isValueType(final ValueType type) {
+        return (v) -> Objects.equals(v.getType(), type);
     }
 }

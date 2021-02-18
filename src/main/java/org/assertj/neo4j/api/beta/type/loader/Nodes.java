@@ -10,22 +10,21 @@
  *
  * Copyright 2013-2020 the original author or authors.
  */
-package org.assertj.neo4j.api.beta.testing;
+package org.assertj.neo4j.api.beta.type.loader;
 
-import org.assertj.neo4j.api.beta.testing.builders.RelationshipsLoaderBuilder;
-import org.assertj.neo4j.api.beta.type.DbRelationship;
-import org.assertj.neo4j.api.beta.type.loader.Relationships;
+import org.assertj.neo4j.api.beta.type.DbNode;
+import org.neo4j.driver.Driver;
 
 /**
- * @author Patrick Allain - 12/02/2021
+ * {@link DbNode} entities loader definition.
+ *
+ * @author Patrick Allain - 31/10/2020
  */
-public interface Loaders {
+public interface Nodes extends DataLoader<DbNode> {
 
-    static RelationshipsLoaderBuilder relationships() {
-        return new RelationshipsLoaderBuilder();
+    static Nodes of(Driver driver, String... labels) {
+        return new NodeLoader(driver, labels);
     }
 
-    static Relationships relationships(DbRelationship... entities) {
-        return relationships().entities(entities).build();
-    }
 }
+

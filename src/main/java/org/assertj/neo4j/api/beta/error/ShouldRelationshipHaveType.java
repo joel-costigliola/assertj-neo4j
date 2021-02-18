@@ -13,46 +13,68 @@
 package org.assertj.neo4j.api.beta.error;
 
 import org.assertj.core.error.BasicErrorMessageFactory;
-import org.assertj.neo4j.api.beta.type.Relationships.DbRelationship;
+import org.assertj.neo4j.api.beta.type.DbRelationship;
+import org.assertj.neo4j.api.beta.util.Utils;
 
 import java.util.List;
 
 /**
+ * Creates an error message indicating that an assertion that verifies a {@link DbRelationship} should have the expected
+ * type.
+ *
  * @author Patrick Allain - 25/11/2020
  */
 public class ShouldRelationshipHaveType extends BasicEntityErrorMessageFactory<DbRelationship> {
 
-    /**
-     * Creates a new <code>{@link BasicErrorMessageFactory}</code>.
-     *
-     * @param actual       the relationship
-     * @param expectedType the expected type
-     */
-    public ShouldRelationshipHaveType(final DbRelationship actual, final String expectedType) {
+    private ShouldRelationshipHaveType(final DbRelationship actual, final String type) {
         super(
-                "%nExpecting relationship to have type:%n <%2$s>%n"
-                + "but actual type is:%n <%3$s>%n",
+                "%nExpecting relationship to have type:%n  <%2$s>%n"
+                + "but actual type is:%n  <%3$s>%n",
                 actual,
-                ArgDetail.excluded(expectedType),
+                ArgDetail.excluded(type),
                 ArgDetail.included("Actual type", actual.getType())
         );
     }
 
-    public static ShouldRelationshipHaveType create(final DbRelationship actual, final String expectedType) {
-        return new ShouldRelationshipHaveType(actual, expectedType);
+    private ShouldRelationshipHaveType(final DbRelationship actual, final List<String> types) {
+        super(
+                "%nExpecting relationship to have type in:%n  <%2$s>%n"
+                + "but actual type is:%n  <%3$s>%n",
+                actual,
+                ArgDetail.excluded(Utils.sorted(types)),
+                ArgDetail.included("Actual type", actual.getType())
+        );
+    }
+
+    public static ShouldRelationshipHaveType create(final DbRelationship actual, final String type) {
+        return new ShouldRelationshipHaveType(actual, type);
+    }
+
+    public static ShouldRelationshipHaveType create(final DbRelationship actual, final List<String> types) {
+        return new ShouldRelationshipHaveType(actual, types);
     }
 
     public static GroupingEntityErrorFactory<DbRelationship> elements(
-            final List<DbRelationship> actual, final String expectedType) {
+            final List<DbRelationship> actual, final String type) {
         return new BasicGroupingEntityErrorFactory<>(
                 actual,
-                (r) -> create(r, expectedType),
-                "%nExpecting relationships:%n"
-                + "  <%1$s>%n"
-                + "to have type:%n"
-                + "  <%4$s>%n"
+                (r) -> create(r, type),
+                "%nExpecting relationships:%n  <%1$s>%n"
+                + "to have type:%n  <%4$s>%n"
                 + "but found other types for some relationships:",
-                expectedType
+                type
+        );
+    }
+
+    public static GroupingEntityErrorFactory<DbRelationship> elements(
+            final List<DbRelationship> actual, final List<String> types) {
+        return new BasicGroupingEntityErrorFactory<>(
+                actual,
+                (r) -> create(r, types),
+                "%nExpecting relationships:%n  <%1$s>%n"
+                + "to have type in:%n  <%4$s>%n"
+                + "but found other types for some relationships:",
+                Utils.sorted(types)
         );
     }
 }

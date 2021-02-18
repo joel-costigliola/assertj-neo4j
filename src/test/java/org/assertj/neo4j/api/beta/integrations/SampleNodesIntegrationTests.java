@@ -17,9 +17,9 @@ import org.assertj.neo4j.api.beta.testing.Dataset;
 import org.assertj.neo4j.api.beta.testing.IntegrationTests;
 import org.assertj.neo4j.api.beta.testing.TestTags;
 import org.assertj.neo4j.api.beta.testing.Version;
-import org.assertj.neo4j.api.beta.type.Drivers;
-import org.assertj.neo4j.api.beta.type.Nodes;
+import org.assertj.neo4j.api.beta.type.Models;
 import org.assertj.neo4j.api.beta.type.ValueType;
+import org.assertj.neo4j.api.beta.type.loader.Nodes;
 import org.assertj.neo4j.api.beta.util.EntityRepresentation;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -48,7 +48,7 @@ class SampleNodesIntegrationTests {
         public void contains() {
             final Nodes nodes = Nodes.of(driver, "Language");
             DriverAssertions.assertThat(nodes)
-                    .contains(Drivers.node().id(6).label("Language").property("name", "Scala").build());
+                    .contains(Models.node().id(6).label("Language").property("name", "Scala").build());
         }
 
     }
@@ -199,7 +199,7 @@ class SampleNodesIntegrationTests {
                         .hasSize(1)
                         .outgoingRelationships()
                             .usingNoEntityIdComparison()
-                            .contains(Drivers.relation("WRITTEN").property("percent", Collections.singletonList("97.5")).build())
+                            .contains(Models.relation("WRITTEN").property("percent", Collections.singletonList("97.5")).build())
                             .toParentAssert()
                         .toParentAssert()
                     .hasSize(12)
@@ -214,7 +214,7 @@ class SampleNodesIntegrationTests {
             final Nodes nodes = Nodes.of(driver, "Language");
             DriverAssertions.assertThat(nodes)
                     .usingNoEntityIdComparison()
-                    .contains(Drivers.node().label("Language").property("name", "Scala").build());
+                    .contains(Models.node().label("Language").property("name", "Scala").build());
         }
 
         @Test

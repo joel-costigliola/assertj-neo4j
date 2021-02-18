@@ -10,8 +10,9 @@
  *
  * Copyright 2013-2020 the original author or authors.
  */
-package org.assertj.neo4j.api.beta.type;
+package org.assertj.neo4j.api.beta.type.loader;
 
+import org.assertj.neo4j.api.beta.type.RecordType;
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.Query;
 import org.neo4j.driver.Record;

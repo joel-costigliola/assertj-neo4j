@@ -14,8 +14,8 @@ package org.assertj.neo4j.api.beta.error;
 
 import org.assertj.core.error.ErrorMessageFactory;
 import org.assertj.neo4j.api.beta.testing.Randomize;
-import org.assertj.neo4j.api.beta.type.Drivers;
-import org.assertj.neo4j.api.beta.type.Nodes.DbNode;
+import org.assertj.neo4j.api.beta.type.DbNode;
+import org.assertj.neo4j.api.beta.type.Models;
 import org.assertj.neo4j.api.beta.type.ValueType;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -39,7 +39,7 @@ class ShouldHavePropertyListOfTypeTests {
         @Test
         void should_generate_error_message() {
             // GIVEN
-            final DbNode node = Drivers.node().id(3).property("key", Arrays.asList(3.11, 3.12, 3.13)).build();
+            final DbNode node = Models.node().id(3).property("key", Arrays.asList(3.11, 3.12, 3.13)).build();
 
             // WHEN
             final ErrorMessageFactory error = ShouldHavePropertyListOfType.create(node, "key", ValueType.INTEGER);
@@ -63,10 +63,10 @@ class ShouldHavePropertyListOfTypeTests {
         @Test
         void should_generate_an_aggregate_error_message() {
             // GIVEN
-            final DbNode node1 = Drivers.node().id(1).property("key", emptyList()).build();
-            final DbNode node2 = Drivers.node().id(2).property("key", singletonList("v-2.1.1")).build();
-            final DbNode node3 = Drivers.node().id(3).property("key", asList(3.11, 3.12)).build();
-            final DbNode node4 = Drivers.node().id(4).property("key", asList(6, 5, 4)).build();
+            final DbNode node1 = Models.node().id(1).property("key", emptyList()).build();
+            final DbNode node2 = Models.node().id(2).property("key", singletonList("v-2.1.1")).build();
+            final DbNode node3 = Models.node().id(3).property("key", asList(3.11, 3.12)).build();
+            final DbNode node4 = Models.node().id(4).property("key", asList(6, 5, 4)).build();
             final List<DbNode> actual = Randomize.listOf(node1, node2, node3, node4);
 
             // WHEN

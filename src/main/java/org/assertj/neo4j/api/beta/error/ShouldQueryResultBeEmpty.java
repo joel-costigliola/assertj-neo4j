@@ -20,6 +20,9 @@ import org.neo4j.driver.Query;
 import java.util.List;
 
 /**
+ * Creates an error message indicating that an assertion that verifies a query should return an empty result list.
+ *
+ * @param <ENTITY> the entity type
  * @author Patrick Allain - 13/02/2021
  */
 public class ShouldQueryResultBeEmpty<ENTITY extends DbEntity> extends BasicErrorMessageFactory {

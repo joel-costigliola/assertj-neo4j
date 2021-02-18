@@ -31,6 +31,7 @@ public enum RecordType {
     NODE(Node.class, "nodes"),
     RELATIONSHIP(Relationship.class, "relationships"),
     PATH(Path.class, "paths"),
+
     ;
 
     private final static Map<Class<?>, RecordType> MAPPING = Arrays.stream(values())

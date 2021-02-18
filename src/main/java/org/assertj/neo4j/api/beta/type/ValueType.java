@@ -12,9 +12,12 @@
  */
 package org.assertj.neo4j.api.beta.type;
 
+import org.assertj.core.util.Sets;
 import org.neo4j.driver.Values;
 import org.neo4j.driver.types.IsoDuration;
+import org.neo4j.driver.types.Node;
 import org.neo4j.driver.types.Point;
+import org.neo4j.driver.types.Relationship;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -28,6 +31,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -41,25 +46,29 @@ import static java.util.stream.Stream.concat;
  * <ul>
  *     <li>
  *         <a href='https://neo4j.com/docs/cypher-manual/current/syntax/values/#property-types'>property types</a>
+ *         <a href='https://neo4j.com/docs/cypher-manual/current/syntax/values/#structural-types'>structural types</a>
+ *         <a href='https://neo4j.com/docs/cypher-manual/current/syntax/values/#composite-types'>composite types</a>
  *     </li>
  * </ul>
  *
  * @author Patrick Allain - 27/11/2020
  */
-public enum ValueType {
+public enum ValueType implements Converter<Object> {
+
+    // Property types
 
     INTEGER(Long.class, String::valueOf, Function.identity(),
-            new Converter<>(Integer.class, Integer::longValue),
-            new Converter<>(Short.class, Short::longValue),
-            new Converter<>(Byte.class, Byte::longValue)
+            new ConverterType<>(Integer.class, Integer::longValue),
+            new ConverterType<>(Short.class, Short::longValue),
+            new ConverterType<>(Byte.class, Byte::longValue)
     ),
 
     FLOAT(Double.class, String::valueOf, Function.identity(),
-            new Converter<>(Float.class, Float::doubleValue)
+            new ConverterType<>(Float.class, Float::doubleValue)
     ),
 
     STRING(String.class, (v) -> String.format("\"%s\"", v), Function.identity(),
-            new Converter<>(Character.class, Object::toString)
+            new ConverterType<>(Character.class, Object::toString)
     ),
 
     BOOLEAN(Boolean.class, String::valueOf, Function.identity()),
@@ -67,7 +76,7 @@ public enum ValueType {
     DATE(LocalDate.class, String::valueOf, Function.identity()),
 
     DATE_TIME(ZonedDateTime.class, String::valueOf, Function.identity(),
-            new Converter<>(OffsetDateTime.class, OffsetDateTime::toZonedDateTime)
+            new ConverterType<>(OffsetDateTime.class, OffsetDateTime::toZonedDateTime)
     ),
 
     LOCAL_DATE_TIME(LocalDateTime.class, String::valueOf, Function.identity()),
@@ -77,18 +86,38 @@ public enum ValueType {
     LOCAL_TIME(LocalTime.class, String::valueOf, Function.identity()),
 
     DURATION(IsoDuration.class, String::valueOf, Function.identity(),
-            new Converter<>(Duration.class, i -> Values.value(i).asIsoDuration()),
-            new Converter<>(Period.class, i -> Values.value(i).asIsoDuration())
+            new ConverterType<>(Duration.class, i -> Values.value(i).asIsoDuration()),
+            new ConverterType<>(Period.class, i -> Values.value(i).asIsoDuration())
     ),
 
     POINT(Point.class, String::valueOf, Function.identity()),
 
-    LIST(List.class, ValueType::listFormatter, ValueType::listFactory);
+    // Composite types
+
+    LIST(List.class, ValueType::listFormatter, ValueType::listFactory),
+
+    // Structural types
+
+    NODE(DbNode.class, String::valueOf, Function.identity(),
+            new ConverterType<>(
+                    Node.class,
+                    n -> new DbNode(n.id(), n.labels(), DbValue.fromMap(n.asMap()))
+            )
+    ),
+
+    RELATIONSHIP(DbRelationship.class, String::valueOf, Function.identity(),
+            new ConverterType<>(
+                    Relationship.class,
+                    r -> new DbRelationship(r.id(), r.type(), r.startNodeId(), r.endNodeId(),
+                            DbValue.fromMap(r.asMap())
+                    )
+            )
+    );
 
     private final Class<?> targetClass;
     private final Function<Object, String> formatter;
     private final Function<Object, Object> objectFactory;
-    private final List<Converter<?, ?>> converters;
+    private final Converter<?> converter;
 
     /**
      * Enum constructor.
@@ -103,19 +132,36 @@ public enum ValueType {
     <T> ValueType(final Class<T> targetClass,
                   final Function<T, String> formatter,
                   final Function<T, ?> objectFactory,
-                  final Converter<?, T>... converters) {
+                  final ConverterType<?, T>... converters) {
         this.targetClass = targetClass;
         this.formatter = (Function<Object, String>) formatter;
         this.objectFactory = (Function<Object, Object>) objectFactory;
-        this.converters = converters(targetClass, converters);
+        this.converter = aggregateConverters(targetClass, converters);
     }
 
-    private static <T> List<Converter<?, ?>> converters(final Class<T> targetClass,
-                                                        final Converter<?, T>[] converters) {
-        return concat(
-                Stream.of(new Converter<>(targetClass, Function.identity())),
-                Arrays.stream(converters)
-        ).collect(Collectors.toList());
+    private static <T> Converter<?> aggregateConverters(final Class<T> targetClass,
+                                                        final ConverterType<?, T>[] converters) {
+        final List<Converter<?>> aggregatedConverters = Stream
+                .concat(
+                        Stream.of(new ConverterType<>(targetClass, Function.identity())),
+                        Arrays.stream(converters)
+                ).collect(Collectors.toList());
+        return new CompositeConverter<>(aggregatedConverters);
+    }
+
+    public String format(final Object value) {
+        return String.format("%s{%s}", name(), this.formatter.apply(value));
+    }
+
+    @Override
+    public boolean support(Object object) {
+        return this.converter.support(object);
+    }
+
+    @Override
+    public Object convert(Object input) {
+        final Object converted = this.converter.convert(input);
+        return this.objectFactory.apply(converted);
     }
 
     private static <T> String listFormatter(final List<T> values) {
@@ -137,76 +183,7 @@ public enum ValueType {
     }
 
     private static <T> List<DbValue> listFactory(final List<T> list) {
-        return list.stream().map(ValueType::convert).collect(Collectors.toList());
-    }
-
-    /**
-     * Convert a object into a {@link DbValue}.
-     *
-     * @param object the object to convert
-     * @param <T>    the object type
-     * @return a new instance of {@link DbValue}
-     */
-    public static <T> DbValue convert(final T object) {
-        if (object == null) {
-            return null;
-        }
-
-        // Convert property types - aka simple types.
-        for (final ValueType value : values()) {
-            for (Converter<?, ?> converter : value.converters) {
-                if (converter.fromClass.isInstance(object)) {
-                    final Object converted = converter.convert(object);
-                    return DbValue.propValue(value, value.objectFactory.apply(converted));
-                }
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * Convert a {@code properties} {@link Map} into a {@link DbValue} map.
-     *
-     * @param properties the properties map to be converted
-     * @return a map having the same keys than the provided one with {@link DbValue} values.
-     */
-    static Map<String, DbValue> convertMap(final Map<String, Object> properties) {
-        Map<String, DbValue> result = new HashMap<>();
-        for (Map.Entry<String, Object> entry : properties.entrySet()) {
-            result.put(entry.getKey(), convert(entry.getValue()));
-        }
-        return result;
-    }
-
-    public String format(final Object value) {
-        return String.format("%s{%s}", name(), this.formatter.apply(value));
-    }
-
-    /**
-     * Converter.
-     *
-     * @param <I> the input type
-     * @param <O> the output type
-     */
-    static class Converter<I, O> {
-
-        private final Class<I> fromClass;
-        private final Function<I, O> function;
-
-        Converter(final Class<I> fromClass, final Function<I, O> function) {
-            this.fromClass = fromClass;
-            this.function = function;
-        }
-
-        @SuppressWarnings("unchecked")
-        O convert(final Object input) {
-            if (!fromClass.isInstance(input)) {
-                throw new UnsupportedOperationException("Cannot convert object " + input + " as it isn't a instance "
-                                                        + "of " + fromClass);
-            }
-            return this.function.apply((I) input);
-        }
+        return list.stream().map(DbValue::fromObject).collect(Collectors.toList());
     }
 
 }

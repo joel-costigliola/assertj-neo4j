@@ -12,16 +12,16 @@
  */
 package org.assertj.neo4j.api.beta.util;
 
-import org.assertj.neo4j.api.beta.type.Relationships;
+import org.assertj.neo4j.api.beta.type.DbRelationship;
 
 import java.util.Set;
 
 /**
- * Comparison strategy for {@link Relationships.DbRelationship}.
+ * Comparison strategy for {@link DbRelationship}.
  *
  * @author Patrick Allain - 14/02/2021
  */
-public class RelationshipComparisonStrategy extends EntityComparisonStrategy<Relationships.DbRelationship> {
+public class RelationshipComparisonStrategy extends EntityComparisonStrategy<DbRelationship> {
 
     private final boolean ignoreType;
     private final boolean ignoreStartId;
@@ -30,19 +30,19 @@ public class RelationshipComparisonStrategy extends EntityComparisonStrategy<Rel
     private RelationshipComparisonStrategy(
             final boolean ignoreId, final boolean ignoreType, final boolean ignoreStartId, final boolean ignoreEndId,
             final Set<String> ignoreProperties) {
-        super(Relationships.DbRelationship.class, ignoreId, ignoreProperties);
+        super(DbRelationship.class, ignoreId, ignoreProperties);
         this.ignoreType = ignoreType;
         this.ignoreStartId = ignoreStartId;
         this.ignoreEndId = ignoreEndId;
     }
 
     @Override
-    protected boolean areEntityEqual(final Relationships.DbRelationship actual, final Relationships.DbRelationship other) {
+    protected boolean areEntityEqual(final DbRelationship actual, final DbRelationship other) {
         return Utils
                 .combine(
-                        Utils.lazyDeepEquals(this.ignoreType, Relationships.DbRelationship::getType),
-                        Utils.lazyDeepEquals(this.ignoreStartId, Relationships.DbRelationship::getStart),
-                        Utils.lazyDeepEquals(this.ignoreEndId, Relationships.DbRelationship::getEnd)
+                        Utils.lazyDeepEquals(this.ignoreType, DbRelationship::getType),
+                        Utils.lazyDeepEquals(this.ignoreStartId, DbRelationship::getStart),
+                        Utils.lazyDeepEquals(this.ignoreEndId, DbRelationship::getEnd)
                 )
                 .test(actual, other);
     }
@@ -53,7 +53,7 @@ public class RelationshipComparisonStrategy extends EntityComparisonStrategy<Rel
 
     //@formatter:off
     public static class RelationshipComparisonStrategyBuilder
-            extends EntityComparisonStrategyBuilder<Relationships.DbRelationship,
+            extends EntityComparisonStrategyBuilder<DbRelationship,
                                                     RelationshipComparisonStrategy,
                                                     RelationshipComparisonStrategyBuilder> {
     //@formatter:on

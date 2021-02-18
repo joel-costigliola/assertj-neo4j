@@ -10,8 +10,12 @@
  *
  * Copyright 2013-2020 the original author or authors.
  */
-package org.assertj.neo4j.api.beta.type;
+package org.assertj.neo4j.api.beta.type.loader;
 
+import org.assertj.core.util.Sets;
+import org.assertj.neo4j.api.beta.type.DbNode;
+import org.assertj.neo4j.api.beta.type.RecordType;
+import org.assertj.neo4j.api.beta.type.ValueType;
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.Query;
 import org.neo4j.driver.Record;
@@ -22,37 +26,39 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * Concrete implementation for loading {@link Relationships.DbRelationship} entities.
+ * Data loader for {@link DbNode}.
  *
  * @author Patrick Allain - 31/10/2020
  */
-class RelationshipLoader extends AbstractDataLoader<Relationships.DbRelationship> implements Relationships {
+class NodeLoader extends AbstractDataLoader<DbNode> implements Nodes {
 
     /**
-     * Create a new relationships for assertions.
+     * Class constructor for {@link NodeLoader}.
+     * <p>
+     * This will allow you to write easy assertions on your database nodes.
      *
      * @param driver the neo4j driver
-     * @param type   the relationships type.
+     * @param labels the nodes labels to watch
      */
-    public RelationshipLoader(final Driver driver, final String type) {
-        this(driver, Queries.relationships(type));
+    public NodeLoader(final Driver driver, final String... labels) {
+        this(driver, Queries.nodes(labels));
     }
 
-    RelationshipLoader(final Driver driver, final Query query) {
-        super(driver, RecordType.RELATIONSHIP, query);
+    NodeLoader(final Driver driver, final Query query) {
+        super(driver, RecordType.NODE, query);
     }
 
     /** {@inheritDoc} */
     @Override
-    public List<DbRelationship> load(final List<Record> records) {
+    protected List<DbNode> load(final List<Record> records) {
         return records.stream()
                 .map(Record::values)
                 .flatMap(Collection::stream)
-                .map(Value::asRelationship)
-                .map(r -> new DbRelationship(r.id(), r.type(), r.startNodeId(), r.endNodeId(),
-                        ValueType.convertMap(r.asMap())))
+                .map(Value::asNode)
+                .map(ValueType.NODE::convert)
+                .map(DbNode.class::cast)
                 .collect(Collectors.toList());
-
     }
 
 }
+

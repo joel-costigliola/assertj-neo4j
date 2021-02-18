@@ -15,9 +15,9 @@ package org.assertj.neo4j.api.beta.testing;
 import org.assertj.neo4j.api.beta.testing.builders.NodeBuilder;
 import org.assertj.neo4j.api.beta.testing.builders.RecordBuilder;
 import org.assertj.neo4j.api.beta.testing.builders.RelationshipBuilder;
-import org.assertj.neo4j.api.beta.type.Drivers;
-import org.assertj.neo4j.api.beta.type.Nodes;
-import org.assertj.neo4j.api.beta.type.Relationships;
+import org.assertj.neo4j.api.beta.type.DbNode;
+import org.assertj.neo4j.api.beta.type.DbRelationship;
+import org.assertj.neo4j.api.beta.type.Models;
 import org.assertj.neo4j.api.beta.util.EntityUtils;
 
 /**
@@ -37,15 +37,15 @@ public interface Builders {
         return new RelationshipBuilder(type);
     }
 
-    static Nodes.DbNodeBuilder rebuild(Nodes.DbNode node) {
-        return Drivers.node()
+    static DbNode.DbNodeBuilder rebuild(DbNode node) {
+        return Models.node()
                 .id(node.getId())
                 .labels(node.getLabels().toArray(new String[0]))
                 .properties(EntityUtils.propertyObjects(node));
     }
 
-    static Relationships.DbRelationshipBuilder rebuild(Relationships.DbRelationship relationship) {
-        return Drivers.relation()
+    static DbRelationship.DbRelationshipBuilder rebuild(DbRelationship relationship) {
+        return Models.relation()
                 .id(relationship.getId())
                 .type(relationship.getType())
                 .start(relationship.getStart())

@@ -12,65 +12,79 @@
  */
 package org.assertj.neo4j.api.beta;
 
-import org.assertj.core.api.AbstractIterableAssert;
-import org.assertj.core.presentation.Representation;
+import org.assertj.neo4j.api.beta.type.DbResult;
+import org.assertj.neo4j.api.beta.type.ValueType;
+import org.assertj.neo4j.api.beta.util.Predicates;
 import org.assertj.neo4j.api.beta.util.Wip;
-import org.neo4j.driver.Record;
 import org.neo4j.driver.Result;
 
 import java.util.List;
-import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author Patrick Allain - 26/01/2021
  */
 //@formatter:off
-public class DriverResultAssert extends AbstractIterableAssert<DriverResultAssert,
-                                                               List<Map<String, Object>>,
-                                                               Map<String, Object>,
-                                                               RecordMapAssert>
+public class DriverResultAssert
+        extends AbstractDbAssert<DriverResultAssert,
+                                 DbResult,
+                                 DriverResultAssert,
+                                 DriverResultAssert,
+                                 DriverResultAssert>
         implements ParentalAssert {
 //@formatter:on
 
     public DriverResultAssert(final Result result) {
-        super(result.list(Record::asMap), DriverResultAssert.class);
+        this(DbResult.from(result), null);
+    }
+
+    private DriverResultAssert(final DbResult actual, final DriverResultAssert parent) {
+        super(
+                actual,
+                DriverResultAssert.class,
+                DriverResultAssert::new,
+                parent,
+                Navigable.rootAssert(parent)
+        );
     }
 
     @Override
-    public Representation representation() {
-        return this.info.representation();
+    public DriverResultAssert toRootAssert() {
+        return rootAssert().orElse(this);
     }
 
-    public DriverResultAssert hasColumnNumber(int expectedColumn) {
-        Wip.TODO(this);
+    public DriverResultAssert hasRecordSize(int expectedSize) {
+        iterables.assertHasSize(info, actual.getRecords(), expectedSize);
+        return myself;
+    }
+
+    public DriverResultAssert hasColumnSize(int expectedColumn) {
+        iterables.assertHasSize(info, actual.getColumns(), expectedColumn);
         return myself;
     }
 
     public DriverResultAssert hasColumns(final String... names) {
-        Wip.TODO(this);
+        iterables.assertContains(info, actual.getColumns(), names);
         return myself;
     }
 
-    public DriverResultAssert isNode(String n) {
+    public DriverResultAssert isNode(final String columnName) {
+        hasColumns(columnName);
+        final List<Object> values = actual.getRecords().stream()
+                .map(m -> m.get(columnName))
+                .collect(Collectors.toList());
+
         Wip.TODO(this);
+        // shouldAllVerify(values, Predicates.isValueType(ValueType.NODE))
         return myself;
     }
 
     public DriverNodesAssert asNodesAssert(String s) {
+        Wip.TODO(this);
         return null;
     }
 
     public <T> NavigableListAssert<T, DriverResultAssert, DriverResultAssert> asListOf(Class<T> clazz) {
-        return null;
-    }
-
-    @Override
-    protected RecordMapAssert toAssert(Map<String, Object> value, String description) {
-        return null;
-    }
-
-    @Override
-    protected DriverResultAssert newAbstractIterableAssert(Iterable<? extends Map<String, Object>> iterable) {
         return null;
     }
 

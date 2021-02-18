@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
  *
  * @author Patrick Allain - 09/11/2020
  */
-public abstract class DbEntity {
+public abstract class DbEntity implements Representable {
 
     protected final RecordType recordType;
 
@@ -73,15 +73,14 @@ public abstract class DbEntity {
         return Optional.ofNullable(properties.get(key)).map(DbValue::getType).orElse(null);
     }
 
+    @Override
     public String abbreviate() {
         return recordType + "{id=" + Formats.number(id) + '}';
     }
 
-    /**
-     * Design for unified {@link #toString()} representation.
-     */
-    protected String entityRepresentation(final String prefix) {
-        return recordType + "{id=" + Formats.number(id) + ", " + prefix + ", properties=" + properties + '}';
+    @Override
+    public String toString() {
+        return detailed();
     }
 
     @Override
@@ -99,7 +98,7 @@ public abstract class DbEntity {
         return Objects.hash(recordType, id, properties);
     }
 
-    static abstract class DbEntityBuilder<T extends DbEntity, B extends DbEntityBuilder<T, B>> {
+    protected static abstract class DbEntityBuilder<T extends DbEntity, B extends DbEntityBuilder<T, B>> {
 
         private final B myself;
         protected Long id = null;
@@ -119,7 +118,7 @@ public abstract class DbEntity {
         }
 
         public B property(final String key, final Object value) {
-            this.properties.put(key, ValueType.convert(value));
+            this.properties.put(key, DbValue.fromObject(value));
             return myself;
         }
 

@@ -15,10 +15,10 @@ package org.assertj.neo4j.api.beta.util;
 import org.assertj.core.util.IterableUtil;
 import org.assertj.core.util.Streams;
 import org.assertj.neo4j.api.beta.type.DbEntity;
+import org.assertj.neo4j.api.beta.type.DbNode;
+import org.assertj.neo4j.api.beta.type.DbRelationship;
 import org.assertj.neo4j.api.beta.type.DbValue;
-import org.assertj.neo4j.api.beta.type.Nodes.DbNode;
 import org.assertj.neo4j.api.beta.type.RecordType;
-import org.assertj.neo4j.api.beta.type.Relationships.DbRelationship;
 import org.assertj.neo4j.api.beta.type.ValueType;
 
 import java.util.Comparator;

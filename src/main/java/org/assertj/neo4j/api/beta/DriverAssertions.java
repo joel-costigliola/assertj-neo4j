@@ -12,9 +12,9 @@
  */
 package org.assertj.neo4j.api.beta;
 
-import org.assertj.neo4j.api.beta.type.Nodes;
-import org.assertj.neo4j.api.beta.type.Relationships;
 import org.assertj.neo4j.api.beta.type.Request;
+import org.assertj.neo4j.api.beta.type.loader.Nodes;
+import org.assertj.neo4j.api.beta.type.loader.Relationships;
 import org.neo4j.driver.Result;
 
 /**

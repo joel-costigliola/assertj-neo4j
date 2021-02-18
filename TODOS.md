@@ -6,19 +6,19 @@
 
 ```java
 class SampleTests {
-    @Test
-    void nodes() {
-        assertThat(new Nodes(driver, "LABEL"))
-                .hasSize(5)
-                .haveLabels("LABEL_1", "LABEL_2")
-                .havePropertyKeys("KEY_1", "KEY_2")
-                .ignoringIds()
-                .contains(
-                        Drivers.node().label("LABEL_1").property("prop-1", "value-1").build(),
-                        Drivers.node().label("LABEL_1").property("prop-1", "value-1").build()
-                )
-                .toParent();
-    }
+  @Test
+  void nodes() {
+    assertThat(new Nodes(driver, "LABEL"))
+      .hasSize(5)
+      .haveLabels("LABEL_1", "LABEL_2")
+      .havePropertyKeys("KEY_1", "KEY_2")
+      .ignoringIds()
+      .contains(
+        Drivers.node().label("LABEL_1").property("prop-1", "value-1").build(),
+        Drivers.node().label("LABEL_1").property("prop-1", "value-1").build()
+      )
+      .toParent();
+  }
 }
 
 ```
@@ -79,6 +79,8 @@ class SampleTests {
 
 ### Others
 
-* [ ] Simplify error message factory
-* [ ] 
-* [ ] Simplify assertions
+* [X] Simplify error message factory
+* [ ] Support null in composite types
+* [ ] Simplify assertions ?
+* [X] Allow fluent assertions between multiple type
+* [X] Allow navigation on assertions

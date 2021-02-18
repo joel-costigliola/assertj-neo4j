@@ -10,9 +10,11 @@
  *
  * Copyright 2013-2020 the original author or authors.
  */
-package org.assertj.neo4j.api.beta.type;
+package org.assertj.neo4j.api.beta.type.loader;
 
 import org.assertj.neo4j.api.beta.testing.Builders;
+import org.assertj.neo4j.api.beta.type.DbRelationship;
+import org.assertj.neo4j.api.beta.type.Models;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,7 +32,6 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
@@ -79,14 +80,14 @@ class RelationshipsTests {
         doReturn(result).when(session).readTransaction(any(), any(TransactionConfig.class));
 
         // WHEN
-        final List<Relationships.DbRelationship> dbRelationships = relationships.load();
+        final List<DbRelationship> dbRelationships = relationships.load();
 
         // THEN
         assertThat(dbRelationships)
                 .hasSize(2)
                 .contains(
-                        Drivers.relation("SAMPLE").id(1).property("prop-0", true).build(),
-                        Drivers.relation("SAMPLE").id(2).property("prop-1", false).build()
+                        Models.relation("SAMPLE").id(1).property("prop-0", true).build(),
+                        Models.relation("SAMPLE").id(2).property("prop-1", false).build()
                 );
         assertThat(relationships.query()).isEqualTo(new Query("MATCH ()-[r :KNOWS]->() RETURN r"));
 

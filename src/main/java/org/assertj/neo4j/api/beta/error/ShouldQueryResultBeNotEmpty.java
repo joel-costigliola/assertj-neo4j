@@ -18,6 +18,8 @@ import org.assertj.neo4j.api.beta.type.RecordType;
 import org.neo4j.driver.Query;
 
 /**
+ * Creates an error message indicating that an assertion that verifies a query should return a non empty result list.
+ *
  * @author Patrick Allain - 14/02/2021
  */
 public class ShouldQueryResultBeNotEmpty extends BasicErrorMessageFactory {

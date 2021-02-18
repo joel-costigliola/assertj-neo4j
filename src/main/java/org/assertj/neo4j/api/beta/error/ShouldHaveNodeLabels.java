@@ -12,7 +12,7 @@
  */
 package org.assertj.neo4j.api.beta.error;
 
-import org.assertj.neo4j.api.beta.type.Nodes.DbNode;
+import org.assertj.neo4j.api.beta.type.DbNode;
 import org.assertj.neo4j.api.beta.util.Utils;
 
 import java.util.List;

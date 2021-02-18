@@ -12,12 +12,10 @@
  */
 package org.assertj.neo4j.api.beta;
 
-import org.assertj.core.api.AbstractAssert;
 import org.assertj.core.error.ErrorMessageFactory;
 import org.assertj.core.internal.ComparisonStrategy;
 import org.assertj.core.internal.Iterables;
-import org.assertj.core.presentation.Representation;
-import org.assertj.core.util.VisibleForTesting;
+import org.assertj.core.util.Preconditions;
 import org.assertj.neo4j.api.beta.error.ShouldHavePropertyInstanceOf;
 import org.assertj.neo4j.api.beta.error.ShouldHavePropertyKeys;
 import org.assertj.neo4j.api.beta.error.ShouldHavePropertyListOfType;
@@ -27,10 +25,10 @@ import org.assertj.neo4j.api.beta.error.ShouldHavePropertyValueType;
 import org.assertj.neo4j.api.beta.error.ShouldPropertyMatch;
 import org.assertj.neo4j.api.beta.error.ShouldQueryResultBeEmpty;
 import org.assertj.neo4j.api.beta.error.ShouldQueryResultBeNotEmpty;
-import org.assertj.neo4j.api.beta.type.DataLoader;
 import org.assertj.neo4j.api.beta.type.DbEntity;
 import org.assertj.neo4j.api.beta.type.RecordType;
 import org.assertj.neo4j.api.beta.type.ValueType;
+import org.assertj.neo4j.api.beta.type.loader.DataLoader;
 import org.assertj.neo4j.api.beta.util.Checks;
 import org.assertj.neo4j.api.beta.util.EntityComparisonStrategy;
 import org.assertj.neo4j.api.beta.util.EntityRepresentation;
@@ -41,7 +39,6 @@ import org.assertj.neo4j.api.beta.util.Utils;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -64,7 +61,7 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
                                              NEW_SELF extends Navigable<SELF, ROOT_ASSERT>,
                                              PARENT_ASSERT extends ParentalAssert,
                                              ROOT_ASSERT>
-        extends AbstractAssert<SELF, List<ENTITY>>
+        extends AbstractDbAssert<SELF, List<ENTITY>, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT>
         implements Navigable<PARENT_ASSERT, ROOT_ASSERT>,
                    ParentalAssert {
 //@formatter:on
@@ -75,64 +72,28 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
     /** The data loader. */
     protected final DataLoader<ENTITY> dataLoader;
 
-    /** Iterable to factorize assertions on iterable. */
-    protected Iterables iterables = Iterables.instance();
-
-    /** Factory for creating new assertions on restricted list of entities. */
-    private final EntitiesAssertFactory<SELF, ENTITY, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT> factory;
-
-    /** Root assert. May be {@code null}. */
-    private final ROOT_ASSERT rootAssert;
-
-    /** Previous assert. May be {@code null}. */
-    protected final PARENT_ASSERT parentAssert;
-
     /**
      * Class constructor.
      *
-     * @param recordType the record type
-     * @param selfType   the self class type
-     * @param dataLoader the data loader
-     * @param entities   the entities
-     * @param rootAssert the parent entities for navigation
+     * @param recordType     the record type
+     * @param selfType       the self class type
+     * @param dataLoader     the data loader
+     * @param entities       the entities
+     * @param newSelfFactory the factory to chain from the current assertion
+     * @param parentAssert   the parent assertion for navigation
+     * @param rootAssert     the parent assertion for navigation
      */
     protected AbstractEntitiesAssert(
             final RecordType recordType,
             final Class<?> selfType,
             final DataLoader<ENTITY> dataLoader,
             final List<ENTITY> entities,
-            final EntitiesAssertFactory<SELF, ENTITY, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT> factory,
+            final EntitiesAssertFactory<SELF, ENTITY, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT> newSelfFactory,
             final PARENT_ASSERT parentAssert,
             final ROOT_ASSERT rootAssert) {
-        super(entities, selfType);
+        super(entities, selfType, (a, c) -> newSelfFactory.create(a, dataLoader, c), parentAssert, rootAssert);
         this.recordType = Objects.requireNonNull(recordType);
         this.dataLoader = dataLoader;
-        this.factory = Objects.requireNonNull(factory);
-        this.parentAssert = parentAssert;
-        this.rootAssert = rootAssert;
-        if (parentAssert != null) {
-            this.info.useRepresentation(parentAssert.representation());
-            // TODO : Copy the parent comparison strategy ?
-        }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public PARENT_ASSERT toParentAssert() {
-        if (this.parentAssert == null) {
-            return (PARENT_ASSERT) toRootAssert();
-        }
-        return this.parentAssert;
-    }
-
-    public Optional<ROOT_ASSERT> rootAssert() {
-        return Optional.ofNullable(this.rootAssert);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Representation representation() {
-        return info.representation();
     }
 
     /**
@@ -178,23 +139,6 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
         return myself;
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public SELF usingDefaultComparator() {
-        iterables = Iterables.instance();
-        return super.usingDefaultComparator();
-    }
-
-    /**
-     * Get the actual entities for assertions.
-     *
-     * @return a list of entities.
-     */
-    @VisibleForTesting
-    protected List<ENTITY> getActual() {
-        return this.actual;
-    }
-
     /**
      * Retrieve the entity ids.
      *
@@ -212,15 +156,10 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
      * @param callback  the callback to create the {@link ErrorMessageFactory}
      * @return {@code this} assertion object.
      */
-    protected SELF shouldAllVerify(final Predicate<ENTITY> predicate,
-                                   final ErrorMessageCallback<ENTITY> callback) {
+    protected SELF shouldAllVerify(final Predicate<ENTITY> predicate, final DbMessageCallback<ENTITY> callback) {
         // TODO : OR => iterables.assertAllMatch(info, actual, predicate, new PredicateDescription("TOTO"));?
         isNotEmpty();
-        final List<ENTITY> notSatisfies = actual.stream().filter(predicate.negate()).collect(Collectors.toList());
-        if (!notSatisfies.isEmpty()) {
-            throwAssertionError(callback.create(notSatisfies));
-        }
-        return myself;
+        return shouldAllVerify(actual, predicate, callback);
     }
 
     /**
@@ -238,7 +177,7 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
         return isEmpty((entities) -> ShouldQueryResultBeEmpty.create(entities, dataLoader.query()));
     }
 
-    protected SELF isEmpty(final ErrorMessageCallback<ENTITY> callback) {
+    protected SELF isEmpty(final DbMessageCallback<ENTITY> callback) {
         if (!actual.isEmpty()) {
             throwAssertionError(callback.create(actual));
         }
@@ -323,7 +262,7 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
      */
     public NEW_SELF filteredOn(final Predicate<ENTITY> predicate) {
         final List<ENTITY> entities = this.actual.stream().filter(predicate).collect(Collectors.toList());
-        return factory.create(entities, dataLoader, myself);
+        return newSelfFactory.create(entities, myself);
     }
 
     /**
@@ -475,6 +414,7 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
     public SELF havePropertyOfType(final String key, final ValueType expectedType) {
         havePropertyKeys(Objects.requireNonNull(key, "The property key shouldn't be null"));
         final ValueType type = Objects.requireNonNull(expectedType, "The expected value type shouldn't be null");
+        // Preconditions.checkArgument();
         return shouldAllVerify(
                 Predicates.propertyValueType(key, type),
                 (notSatisfies) -> ShouldHavePropertyValueType.elements(actual, key, type).notSatisfies(notSatisfies)
@@ -521,6 +461,8 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
      * assertThat(nodes)
      *   .haveListPropertyOfType("nicknames", ValueType.STRING)
      * </code></pre>
+     * <p/>
+     * FIXME : List property type can contains null which is not properly handle right now.
      *
      * @param key          the property key all entities should have.
      * @param expectedType the expected type for the property.
@@ -647,13 +589,6 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
          * @return a new assertion of the current type
          */
         NEW_SELF create(List<ENTITY> entities, DataLoader<ENTITY> loader, SELF current);
-
-    }
-
-    @FunctionalInterface
-    protected interface ErrorMessageCallback<ENTITY> {
-
-        ErrorMessageFactory create(List<ENTITY> notSatisfies);
 
     }
 

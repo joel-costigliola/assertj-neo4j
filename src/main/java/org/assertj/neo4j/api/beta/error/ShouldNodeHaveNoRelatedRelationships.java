@@ -12,8 +12,8 @@
  */
 package org.assertj.neo4j.api.beta.error;
 
-import org.assertj.neo4j.api.beta.type.Nodes.DbNode;
-import org.assertj.neo4j.api.beta.type.Relationships.DbRelationship;
+import org.assertj.neo4j.api.beta.type.DbNode;
+import org.assertj.neo4j.api.beta.type.DbRelationship;
 import org.assertj.neo4j.api.beta.util.EntityUtils;
 import org.assertj.neo4j.api.beta.util.Formats;
 

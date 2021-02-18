@@ -12,59 +12,50 @@
  */
 package org.assertj.neo4j.api.beta.type;
 
-import org.neo4j.driver.Driver;
+import org.assertj.neo4j.api.beta.util.Formats;
 
+import java.text.Format;
 import java.util.Map;
 
 /**
- * {@link Relationships.DbRelationship} entities loader definition.
- *
- * @author Patrick Allain - 31/10/2020
+ * TODO : Maybe extract method here in a interface to be able to decorate a Relationship from driver - This may have
+ * impact for comparing relationship.
  */
-public interface Relationships extends DataLoader<Relationships.DbRelationship> {
+public class DbRelationship extends DbEntity {
 
-    static Relationships of(final Driver driver, final String type) {
-        return new RelationshipLoader(driver, type);
+    private final Long start;
+    private final Long end;
+    private final String type;
+
+    public DbRelationship(final Long id, final String type, final Long start, final Long end,
+                          final Map<String, DbValue> properties) {
+        super(RecordType.RELATIONSHIP, id, properties);
+        this.start = start;
+        this.end = end;
+        this.type = type;
     }
 
-    /**
-     * TODO : Maybe extract method here in a interface to be able to decorate a Relationship from driver - This may have
-     * impact for comparing relationship.
-     */
-    class DbRelationship extends DbEntity {
-
-        private final Long start;
-        private final Long end;
-        private final String type;
-
-        DbRelationship(final Long id, final String type, final Long start, final Long end,
-                       final Map<String, DbValue> properties) {
-            super(RecordType.RELATIONSHIP, id, properties);
-            this.start = start;
-            this.end = end;
-            this.type = type;
-        }
-
-        public String getType() {
-            return type;
-        }
-
-        public Long getStart() {
-            return start;
-        }
-
-        public Long getEnd() {
-            return end;
-        }
-
-        @Override
-        public String toString() {
-            return entityRepresentation("type='" + type + "', start=" + start + ", end=" + end);
-        }
-
+    @Override
+    public String detailed() {
+        return recordType + "{"
+               + "id=" + Formats.number(id) + ", type='" + type + "', start=" + start + ", "
+               + "end=" + end + ", properties=" + properties + '}';
     }
 
-    class DbRelationshipBuilder extends DbEntity.DbEntityBuilder<DbRelationship, DbRelationshipBuilder> {
+    public String getType() {
+        return type;
+    }
+
+    public Long getStart() {
+        return start;
+    }
+
+    public Long getEnd() {
+        return end;
+    }
+
+    /** Builder for {@link DbRelationship}. */
+    public static class DbRelationshipBuilder extends DbEntityBuilder<DbRelationship, DbRelationshipBuilder> {
 
         private String type;
         private Long start;

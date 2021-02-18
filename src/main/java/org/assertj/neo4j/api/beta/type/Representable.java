@@ -10,18 +10,15 @@
  *
  * Copyright 2013-2020 the original author or authors.
  */
-package org.assertj.neo4j.api.beta;
-
-import org.assertj.core.api.AbstractAssert;
-
-import java.util.Map;
+package org.assertj.neo4j.api.beta.type;
 
 /**
- * @author Patrick Allain - 26/01/2021
+ * @author patouche - 18/02/2021
  */
-public class RecordMapAssert extends AbstractAssert<RecordMapAssert, Map<String, Object>> {
+public interface Representable {
 
-    public RecordMapAssert(Map<String, Object> stringObjectMap) {
-        super(stringObjectMap, RecordMapAssert.class);
-    }
+    String abbreviate();
+
+    String detailed();
+
 }

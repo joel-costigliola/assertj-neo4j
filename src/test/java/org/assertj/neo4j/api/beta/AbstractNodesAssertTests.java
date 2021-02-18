@@ -13,14 +13,14 @@
 package org.assertj.neo4j.api.beta;
 
 import org.assertj.neo4j.api.beta.testing.Loaders;
-import org.assertj.neo4j.api.beta.type.DataLoader;
 import org.assertj.neo4j.api.beta.type.DbEntity;
-import org.assertj.neo4j.api.beta.type.Drivers;
-import org.assertj.neo4j.api.beta.type.LoaderFactory;
-import org.assertj.neo4j.api.beta.type.Nodes;
-import org.assertj.neo4j.api.beta.type.Relationships;
-import org.assertj.neo4j.api.beta.type.Relationships.DbRelationship;
-import org.assertj.neo4j.api.beta.util.EntityRepresentation;
+import org.assertj.neo4j.api.beta.type.DbNode;
+import org.assertj.neo4j.api.beta.type.DbRelationship;
+import org.assertj.neo4j.api.beta.type.Models;
+import org.assertj.neo4j.api.beta.type.loader.DataLoader;
+import org.assertj.neo4j.api.beta.type.loader.LoaderFactory;
+import org.assertj.neo4j.api.beta.type.loader.Nodes;
+import org.assertj.neo4j.api.beta.type.loader.Relationships;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -34,6 +34,7 @@ import org.neo4j.driver.Query;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -54,17 +55,22 @@ class AbstractNodesAssertTests {
 
         protected final Nodes dataLoader;
 
-        private final List<Nodes.DbNode> nodes;
+        private final List<DbNode> nodes;
 
         protected DriverNodesAssert assertions;
 
         protected final Driver driver = Mockito.mock(Driver.class);
 
-        protected BaseNodesTests(final Nodes.DbNodeBuilder... builders) {
+        protected BaseNodesTests(final DbNode.DbNodeBuilder... builders) {
             this.dataLoader = Mockito.mock(Nodes.class);
             this.nodes = IntStream.range(0, builders.length)
-                    .mapToObj(idx -> builders[idx].id(idx + 1).build())
+                    .mapToObj(idx -> entity(idx, builders[idx]))
                     .collect(Collectors.toList());
+        }
+
+        private DbNode entity(final long idx, final DbNode.DbNodeBuilder builder) {
+            final Long id = Optional.ofNullable(builder.build().getId()).orElseGet(() -> idx + 1);
+            return builder.id(id).build();
         }
 
         @BeforeEach
@@ -72,7 +78,7 @@ class AbstractNodesAssertTests {
             testCase(this.nodes);
         }
 
-        protected void testCase(final List<Nodes.DbNode> nodes) {
+        protected void testCase(final List<DbNode> nodes) {
             when(this.dataLoader.load()).thenReturn(nodes);
             this.assertions = new DriverNodesAssert(dataLoader);
         }
@@ -88,16 +94,45 @@ class AbstractNodesAssertTests {
     }
 
     @Nested
+    @DisplayName("usingNoEntityIdComparison")
+    class UsingNoEntityIdComparisonTests extends BaseNodesTests {
+
+        UsingNoEntityIdComparisonTests() {
+            super(
+                    Models.node().id(22).labels("lbl", "lbl-1"),
+                    Models.node().id(56).labels("lbl", "lbl-2")
+            );
+        }
+
+        @Test
+        void should_return_a_list_of_nodes_without_ids() {
+            // WHEN
+            final DriverNodesAssert result = assertions.usingNoEntityIdComparison();
+
+            // THEN
+            verify(dataLoader).load();
+            assertThat(result.getActual())
+                    .extracting(DbEntity::getId)
+                    .doesNotContainNull();
+            Assertions.assertDoesNotThrow(() -> result
+                    .withFullEntityRepresentation()
+                    .contains(Models.node().labels("lbl", "lbl-1").build())
+                    .contains(Models.node().id(35).labels("lbl", "lbl-2").build())
+            );
+        }
+    }
+
+    @Nested
     @DisplayName("haveLabels")
     class HaveLabelsTests extends BaseNodesTests {
 
         HaveLabelsTests() {
             super(
-                    Drivers.node().labels("all", "missing"),
-                    Drivers.node().labels("all", "missing"),
-                    Drivers.node().labels("all", "OTHER-LABEL"),
-                    Drivers.node().labels("all", "missing"),
-                    Drivers.node().labels("all", "missing")
+                    Models.node().labels("all", "missing"),
+                    Models.node().labels("all", "missing"),
+                    Models.node().labels("all", "OTHER-LABEL"),
+                    Models.node().labels("all", "missing"),
+                    Models.node().labels("all", "missing")
             );
         }
 
@@ -154,52 +189,23 @@ class AbstractNodesAssertTests {
     }
 
     @Nested
-    @DisplayName("usingNoEntityIdComparison")
-    class UsingNoEntityIdComparisonTests extends BaseNodesTests {
-
-        public UsingNoEntityIdComparisonTests() {
-            super(
-                    Drivers.node().id(22).labels("lbl", "lbl-1"),
-                    Drivers.node().id(56).labels("lbl", "lbl-2")
-            );
-        }
-
-        @Test
-        void should_return_a_list_of_nodes_without_ids() {
-            // WHEN
-            final DriverNodesAssert result = assertions.usingNoEntityIdComparison();
-
-            // THEN
-            verify(dataLoader).load();
-            assertThat(result.getActual())
-                    .extracting(DbEntity::getId)
-                    .doesNotContainNull();
-            Assertions.assertDoesNotThrow(() -> result
-                    .withFullEntityRepresentation()
-                    .contains(Drivers.node().labels("lbl", "lbl-1").build())
-                    .contains(Drivers.node().id(35).labels("lbl", "lbl-2").build())
-            );
-        }
-    }
-
-    @Nested
     @DisplayName("incomingRelationships")
     class IncomingRelationshipsTests extends BaseNodesTests {
 
         IncomingRelationshipsTests() {
             super(
-                    Drivers.node().id(1).labels("LBL_1"),
-                    Drivers.node().id(2).labels("LBL_2"),
-                    Drivers.node().id(3).labels("LBL_3")
+                    Models.node().id(1).labels("LBL_1"),
+                    Models.node().id(2).labels("LBL_2"),
+                    Models.node().id(3).labels("LBL_3")
             );
         }
 
         @Test
         void should_pass() {
             // GIVEN
-            final DbRelationship relationship1 = Drivers.relation("DISCOVER").id(11).start(1).end(4).build();
-            final DbRelationship relationship2 = Drivers.relation("KNOWS").id(12).start(5).end(1).build();
-            final DbRelationship relationship3 = Drivers.relation("KNOWS").id(23).start(6).end(3).build();
+            final DbRelationship relationship1 = Models.relation("DISCOVER").id(11).start(1).end(4).build();
+            final DbRelationship relationship2 = Models.relation("KNOWS").id(12).start(5).end(1).build();
+            final DbRelationship relationship3 = Models.relation("KNOWS").id(23).start(6).end(3).build();
             final Relationships relationships = Loaders.relationships(relationship1, relationship2, relationship3);
             when(dataLoader.chain(any())).thenReturn(relationships);
 
@@ -222,20 +228,20 @@ class AbstractNodesAssertTests {
     @DisplayName("outgoingRelationships")
     class OutgoingRelationshipsTests extends BaseNodesTests {
 
-        public OutgoingRelationshipsTests() {
+        OutgoingRelationshipsTests() {
             super(
-                    Drivers.node().id(1).labels("LBL_1"),
-                    Drivers.node().id(2).labels("LBL_2"),
-                    Drivers.node().id(3).labels("LBL_3")
+                    Models.node().id(1).labels("LBL_1"),
+                    Models.node().id(2).labels("LBL_2"),
+                    Models.node().id(3).labels("LBL_3")
             );
         }
 
         @Test
         void should_pass() {
             // GIVEN
-            final DbRelationship relationship1 = Drivers.relation("DISCOVER").id(11).start(4).end(1).build();
-            final DbRelationship relationship2 = Drivers.relation("KNOWS").id(12).start(1).end(5).build();
-            final DbRelationship relationship3 = Drivers.relation("KNOWS").id(23).start(3).end(6).build();
+            final DbRelationship relationship1 = Models.relation("DISCOVER").id(11).start(4).end(1).build();
+            final DbRelationship relationship2 = Models.relation("KNOWS").id(12).start(1).end(5).build();
+            final DbRelationship relationship3 = Models.relation("KNOWS").id(23).start(3).end(6).build();
             final Relationships relationships = Loaders.relationships(relationship1, relationship2, relationship3);
             when(dataLoader.chain(any())).thenReturn(relationships);
 
@@ -259,18 +265,18 @@ class AbstractNodesAssertTests {
 
         HaveNoIncomingRelationshipsTests() {
             super(
-                    Drivers.node().id(1).labels("LBL_1"),
-                    Drivers.node().id(2).labels("LBL_2"),
-                    Drivers.node().id(3).labels("LBL_3")
+                    Models.node().id(1).labels("LBL_1"),
+                    Models.node().id(2).labels("LBL_2"),
+                    Models.node().id(3).labels("LBL_3")
             );
         }
 
         @Test
         void should_fail() {
             // GIVEN
-            final DbRelationship relationship1 = Drivers.relation("DISCOVER").id(11).start(1).end(4).build();
-            final DbRelationship relationship2 = Drivers.relation("KNOWS").id(12).start(5).end(1).build();
-            final DbRelationship relationship3 = Drivers.relation("KNOWS").id(13).start(6).end(3).build();
+            final DbRelationship relationship1 = Models.relation("DISCOVER").id(11).start(1).end(4).build();
+            final DbRelationship relationship2 = Models.relation("KNOWS").id(12).start(5).end(1).build();
+            final DbRelationship relationship3 = Models.relation("KNOWS").id(13).start(6).end(3).build();
             final Relationships relationships = Loaders.relationships(relationship1, relationship2, relationship3);
             when(dataLoader.chain(any())).thenReturn(relationships);
 
@@ -293,9 +299,9 @@ class AbstractNodesAssertTests {
         @Test
         void should_pass() {
             // GIVEN
-            final DbRelationship relationship1 = Drivers.relation("DISCOVER").id(11).start(1).end(4).build();
-            final DbRelationship relationship2 = Drivers.relation("KNOWS").id(12).start(2).end(5).build();
-            final DbRelationship relationship3 = Drivers.relation("KNOWS").id(13).start(3).end(6).build();
+            final DbRelationship relationship1 = Models.relation("DISCOVER").id(11).start(1).end(4).build();
+            final DbRelationship relationship2 = Models.relation("KNOWS").id(12).start(2).end(5).build();
+            final DbRelationship relationship3 = Models.relation("KNOWS").id(13).start(3).end(6).build();
             final Relationships relationships = Loaders.relationships(relationship1, relationship2, relationship3);
             when(dataLoader.chain(any())).thenReturn(relationships);
 
@@ -318,18 +324,18 @@ class AbstractNodesAssertTests {
 
         HaveNoOutgoingRelationshipsTests() {
             super(
-                    Drivers.node().id(1).labels("LBL_1"),
-                    Drivers.node().id(2).labels("LBL_2"),
-                    Drivers.node().id(3).labels("LBL_3")
+                    Models.node().id(1).labels("LBL_1"),
+                    Models.node().id(2).labels("LBL_2"),
+                    Models.node().id(3).labels("LBL_3")
             );
         }
 
         @Test
         void should_fail() {
             // GIVEN
-            final DbRelationship relationship1 = Drivers.relation("DISCOVER").id(11).start(1).end(4).build();
-            final DbRelationship relationship2 = Drivers.relation("DISCOVER").id(12).start(2).end(5).build();
-            final DbRelationship relationship3 = Drivers.relation("KNOWS").id(13).start(6).end(3).build();
+            final DbRelationship relationship1 = Models.relation("DISCOVER").id(11).start(1).end(4).build();
+            final DbRelationship relationship2 = Models.relation("DISCOVER").id(12).start(2).end(5).build();
+            final DbRelationship relationship3 = Models.relation("KNOWS").id(13).start(6).end(3).build();
             final Relationships relationships = Loaders.relationships(relationship1, relationship2, relationship3);
             when(dataLoader.chain(any())).thenReturn(relationships);
 
@@ -352,9 +358,9 @@ class AbstractNodesAssertTests {
         @Test
         void should_pass() {
             // GIVEN
-            final DbRelationship relationship1 = Drivers.relation("DISCOVER").id(11).start(4).end(1).build();
-            final DbRelationship relationship2 = Drivers.relation("KNOWS").id(12).start(5).end(2).build();
-            final DbRelationship relationship3 = Drivers.relation("KNOWS").id(13).start(6).end(3).build();
+            final DbRelationship relationship1 = Models.relation("DISCOVER").id(11).start(4).end(1).build();
+            final DbRelationship relationship2 = Models.relation("KNOWS").id(12).start(5).end(2).build();
+            final DbRelationship relationship3 = Models.relation("KNOWS").id(13).start(6).end(3).build();
             final Relationships relationships = Loaders.relationships(relationship1, relationship2, relationship3);
             when(dataLoader.chain(any())).thenReturn(relationships);
 

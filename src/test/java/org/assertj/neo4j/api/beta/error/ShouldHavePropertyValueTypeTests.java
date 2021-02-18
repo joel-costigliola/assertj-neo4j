@@ -15,8 +15,8 @@ package org.assertj.neo4j.api.beta.error;
 import org.assertj.core.error.ErrorMessageFactory;
 import org.assertj.neo4j.api.beta.testing.Randomize;
 import org.assertj.neo4j.api.beta.testing.Samples;
-import org.assertj.neo4j.api.beta.type.Drivers;
-import org.assertj.neo4j.api.beta.type.Nodes.DbNode;
+import org.assertj.neo4j.api.beta.type.DbNode;
+import org.assertj.neo4j.api.beta.type.Models;
 import org.assertj.neo4j.api.beta.type.ValueType;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -38,7 +38,7 @@ class ShouldHavePropertyValueTypeTests {
         void should_generate_error_message() {
             // GIVEN
             final ValueType expectedType = ValueType.STRING;
-            final DbNode actual = Drivers.node().id(2).property("key", Samples.LOCAL_DATE_TIME).build();
+            final DbNode actual = Models.node().id(2).property("key", Samples.LOCAL_DATE_TIME).build();
 
             // WHEN
             final ErrorMessageFactory result = ShouldHavePropertyValueType.create(actual, "key", expectedType);
@@ -63,14 +63,14 @@ class ShouldHavePropertyValueTypeTests {
         void should_generate_an_aggregate_error_message() {
             // GIVEN
             final ValueType expectedType = ValueType.BOOLEAN;
-            final DbNode node1 = Drivers.node().id(1).property("key", "value-1").build();
-            final DbNode node2 = Drivers.node().id(2).property("key", Samples.LOCAL_DATE_TIME).build();
-            final DbNode node3 = Drivers.node().id(3).property("key", 1).build();
-            final DbNode node4 = Drivers.node().id(4)
+            final DbNode node1 = Models.node().id(1).property("key", "value-1").build();
+            final DbNode node2 = Models.node().id(2).property("key", Samples.LOCAL_DATE_TIME).build();
+            final DbNode node3 = Models.node().id(3).property("key", 1).build();
+            final DbNode node4 = Models.node().id(4)
                     .property("key", Values.point(1, 22.29, 56.35).asObject())
                     .build();
-            final DbNode node5 = Drivers.node().id(5).property("key", Samples.ZONED_DATE_TIME).build();
-            final DbNode node6 = Drivers.node().id(6).property("key", true).build();
+            final DbNode node5 = Models.node().id(5).property("key", Samples.ZONED_DATE_TIME).build();
+            final DbNode node6 = Models.node().id(6).property("key", true).build();
 
             final List<DbNode> actual = Randomize.listOf(node1, node2, node3, node4, node5, node6);
 

@@ -15,8 +15,8 @@ package org.assertj.neo4j.api.beta.integrations;
 import org.assertj.neo4j.api.beta.DriverAssertions;
 import org.assertj.neo4j.api.beta.testing.Dataset;
 import org.assertj.neo4j.api.beta.testing.IntegrationTests;
-import org.assertj.neo4j.api.beta.type.Drivers;
-import org.assertj.neo4j.api.beta.type.Relationships;
+import org.assertj.neo4j.api.beta.type.Models;
+import org.assertj.neo4j.api.beta.type.loader.Relationships;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -38,7 +38,7 @@ class SampleRelationshipsIntegrationTests extends IntegrationTests.DatasetTests 
                 .haveType("KNOWS")
                 .havePropertyKeys("level")
                 .usingNoEntityIdComparison()
-                .contains(Drivers.relation("KNOWS").property("level", 5).build());
+                .contains(Models.relation("KNOWS").property("level", 5).build());
     }
 
     @Test
@@ -46,7 +46,7 @@ class SampleRelationshipsIntegrationTests extends IntegrationTests.DatasetTests 
         final Relationships relationships = Relationships.of(driver, "KNOWS");
         DriverAssertions.assertThat(relationships)
                 .usingNoEntityIdComparison()
-                .contains(Drivers.relation("KNOWS").property("level", 5).build());
+                .contains(Models.relation("KNOWS").property("level", 5).build());
     }
 
     @Test

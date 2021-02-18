@@ -10,8 +10,9 @@
  *
  * Copyright 2013-2020 the original author or authors.
  */
-package org.assertj.neo4j.api.beta.type;
+package org.assertj.neo4j.api.beta.type.loader;
 
+import org.assertj.neo4j.api.beta.type.DbRelationship;
 import org.neo4j.driver.Driver;
 
 /**
@@ -32,12 +33,12 @@ public interface LoaderFactory<ENTITY, LOADER extends DataLoader<ENTITY>> {
     LOADER create(Driver driver);
 
     /**
-     * Create a new {@link LoaderFactory} for {@link Relationships.DbRelationship}.
+     * Create a new {@link LoaderFactory} for {@link DbRelationship}.
      *
      * @param types the type of relationships
      * @return a new loader factory instance.
      */
-    static LoaderFactory<Relationships.DbRelationship, Relationships> relationships(String... types) {
+    static LoaderFactory<DbRelationship, Relationships> relationships(String... types) {
         return new LoaderFactoryGeneric<>(Queries.relationships(types), RelationshipLoader::new);
     }
 

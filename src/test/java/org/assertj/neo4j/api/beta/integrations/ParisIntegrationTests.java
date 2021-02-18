@@ -12,16 +12,9 @@
  */
 package org.assertj.neo4j.api.beta.integrations;
 
-import org.assertj.neo4j.api.beta.DriverAssertions;
 import org.assertj.neo4j.api.beta.testing.Dataset;
 import org.assertj.neo4j.api.beta.testing.IntegrationTests;
-import org.assertj.neo4j.api.beta.testing.Neo4JDataSet;
-import org.assertj.neo4j.api.beta.type.Drivers;
-import org.assertj.neo4j.api.beta.type.Nodes;
 import org.junit.jupiter.api.Test;
-import org.neo4j.driver.Driver;
-import org.testcontainers.containers.Neo4jContainer;
-import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 /**

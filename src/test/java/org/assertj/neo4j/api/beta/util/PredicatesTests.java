@@ -12,9 +12,9 @@
  */
 package org.assertj.neo4j.api.beta.util;
 
-import org.assertj.neo4j.api.beta.type.Drivers;
-import org.assertj.neo4j.api.beta.type.Nodes.DbNode;
-import org.assertj.neo4j.api.beta.type.Relationships.DbRelationship;
+import org.assertj.neo4j.api.beta.type.DbNode;
+import org.assertj.neo4j.api.beta.type.DbRelationship;
+import org.assertj.neo4j.api.beta.type.Models;
 import org.assertj.neo4j.api.beta.type.ValueType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -41,7 +41,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("Predicates")
 class PredicatesTests {
 
-    private static final DbNode SAMPLE_ENTITY = Drivers.node()
+    private static final DbNode SAMPLE_ENTITY = Models.node()
             .id(42)
             .property("key-boolean", true)
             .property("key-long", 42L)
@@ -55,12 +55,12 @@ class PredicatesTests {
             .property("key-list-long", IntStream.range(0, 42).boxed().collect(Collectors.toList()))
             .build();
 
-    private static final DbNode SAMPLE_NODE = Drivers.node()
+    private static final DbNode SAMPLE_NODE = Models.node()
             .id(69)
             .labels("LABEL_1", "LABEL_2", "LABEL_3")
             .build();
 
-    private static final DbRelationship SAMPLE_RELATIONSHIP = Drivers.relation("TYPE")
+    private static final DbRelationship SAMPLE_RELATIONSHIP = Models.relation("TYPE")
             .id(42)
             .build();
 
@@ -71,7 +71,7 @@ class PredicatesTests {
         void should_return_false() {
             // GIVEN
             final String key = "other-key";
-            final DbNode entity = Drivers.node().property("key", "value").build();
+            final DbNode entity = Models.node().property("key", "value").build();
             final Predicate<DbNode> predicate = Predicates.<DbNode>propertyKeyExists(key);
 
             // WHEN
@@ -85,7 +85,7 @@ class PredicatesTests {
         void should_return_true() {
             // GIVEN
             final String key = "key";
-            final DbNode entity = Drivers.node().property("key", "value").build();
+            final DbNode entity = Models.node().property("key", "value").build();
             final Predicate<DbNode> predicate = Predicates.<DbNode>propertyKeyExists(key);
 
             // WHEN
@@ -248,18 +248,6 @@ class PredicatesTests {
     class LabelExistsTests {
 
         @Test
-        void should_return_true() {
-            // GIVEN
-            final Predicate<DbNode> predicate = Predicates.labelExists("LABEL_1");
-
-            // WHEN
-            final boolean result = predicate.test(SAMPLE_NODE);
-
-            // THEN
-            assertThat(result).isTrue();
-        }
-
-        @Test
         void should_return_false() {
             // GIVEN
             final Predicate<DbNode> predicate = Predicates.labelExists("LABEL_MISSING");
@@ -271,16 +259,10 @@ class PredicatesTests {
             assertThat(result).isFalse();
         }
 
-    }
-
-    @Nested
-    class LabelsExistsTests {
-
         @Test
         void should_return_true() {
             // GIVEN
-            final List<String> labels = Arrays.asList("LABEL_1", "LABEL_2", "LABEL_3");
-            final Predicate<DbNode> predicate = Predicates.labelsExists(labels);
+            final Predicate<DbNode> predicate = Predicates.labelExists("LABEL_1");
 
             // WHEN
             final boolean result = predicate.test(SAMPLE_NODE);
@@ -288,6 +270,11 @@ class PredicatesTests {
             // THEN
             assertThat(result).isTrue();
         }
+
+    }
+
+    @Nested
+    class LabelsExistsTests {
 
         @Test
         void should_return_false() {
@@ -302,22 +289,23 @@ class PredicatesTests {
             assertThat(result).isFalse();
         }
 
-    }
-
-    @Nested
-    class IsTypeTests {
-
         @Test
         void should_return_true() {
             // GIVEN
-            final Predicate<DbRelationship> predicate = Predicates.isType("TYPE");
+            final List<String> labels = Arrays.asList("LABEL_1", "LABEL_2", "LABEL_3");
+            final Predicate<DbNode> predicate = Predicates.labelsExists(labels);
 
             // WHEN
-            final boolean result = predicate.test(SAMPLE_RELATIONSHIP);
+            final boolean result = predicate.test(SAMPLE_NODE);
 
             // THEN
             assertThat(result).isTrue();
         }
+
+    }
+
+    @Nested
+    class IsTypeTests {
 
         @Test
         void should_return_false() {
@@ -331,22 +319,51 @@ class PredicatesTests {
             assertThat(result).isFalse();
         }
 
-    }
-
-    @Nested
-    class XxxTests {
-
         @Test
         void should_return_true() {
             // GIVEN
-            final Predicate<Object> predicate = (x) -> true;
+            final Predicate<DbRelationship> predicate = Predicates.isType("TYPE");
 
             // WHEN
-            final boolean result = predicate.test(SAMPLE_NODE);
+            final boolean result = predicate.test(SAMPLE_RELATIONSHIP);
 
             // THEN
             assertThat(result).isTrue();
         }
+
+    }
+
+    @Nested
+    class IsAnyOfTypesTests {
+
+        @Test
+        void should_return_false() {
+            // GIVEN
+            final Predicate<DbRelationship> predicate = Predicates.isAnyOfTypes("TYPE_1", "TYPE_2", "TYPE_3");
+
+            // WHEN
+            final boolean result = predicate.test(SAMPLE_RELATIONSHIP);
+
+            // THEN
+            assertThat(result).isFalse();
+        }
+
+        @Test
+        void should_return_true() {
+            // GIVEN
+            final Predicate<DbRelationship> predicate = Predicates.isAnyOfTypes("TYPE_1", "TYPE", "TYPE_2");
+
+            // WHEN
+            final boolean result = predicate.test(SAMPLE_RELATIONSHIP);
+
+            // THEN
+            assertThat(result).isTrue();
+        }
+
+    }
+
+    @Nested
+    class XxxTests {
 
         @Test
         void should_return_false() {
@@ -358,6 +375,18 @@ class PredicatesTests {
 
             // THEN
             assertThat(result).isFalse();
+        }
+
+        @Test
+        void should_return_true() {
+            // GIVEN
+            final Predicate<Object> predicate = (x) -> true;
+
+            // WHEN
+            final boolean result = predicate.test(SAMPLE_NODE);
+
+            // THEN
+            assertThat(result).isTrue();
         }
 
     }

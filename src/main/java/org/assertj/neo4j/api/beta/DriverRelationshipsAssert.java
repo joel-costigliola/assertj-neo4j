@@ -13,8 +13,9 @@
 package org.assertj.neo4j.api.beta;
 
 import org.assertj.core.util.VisibleForTesting;
-import org.assertj.neo4j.api.beta.type.DataLoader;
-import org.assertj.neo4j.api.beta.type.Relationships;
+import org.assertj.neo4j.api.beta.type.DbRelationship;
+import org.assertj.neo4j.api.beta.type.loader.DataLoader;
+import org.assertj.neo4j.api.beta.type.loader.Relationships;
 
 import java.util.List;
 
@@ -44,12 +45,12 @@ public class DriverRelationshipsAssert
      * @param entities
      */
     @VisibleForTesting
-    protected DriverRelationshipsAssert(final List<Relationships.DbRelationship> entities) {
+    protected DriverRelationshipsAssert(final List<DbRelationship> entities) {
         this(entities, null, null);
     }
 
-    private DriverRelationshipsAssert(final List<Relationships.DbRelationship> entities,
-                                      final DataLoader<Relationships.DbRelationship> loader,
+    private DriverRelationshipsAssert(final List<DbRelationship> entities,
+                                      final DataLoader<DbRelationship> loader,
                                       final DriverRelationshipsAssert parent) {
         super(
                 DriverRelationshipsAssert.class,

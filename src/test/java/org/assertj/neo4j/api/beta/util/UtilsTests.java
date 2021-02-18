@@ -12,10 +12,7 @@
  */
 package org.assertj.neo4j.api.beta.util;
 
-import org.assertj.core.api.Assertions;
 import org.assertj.neo4j.api.beta.testing.Randomize;
-import org.assertj.neo4j.api.beta.type.Drivers;
-import org.assertj.neo4j.api.beta.type.Nodes;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
