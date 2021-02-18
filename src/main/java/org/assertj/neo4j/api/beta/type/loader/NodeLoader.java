@@ -12,7 +12,6 @@
  */
 package org.assertj.neo4j.api.beta.type.loader;
 
-import org.assertj.core.util.Sets;
 import org.assertj.neo4j.api.beta.type.DbNode;
 import org.assertj.neo4j.api.beta.type.RecordType;
 import org.assertj.neo4j.api.beta.type.ValueType;

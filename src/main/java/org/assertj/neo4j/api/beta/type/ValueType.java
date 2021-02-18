@@ -12,7 +12,6 @@
  */
 package org.assertj.neo4j.api.beta.type;
 
-import org.assertj.core.util.Sets;
 import org.neo4j.driver.Values;
 import org.neo4j.driver.types.IsoDuration;
 import org.neo4j.driver.types.Node;
@@ -28,16 +27,10 @@ import java.time.OffsetTime;
 import java.time.Period;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static java.util.stream.Stream.concat;
 
 /**
  * Describe all the possible type that can be stored as property.

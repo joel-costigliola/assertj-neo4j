@@ -16,7 +16,6 @@ import org.assertj.core.util.IterableUtil;
 import org.assertj.neo4j.api.beta.util.Formats;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
@@ -32,7 +31,7 @@ public class DbNode extends DbEntity {
 
     protected SortedSet<String> labels;
 
-    public DbNode(final Long id, final Iterable<String> labels, final Map<String, DbValue> properties) {
+    DbNode(final Long id, final Iterable<String> labels, final Map<String, DbValue> properties) {
         super(RecordType.NODE, id, properties);
         this.labels = new TreeSet<>(IterableUtil.toCollection(labels));
     }

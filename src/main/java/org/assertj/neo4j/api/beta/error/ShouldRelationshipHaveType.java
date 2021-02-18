@@ -12,7 +12,6 @@
  */
 package org.assertj.neo4j.api.beta.error;
 
-import org.assertj.core.error.BasicErrorMessageFactory;
 import org.assertj.neo4j.api.beta.type.DbRelationship;
 import org.assertj.neo4j.api.beta.util.Utils;
 

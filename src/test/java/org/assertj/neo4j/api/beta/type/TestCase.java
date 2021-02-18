@@ -193,13 +193,4 @@ class TestCase {
         return representation;
     }
 
-    Arguments arguments() {
-        return Arguments.arguments(
-                type,
-                fromClass,
-                object,
-                propValue(type, Values.value(object).asObject()),
-                representation
-        );
-    }
 }

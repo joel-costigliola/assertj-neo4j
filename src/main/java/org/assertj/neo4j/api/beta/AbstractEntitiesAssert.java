@@ -15,7 +15,6 @@ package org.assertj.neo4j.api.beta;
 import org.assertj.core.error.ErrorMessageFactory;
 import org.assertj.core.internal.ComparisonStrategy;
 import org.assertj.core.internal.Iterables;
-import org.assertj.core.util.Preconditions;
 import org.assertj.neo4j.api.beta.error.ShouldHavePropertyInstanceOf;
 import org.assertj.neo4j.api.beta.error.ShouldHavePropertyKeys;
 import org.assertj.neo4j.api.beta.error.ShouldHavePropertyListOfType;

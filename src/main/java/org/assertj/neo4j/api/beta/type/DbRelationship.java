@@ -14,7 +14,6 @@ package org.assertj.neo4j.api.beta.type;
 
 import org.assertj.neo4j.api.beta.util.Formats;
 
-import java.text.Format;
 import java.util.Map;
 
 /**
@@ -27,8 +26,8 @@ public class DbRelationship extends DbEntity {
     private final Long end;
     private final String type;
 
-    public DbRelationship(final Long id, final String type, final Long start, final Long end,
-                          final Map<String, DbValue> properties) {
+    DbRelationship(final Long id, final String type, final Long start, final Long end,
+                   final Map<String, DbValue> properties) {
         super(RecordType.RELATIONSHIP, id, properties);
         this.start = start;
         this.end = end;

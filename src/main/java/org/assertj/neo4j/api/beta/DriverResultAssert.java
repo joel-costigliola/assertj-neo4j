@@ -13,8 +13,6 @@
 package org.assertj.neo4j.api.beta;
 
 import org.assertj.neo4j.api.beta.type.DbResult;
-import org.assertj.neo4j.api.beta.type.ValueType;
-import org.assertj.neo4j.api.beta.util.Predicates;
 import org.assertj.neo4j.api.beta.util.Wip;
 import org.neo4j.driver.Result;
 

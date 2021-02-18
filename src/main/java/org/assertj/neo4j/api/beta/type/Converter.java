@@ -13,9 +13,7 @@
 package org.assertj.neo4j.api.beta.type;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @param <O> the output type
