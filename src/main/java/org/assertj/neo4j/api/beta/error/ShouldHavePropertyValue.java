@@ -13,24 +13,22 @@
 package org.assertj.neo4j.api.beta.error;
 
 import org.assertj.neo4j.api.beta.type.DbEntity;
-import org.assertj.neo4j.api.beta.util.EntityUtils;
 
 import java.util.List;
 
 /**
- * Creates an error message indicating that an assertion that verifies {@link ENTITY}  don't have the expected property
+ * Creates an error message indicating that an assertion that verifies {@link ACTUAL}  don't have the expected property
  * value.
  *
- * @param <ENTITY> the entity type
+ * @param <ACTUAL> the entity type
  * @author Patrick Allain - 31/01/2021
  */
-public class ShouldHavePropertyValue<ENTITY extends DbEntity> extends BasicEntityErrorMessageFactory<ENTITY> {
+public class ShouldHavePropertyValue<ACTUAL extends DbEntity<ACTUAL>> extends BasicDbErrorMessageFactory<ACTUAL> {
 
-    private ShouldHavePropertyValue(final ENTITY actual, final String key, final Object value) {
+    private ShouldHavePropertyValue(final ACTUAL actual, final String key, final Object value) {
         super(
-                "%nExpecting " + EntityUtils.recordTypeSingular(actual)
-                + " to have a property %2$s with value:%n <%3$s>%n"
-                + "but current value of this property is:%n <%4$s>%n",
+                "%nExpecting " + actual.objectName(1) + " to have a property %2$s with value:%n  <%3$s>%n"
+                + "but current value of this property is:%n  <%4$s>%n",
                 actual,
                 ArgDetail.excluded(key),
                 ArgDetail.excluded(value),
@@ -39,18 +37,18 @@ public class ShouldHavePropertyValue<ENTITY extends DbEntity> extends BasicEntit
         );
     }
 
-    public static <E extends DbEntity> ShouldHavePropertyValue<E> create(
-            final E actual, final String key, final Object value) {
+    public static <A extends DbEntity<A>> ShouldHavePropertyValue<A> create(
+            final A actual, final String key, final Object value) {
         return new ShouldHavePropertyValue<>(actual, key, value);
     }
 
-    public static <E extends DbEntity> GroupingEntityErrorFactory<E> elements(
-            final List<E> actual,
+    public static <A extends DbEntity<A>> GroupingDbErrorFactory<A> elements(
+            final List<A> actual,
             final String key,
             final Object value) {
-        return new BasicGroupingEntityErrorFactory<>(
+        return new BasicDbGroupingErrorFactory<>(
                 actual,
-                (e) -> create(e, key, value),
+                (a) -> create(a, key, value),
                 "%nExpecting %3$s:%n"
                 + "  <%1$s>%n"
                 + "to have a property named %4$s with value:%n"

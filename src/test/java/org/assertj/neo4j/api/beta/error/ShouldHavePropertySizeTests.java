@@ -43,11 +43,11 @@ class ShouldHavePropertySizeTests {
             // THEN
             assertThat(error.create()).isEqualToNormalizingNewlines(
                     "\nExpecting node to have property size:\n"
-                    + " <3>\n"
+                    + "  <3>\n"
                     + "but actual property size is:\n"
-                    + " <2>\n"
+                    + "  <2>\n"
                     + "containing the following property keys:\n"
-                    + " <[\"k-1\", \"k-2\"]>\n"
+                    + "  <[\"k-1\", \"k-2\"]>\n"
             );
         }
     }

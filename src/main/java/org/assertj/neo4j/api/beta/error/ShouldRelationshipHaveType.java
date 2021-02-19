@@ -23,7 +23,7 @@ import java.util.List;
  *
  * @author Patrick Allain - 25/11/2020
  */
-public class ShouldRelationshipHaveType extends BasicEntityErrorMessageFactory<DbRelationship> {
+public class ShouldRelationshipHaveType extends BasicDbErrorMessageFactory<DbRelationship> {
 
     private ShouldRelationshipHaveType(final DbRelationship actual, final String type) {
         super(
@@ -53,9 +53,9 @@ public class ShouldRelationshipHaveType extends BasicEntityErrorMessageFactory<D
         return new ShouldRelationshipHaveType(actual, types);
     }
 
-    public static GroupingEntityErrorFactory<DbRelationship> elements(
+    public static GroupingDbErrorFactory<DbRelationship> elements(
             final List<DbRelationship> actual, final String type) {
-        return new BasicGroupingEntityErrorFactory<>(
+        return new BasicDbGroupingErrorFactory<>(
                 actual,
                 (r) -> create(r, type),
                 "%nExpecting relationships:%n  <%1$s>%n"
@@ -65,9 +65,9 @@ public class ShouldRelationshipHaveType extends BasicEntityErrorMessageFactory<D
         );
     }
 
-    public static GroupingEntityErrorFactory<DbRelationship> elements(
+    public static GroupingDbErrorFactory<DbRelationship> elements(
             final List<DbRelationship> actual, final List<String> types) {
-        return new BasicGroupingEntityErrorFactory<>(
+        return new BasicDbGroupingErrorFactory<>(
                 actual,
                 (r) -> create(r, types),
                 "%nExpecting relationships:%n  <%1$s>%n"

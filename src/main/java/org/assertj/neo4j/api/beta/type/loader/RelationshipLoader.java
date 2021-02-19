@@ -13,7 +13,7 @@
 package org.assertj.neo4j.api.beta.type.loader;
 
 import org.assertj.neo4j.api.beta.type.DbRelationship;
-import org.assertj.neo4j.api.beta.type.RecordType;
+import org.assertj.neo4j.api.beta.type.ObjectType;
 import org.assertj.neo4j.api.beta.type.ValueType;
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.Query;
@@ -42,7 +42,7 @@ class RelationshipLoader extends AbstractDataLoader<DbRelationship> implements R
     }
 
     RelationshipLoader(final Driver driver, final Query query) {
-        super(driver, RecordType.RELATIONSHIP, query);
+        super(driver, ObjectType.RELATIONSHIP, query);
     }
 
     /** {@inheritDoc} */

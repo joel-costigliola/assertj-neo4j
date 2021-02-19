@@ -15,10 +15,37 @@ package org.assertj.neo4j.api.beta.type;
 /**
  * @author patouche - 18/02/2021
  */
-public interface Representable {
+public interface Representable<I extends Representable<I>> extends Comparable<I> {
 
+    /**
+     * The object type.
+     *
+     * @return the
+     */
+    ObjectType objectType();
+
+    /**
+     * The object name description.
+     *
+     * @param quantity the object quantity
+     * @return the object name description
+     */
+    default String objectName(int quantity) {
+        return objectType().format(quantity);
+    }
+
+    /**
+     * Short representation of the underlying object.
+     *
+     * @return a object short description.
+     */
     String abbreviate();
 
+    /**
+     * Detailed representation of the underlying object.
+     *
+     * @return a object detailed description.
+     */
     String detailed();
 
 }

@@ -14,8 +14,9 @@ package org.assertj.neo4j.api.beta.error;
 
 import org.assertj.neo4j.api.beta.type.DbNode;
 import org.assertj.neo4j.api.beta.type.DbRelationship;
-import org.assertj.neo4j.api.beta.util.EntityUtils;
+import org.assertj.neo4j.api.beta.util.DbObjectUtils;
 import org.assertj.neo4j.api.beta.util.Formats;
+import org.assertj.neo4j.api.beta.util.Utils;
 
 import java.util.List;
 import java.util.function.Function;
@@ -23,17 +24,17 @@ import java.util.function.Function;
 /**
  * @author Patrick Allain - 13/02/2021
  */
-public class ShouldNodeHaveNoRelatedRelationships extends BasicEntityErrorMessageFactory<DbNode> {
+public class ShouldNodeHaveNoRelatedRelationships extends BasicDbErrorMessageFactory<DbNode> {
 
     protected ShouldNodeHaveNoRelatedRelationships(
             final String direction,
             final DbNode actual,
             final List<DbRelationship> relationships) {
         super(
-                "%nExpecting node:%n <%s>%n"
+                "%nExpecting node:%n  <%s>%n"
                 + "to have no " + direction + " relationships but found:%n  <%s>%n",
                 actual,
-                ArgDetail.included(Formats.title(direction) + " relationships:", EntityUtils.sorted(relationships)));
+                ArgDetail.included(Formats.title(direction) + " relationships:", Utils.sorted(relationships)));
     }
 
     public static ShouldNodeHaveNoRelatedRelationships createIncoming(final DbNode actual,
@@ -46,37 +47,35 @@ public class ShouldNodeHaveNoRelatedRelationships extends BasicEntityErrorMessag
         return new ShouldNodeHaveNoRelatedRelationships("outgoing", actual, relationships);
     }
 
-    private static GroupingEntityErrorFactory<DbNode> elements(
+    private static GroupingDbErrorFactory<DbNode> elements(
             final List<DbNode> actual,
             final String direction,
-            final Function<DbNode, EntityErrorMessageFactory<DbNode>> mapper,
+            final Function<DbNode, DbErrorMessageFactory<DbNode>> mapper,
             final List<DbRelationship> relationships) {
-        return new BasicGroupingEntityErrorFactory<>(
+        return new BasicDbGroupingErrorFactory<>(
                 actual,
                 mapper,
-                "%nExpecting nodes:%n"
-                + "  <%1$s>%n"
-                + "to have no " + direction + " relationships but found:%n"
-                + "  <%4$s>%n"
+                "%nExpecting nodes:%n  <%1$s>%n"
+                + "to have no " + direction + " relationships but found:%n  <%4$s>%n"
                 + "which are " + direction + " relationships to nodes:",
-                EntityUtils.sorted(relationships)
+                Utils.sorted(relationships)
         );
     }
 
-    public static GroupingEntityErrorFactory<DbNode> incomingElements(
+    public static GroupingDbErrorFactory<DbNode> incomingElements(
             final List<DbNode> actual, final List<DbRelationship> relationships) {
         return elements(
                 actual, "incoming",
-                (e) -> createIncoming(e, EntityUtils.areIncomingForNode(e, relationships)),
+                (e) -> createIncoming(e, DbObjectUtils.areIncomingForNode(e, relationships)),
                 relationships
         );
     }
 
-    public static GroupingEntityErrorFactory<DbNode> outgoingElements(
+    public static GroupingDbErrorFactory<DbNode> outgoingElements(
             final List<DbNode> actual, final List<DbRelationship> relationships) {
         return elements(
                 actual, "outgoing",
-                (e) -> createOutgoing(e, EntityUtils.areOutgoingForNode(e, relationships)),
+                (e) -> createOutgoing(e, DbObjectUtils.areOutgoingForNode(e, relationships)),
                 relationships
         );
     }

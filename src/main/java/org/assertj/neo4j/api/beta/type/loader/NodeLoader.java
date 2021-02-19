@@ -13,7 +13,7 @@
 package org.assertj.neo4j.api.beta.type.loader;
 
 import org.assertj.neo4j.api.beta.type.DbNode;
-import org.assertj.neo4j.api.beta.type.RecordType;
+import org.assertj.neo4j.api.beta.type.ObjectType;
 import org.assertj.neo4j.api.beta.type.ValueType;
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.Query;
@@ -44,7 +44,7 @@ class NodeLoader extends AbstractDataLoader<DbNode> implements Nodes {
     }
 
     NodeLoader(final Driver driver, final Query query) {
-        super(driver, RecordType.NODE, query);
+        super(driver, ObjectType.NODE, query);
     }
 
     /** {@inheritDoc} */

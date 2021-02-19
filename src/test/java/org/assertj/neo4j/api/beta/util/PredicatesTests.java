@@ -245,12 +245,12 @@ class PredicatesTests {
     }
 
     @Nested
-    class LabelExistsTests {
+    class NodeLabelExistsTests {
 
         @Test
         void should_return_false() {
             // GIVEN
-            final Predicate<DbNode> predicate = Predicates.labelExists("LABEL_MISSING");
+            final Predicate<DbNode> predicate = Predicates.nodeLabelExists("LABEL_MISSING");
 
             // WHEN
             final boolean result = predicate.test(SAMPLE_NODE);
@@ -262,7 +262,7 @@ class PredicatesTests {
         @Test
         void should_return_true() {
             // GIVEN
-            final Predicate<DbNode> predicate = Predicates.labelExists("LABEL_1");
+            final Predicate<DbNode> predicate = Predicates.nodeLabelExists("LABEL_1");
 
             // WHEN
             final boolean result = predicate.test(SAMPLE_NODE);
@@ -274,13 +274,13 @@ class PredicatesTests {
     }
 
     @Nested
-    class LabelsExistsTests {
+    class NodeLabelsExistsTests {
 
         @Test
         void should_return_false() {
             // GIVEN
             final List<String> labels = Arrays.asList("LABEL_1", "LABEL_2", "LABEL_MISSING");
-            final Predicate<DbNode> predicate = Predicates.labelsExists(labels);
+            final Predicate<DbNode> predicate = Predicates.nodeLabelsExists(labels);
 
             // WHEN
             final boolean result = predicate.test(SAMPLE_NODE);
@@ -293,7 +293,7 @@ class PredicatesTests {
         void should_return_true() {
             // GIVEN
             final List<String> labels = Arrays.asList("LABEL_1", "LABEL_2", "LABEL_3");
-            final Predicate<DbNode> predicate = Predicates.labelsExists(labels);
+            final Predicate<DbNode> predicate = Predicates.nodeLabelsExists(labels);
 
             // WHEN
             final boolean result = predicate.test(SAMPLE_NODE);
@@ -305,12 +305,12 @@ class PredicatesTests {
     }
 
     @Nested
-    class IsTypeTests {
+    class RelationshipIsOfTypeTests {
 
         @Test
         void should_return_false() {
             // GIVEN
-            final Predicate<DbRelationship> predicate = Predicates.isType("OTHER_TYPE");
+            final Predicate<DbRelationship> predicate = Predicates.relationshipIsOfType("OTHER_TYPE");
 
             // WHEN
             final boolean result = predicate.test(SAMPLE_RELATIONSHIP);
@@ -322,7 +322,7 @@ class PredicatesTests {
         @Test
         void should_return_true() {
             // GIVEN
-            final Predicate<DbRelationship> predicate = Predicates.isType("TYPE");
+            final Predicate<DbRelationship> predicate = Predicates.relationshipIsOfType("TYPE");
 
             // WHEN
             final boolean result = predicate.test(SAMPLE_RELATIONSHIP);

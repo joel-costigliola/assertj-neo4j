@@ -62,43 +62,36 @@ class SampleResultIntegrationTests {
             }
         }
 
-        @Nested
-        class ShouldSuccessTests extends IntegrationTests.DatasetTests {
+        @Test
+        void hasColumnNumber() {
+            // GIVEN
+            final Query query = new Query("MATCH (n:Repo)-[w:WRITTEN]->() RETURN n, w, n.name");
 
-            ShouldSuccessTests() {
-                super(Dataset.GITHUB_LANGUAGE);
-            }
-
-            @Test
-            void hasColumnNumber() {
-                // GIVEN
-                final Query query = new Query("MATCH (n:Repo)-[w:WRITTEN]->() RETURN n, w, n.name");
-
-                // WHEN && THEN
-                try (final Session session = driver.session()) {
-                    session.readTransaction(tx -> DriverAssertions.assertThat(tx.run(query))
-                            // .hasSize(3)
-                            .hasColumnSize(2)
-                            .isNode("n")
-                            .asListOf(String.class)
-                    );
-                }
-            }
-
-            @Test
-            void hasColumns() {
-                // GIVEN
-                // WHEN
-                // THEN
-            }
-
-            @Test
-            void isNode() {
-                // GIVEN
-                // WHEN
-                // THEN
+            // WHEN && THEN
+            try (final Session session = driver.session()) {
+                session.readTransaction(tx -> DriverAssertions.assertThat(tx.run(query))
+                        // .hasSize(3)
+                        .hasColumnSize(2)
+                        .isNode("n")
+                        .asListOf(String.class)
+                );
             }
         }
+
+        @Test
+        void hasColumns() {
+            // GIVEN
+            // WHEN
+            // THEN
+        }
+
+        @Test
+        void isNode() {
+            // GIVEN
+            // WHEN
+            // THEN
+        }
+
     }
 
 }

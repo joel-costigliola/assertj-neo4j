@@ -16,6 +16,7 @@ import org.assertj.core.util.IterableUtil;
 import org.assertj.neo4j.api.beta.util.Formats;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
@@ -27,24 +28,32 @@ import java.util.TreeSet;
  * TODO : Maybe extract method here in a interface to be able to decorate a Node from driver - This may have impact for
  * comparing node.
  */
-public class DbNode extends DbEntity {
+public class DbNode extends DbEntity<DbNode> {
+
+    public static final Comparator<DbNode> NODE_COMPARATOR =
+            Comparator.comparing(DbNode::getId, Comparator.nullsFirst(Comparator.naturalOrder()));
 
     protected SortedSet<String> labels;
 
     DbNode(final Long id, final Iterable<String> labels, final Map<String, DbValue> properties) {
-        super(RecordType.NODE, id, properties);
+        super(ObjectType.NODE, id, properties);
         this.labels = new TreeSet<>(IterableUtil.toCollection(labels));
     }
 
     @Override
     public String detailed() {
-        return recordType + "{"
+        return objectType + "{"
                + "id=" + Formats.number(id) + ", labels=" + Formats.strings(labels) + ", "
                + "properties=" + properties + '}';
     }
 
     public SortedSet<String> getLabels() {
         return labels;
+    }
+
+    @Override
+    public int compareTo(DbNode o) {
+        return NODE_COMPARATOR.compare(this, o);
     }
 
     @Override

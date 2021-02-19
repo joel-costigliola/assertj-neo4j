@@ -15,11 +15,15 @@ package org.assertj.neo4j.api.beta.util;
 import org.assertj.core.util.IterableUtil;
 import org.assertj.core.util.Lists;
 import org.assertj.core.util.Streams;
+import org.assertj.neo4j.api.beta.type.DbObject;
+import org.assertj.neo4j.api.beta.type.ObjectType;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -28,6 +32,14 @@ import java.util.stream.Collectors;
  * @author Patrick Allain - 03/02/2021
  */
 public final class Utils {
+
+    public static <ACTUAL extends DbObject<ACTUAL>> ObjectType objectType(List<ACTUAL> actual) {
+        return actual.stream()
+                .map(DbObject::objectType)
+                .filter(Objects::nonNull)
+                .findFirst()
+                .orElse(null);
+    }
 
     /**
      * Transform a iterable into a list.
@@ -96,6 +108,20 @@ public final class Utils {
         return Arrays.stream(predicates).reduce((a, o) -> true, BiPredicate::and);
     }
 
+    @SafeVarargs
+    public static <I> Comparator<I> comparators(final Function<I, ?>... functions) {
+        return (o1, o2) -> Arrays.stream(functions)
+                .map(Utils::comparableFunction)
+                .map(Comparator::comparing)
+                .reduce((l, r) -> 0, Comparator::thenComparing)
+                .compare(o1, o2);
+    }
+
+    private static <I, U extends Comparable<U>> Function<I, U> comparableFunction(final Function<I, ?> function) {
+        return (i) -> (U) Optional.ofNullable(function.apply(i)).filter(Comparable.class::isInstance).orElse(null);
+    }
+
     private Utils() {
     }
+
 }

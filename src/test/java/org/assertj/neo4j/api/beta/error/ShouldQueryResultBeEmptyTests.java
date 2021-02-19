@@ -50,11 +50,11 @@ class ShouldQueryResultBeEmptyTests {
                     "\n"
                     + "Expecting query:\n"
                     + "  <Query{text='MATCH (n) RETURN n', parameters={}}>\n"
-                    + "to return an empty list of nodes got:\n"
+                    + "to return an empty list of nodes but got 4 nodes:\n"
                     + "  <[NODE{id=22L, labels=[], properties={}},\n"
                     + "    NODE{id=29L, labels=[], properties={}},\n"
                     + "    NODE{id=35L, labels=[], properties={}},\n"
-                    + "    NODE{id=56L, labels=[], properties={}}]>"
+                    + "    NODE{id=56L, labels=[], properties={}}]>\n"
             );
         }
     }

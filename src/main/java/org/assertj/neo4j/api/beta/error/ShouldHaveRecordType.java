@@ -13,7 +13,7 @@
 package org.assertj.neo4j.api.beta.error;
 
 import org.assertj.core.error.BasicErrorMessageFactory;
-import org.assertj.neo4j.api.beta.type.RecordType;
+import org.assertj.neo4j.api.beta.type.ObjectType;
 import org.neo4j.driver.Query;
 
 import java.util.List;
@@ -24,14 +24,14 @@ import java.util.List;
 @Deprecated
 public class ShouldHaveRecordType extends BasicErrorMessageFactory {
 
-    public ShouldHaveRecordType(final Query query, final RecordType expectedType, final List<RecordType> actualTypes) {
+    public ShouldHaveRecordType(final Query query, final ObjectType expectedType, final List<ObjectType> actualTypes) {
         super("Expecting:\n  <%s> to return records <%s> type\n  but got <%s>",
                 query.text(), expectedType, actualTypes
         );
     }
 
-    public static ShouldHaveRecordType create(final Query query, final RecordType expectedType,
-            final List<RecordType> actualTypes) {
+    public static ShouldHaveRecordType create(final Query query, final ObjectType expectedType,
+            final List<ObjectType> actualTypes) {
         return new ShouldHaveRecordType(query, expectedType, actualTypes);
     }
 }

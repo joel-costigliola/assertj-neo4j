@@ -14,6 +14,7 @@ package org.assertj.neo4j.api.beta.type;
 
 import org.assertj.neo4j.api.beta.util.Formats;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,22 +27,16 @@ import java.util.stream.Collectors;
  *
  * @author Patrick Allain - 09/11/2020
  */
-public abstract class DbEntity implements Representable {
-
-    protected final RecordType recordType;
+public abstract class DbEntity<I extends DbEntity<I>> extends DbObject<I> {
 
     protected Long id;
 
     protected final Map<String, DbValue> properties;
 
-    protected DbEntity(final RecordType recordType, final Long id, final Map<String, DbValue> properties) {
-        this.recordType = recordType;
+    protected DbEntity(final ObjectType recordType, final Long id, final Map<String, DbValue> properties) {
+        super(recordType);
         this.id = id;
         this.properties = properties;
-    }
-
-    public RecordType getRecordType() {
-        return recordType;
     }
 
     public Long getId() {
@@ -75,8 +70,9 @@ public abstract class DbEntity implements Representable {
 
     @Override
     public String abbreviate() {
-        return recordType + "{id=" + Formats.number(id) + '}';
+        return objectType + "{id=" + Formats.number(id) + '}';
     }
+
 
     @Override
     public String toString() {
@@ -87,15 +83,15 @@ public abstract class DbEntity implements Representable {
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
         final DbEntity dbEntity = (DbEntity) o;
-        return recordType == dbEntity.recordType
-               && Objects.equals(id, dbEntity.id)
+        return Objects.equals(id, dbEntity.id)
                && Objects.equals(properties, dbEntity.properties);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(recordType, id, properties);
+        return Objects.hash(super.hashCode(), id, properties);
     }
 
     protected static abstract class DbEntityBuilder<T extends DbEntity, B extends DbEntityBuilder<T, B>> {

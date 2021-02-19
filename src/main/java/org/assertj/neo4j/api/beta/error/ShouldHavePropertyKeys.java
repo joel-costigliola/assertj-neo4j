@@ -13,25 +13,24 @@
 package org.assertj.neo4j.api.beta.error;
 
 import org.assertj.neo4j.api.beta.type.DbEntity;
-import org.assertj.neo4j.api.beta.util.EntityUtils;
 import org.assertj.neo4j.api.beta.util.Utils;
 
 import java.util.List;
 
 /**
- * Creates an error message indicating that an assertion that verifies a {@link ENTITY} don't have the expected property
+ * Creates an error message indicating that an assertion that verifies a {@link ACTUAL} don't have the expected property
  * keys.
  *
- * @param <ENTITY> the entity type
+ * @param <ACTUAL> the entity type
  * @author Patrick Allain  - 29/09/2020
  */
-public class ShouldHavePropertyKeys<ENTITY extends DbEntity> extends BasicEntityErrorMessageFactory<ENTITY> {
+public class ShouldHavePropertyKeys<ACTUAL extends DbEntity<ACTUAL>> extends BasicDbErrorMessageFactory<ACTUAL> {
 
-    private ShouldHavePropertyKeys(final ENTITY actual, final Iterable<String> keys) {
+    private ShouldHavePropertyKeys(final ACTUAL actual, final Iterable<String> keys) {
         super(
-                "%nExpecting " + EntityUtils.recordTypeSingular(actual) + " with property keys:%n <%2$s>%n"
-                + "to have property keys:%n <%3$s>%n"
-                + "but the following property keys cannot be found:%n <%4$s>%n",
+                "%nExpecting " + actual.objectName(1) + " with property keys:%n  <%2$s>%n"
+                + "to have property keys:%n  <%3$s>%n"
+                + "but the following property keys cannot be found:%n  <%4$s>%n",
                 actual,
                 ArgDetail.included("Actual property keys", actual.getPropertyKeys()),
                 ArgDetail.excluded(Utils.sorted(keys)),
@@ -39,20 +38,18 @@ public class ShouldHavePropertyKeys<ENTITY extends DbEntity> extends BasicEntity
         );
     }
 
-    public static <E extends DbEntity> EntityErrorMessageFactory<E> create(
-            final E actual, final Iterable<String> keys) {
+    public static <A extends DbEntity<A>> DbErrorMessageFactory<A> create(
+            final A actual, final Iterable<String> keys) {
         return new ShouldHavePropertyKeys<>(actual, keys);
     }
 
-    public static <E extends DbEntity> GroupingEntityErrorFactory<E> elements(
-            final List<E> actual, final Iterable<String> keys) {
-        return new BasicGroupingEntityErrorFactory<>(
+    public static <A extends DbEntity<A>> GroupingDbErrorFactory<A> elements(
+            final List<A> actual, final Iterable<String> keys) {
+        return new BasicDbGroupingErrorFactory<>(
                 actual,
-                (e) -> create(e, keys),
-                "%nExpecting %3$s:%n"
-                + "  <%1$s>%n"
-                + "to have properties with keys:%n"
-                + "  <%4$s>%n"
+                (a) -> create(a, keys),
+                "%nExpecting %3$s:%n  <%1$s>%n"
+                + "to have properties with keys:%n  <%4$s>%n"
                 + "but some %3$s don't have this properties:",
                 Utils.sorted(keys)
         );

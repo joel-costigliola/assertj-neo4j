@@ -14,29 +14,34 @@ package org.assertj.neo4j.api.beta.error;
 
 import org.assertj.core.error.BasicErrorMessageFactory;
 import org.assertj.neo4j.api.beta.type.DbEntity;
-import org.assertj.neo4j.api.beta.util.EntityUtils;
+import org.assertj.neo4j.api.beta.util.DbObjectUtils;
+import org.assertj.neo4j.api.beta.util.Utils;
 import org.neo4j.driver.Query;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Creates an error message indicating that an assertion that verifies a query should return an empty result list.
  *
- * @param <ENTITY> the entity type
+ * @param <ACTUAL> the entity type
  * @author Patrick Allain - 13/02/2021
  */
-public class ShouldQueryResultBeEmpty<ENTITY extends DbEntity> extends BasicErrorMessageFactory {
+public class ShouldQueryResultBeEmpty<ACTUAL extends DbEntity<ACTUAL>> extends BasicErrorMessageFactory {
 
-    private ShouldQueryResultBeEmpty(final List<ENTITY> actual, final Query query) {
+    private ShouldQueryResultBeEmpty(final List<ACTUAL> actual, final Query query) {
         super(
                 "%nExpecting query:%n  <%s>%n"
-                + "to return an empty list of " + EntityUtils.recordTypePlural(actual) + " got:%n  <%s>",
+                + "to return an empty list of %s but got %s %s:%n  <%s>%n",
                 query,
-                EntityUtils.sorted(actual)
+                unquotedString(DbObjectUtils.objectType(actual).format(2)),
+                actual.size(),
+                unquotedString(DbObjectUtils.objectType(actual).format(actual.size())),
+                Utils.sorted(actual)
         );
     }
 
-    public static <E extends DbEntity> ShouldQueryResultBeEmpty<E> create(final List<E> actual, final Query query) {
+    public static <A extends DbEntity<A>> ShouldQueryResultBeEmpty<A> create(final List<A> actual, final Query query) {
         return new ShouldQueryResultBeEmpty<>(actual, query);
     }
 

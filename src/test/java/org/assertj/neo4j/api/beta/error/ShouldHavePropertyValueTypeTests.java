@@ -46,12 +46,12 @@ class ShouldHavePropertyValueTypeTests {
             // THEN
             assertThat(result.create()).isEqualToNormalizingNewlines(
                     "\nExpecting node to have property value type for key \"key\":\n"
-                    + " <STRING>\n"
+                    + "  <STRING>\n"
                     + "but actual value type for this property key is:\n"
-                    + " <LOCAL_DATE_TIME>\n"
+                    + "  <LOCAL_DATE_TIME>\n"
                     + "\n"
                     + "Actual property value:\n"
-                    + " <2020-02-03T04:05:06.000000007 (java.time.LocalDateTime)>\n"
+                    + "  <2020-02-03T04:05:06.000000007 (java.time.LocalDateTime)>\n"
             );
         }
     }

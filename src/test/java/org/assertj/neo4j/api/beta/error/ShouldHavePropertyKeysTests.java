@@ -45,11 +45,11 @@ class ShouldHavePropertyKeysTests {
             // THEN
             assertThat(error.create()).isEqualToNormalizingNewlines(
                     "\nExpecting node with property keys:\n"
-                    + " <[\"k-1\", \"k-4\"]>\n"
+                    + "  <[\"k-1\", \"k-4\"]>\n"
                     + "to have property keys:\n"
-                    + " <[\"k-1\", \"k-2\", \"k-3\"]>\n"
+                    + "  <[\"k-1\", \"k-2\", \"k-3\"]>\n"
                     + "but the following property keys cannot be found:\n"
-                    + " <[\"k-2\", \"k-3\"]>\n"
+                    + "  <[\"k-2\", \"k-3\"]>\n"
             );
         }
 

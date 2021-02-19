@@ -12,7 +12,10 @@
  */
 package org.assertj.neo4j.api.beta.type;
 
+import org.assertj.neo4j.api.beta.util.Utils;
+
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -22,18 +25,29 @@ import java.util.Objects;
  *
  * @author Patrick Allain - 23/12/2020
  */
-public class DbValue implements Representable {
+public class DbValue extends DbObject<DbValue> {
+
+    private static final Comparator<DbValue> VALUE_COMPARATOR = Utils.comparators(
+            DbObject::objectType,
+            DbValue::getContent,
+            DbValue::detailed
+    );
 
     private final ValueType type;
     private final Object content;
 
     DbValue(final ValueType type, final Object content) {
+        this(ObjectType.VALUE, type, content);
+    }
+
+    DbValue(final ObjectType objectType, final ValueType type, final Object content) {
+        super(objectType);
         this.type = Objects.requireNonNull(type);
         this.content = content;
     }
 
     static DbValue propValue(final ValueType type, final Object value) {
-        return new DbValue(type, value);
+        return new DbValue(ObjectType.VALUE, type, value);
     }
 
     /**
@@ -50,7 +64,7 @@ public class DbValue implements Representable {
 
         return Arrays.stream(ValueType.values())
                 .filter(v -> v.support(object))
-                .map(v -> new DbValue(v, v.convert(object)))
+                .map(v -> new DbValue(ObjectType.VALUE, v, v.convert(object)))
                 .filter(dbValue -> dbValue.getContent() != null)
                 .findFirst()
                 .orElse(null);
@@ -72,12 +86,12 @@ public class DbValue implements Representable {
 
     @Override
     public String abbreviate() {
-        return "VALUE";
+        return objectType.name();
     }
 
     @Override
     public String detailed() {
-        return null;
+        return objectType.name();
     }
 
     public ValueType getType() {
@@ -89,16 +103,22 @@ public class DbValue implements Representable {
     }
 
     @Override
+    public int compareTo(final DbValue other) {
+        return VALUE_COMPARATOR.compare(this, other);
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
         DbValue that = (DbValue) o;
         return type == that.type && Objects.equals(content, that.content);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(type, content);
+        return Objects.hash(super.hashCode(), type, content);
     }
 
     @Override

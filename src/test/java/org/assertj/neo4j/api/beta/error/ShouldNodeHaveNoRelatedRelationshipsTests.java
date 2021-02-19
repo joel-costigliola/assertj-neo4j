@@ -48,7 +48,7 @@ class ShouldNodeHaveNoRelatedRelationshipsTests {
             // THEN
             assertThat(error.create()).isEqualToNormalizingNewlines(
                     "\nExpecting node:\n"
-                    + " <NODE{id=42L, labels=[], properties={}}>\n"
+                    + "  <NODE{id=42L, labels=[], properties={}}>\n"
                     + "to have no incoming relationships but found:\n"
                     + "  <[RELATIONSHIP{id=1L, type='null', start=null, end=42, properties={}},\n"
                     + "    RELATIONSHIP{id=2L, type='null', start=null, end=42, properties={}},\n"
@@ -77,7 +77,7 @@ class ShouldNodeHaveNoRelatedRelationshipsTests {
             // THEN
             assertThat(error.create()).isEqualToNormalizingNewlines(
                     "\nExpecting node:\n"
-                    + " <NODE{id=42L, labels=[], properties={}}>\n"
+                    + "  <NODE{id=42L, labels=[], properties={}}>\n"
                     + "to have no outgoing relationships but found:\n"
                     + "  <[RELATIONSHIP{id=1L, type='null', start=42, end=null, properties={}},\n"
                     + "    RELATIONSHIP{id=2L, type='null', start=42, end=null, properties={}},\n"

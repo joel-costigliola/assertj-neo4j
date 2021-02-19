@@ -15,12 +15,12 @@ package org.assertj.neo4j.api.beta;
 import org.assertj.neo4j.api.beta.error.ShouldHaveNodeLabels;
 import org.assertj.neo4j.api.beta.error.ShouldNodeHaveNoRelatedRelationships;
 import org.assertj.neo4j.api.beta.type.DbNode;
-import org.assertj.neo4j.api.beta.type.RecordType;
+import org.assertj.neo4j.api.beta.type.ObjectType;
 import org.assertj.neo4j.api.beta.type.loader.DataLoader;
 import org.assertj.neo4j.api.beta.type.loader.LoaderFactory;
 import org.assertj.neo4j.api.beta.type.loader.Relationships;
 import org.assertj.neo4j.api.beta.util.Checks;
-import org.assertj.neo4j.api.beta.util.EntityUtils;
+import org.assertj.neo4j.api.beta.util.DbObjectUtils;
 import org.assertj.neo4j.api.beta.util.Predicates;
 
 import java.util.List;
@@ -43,7 +43,7 @@ public abstract class AbstractNodesAssert<SELF extends AbstractNodesAssert<SELF,
             final EntitiesAssertFactory<SELF, DbNode, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT> newSelfFactory,
             final PARENT_ASSERT parentAssert,
             final ROOT_ASSERT rootAssert) {
-        super(RecordType.NODE, selfType, dataLoader, entities, newSelfFactory, parentAssert, rootAssert);
+        super(ObjectType.NODE, selfType, dataLoader, entities, newSelfFactory, parentAssert, rootAssert);
     }
 
     /**
@@ -88,7 +88,7 @@ public abstract class AbstractNodesAssert<SELF extends AbstractNodesAssert<SELF,
         final List<String> labels = Checks
                 .notNullOrEmpty(expectedLabels, "The iterable of values to look for should not be empty");
         return shouldAllVerify(
-                Predicates.labelsExists(expectedLabels),
+                Predicates.nodeLabelsExists(expectedLabels),
                 (notSatisfies) -> ShouldHaveNodeLabels.elements(actual, labels).notSatisfies(notSatisfies)
         );
     }
@@ -133,7 +133,7 @@ public abstract class AbstractNodesAssert<SELF extends AbstractNodesAssert<SELF,
         return incomingRelationships(types)
                 .isEmpty((relationships) -> ShouldNodeHaveNoRelatedRelationships
                         .incomingElements(actual, relationships)
-                        .notSatisfies(EntityUtils.havingIncomingRelationships(actual, relationships))
+                        .notSatisfies(DbObjectUtils.havingIncomingRelationships(actual, relationships))
                 )
                 .toParentAssert();
     }
@@ -148,7 +148,7 @@ public abstract class AbstractNodesAssert<SELF extends AbstractNodesAssert<SELF,
         return outgoingRelationships(types)
                 .isEmpty((relationships) -> ShouldNodeHaveNoRelatedRelationships
                         .outgoingElements(actual, relationships)
-                        .notSatisfies(EntityUtils.havingOutgoingRelationships(actual, relationships))
+                        .notSatisfies(DbObjectUtils.havingOutgoingRelationships(actual, relationships))
                 )
                 .toParentAssert();
     }

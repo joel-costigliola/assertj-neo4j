@@ -14,7 +14,7 @@ package org.assertj.neo4j.api.beta;
 
 import org.assertj.neo4j.api.beta.error.ShouldRelationshipHaveType;
 import org.assertj.neo4j.api.beta.type.DbRelationship;
-import org.assertj.neo4j.api.beta.type.RecordType;
+import org.assertj.neo4j.api.beta.type.ObjectType;
 import org.assertj.neo4j.api.beta.type.loader.DataLoader;
 import org.assertj.neo4j.api.beta.util.Predicates;
 
@@ -40,7 +40,7 @@ public abstract class AbstractRelationshipsAssert<SELF extends AbstractRelations
             final EntitiesAssertFactory<SELF, DbRelationship, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT> factory,
             final PARENT_ASSERT parentAssert,
             final ROOT_ASSERT rootAssert) {
-        super(RecordType.RELATIONSHIP, selfType, dbData, dbRelationships, factory, parentAssert, rootAssert);
+        super(ObjectType.RELATIONSHIP, selfType, dbData, dbRelationships, factory, parentAssert, rootAssert);
     }
 
     /**
@@ -51,7 +51,7 @@ public abstract class AbstractRelationshipsAssert<SELF extends AbstractRelations
      */
     public SELF haveType(final String expectedType) {
         return shouldAllVerify(
-                Predicates.isType(expectedType),
+                Predicates.relationshipIsOfType(expectedType),
                 (notSatisfies -> ShouldRelationshipHaveType.elements(actual, expectedType).notSatisfies(notSatisfies))
         );
     }

@@ -44,11 +44,11 @@ public class ShouldHaveNodeLabelsTests {
             // THEN
             assertThat(error.create()).isEqualToNormalizingNewlines(
                     "\nExpecting node labels:\n"
-                    + " <[\"LBL_1\", \"LBL_4\"]>\n"
+                    + "  <[\"LBL_1\", \"LBL_4\"]>\n"
                     + "to contain:\n"
-                    + " <[\"LBL_1\", \"LBL_2\", \"LBL_3\", \"LBL_4\"]>\n"
+                    + "  <[\"LBL_1\", \"LBL_2\", \"LBL_3\", \"LBL_4\"]>\n"
                     + "but could not find the following labels:\n"
-                    + " <[\"LBL_2\", \"LBL_3\"]>\n"
+                    + "  <[\"LBL_2\", \"LBL_3\"]>\n"
             );
         }
 

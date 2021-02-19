@@ -13,23 +13,22 @@
 package org.assertj.neo4j.api.beta.error;
 
 import org.assertj.neo4j.api.beta.type.DbEntity;
-import org.assertj.neo4j.api.beta.util.EntityUtils;
 
 import java.util.List;
 
 /**
- * Creates an error message indicating that an assertion that verifies a {@link ENTITY} property value don't match a
+ * Creates an error message indicating that an assertion that verifies a {@link ACTUAL} property value don't match a
  * predicate.
  *
- * @param <ENTITY> the entity type
+ * @param <ACTUAL> the entity type
  * @author Patrick Allain - 10/02/2021
  */
-public class ShouldPropertyMatch<ENTITY extends DbEntity> extends BasicEntityErrorMessageFactory<ENTITY> {
+public class ShouldPropertyMatch<ACTUAL extends DbEntity<ACTUAL>> extends BasicDbErrorMessageFactory<ACTUAL> {
 
-    protected ShouldPropertyMatch(final ENTITY actual, final String key) {
+    protected ShouldPropertyMatch(final ACTUAL actual, final String key) {
         super(
-                "%nExpecting " + EntityUtils.recordTypeSingular(actual) + " to have property:%n <%2$s>%n"
-                + "matching the provided condition for its value:%n <%3$s>%n"
+                "%nExpecting " + actual.objectName(1) + " to have property:%n  <%2$s>%n"
+                + "matching the provided condition for its value:%n  <%3$s>%n"
                 + "but this value of type %4$s did not.%n",
                 actual,
                 ArgDetail.excluded(key),
@@ -38,19 +37,16 @@ public class ShouldPropertyMatch<ENTITY extends DbEntity> extends BasicEntityErr
         );
     }
 
-    public static <E extends DbEntity> ShouldPropertyMatch<E> create(final E actual, final String key) {
+    public static <A extends DbEntity<A>> ShouldPropertyMatch<A> create(final A actual, final String key) {
         return new ShouldPropertyMatch<>(actual, key);
     }
 
-    public static <E extends DbEntity> GroupingEntityErrorFactory<E> elements(final List<E> actual,
-                                                                              final String key) {
-        return new BasicGroupingEntityErrorFactory<>(
+    public static <A extends DbEntity<A>> GroupingDbErrorFactory<A> elements(final List<A> actual, final String key) {
+        return new BasicDbGroupingErrorFactory<>(
                 actual,
-                (e) -> create(e, key),
-                "%nExpecting %3$s:%n"
-                + "  <%1$s>%n"
-                + "to have a for the property %4$s matching the condition but %3$s:%n"
-                + "  <%2$s>%n"
+                (a) -> create(a, key),
+                "%nExpecting %3$s:%n  <%1$s>%n"
+                + "to have a for the property %4$s matching the condition but %3$s:%n  <%2$s>%n"
                 + "did not:",
                 key
         );

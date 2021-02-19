@@ -17,9 +17,10 @@ import org.assertj.core.error.BasicErrorMessageFactory;
 import org.assertj.core.error.ErrorMessageFactory;
 import org.assertj.core.presentation.Representation;
 import org.assertj.neo4j.api.beta.type.DbEntity;
-import org.assertj.neo4j.api.beta.type.RecordType;
+import org.assertj.neo4j.api.beta.type.DbObject;
+import org.assertj.neo4j.api.beta.type.ObjectType;
 import org.assertj.neo4j.api.beta.util.Checks;
-import org.assertj.neo4j.api.beta.util.EntityUtils;
+import org.assertj.neo4j.api.beta.util.Utils;
 
 import java.util.Arrays;
 import java.util.List;
@@ -32,14 +33,14 @@ import static org.assertj.core.configuration.ConfigurationProvider.CONFIGURATION
 
 /**
  * Grouping entity error factory in design to create a new {@link ErrorMessageFactory} based on a list of failing
- * entities provided in an {@link EntityErrorMessageFactory}.
+ * entities provided in an {@link DbErrorMessageFactory}.
  *
  * @author Patrick Allain - 05/02/2021
  */
-public class BasicGroupingEntityErrorFactory<ENTITY extends DbEntity> implements GroupingEntityErrorFactory<ENTITY> {
+public class BasicDbGroupingErrorFactory<ACTUAL extends DbObject<ACTUAL>> implements GroupingDbErrorFactory<ACTUAL> {
 
-    private final List<ENTITY> actual;
-    private final Function<ENTITY, EntityErrorMessageFactory<ENTITY>> mapper;
+    private final List<ACTUAL> actual;
+    private final Function<ACTUAL, DbErrorMessageFactory<ACTUAL>> mapper;
     private final String format;
     private final Object[] arguments;
 
@@ -56,13 +57,13 @@ public class BasicGroupingEntityErrorFactory<ENTITY extends DbEntity> implements
      *
      * @param actual    the list of actual entities
      * @param mapper    the function to transform entities that don't satisfies the condition into a {@link
-     *                  EntityErrorMessageFactory}
+     *                  DbErrorMessageFactory}
      * @param format    the message format
      * @param arguments any other remaining arguments
      */
-    public BasicGroupingEntityErrorFactory(
-            final List<ENTITY> actual,
-            final Function<ENTITY, EntityErrorMessageFactory<ENTITY>> mapper,
+    public BasicDbGroupingErrorFactory(
+            final List<ACTUAL> actual,
+            final Function<ACTUAL, DbErrorMessageFactory<ACTUAL>> mapper,
             final String format,
             final Object... arguments) {
         this.actual = Checks.notNullOrEmpty(actual, "The list of entities cannot be null");
@@ -72,38 +73,38 @@ public class BasicGroupingEntityErrorFactory<ENTITY extends DbEntity> implements
     }
 
     @Override
-    public ErrorMessageFactory notSatisfies(final List<ENTITY> notSatisfies) {
-        return new GroupingEntityErrorMessageFactory<>(
+    public ErrorMessageFactory notSatisfies(final List<ACTUAL> notSatisfies) {
+        return new GroupingEntityErrorMessageFactory<ACTUAL>(
                 this.mapper,
                 this.format,
-                EntityUtils.sorted(this.actual),
-                EntityUtils.sorted(notSatisfies),
-                EntityUtils.recordType(this.actual),
+                Utils.sorted(this.actual),
+                Utils.sorted(notSatisfies),
+                Utils.objectType(this.actual),
                 arguments
         );
     }
 
-    private static class GroupingEntityErrorMessageFactory<E extends DbEntity>
+    private static class GroupingEntityErrorMessageFactory<ACTUAL extends DbObject<ACTUAL>>
             extends BasicErrorMessageFactory {
 
-        private final List<EntityErrorMessageFactory<E>> entityErrorMessageFactories;
+        private final List<DbErrorMessageFactory<ACTUAL>> entityErrorMessageFactories;
 
         public GroupingEntityErrorMessageFactory(
-                final Function<E, EntityErrorMessageFactory<E>> mapper,
+                final Function<ACTUAL, DbErrorMessageFactory<ACTUAL>> mapper,
                 final String format,
-                final List<E> actual,
-                final List<E> notSatisfies,
-                final RecordType type,
+                final List<ACTUAL> actual,
+                final List<ACTUAL> notSatisfies,
+                final ObjectType type,
                 Object... arguments) {
             super(format, toArguments(actual, notSatisfies, type, arguments));
             this.entityErrorMessageFactories = notSatisfies.stream().map(mapper).collect(Collectors.toList());
         }
 
-        private static <E extends DbEntity> Object[] toArguments(
-                final List<E> actual, final List<E> notSatisfies, final RecordType type, final Object[] arguments) {
+        private static <A extends DbObject<A>> Object[] toArguments(
+                final List<A> actual, final List<A> notSatisfies, final ObjectType type, final Object[] arguments) {
             return Stream
                     .concat(
-                            Stream.of(actual, notSatisfies, unquotedString(type.pluralForm())),
+                            Stream.of(actual, notSatisfies, unquotedString(type.format(actual.size()))),
                             Arrays.stream(arguments)
                     ).toArray();
         }
@@ -136,13 +137,13 @@ public class BasicGroupingEntityErrorFactory<ENTITY extends DbEntity> implements
         private String formatItem(
                 final int index,
                 final Representation representation,
-                final EntityErrorMessageFactory<E> entityErrorMessageFactory) {
-            final List<EntityErrorMessageFactory.ArgDetail> details = entityErrorMessageFactory.details();
+                final DbErrorMessageFactory<ACTUAL> dbErrorMessageFactory) {
+            final List<DbErrorMessageFactory.ArgDetail> details = dbErrorMessageFactory.details();
             return Stream
                     .concat(
                             Stream.of(String.format(
                                     "%d) %s",
-                                    index + 1, representation.toStringOf(entityErrorMessageFactory.entity())
+                                    index + 1, representation.toStringOf(dbErrorMessageFactory.actual())
                             )),
                             details.stream().map(i -> String.format(
                                     "  - %s: %s",

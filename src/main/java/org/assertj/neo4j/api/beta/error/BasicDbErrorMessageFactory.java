@@ -14,6 +14,7 @@ package org.assertj.neo4j.api.beta.error;
 
 import org.assertj.core.error.BasicErrorMessageFactory;
 import org.assertj.neo4j.api.beta.type.DbEntity;
+import org.assertj.neo4j.api.beta.type.DbObject;
 
 import java.util.Arrays;
 import java.util.List;
@@ -23,26 +24,26 @@ import java.util.stream.Stream;
 /**
  * Basic entity error message factory.
  *
- * @param <ENTITY> the entity type
+ * @param <ACTUAL> the entity type
  * @author Patrick Allain - 03/02/2021
  */
-class BasicEntityErrorMessageFactory<ENTITY extends DbEntity>
+class BasicDbErrorMessageFactory<ACTUAL extends DbObject<ACTUAL>>
         extends BasicErrorMessageFactory
-        implements EntityErrorMessageFactory<ENTITY> {
+        implements DbErrorMessageFactory<ACTUAL> {
 
-    private final ENTITY actual;
+    private final ACTUAL actual;
 
     private final List<ArgDetail> details;
 
     /**
-     * Creates a new  {@link BasicErrorMessageFactory} for the {@code actual} {@link ENTITY}.
+     * Creates a new  {@link BasicErrorMessageFactory} for the {@code actual} {@link ACTUAL}.
      * <p/>
      *
      * @param format  the format string.
      * @param actual  the actual entity involve.
      * @param details details error that will be used as argument for formatting and preprocessing.
      */
-    protected BasicEntityErrorMessageFactory(final String format, final ENTITY actual, final ArgDetail... details) {
+    protected BasicDbErrorMessageFactory(final String format, final ACTUAL actual, final ArgDetail... details) {
         super(format, toArguments(actual, details));
         this.actual = actual;
         this.details = Arrays.stream(details).filter(ArgDetail::isIncluded).collect(Collectors.toList());
@@ -51,14 +52,14 @@ class BasicEntityErrorMessageFactory<ENTITY extends DbEntity>
     /**
      * Create the arguments for the message formatter.
      *
-     * @param entity  the entity.
+     * @param actual  the actual database object.
      * @param details the error details
      * @return an array for the provided arguments
      */
-    protected static <E extends DbEntity> Object[] toArguments(final E entity, final ArgDetail... details) {
+    protected static <A extends DbObject<A>> Object[] toArguments(final A actual, final ArgDetail... details) {
         return Stream
                 .concat(
-                        Stream.of(entity),
+                        Stream.of(actual),
                         Arrays.stream(details).map(ArgDetail::value)
                 )
                 .toArray();
@@ -66,7 +67,7 @@ class BasicEntityErrorMessageFactory<ENTITY extends DbEntity>
 
     /** {@inheritDoc} */
     @Override
-    public ENTITY entity() {
+    public ACTUAL actual() {
         return this.actual;
     }
 

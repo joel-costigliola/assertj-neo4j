@@ -13,26 +13,25 @@
 package org.assertj.neo4j.api.beta.error;
 
 import org.assertj.neo4j.api.beta.type.DbEntity;
-import org.assertj.neo4j.api.beta.util.EntityUtils;
 
 import java.util.List;
 
 /**
- * Creates an error message indicating that an assertion that verifies a {@link ENTITY} property value is not of the
+ * Creates an error message indicating that an assertion that verifies a {@link ACTUAL} property value is not of the
  * expected type.
  *
- * @param <ENTITY> the entity type
+ * @param <ACTUAL> the entity type
  * @author Patrick Allain - 30/01/2021
  */
-public class ShouldHavePropertyInstanceOf<ENTITY extends DbEntity> extends BasicEntityErrorMessageFactory<ENTITY> {
+public class ShouldHavePropertyInstanceOf<ACTUAL extends DbEntity<ACTUAL>> extends BasicDbErrorMessageFactory<ACTUAL> {
 
-    private ShouldHavePropertyInstanceOf(final ENTITY actual, final String key, final Class<?> expectedClass) {
+    private ShouldHavePropertyInstanceOf(final ACTUAL actual, final String key, final Class<?> expectedClass) {
         super(
-                "%nExpecting " + EntityUtils.recordTypeSingular(actual)
-                + " to have property value %2$s instance of:%n <%3$s>%n"
-                + "but the actual property value for this key has class :%n <%4$s>%n"
+                "%nExpecting " + actual.objectName(1)
+                + " to have property value %2$s instance of:%n  <%3$s>%n"
+                + "but the actual property value for this key has class :%n  <%4$s>%n"
                 + "which is not an instance of the expected class.%n%n"
-                + "Actual value for this property is:%n <%5$s>%n",
+                + "Actual value for this property is:%n  <%5$s>%n",
                 actual,
                 ArgDetail.excluded(key),
                 ArgDetail.excluded(expectedClass),
@@ -41,16 +40,16 @@ public class ShouldHavePropertyInstanceOf<ENTITY extends DbEntity> extends Basic
         );
     }
 
-    public static <E extends DbEntity> ShouldHavePropertyInstanceOf<E> create(
-            final E actual, final String key, final Class<?> expectedClass) {
+    public static <A extends DbEntity<A>> ShouldHavePropertyInstanceOf<A> create(
+            final A actual, final String key, final Class<?> expectedClass) {
         return new ShouldHavePropertyInstanceOf<>(actual, key, expectedClass);
     }
 
-    public static <E extends DbEntity> GroupingEntityErrorFactory<E> elements(
-            final List<E> actual, final String key, final Class<?> expectedClass) {
-        return new BasicGroupingEntityErrorFactory<>(
+    public static <A extends DbEntity<A>> GroupingDbErrorFactory<A> elements(
+            final List<A> actual, final String key, final Class<?> expectedClass) {
+        return new BasicDbGroupingErrorFactory<>(
                 actual,
-                (e) -> create(e, key, expectedClass),
+                (a) -> create(a, key, expectedClass),
                 "%nExpecting %3$s:%n"
                 + "  <%1$s>%n"
                 + "to have property value %4$s instance of:%n"

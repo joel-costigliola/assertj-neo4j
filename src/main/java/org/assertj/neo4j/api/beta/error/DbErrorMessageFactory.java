@@ -13,7 +13,6 @@
 package org.assertj.neo4j.api.beta.error;
 
 import org.assertj.core.error.ErrorMessageFactory;
-import org.assertj.neo4j.api.beta.type.DbEntity;
 
 import java.util.List;
 import java.util.Objects;
@@ -26,14 +25,14 @@ import java.util.Objects;
  *
  * @author Patrick Allain - 03/02/2021
  */
-interface EntityErrorMessageFactory<ENTITY extends DbEntity> extends ErrorMessageFactory {
+interface DbErrorMessageFactory<ACTUAL> extends ErrorMessageFactory {
 
     /**
      * Retrieve the actual entity that will is related to the {@link ErrorMessageFactory}.
      *
      * @return the entity.
      */
-    ENTITY entity();
+    ACTUAL actual();
 
     /**
      * Provide details about the failing assertion.
@@ -58,7 +57,7 @@ interface EntityErrorMessageFactory<ENTITY extends DbEntity> extends ErrorMessag
         }
 
         /**
-         * Create a new {@link ArgDetail} for an {@link EntityErrorMessageFactory} that will be included in the result
+         * Create a new {@link ArgDetail} for an {@link DbErrorMessageFactory} that will be included in the result
          * {@link #details()}.
          *
          * @param title the title of error detail.
@@ -70,7 +69,7 @@ interface EntityErrorMessageFactory<ENTITY extends DbEntity> extends ErrorMessag
         }
 
         /**
-         * Create a new {@link ArgDetail} for an {@link EntityErrorMessageFactory} that will not be included in the
+         * Create a new {@link ArgDetail} for an {@link DbErrorMessageFactory} that will not be included in the
          * result {@link #details()}.
          *
          * @param value the error detail value.

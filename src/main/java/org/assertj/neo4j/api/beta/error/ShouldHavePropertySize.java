@@ -13,24 +13,23 @@
 package org.assertj.neo4j.api.beta.error;
 
 import org.assertj.neo4j.api.beta.type.DbEntity;
-import org.assertj.neo4j.api.beta.util.EntityUtils;
 
 import java.util.List;
 
 /**
- * Creates an error message indicating that an assertion that verifies {@link ENTITY} properties don't have the expected
+ * Creates an error message indicating that an assertion that verifies {@link ACTUAL} properties don't have the expected
  * size.
  *
- * @param <ENTITY> the entity type
+ * @param <ACTUAL> the entity type
  * @author Patrick Allain - 01/02/2021
  */
-public class ShouldHavePropertySize<ENTITY extends DbEntity> extends BasicEntityErrorMessageFactory<ENTITY> {
+public class ShouldHavePropertySize<ACTUAL extends DbEntity<ACTUAL>> extends BasicDbErrorMessageFactory<ACTUAL> {
 
-    private ShouldHavePropertySize(final ENTITY actual, final int size) {
+    private ShouldHavePropertySize(final ACTUAL actual, final int size) {
         super(
-                "%nExpecting " + EntityUtils.recordTypeSingular(actual) + " to have property size:%n <%2$s>%n"
-                + "but actual property size is:%n <%3$s>%n"
-                + "containing the following property keys:%n <%4$s>%n",
+                "%nExpecting " + actual.objectName(1) + " to have property size:%n  <%2$s>%n"
+                + "but actual property size is:%n  <%3$s>%n"
+                + "containing the following property keys:%n  <%4$s>%n",
                 actual,
                 ArgDetail.excluded(size),
                 ArgDetail.included("Actual property size", actual.getPropertyKeys().size()),
@@ -38,14 +37,14 @@ public class ShouldHavePropertySize<ENTITY extends DbEntity> extends BasicEntity
         );
     }
 
-    public static <E extends DbEntity> ShouldHavePropertySize<E> create(final E actual, final int size) {
+    public static <A extends DbEntity<A>> ShouldHavePropertySize<A> create(final A actual, final int size) {
         return new ShouldHavePropertySize<>(actual, size);
     }
 
-    public static <E extends DbEntity> GroupingEntityErrorFactory<E> elements(final List<E> actual, final int size) {
-        return new BasicGroupingEntityErrorFactory<>(
+    public static <A extends DbEntity<A>> GroupingDbErrorFactory<A> elements(final List<A> actual, final int size) {
+        return new BasicDbGroupingErrorFactory<>(
                 actual,
-                (e) -> create(e, size),
+                (a) -> create(a, size),
                 "%nExpecting %3$s:%n"
                 + "  <%1$s>%n"
                 + "to have a property size:%n"

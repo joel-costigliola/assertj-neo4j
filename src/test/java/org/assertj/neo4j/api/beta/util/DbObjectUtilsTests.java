@@ -34,52 +34,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 /**
  * @author Patrick Allain - 13/02/2021
  */
-class EntityUtilsTests {
-
-    @Nested
-    class SortedTests {
-
-        @Test
-        void should_sort_entities_by_ids() {
-            // GIVEN
-            final DbNode node1 = Models.node().id(11).build();
-            final DbNode node2 = Models.node().id(16).build();
-            final DbNode node3 = Models.node().id(42).build();
-            final DbNode node4 = Models.node().id(64).build();
-            final DbNode node5 = Models.node().id(69).build();
-            final DbNode node6 = Models.node().id(98).build();
-            final Iterable<DbNode> entities = Randomize.listOf(node1, node2, node3, node4, node5, node6);
-
-            // WHEN
-            final List<DbNode> result = EntityUtils.sorted(entities);
-
-            // THEN
-            assertThat(result).containsExactly(node1, node2, node3, node4, node5, node6);
-        }
-
-        @Test
-        void should_support_null_ids() {
-            // GIVEN
-            final DbNode node1 = Models.node().id(11).build();
-            final DbNode node2 = Models.node().build();
-            final DbNode node3 = Models.node().id(42).build();
-            final DbNode node4 = Models.node().build();
-            final DbNode node5 = Models.node().id(69).build();
-            final DbNode node6 = Models.node().id(98).build();
-            final Iterable<DbNode> entities = Randomize.listOf(node1, node2, node3, node4, node5, node6);
-
-            // WHEN
-            final List<DbNode> result = EntityUtils.sorted(entities);
-
-            // THEN
-            assertThat(result)
-                    .hasSize(6)
-                    .containsSubsequence(node2, node1)
-                    .containsSubsequence(node4, node1)
-                    .containsSubsequence(node1, node3, node5, node6);
-        }
-
-    }
+class DbObjectUtilsTests {
 
     @Nested
     class AreIncomingForNodeTests {
@@ -98,7 +53,7 @@ class EntityUtilsTests {
                     .listOf(relationship1, relationship2, relationship3, relationship4, relationship5, relationship6);
 
             // WHEN
-            final List<DbRelationship> result = EntityUtils.areIncomingForNode(node, relationships);
+            final List<DbRelationship> result = DbObjectUtils.areIncomingForNode(node, relationships);
 
             // THEN
             assertThat(result).containsExactly(relationship4, relationship6);
@@ -122,7 +77,7 @@ class EntityUtilsTests {
                     .listOf(relationship1, relationship2, relationship3, relationship4, relationship5, relationship6);
 
             // WHEN
-            final List<DbRelationship> result = EntityUtils.areOutgoingForNode(node, relationships);
+            final List<DbRelationship> result = DbObjectUtils.areOutgoingForNode(node, relationships);
 
             // THEN
             assertThat(result).containsExactly(relationship4, relationship6);
@@ -152,7 +107,7 @@ class EntityUtilsTests {
                     .listOf(relationship1, relationship2, relationship3, relationship4, relationship5, relationship6);
 
             // WHEN
-            final List<DbNode> result = EntityUtils.havingIncomingRelationships(nodes, relationships);
+            final List<DbNode> result = DbObjectUtils.havingIncomingRelationships(nodes, relationships);
 
             // THEN
             assertThat(result).containsExactly(node1, node3);
@@ -182,7 +137,7 @@ class EntityUtilsTests {
                     .listOf(relationship1, relationship2, relationship3, relationship4, relationship5, relationship6);
 
             // WHEN
-            final List<DbNode> result = EntityUtils.havingOutgoingRelationships(nodes, relationships);
+            final List<DbNode> result = DbObjectUtils.havingOutgoingRelationships(nodes, relationships);
 
             // THEN
             assertThat(result).containsExactly(node1, node3);
@@ -205,7 +160,7 @@ class EntityUtilsTests {
                     .listOf(relationship1, relationship2, relationship3, relationship4, relationship5, relationship6);
 
             // WHEN
-            final List<Long> result = EntityUtils.startNodeIds(relationships);
+            final List<Long> result = DbObjectUtils.startNodeIds(relationships);
 
             // THEN
             assertThat(result).containsExactly(22L, 29L, 35L, 42L, 42L, 56L);
@@ -229,7 +184,7 @@ class EntityUtilsTests {
                     .listOf(relationship1, relationship2, relationship3, relationship4, relationship5, relationship6);
 
             // WHEN
-            final List<Long> result = EntityUtils.endNodeIds(relationships);
+            final List<Long> result = DbObjectUtils.endNodeIds(relationships);
 
             // THEN
             assertThat(result).containsExactly(22L, 29L, 35L, 42L, 42L, 56L);
@@ -245,7 +200,7 @@ class EntityUtilsTests {
         @Test
         void should_throw_an_exception() {
             // WHEN & THEN
-            assertThatThrownBy(() -> EntityUtils.propertyList(Samples.NODE_LIST, "key_doesnt_exist"))
+            assertThatThrownBy(() -> DbObjectUtils.propertyList(Samples.NODE_LIST, "key_doesnt_exist"))
                     .hasMessage("Property key \"key_doesnt_exist\" doesn't exist")
                     .hasNoCause();
         }
@@ -253,11 +208,11 @@ class EntityUtilsTests {
         @Test
         void should_return_the_right_property_type(final SoftAssertions softly) {
             // WHEN & THEN
-            softly.assertThat(EntityUtils.propertyList(Samples.NODE_LIST, "list_long"))
+            softly.assertThat(DbObjectUtils.propertyList(Samples.NODE_LIST, "list_long"))
                     .hasSize(10)
                     .contains(IntStream.range(0, 10).mapToObj(DbValue::fromObject).toArray(DbValue[]::new));
 
-            softly.assertThat(EntityUtils.propertyList(Samples.NODE_LIST, "list_string"))
+            softly.assertThat(DbObjectUtils.propertyList(Samples.NODE_LIST, "list_string"))
                     .hasSize(3)
                     .contains(
                             DbValue.fromObject("str-1"),

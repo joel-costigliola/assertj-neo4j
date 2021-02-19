@@ -14,13 +14,17 @@ package org.assertj.neo4j.api.beta.type;
 
 import org.assertj.neo4j.api.beta.util.Formats;
 
+import java.util.Comparator;
 import java.util.Map;
 
 /**
  * TODO : Maybe extract method here in a interface to be able to decorate a Relationship from driver - This may have
  * impact for comparing relationship.
  */
-public class DbRelationship extends DbEntity {
+public class DbRelationship extends DbEntity<DbRelationship> {
+
+    public static final Comparator<DbRelationship> RELATIONSHIP_COMPARATOR =
+            Comparator.comparing(DbRelationship::getId, Comparator.nullsFirst(Comparator.naturalOrder()));
 
     private final Long start;
     private final Long end;
@@ -28,7 +32,7 @@ public class DbRelationship extends DbEntity {
 
     DbRelationship(final Long id, final String type, final Long start, final Long end,
                    final Map<String, DbValue> properties) {
-        super(RecordType.RELATIONSHIP, id, properties);
+        super(ObjectType.RELATIONSHIP, id, properties);
         this.start = start;
         this.end = end;
         this.type = type;
@@ -36,7 +40,7 @@ public class DbRelationship extends DbEntity {
 
     @Override
     public String detailed() {
-        return recordType + "{"
+        return objectType + "{"
                + "id=" + Formats.number(id) + ", type='" + type + "', start=" + start + ", "
                + "end=" + end + ", properties=" + properties + '}';
     }
@@ -51,6 +55,11 @@ public class DbRelationship extends DbEntity {
 
     public Long getEnd() {
         return end;
+    }
+
+    @Override
+    public int compareTo(DbRelationship o) {
+        return RELATIONSHIP_COMPARATOR.compare(this, o);
     }
 
     /** Builder for {@link DbRelationship}. */

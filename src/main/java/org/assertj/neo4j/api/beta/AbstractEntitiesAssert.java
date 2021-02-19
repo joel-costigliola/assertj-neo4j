@@ -25,7 +25,7 @@ import org.assertj.neo4j.api.beta.error.ShouldPropertyMatch;
 import org.assertj.neo4j.api.beta.error.ShouldQueryResultBeEmpty;
 import org.assertj.neo4j.api.beta.error.ShouldQueryResultBeNotEmpty;
 import org.assertj.neo4j.api.beta.type.DbEntity;
-import org.assertj.neo4j.api.beta.type.RecordType;
+import org.assertj.neo4j.api.beta.type.ObjectType;
 import org.assertj.neo4j.api.beta.type.ValueType;
 import org.assertj.neo4j.api.beta.type.loader.DataLoader;
 import org.assertj.neo4j.api.beta.util.Checks;
@@ -56,7 +56,7 @@ import java.util.stream.Collectors;
  */
 //@formatter:off
 public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert<SELF, ENTITY, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT>,
-                                             ENTITY extends DbEntity,
+                                             ENTITY extends DbEntity<ENTITY>,
                                              NEW_SELF extends Navigable<SELF, ROOT_ASSERT>,
                                              PARENT_ASSERT extends ParentalAssert,
                                              ROOT_ASSERT>
@@ -66,7 +66,7 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
 //@formatter:on
 
     /** The record type */
-    protected final RecordType recordType;
+    protected final ObjectType recordType;
 
     /** The data loader. */
     protected final DataLoader<ENTITY> dataLoader;
@@ -83,7 +83,7 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
      * @param rootAssert     the parent assertion for navigation
      */
     protected AbstractEntitiesAssert(
-            final RecordType recordType,
+            final ObjectType recordType,
             final Class<?> selfType,
             final DataLoader<ENTITY> dataLoader,
             final List<ENTITY> entities,

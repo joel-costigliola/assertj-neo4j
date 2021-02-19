@@ -44,9 +44,9 @@ class ShouldHavePropertyValueTests {
             // THEN
             assertThat(error.create()).isEqualToNormalizingNewlines(
                     "\nExpecting node to have a property \"key\" with value:\n"
-                    + " <\"other-value\">\n"
+                    + "  <\"other-value\">\n"
                     + "but current value of this property is:\n"
-                    + " <\"value\">\n"
+                    + "  <\"value\">\n"
             );
         }
 

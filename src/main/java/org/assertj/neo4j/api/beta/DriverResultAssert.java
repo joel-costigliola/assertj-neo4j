@@ -12,7 +12,11 @@
  */
 package org.assertj.neo4j.api.beta;
 
+import org.assertj.neo4j.api.beta.error.ShouldHaveValueType;
 import org.assertj.neo4j.api.beta.type.DbResult;
+import org.assertj.neo4j.api.beta.type.DbValue;
+import org.assertj.neo4j.api.beta.type.ValueType;
+import org.assertj.neo4j.api.beta.util.Predicates;
 import org.assertj.neo4j.api.beta.util.Wip;
 import org.neo4j.driver.Result;
 
@@ -68,10 +72,15 @@ public class DriverResultAssert
 
     public DriverResultAssert isNode(final String columnName) {
         hasColumns(columnName);
-        final List<Object> values = actual.getRecords().stream()
+        final List<DbValue> values = actual.getRecords().stream()
                 .map(m -> m.get(columnName))
                 .collect(Collectors.toList());
-
+        shouldAllVerify(values,
+                Predicates.isValueType(ValueType.NODE),
+                (i) -> ShouldHaveValueType
+                        .elements(values, ValueType.NODE)
+                        .notSatisfies(i)
+        );
         Wip.TODO(this);
         // shouldAllVerify(values, Predicates.isValueType(ValueType.NODE))
         return myself;

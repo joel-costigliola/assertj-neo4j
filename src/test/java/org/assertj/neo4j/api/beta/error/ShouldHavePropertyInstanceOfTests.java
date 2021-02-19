@@ -43,13 +43,13 @@ class ShouldHavePropertyInstanceOfTests {
             // THEN
             assertThat(error.create()).isEqualToNormalizingNewlines(
                     "\nExpecting node to have property value \"key\" instance of:\n"
-                    + " <java.lang.Long>\n"
+                    + "  <java.lang.Long>\n"
                     + "but the actual property value for this key has class :\n"
-                    + " <java.lang.String>\n"
+                    + "  <java.lang.String>\n"
                     + "which is not an instance of the expected class.\n"
                     + "\n"
                     + "Actual value for this property is:\n"
-                    + " <\"value-1\">\n"
+                    + "  <\"value-1\">\n"
             );
         }
     }

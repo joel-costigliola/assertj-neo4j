@@ -35,7 +35,7 @@ public interface Predicates {
      *
      * @param <E> the entity type
      */
-    static <E extends DbEntity> Predicate<E> propertyKeyExists(final String key) {
+    static <E extends DbEntity<E>> Predicate<E> propertyKeyExists(final String key) {
         return (e) -> e.getProperties().containsKey(key);
     }
 
@@ -46,7 +46,7 @@ public interface Predicates {
      *
      * @param <E> the entity type
      */
-    static <E extends DbEntity> Predicate<E> propertyKeysExists(final Iterable<String> keys) {
+    static <E extends DbEntity<E>> Predicate<E> propertyKeysExists(final Iterable<String> keys) {
         return Streams.stream(keys)
                 .map(Predicates::<E>propertyKeyExists)
                 .reduce(x -> true, Predicate::and);
@@ -60,32 +60,32 @@ public interface Predicates {
      *
      * @param <E> the entity type
      */
-    static <E extends DbEntity> Predicate<E> propertySize(final int size) {
+    static <E extends DbEntity<E>> Predicate<E> propertySize(final int size) {
         return (e) -> e.getProperties().size() == size;
     }
 
-    static <E extends DbEntity> Predicate<E> propertyListContainsValueType(final String key, final ValueType type) {
-        return (e) -> EntityUtils.propertyList(e, key)
+    static <E extends DbEntity<E>> Predicate<E> propertyListContainsValueType(final String key, final ValueType type) {
+        return (e) -> DbObjectUtils.propertyList(e, key)
                 .stream()
                 .map(DbValue::getType)
                 .allMatch(t -> type == t);
     }
 
-    static <E extends DbEntity> Predicate<E> propertyValueType(final String key, final ValueType type) {
+    static <E extends DbEntity<E>> Predicate<E> propertyValueType(final String key, final ValueType type) {
         return (e) -> Objects.equals(e.getPropertyType(key), type);
     }
 
-    static <E extends DbEntity> Predicate<E> propertyValueInstanceOf(final String key, final Class<?> clazz) {
+    static <E extends DbEntity<E>> Predicate<E> propertyValueInstanceOf(final String key, final Class<?> clazz) {
         return (e) -> clazz.isInstance(e.getPropertyValue(key));
     }
 
-    static <E extends DbEntity> Predicate<E> propertyValue(final String key, final Object value) {
+    static <E extends DbEntity<E>> Predicate<E> propertyValue(final String key, final Object value) {
         return (e) -> Objects.equals(e.getPropertyValue(key), value);
 
     }
 
     @SuppressWarnings("unchecked")
-    static <E extends DbEntity, T> Predicate<E> propertyValueMatch(final String key, final Predicate<T> predicate) {
+    static <E extends DbEntity<E>, T> Predicate<E> propertyValueMatch(final String key, final Predicate<T> predicate) {
         return (e) -> predicate.test((T) e.getPropertyValue(key));
     }
 
@@ -97,7 +97,7 @@ public interface Predicates {
      *
      * @return the predicate to test a node
      */
-    static Predicate<DbNode> labelExists(final String label) {
+    static Predicate<DbNode> nodeLabelExists(final String label) {
         return (node) -> node.getLabels().contains(label);
     }
 
@@ -108,8 +108,8 @@ public interface Predicates {
      *
      * @return the predicate to test a node
      */
-    static Predicate<DbNode> labelsExists(final Iterable<String> labels) {
-        return Streams.stream(labels).map(Predicates::labelExists).reduce(x -> true, Predicate::and);
+    static Predicate<DbNode> nodeLabelsExists(final Iterable<String> labels) {
+        return Streams.stream(labels).map(Predicates::nodeLabelExists).reduce(x -> true, Predicate::and);
     }
 
     /**
@@ -120,7 +120,7 @@ public interface Predicates {
      *
      * @return the predicate to test a relationship
      */
-    static Predicate<DbRelationship> isType(final String type) {
+    static Predicate<DbRelationship> relationshipIsOfType(final String type) {
         return (r) -> Objects.equals(r.getType(), type);
     }
 
@@ -133,7 +133,7 @@ public interface Predicates {
      * @return the predicate to test a relationship
      */
     static Predicate<DbRelationship> isAnyOfTypes(final String... types) {
-        return Arrays.stream(types).map(Predicates::isType).reduce(x -> false, Predicate::or);
+        return Arrays.stream(types).map(Predicates::relationshipIsOfType).reduce(x -> false, Predicate::or);
     }
 
     static Predicate<DbValue> isValueType(final ValueType type) {

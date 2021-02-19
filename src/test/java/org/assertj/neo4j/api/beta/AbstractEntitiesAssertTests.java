@@ -15,7 +15,7 @@ package org.assertj.neo4j.api.beta;
 import org.assertj.neo4j.api.beta.type.DbEntity;
 import org.assertj.neo4j.api.beta.type.DbNode;
 import org.assertj.neo4j.api.beta.type.Models;
-import org.assertj.neo4j.api.beta.type.RecordType;
+import org.assertj.neo4j.api.beta.type.ObjectType;
 import org.assertj.neo4j.api.beta.type.ValueType;
 import org.assertj.neo4j.api.beta.type.loader.DataLoader;
 import org.assertj.neo4j.api.beta.type.loader.Nodes;
@@ -58,7 +58,7 @@ class AbstractEntitiesAssertTests {
         protected ConcreteEntitiesAssert(List<DbNode> entities, DataLoader<DbNode> loader,
                                          ConcreteEntitiesAssert parent) {
             super(
-                    RecordType.NODE,
+                    ObjectType.NODE,
                     ConcreteEntitiesAssert.class,
                     loader,
                     entities,
@@ -233,7 +233,7 @@ class AbstractEntitiesAssertTests {
                     .isInstanceOf(AssertionError.class)
                     .hasMessageContainingAll(
                             "Expecting query:",
-                            "to return an empty list of nodes got:"
+                            "to return an empty list of nodes but got 1 node:"
                     );
         }
 

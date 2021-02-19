@@ -24,22 +24,22 @@ import java.util.Map;
  */
 public class DbResult {
 
-    private final List<Map<String, Object>> records;
+    private final List<Map<String, DbValue>> records;
     private final List<String> columns;
     private final ResultSummary summary;
 
     // TODO : Should we add a value RELATIONSHIP and NODE in ValueType and apply the conversion directory ?
-    public DbResult(final List<Map<String, Object>> records, List<String> columns, ResultSummary summary) {
+    public DbResult(final List<Map<String, DbValue>> records, List<String> columns, ResultSummary summary) {
         this.records = records;
         this.columns = columns;
         this.summary = summary;
     }
 
     public static DbResult from(final Result result) {
-        return new DbResult(result.list(Record::asMap), result.keys(), result.consume());
+        return new DbResult(result.list(r -> r.asMap(DbValue::fromObject)), result.keys(), result.consume());
     }
 
-    public List<Map<String, Object>> getRecords() {
+    public List<Map<String, DbValue>> getRecords() {
         return records;
     }
 

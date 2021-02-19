@@ -14,25 +14,23 @@ package org.assertj.neo4j.api.beta.error;
 
 import org.assertj.neo4j.api.beta.type.DbEntity;
 import org.assertj.neo4j.api.beta.type.ValueType;
-import org.assertj.neo4j.api.beta.util.EntityUtils;
 
 import java.util.List;
 
 /**
- * Creates an error message indicating that an assertion that verifies {@link ENTITY}  don't have the expected property
+ * Creates an error message indicating that an assertion that verifies {@link ACTUAL}  don't have the expected property
  * value type.
  *
- * @param <ENTITY> the entity type
+ * @param <ACTUAL> the entity type
  * @author Patrick Allain - 31/01/2021
  */
-public class ShouldHavePropertyValueType<ENTITY extends DbEntity> extends BasicEntityErrorMessageFactory<ENTITY> {
+public class ShouldHavePropertyValueType<ACTUAL extends DbEntity<ACTUAL>> extends BasicDbErrorMessageFactory<ACTUAL> {
 
-    private ShouldHavePropertyValueType(final ENTITY actual, final String key, final ValueType expectedType) {
+    private ShouldHavePropertyValueType(final ACTUAL actual, final String key, final ValueType expectedType) {
         super(
-                "%nExpecting " + EntityUtils.recordTypeSingular(actual)
-                + " to have property value type for key %2$s:%n <%3$s>%n"
-                + "but actual value type for this property key is:%n <%4$s>%n%n"
-                + "Actual property value:%n <%5$s>%n",
+                "%nExpecting " + actual.objectName(1) + " to have property value type for key %2$s:%n  <%3$s>%n"
+                + "but actual value type for this property key is:%n  <%4$s>%n%n"
+                + "Actual property value:%n  <%5$s>%n",
                 actual,
                 ArgDetail.excluded(key),
                 ArgDetail.excluded(expectedType),
@@ -41,20 +39,18 @@ public class ShouldHavePropertyValueType<ENTITY extends DbEntity> extends BasicE
         );
     }
 
-    public static <E extends DbEntity> ShouldHavePropertyValueType<E> create(
-            final E actual, final String key, final ValueType expectedType) {
+    public static <A extends DbEntity<A>> ShouldHavePropertyValueType<A> create(
+            final A actual, final String key, final ValueType expectedType) {
         return new ShouldHavePropertyValueType<>(actual, key, expectedType);
     }
 
-    public static <E extends DbEntity> GroupingEntityErrorFactory<E> elements(
-            final List<E> actual, final String key, final ValueType expectedType) {
-        return new BasicGroupingEntityErrorFactory<>(
+    public static <A extends DbEntity<A>> GroupingDbErrorFactory<A> elements(
+            final List<A> actual, final String key, final ValueType expectedType) {
+        return new BasicDbGroupingErrorFactory<>(
                 actual,
-                (e) -> create(e, key, expectedType),
-                "%nExpecting %3$s:%n"
-                + "  <%1$s>%n"
-                + "to have a property %4$s with a value type:%n"
-                + "  <%5$s>%n"
+                (a) -> create(a, key, expectedType),
+                "%nExpecting %3$s:%n  <%1$s>%n"
+                + "to have a property %4$s with a value type:%n  <%5$s>%n"
                 + "but some %3$s have a different property value type:",
                 key,
                 expectedType

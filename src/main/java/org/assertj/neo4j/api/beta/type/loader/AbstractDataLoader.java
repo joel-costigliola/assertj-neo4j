@@ -12,7 +12,7 @@
  */
 package org.assertj.neo4j.api.beta.type.loader;
 
-import org.assertj.neo4j.api.beta.type.RecordType;
+import org.assertj.neo4j.api.beta.type.ObjectType;
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.Query;
 import org.neo4j.driver.Record;
@@ -32,7 +32,7 @@ abstract class AbstractDataLoader<ENTITY> implements DataLoader<ENTITY> {
     protected final Driver driver;
 
     /** The type of record. */
-    protected final RecordType recordType;
+    protected final ObjectType recordType;
 
     /** The neo4j query. */
     protected final Query query;
@@ -43,7 +43,7 @@ abstract class AbstractDataLoader<ENTITY> implements DataLoader<ENTITY> {
      * @param driver     the Neo4J database driver
      * @param recordType the record type
      */
-    protected AbstractDataLoader(final Driver driver, final RecordType recordType, final Query query) {
+    protected AbstractDataLoader(final Driver driver, final ObjectType recordType, final Query query) {
         this.driver = driver;
         this.recordType = recordType;
         this.query = query;

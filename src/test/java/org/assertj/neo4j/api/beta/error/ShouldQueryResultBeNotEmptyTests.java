@@ -13,7 +13,7 @@
 package org.assertj.neo4j.api.beta.error;
 
 import org.assertj.core.error.ErrorMessageFactory;
-import org.assertj.neo4j.api.beta.type.RecordType;
+import org.assertj.neo4j.api.beta.type.ObjectType;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.neo4j.driver.Query;
@@ -34,7 +34,7 @@ class ShouldQueryResultBeNotEmptyTests {
             final Query query = new Query("MATCH (n) RETURN n");
 
             // WHEN
-            final ErrorMessageFactory error = ShouldQueryResultBeNotEmpty.create(RecordType.NODE, query);
+            final ErrorMessageFactory error = ShouldQueryResultBeNotEmpty.create(ObjectType.NODE, query);
 
             // THEN
             assertThat(error.create()).isEqualToNormalizingNewlines(

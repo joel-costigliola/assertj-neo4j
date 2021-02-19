@@ -14,7 +14,7 @@ package org.assertj.neo4j.api.beta.error;
 
 import org.assertj.core.error.BasicErrorMessageFactory;
 import org.assertj.core.error.ErrorMessageFactory;
-import org.assertj.neo4j.api.beta.type.RecordType;
+import org.assertj.neo4j.api.beta.type.ObjectType;
 import org.neo4j.driver.Query;
 
 /**
@@ -24,17 +24,17 @@ import org.neo4j.driver.Query;
  */
 public class ShouldQueryResultBeNotEmpty extends BasicErrorMessageFactory {
 
-    private ShouldQueryResultBeNotEmpty(final RecordType type, final Query query) {
+    private ShouldQueryResultBeNotEmpty(final ObjectType type, final Query query) {
         super(
                 "%nExpecting query:%n"
                 + "  <%s>%n"
                 + "to return a non empty result list of %s but got no result.",
                 query,
-                unquotedString(type.pluralForm())
+                unquotedString(type.format(2))
         );
     }
 
-    public static ErrorMessageFactory create(final RecordType type, final Query query) {
+    public static ErrorMessageFactory create(final ObjectType type, final Query query) {
         return new ShouldQueryResultBeNotEmpty(type, query);
     }
 }

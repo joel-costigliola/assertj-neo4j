@@ -43,9 +43,9 @@ class ShouldPropertyMatchTests {
             // THEN
             assertThat(error.create()).isEqualToNormalizingNewlines(
                     "\nExpecting node to have property:\n"
-                    + " <\"key\">\n"
+                    + "  <\"key\">\n"
                     + "matching the provided condition for its value:\n"
-                    + " <2020-02-03T04:05:06.000000007 (java.time.LocalDateTime)>\n"
+                    + "  <2020-02-03T04:05:06.000000007 (java.time.LocalDateTime)>\n"
                     + "but this value of type LOCAL_DATE_TIME did not.\n"
             );
         }
