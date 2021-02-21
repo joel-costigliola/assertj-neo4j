@@ -18,10 +18,10 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Factory for entity error messages.
+ * Factory for an error messages related to a give {@link ACTUAL} object.
  * <p/>
- * This factory is intent to be attach to parent message factory to have a nice message with the list of all entities
- * which didn't satisfies the condition.
+ * This factory is intent to be attach to parent message factory to have a nice message with the list of all database
+ * objects which didn't satisfies the condition.
  *
  * @author Patrick Allain - 03/02/2021
  */
@@ -30,7 +30,7 @@ interface DbErrorMessageFactory<ACTUAL> extends ErrorMessageFactory {
     /**
      * Retrieve the actual entity that will is related to the {@link ErrorMessageFactory}.
      *
-     * @return the entity.
+     * @return the actual object under test.
      */
     ACTUAL actual();
 
@@ -65,12 +65,12 @@ interface DbErrorMessageFactory<ACTUAL> extends ErrorMessageFactory {
          * @return a new {@link ArgDetail}
          */
         static ArgDetail included(final String title, final Object value) {
-            return new ArgDetail(Objects.requireNonNull(title, "Title cannot be null for included argument@"), value);
+            return new ArgDetail(Objects.requireNonNull(title, "Title cannot be null for included argument"), value);
         }
 
         /**
-         * Create a new {@link ArgDetail} for an {@link DbErrorMessageFactory} that will not be included in the
-         * result {@link #details()}.
+         * Create a new {@link ArgDetail} for an {@link DbErrorMessageFactory} that will not be included in the result
+         * {@link #details()}.
          *
          * @param value the error detail value.
          * @return a new {@link ArgDetail}

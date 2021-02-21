@@ -12,7 +12,6 @@
  */
 package org.assertj.neo4j.api.beta.type;
 
-import org.neo4j.driver.Record;
 import org.neo4j.driver.Result;
 import org.neo4j.driver.summary.ResultSummary;
 
@@ -24,22 +23,24 @@ import java.util.Map;
  */
 public class DbResult {
 
-    private final List<Map<String, DbValue>> records;
+    private final List<Map<String, DbObject>> records;
+
     private final List<String> columns;
+
     private final ResultSummary summary;
 
     // TODO : Should we add a value RELATIONSHIP and NODE in ValueType and apply the conversion directory ?
-    public DbResult(final List<Map<String, DbValue>> records, List<String> columns, ResultSummary summary) {
+    public DbResult(final List<Map<String, DbObject>> records, List<String> columns, ResultSummary summary) {
         this.records = records;
         this.columns = columns;
         this.summary = summary;
     }
 
     public static DbResult from(final Result result) {
-        return new DbResult(result.list(r -> r.asMap(DbValue::fromObject)), result.keys(), result.consume());
+        return new DbResult(result.list(r -> r.asMap(DbValue::fromValue)), result.keys(), result.consume());
     }
 
-    public List<Map<String, DbValue>> getRecords() {
+    public List<Map<String, DbObject>> getRecords() {
         return records;
     }
 

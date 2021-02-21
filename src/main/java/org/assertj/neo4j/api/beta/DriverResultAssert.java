@@ -12,15 +12,21 @@
  */
 package org.assertj.neo4j.api.beta;
 
-import org.assertj.neo4j.api.beta.error.ShouldHaveValueType;
+import org.assertj.core.util.Preconditions;
+import org.assertj.neo4j.api.beta.error.ShouldObjectBeOfType;
+import org.assertj.neo4j.api.beta.error.ShouldValueBeOfType;
+import org.assertj.neo4j.api.beta.type.DbObject;
 import org.assertj.neo4j.api.beta.type.DbResult;
 import org.assertj.neo4j.api.beta.type.DbValue;
+import org.assertj.neo4j.api.beta.type.ObjectType;
 import org.assertj.neo4j.api.beta.type.ValueType;
+import org.assertj.neo4j.api.beta.util.GroupNames;
 import org.assertj.neo4j.api.beta.util.Predicates;
 import org.assertj.neo4j.api.beta.util.Wip;
 import org.neo4j.driver.Result;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -40,7 +46,7 @@ public class DriverResultAssert
         this(DbResult.from(result), null);
     }
 
-    private DriverResultAssert(final DbResult actual, final DriverResultAssert parent) {
+    protected DriverResultAssert(final DbResult actual, final DriverResultAssert parent) {
         super(
                 actual,
                 DriverResultAssert.class,
@@ -66,27 +72,44 @@ public class DriverResultAssert
     }
 
     public DriverResultAssert hasColumns(final String... names) {
-        iterables.assertContains(info, actual.getColumns(), names);
+        iterables.assertContains(info, GroupNames.columns(actual.getColumns()), names);
         return myself;
     }
 
-    public DriverResultAssert isNode(final String columnName) {
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    public DriverResultAssert haveType(final String columnName, final ObjectType type) {
         hasColumns(columnName);
-        final List<DbValue> values = actual.getRecords().stream()
+        final List<DbObject> values = actual.getRecords().stream()
                 .map(m -> m.get(columnName))
                 .collect(Collectors.toList());
-        shouldAllVerify(values,
-                Predicates.isValueType(ValueType.NODE),
-                (i) -> ShouldHaveValueType
-                        .elements(values, ValueType.NODE)
-                        .notSatisfies(i)
+        return shouldAllVerify(values,
+                Predicates.isObjectType(type),
+                (notSatisfies) -> ShouldObjectBeOfType.elements(values, type).notSatisfies(notSatisfies)
         );
-        Wip.TODO(this);
-        // shouldAllVerify(values, Predicates.isValueType(ValueType.NODE))
-        return myself;
     }
 
-    public DriverNodesAssert asNodesAssert(String s) {
+    private <O extends DbObject<O>> List<O> getColumnObjects(String columnName, ObjectType type, Class<O> targetClass) {
+        Preconditions.checkArgument(
+                Objects.equals(type.getTargetClass(), targetClass),
+                "Object type and target class don't match"
+        );
+        haveType(columnName, type);
+        return actual.getRecords().stream()
+                .map(i -> i.get(columnName))
+                .map(targetClass::cast)
+                .collect(Collectors.toList());
+    }
+
+    public DriverResultAssert haveValueType(final String columnName, final ValueType valueType) {
+        final List<DbValue> objects = getColumnObjects(columnName, ObjectType.VALUE, DbValue.class);
+        return shouldAllVerify(
+                objects,
+                Predicates.isValueType(valueType),
+                (notSatisfies) -> ShouldValueBeOfType.elements(objects, valueType).notSatisfies(notSatisfies)
+        );
+    }
+
+    public DriverNodesAssert asNodesAssert(final String columnName) {
         Wip.TODO(this);
         return null;
     }

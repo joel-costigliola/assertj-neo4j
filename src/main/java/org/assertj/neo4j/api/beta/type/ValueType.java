@@ -14,9 +14,7 @@ package org.assertj.neo4j.api.beta.type;
 
 import org.neo4j.driver.Values;
 import org.neo4j.driver.types.IsoDuration;
-import org.neo4j.driver.types.Node;
 import org.neo4j.driver.types.Point;
-import org.neo4j.driver.types.Relationship;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -35,13 +33,17 @@ import java.util.stream.Stream;
 /**
  * Describe all the possible type that can be stored as property.
  * <p/>
+ * As structural type cannot be store as property, the following type will not be represent here :
+ * <ul>
+ *    <li>{@link org.neo4j.driver.types.Node}</li>
+ *    <li>{@link org.neo4j.driver.types.Relationship}</li>
+ *    <li>{@link org.neo4j.driver.types.Path}</li>
+ * </ul>
+ * <p/>
  * For more information, you can consult the documentation page related to neo4j types:
  * <ul>
- *     <li>
- *         <a href='https://neo4j.com/docs/cypher-manual/current/syntax/values/#property-types'>property types</a>
- *         <a href='https://neo4j.com/docs/cypher-manual/current/syntax/values/#structural-types'>structural types</a>
- *         <a href='https://neo4j.com/docs/cypher-manual/current/syntax/values/#composite-types'>composite types</a>
- *     </li>
+ *     <li><a href='https://neo4j.com/docs/cypher-manual/current/syntax/values/#property-types'>property types</a></li>
+ *     <li><a href='https://neo4j.com/docs/cypher-manual/current/syntax/values/#composite-types'>composite types</a></li>
  * </ul>
  *
  * @author Patrick Allain - 27/11/2020
@@ -89,23 +91,25 @@ public enum ValueType implements Converter<Object> {
 
     LIST(List.class, ValueType::listFormatter, ValueType::listFactory),
 
+    ;
+
     // Structural types
 
-    NODE(DbNode.class, String::valueOf, Function.identity(),
-            new ConverterType<>(
-                    Node.class,
-                    n -> new DbNode(n.id(), n.labels(), DbValue.fromMap(n.asMap()))
-            )
-    ),
-
-    RELATIONSHIP(DbRelationship.class, String::valueOf, Function.identity(),
-            new ConverterType<>(
-                    Relationship.class,
-                    r -> new DbRelationship(r.id(), r.type(), r.startNodeId(), r.endNodeId(),
-                            DbValue.fromMap(r.asMap())
-                    )
-            )
-    );
+    // NODE(DbNode.class, String::valueOf, Function.identity(),
+    //         new ConverterType<>(
+    //                 Node.class,
+    //                 n -> new DbNode(n.id(), n.labels(), DbValue.fromMap(n.asMap()))
+    //         )
+    // ),
+    //
+    // RELATIONSHIP(DbRelationship.class, String::valueOf, Function.identity(),
+    //         new ConverterType<>(
+    //                 Relationship.class,
+    //                 r -> new DbRelationship(r.id(), r.type(), r.startNodeId(), r.endNodeId(),
+    //                         DbValue.fromMap(r.asMap())
+    //                 )
+    //         )
+    // );
 
     private final Class<?> targetClass;
     private final Function<Object, String> formatter;
@@ -142,21 +146,6 @@ public enum ValueType implements Converter<Object> {
         return new CompositeConverter<>(aggregatedConverters);
     }
 
-    public String format(final Object value) {
-        return String.format("%s{%s}", name(), this.formatter.apply(value));
-    }
-
-    @Override
-    public boolean support(Object object) {
-        return this.converter.support(object);
-    }
-
-    @Override
-    public Object convert(Object input) {
-        final Object converted = this.converter.convert(input);
-        return this.objectFactory.apply(converted);
-    }
-
     private static <T> String listFormatter(final List<T> values) {
         if (values.isEmpty()) {
             return "EMPTY";
@@ -177,6 +166,21 @@ public enum ValueType implements Converter<Object> {
 
     private static <T> List<DbValue> listFactory(final List<T> list) {
         return list.stream().map(DbValue::fromObject).collect(Collectors.toList());
+    }
+
+    public String format(final Object value) {
+        return String.format("%s{%s}", name(), this.formatter.apply(value));
+    }
+
+    @Override
+    public boolean support(Object object) {
+        return this.converter.support(object);
+    }
+
+    @Override
+    public Object convert(Object input) {
+        final Object converted = this.converter.convert(input);
+        return this.objectFactory.apply(converted);
     }
 
 }

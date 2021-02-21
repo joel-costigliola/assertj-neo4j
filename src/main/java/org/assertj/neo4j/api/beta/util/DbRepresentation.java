@@ -14,39 +14,38 @@ package org.assertj.neo4j.api.beta.util;
 
 import org.assertj.core.presentation.Representation;
 import org.assertj.core.presentation.StandardRepresentation;
-import org.assertj.neo4j.api.beta.type.DbEntity;
+import org.assertj.neo4j.api.beta.type.Representable;
 
 /**
  * @author Patrick Allain - 15/02/2021
  */
-public class EntityRepresentation extends StandardRepresentation implements Representation {
+public class DbRepresentation extends StandardRepresentation implements Representation {
 
     private final boolean abbreviate;
 
-    private EntityRepresentation(boolean abbreviate) {
+    private DbRepresentation(boolean abbreviate) {
         this.abbreviate = abbreviate;
     }
 
     public static Representation abbreviate() {
-        return new EntityRepresentation(true);
+        return new DbRepresentation(true);
     }
 
     public static Representation full() {
-        return new EntityRepresentation(false);
+        return new DbRepresentation(false);
     }
 
     @Override
     public String toStringOf(Object object) {
-        if (this.abbreviate && object instanceof DbEntity) {
-            return ((DbEntity) object).abbreviate();
+        if (this.abbreviate && object instanceof Representable) {
+            return ((Representable<?>) object).abbreviate();
         }
         return super.toStringOf(object);
     }
 
-
     @Override
     protected boolean hasAlreadyAnUnambiguousToStringOf(Object obj) {
-        if (obj instanceof DbEntity) {
+        if (obj instanceof Representable) {
             return true;
         }
         return super.hasAlreadyAnUnambiguousToStringOf(obj);

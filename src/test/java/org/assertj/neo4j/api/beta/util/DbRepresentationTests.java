@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Patrick Allain - 15/02/2021
  */
-class EntityRepresentationTests {
+class DbRepresentationTests {
 
     @Nested
     class ToStringOfTests {
@@ -30,7 +30,7 @@ class EntityRepresentationTests {
         @Test
         void should_format_entity_when_abbreviate() {
             // GIVEN
-            final Representation representation = EntityRepresentation.abbreviate();
+            final Representation representation = DbRepresentation.abbreviate();
 
             // WHEN
             final String result = representation.toStringOf(Samples.NODE);
@@ -42,7 +42,7 @@ class EntityRepresentationTests {
         @Test
         void should_format_entity_when_full() {
             // GIVEN
-            final Representation representation = EntityRepresentation.full();
+            final Representation representation = DbRepresentation.full();
 
             // WHEN
             final String result = representation.toStringOf(Samples.NODE);
@@ -69,7 +69,7 @@ class EntityRepresentationTests {
         @Test
         void should_use_default() {
             // GIVEN
-            final Representation representation = EntityRepresentation.abbreviate();
+            final Representation representation = DbRepresentation.abbreviate();
 
             // WHEN
             final String result = representation.toStringOf(Samples.OFFSET_DATE_TIME);
@@ -86,7 +86,7 @@ class EntityRepresentationTests {
         @Test
         void should_format_entity_when_abbreviate() {
             // GIVEN
-            final Representation representation = EntityRepresentation.abbreviate();
+            final Representation representation = DbRepresentation.abbreviate();
 
             // WHEN
             final String result = representation.unambiguousToStringOf(Samples.NODE);
@@ -98,7 +98,7 @@ class EntityRepresentationTests {
         @Test
         void should_format_entity_when_full() {
             // GIVEN
-            final Representation representation = EntityRepresentation.full();
+            final Representation representation = DbRepresentation.full();
 
             // WHEN
             final String result = representation.unambiguousToStringOf(Samples.NODE);
@@ -125,7 +125,7 @@ class EntityRepresentationTests {
         @Test
         void should_use_default() {
             // GIVEN
-            final Representation representation = EntityRepresentation.abbreviate();
+            final Representation representation = DbRepresentation.abbreviate();
 
             // WHEN
             final String result = representation.unambiguousToStringOf(Samples.OFFSET_DATE_TIME);

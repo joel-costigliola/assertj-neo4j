@@ -23,9 +23,9 @@ import java.util.List;
  * @param <ACTUAL> the entity type
  * @author Patrick Allain - 01/02/2021
  */
-public class ShouldHavePropertySize<ACTUAL extends DbEntity<ACTUAL>> extends BasicDbErrorMessageFactory<ACTUAL> {
+public class ShouldEntityHavePropertySize<ACTUAL extends DbEntity<ACTUAL>> extends BasicDbErrorMessageFactory<ACTUAL> {
 
-    private ShouldHavePropertySize(final ACTUAL actual, final int size) {
+    private ShouldEntityHavePropertySize(final ACTUAL actual, final int size) {
         super(
                 "%nExpecting " + actual.objectName(1) + " to have property size:%n  <%2$s>%n"
                 + "but actual property size is:%n  <%3$s>%n"
@@ -37,8 +37,8 @@ public class ShouldHavePropertySize<ACTUAL extends DbEntity<ACTUAL>> extends Bas
         );
     }
 
-    public static <A extends DbEntity<A>> ShouldHavePropertySize<A> create(final A actual, final int size) {
-        return new ShouldHavePropertySize<>(actual, size);
+    public static <A extends DbEntity<A>> ShouldEntityHavePropertySize<A> create(final A actual, final int size) {
+        return new ShouldEntityHavePropertySize<>(actual, size);
     }
 
     public static <A extends DbEntity<A>> GroupingDbErrorFactory<A> elements(final List<A> actual, final int size) {

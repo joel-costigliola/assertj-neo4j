@@ -15,8 +15,6 @@ package org.assertj.neo4j.api.beta.util;
 import org.assertj.core.util.IterableUtil;
 import org.assertj.core.util.Lists;
 import org.assertj.core.util.Streams;
-import org.assertj.neo4j.api.beta.type.DbObject;
-import org.assertj.neo4j.api.beta.type.ObjectType;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -33,12 +31,7 @@ import java.util.stream.Collectors;
  */
 public final class Utils {
 
-    public static <ACTUAL extends DbObject<ACTUAL>> ObjectType objectType(List<ACTUAL> actual) {
-        return actual.stream()
-                .map(DbObject::objectType)
-                .filter(Objects::nonNull)
-                .findFirst()
-                .orElse(null);
+    private Utils() {
     }
 
     /**
@@ -62,7 +55,8 @@ public final class Utils {
      * @param <T>   the type of elements return by the iterator
      * @return a list of elements.
      */
-    public static <T> List<T> listOf(final T[] array) {
+    @SafeVarargs
+    public static <T> List<T> listOf(final T... array) {
         return Arrays.asList(array);
     }
 
@@ -88,7 +82,7 @@ public final class Utils {
      * @param <T>   the type of element in the the iterator
      * @return a sorted list
      */
-    public static <T extends Comparable<T>> List<T> sorted(final Iterable<T> items) {
+    public static <T extends Comparable<T>> List<T> sorted(final Iterable<? extends T> items) {
         return Streams.stream(items).sorted().collect(Collectors.toList());
     }
 
@@ -111,17 +105,15 @@ public final class Utils {
     @SafeVarargs
     public static <I> Comparator<I> comparators(final Function<I, ?>... functions) {
         return (o1, o2) -> Arrays.stream(functions)
-                .map(Utils::comparableFunction)
+                .map(Utils::comparableResultFunction)
                 .map(Comparator::comparing)
                 .reduce((l, r) -> 0, Comparator::thenComparing)
                 .compare(o1, o2);
     }
 
-    private static <I, U extends Comparable<U>> Function<I, U> comparableFunction(final Function<I, ?> function) {
+    @SuppressWarnings("unchecked")
+    private static <I, U extends Comparable<U>> Function<I, U> comparableResultFunction(final Function<I, ?> function) {
         return (i) -> (U) Optional.ofNullable(function.apply(i)).filter(Comparable.class::isInstance).orElse(null);
-    }
-
-    private Utils() {
     }
 
 }

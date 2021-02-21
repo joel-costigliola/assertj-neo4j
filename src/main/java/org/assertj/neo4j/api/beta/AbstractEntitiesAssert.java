@@ -15,13 +15,13 @@ package org.assertj.neo4j.api.beta;
 import org.assertj.core.error.ErrorMessageFactory;
 import org.assertj.core.internal.ComparisonStrategy;
 import org.assertj.core.internal.Iterables;
-import org.assertj.neo4j.api.beta.error.ShouldHavePropertyInstanceOf;
-import org.assertj.neo4j.api.beta.error.ShouldHavePropertyKeys;
-import org.assertj.neo4j.api.beta.error.ShouldHavePropertyListOfType;
-import org.assertj.neo4j.api.beta.error.ShouldHavePropertySize;
-import org.assertj.neo4j.api.beta.error.ShouldHavePropertyValue;
-import org.assertj.neo4j.api.beta.error.ShouldHavePropertyValueType;
-import org.assertj.neo4j.api.beta.error.ShouldPropertyMatch;
+import org.assertj.neo4j.api.beta.error.ShouldEntityHavePropertyInstanceOf;
+import org.assertj.neo4j.api.beta.error.ShouldEntityHavePropertyKeys;
+import org.assertj.neo4j.api.beta.error.ShouldEntityHavePropertyListOfType;
+import org.assertj.neo4j.api.beta.error.ShouldEntityHavePropertySize;
+import org.assertj.neo4j.api.beta.error.ShouldEntityHavePropertyValue;
+import org.assertj.neo4j.api.beta.error.ShouldEntityHavePropertyValueType;
+import org.assertj.neo4j.api.beta.error.ShouldEntityHavePropertyMatch;
 import org.assertj.neo4j.api.beta.error.ShouldQueryResultBeEmpty;
 import org.assertj.neo4j.api.beta.error.ShouldQueryResultBeNotEmpty;
 import org.assertj.neo4j.api.beta.type.DbEntity;
@@ -30,7 +30,6 @@ import org.assertj.neo4j.api.beta.type.ValueType;
 import org.assertj.neo4j.api.beta.type.loader.DataLoader;
 import org.assertj.neo4j.api.beta.util.Checks;
 import org.assertj.neo4j.api.beta.util.EntityComparisonStrategy;
-import org.assertj.neo4j.api.beta.util.EntityRepresentation;
 import org.assertj.neo4j.api.beta.util.NodeComparisonStrategy;
 import org.assertj.neo4j.api.beta.util.Predicates;
 import org.assertj.neo4j.api.beta.util.RelationshipComparisonStrategy;
@@ -95,23 +94,7 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
         this.dataLoader = dataLoader;
     }
 
-    /**
-     * Customize the display of an error message providing the full entity description.
-     *
-     * @return {@code this} assertion object.
-     */
-    public SELF withFullEntityRepresentation() {
-        return withRepresentation(EntityRepresentation.full());
-    }
 
-    /**
-     * Customize the display of an error message providing an abbreviate entity description.
-     *
-     * @return {@code this} assertion object.
-     */
-    public SELF withAbbreviateEntityRepresentation() {
-        return withRepresentation(EntityRepresentation.full());
-    }
 
     /**
      * Using a comparison without any entity ids. This provide a easy way to create new assertions on the current list
@@ -364,7 +347,7 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
                 .nonNullElementsIn(expectedKeys, "The property keys should not be null or empty");
         return shouldAllVerify(
                 Predicates.propertyKeysExists(keys),
-                (notSatisfies) -> ShouldHavePropertyKeys.elements(actual, keys).notSatisfies(notSatisfies)
+                (notSatisfies) -> ShouldEntityHavePropertyKeys.elements(actual, keys).notSatisfies(notSatisfies)
         );
     }
 
@@ -385,7 +368,7 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
     public SELF havePropertySize(final int expectedSize) {
         return shouldAllVerify(
                 Predicates.propertySize(expectedSize),
-                (notSatisfies) -> ShouldHavePropertySize.elements(actual, expectedSize).notSatisfies(notSatisfies)
+                (notSatisfies) -> ShouldEntityHavePropertySize.elements(actual, expectedSize).notSatisfies(notSatisfies)
         );
     }
 
@@ -416,7 +399,7 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
         // Preconditions.checkArgument();
         return shouldAllVerify(
                 Predicates.propertyValueType(key, type),
-                (notSatisfies) -> ShouldHavePropertyValueType.elements(actual, key, type).notSatisfies(notSatisfies)
+                (notSatisfies) -> ShouldEntityHavePropertyValueType.elements(actual, key, type).notSatisfies(notSatisfies)
         );
     }
 
@@ -446,7 +429,7 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
         final Class<?> clazz = Objects.requireNonNull(expectedClass, "The expected class shouldn't be null");
         return shouldAllVerify(
                 Predicates.propertyValueInstanceOf(key, clazz),
-                (notSatisfies) -> ShouldHavePropertyInstanceOf.elements(actual, key, clazz).notSatisfies(notSatisfies)
+                (notSatisfies) -> ShouldEntityHavePropertyInstanceOf.elements(actual, key, clazz).notSatisfies(notSatisfies)
         );
     }
 
@@ -474,7 +457,7 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
         final ValueType type = Objects.requireNonNull(expectedType, "The expected value type shouldn't be null");
         return shouldAllVerify(
                 Predicates.propertyListContainsValueType(key, type),
-                (notSatisfies) -> ShouldHavePropertyListOfType.elements(actual, key, type).notSatisfies(notSatisfies)
+                (notSatisfies) -> ShouldEntityHavePropertyListOfType.elements(actual, key, type).notSatisfies(notSatisfies)
         );
     }
 
@@ -507,7 +490,7 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
         havePropertyKeys(Objects.requireNonNull(key, "The property key shouldn't be null"));
         return shouldAllVerify(
                 Predicates.propertyValueMatch(key, predicate),
-                (notSatisfies) -> ShouldPropertyMatch.elements(actual, key).notSatisfies(notSatisfies)
+                (notSatisfies) -> ShouldEntityHavePropertyMatch.elements(actual, key).notSatisfies(notSatisfies)
         );
     }
 
@@ -535,7 +518,7 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
         havePropertyInstanceOf(key, Objects.requireNonNull(expectedClass, "The expected class shouldn't be null"));
         return shouldAllVerify(
                 Predicates.propertyValueMatch(key, predicate),
-                (notSatisfies) -> ShouldPropertyMatch.elements(actual, key).notSatisfies(notSatisfies)
+                (notSatisfies) -> ShouldEntityHavePropertyMatch.elements(actual, key).notSatisfies(notSatisfies)
         );
     }
 
@@ -558,7 +541,7 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
         havePropertyKeys(Objects.requireNonNull(key, "The property key shouldn't be null"));
         return shouldAllVerify(
                 Predicates.propertyValue(key, expectedValue),
-                (notSatisfies) -> ShouldHavePropertyValue
+                (notSatisfies) -> ShouldEntityHavePropertyValue
                         .elements(actual, key, expectedValue)
                         .notSatisfies(notSatisfies)
         );

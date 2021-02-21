@@ -59,19 +59,15 @@ class RelationshipsTests {
         final Relationships relationships = Relationships.of(driver, "KNOWS");
         final List<Record> result = Arrays.asList(
                 Builders.record()
-                        .key("key")
-                        .relation(Builders.relation("SAMPLE")
-                                .id(1)
-                                .properties("prop-0", Values.value(true))
-                                .build()
+                        .relation(
+                                "key",
+                                Builders.relation("SAMPLE").id(1).properties("prop-0", Values.value(true)).build()
                         )
                         .build(),
                 Builders.record()
-                        .key("key")
-                        .relation(Builders.relation("SAMPLE")
-                                .id(2)
-                                .properties("prop-1", Values.value(false))
-                                .build()
+                        .relation(
+                                "key",
+                                Builders.relation("SAMPLE").id(2).properties("prop-1", Values.value(false)).build()
                         )
                         .build()
         );

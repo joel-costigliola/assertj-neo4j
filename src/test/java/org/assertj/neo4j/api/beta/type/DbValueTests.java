@@ -99,9 +99,19 @@ class DbValueTests {
     @DisplayName("#fromObject")
     class FromObjectTests {
 
+        @Test
+        void should_return_null() {
+            // WHEN
+            final DbObject<?> result = DbObject.fromValue(null);
+
+            // THEN
+            assertThat(result).isNull();
+        }
+
+
         @ParameterizedTest(name = "[{index}] {0} : {1}({2}) => {3}")
         @ArgumentsSource(FromObjectArgumentProvider.class)
-        void should_convert_from_target_type(ArgumentsAccessor accessor) {
+        void should_convert_from_object(ArgumentsAccessor accessor) {
             // GIVEN
             final ValueType valueType = accessor.get(0, ValueType.class);
             final Class<?> fromClass = accessor.get(1, Class.class);

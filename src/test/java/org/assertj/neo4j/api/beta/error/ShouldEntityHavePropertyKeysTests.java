@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author patouhe - 26/11/2020
  */
-class ShouldHavePropertyKeysTests {
+class ShouldEntityHavePropertyKeysTests {
 
     private static final List<String> KEYS = Randomize.listOf("k-1", "k-2", "k-3");
 
@@ -40,7 +40,7 @@ class ShouldHavePropertyKeysTests {
             final DbNode entity = Models.node().id(42).property("k-1", 1).property("k-4", 4).build();
 
             // WHEN
-            final ErrorMessageFactory error = ShouldHavePropertyKeys.create(entity, KEYS);
+            final ErrorMessageFactory error = ShouldEntityHavePropertyKeys.create(entity, KEYS);
 
             // THEN
             assertThat(error.create()).isEqualToNormalizingNewlines(
@@ -71,7 +71,7 @@ class ShouldHavePropertyKeysTests {
             final List<DbNode> entities = Randomize.listOf(node1, node2, node3, node4, node5, node6);
 
             // WHEN
-            final ErrorMessageFactory error = ShouldHavePropertyKeys
+            final ErrorMessageFactory error = ShouldEntityHavePropertyKeys
                     .elements(entities, keys)
                     .notSatisfies(Randomize.listOf(node1, node2, node3, node4, node5));
 

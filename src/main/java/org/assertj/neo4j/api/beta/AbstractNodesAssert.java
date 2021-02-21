@@ -12,7 +12,7 @@
  */
 package org.assertj.neo4j.api.beta;
 
-import org.assertj.neo4j.api.beta.error.ShouldHaveNodeLabels;
+import org.assertj.neo4j.api.beta.error.ShouldNodeHaveLabels;
 import org.assertj.neo4j.api.beta.error.ShouldNodeHaveNoRelatedRelationships;
 import org.assertj.neo4j.api.beta.type.DbNode;
 import org.assertj.neo4j.api.beta.type.ObjectType;
@@ -89,7 +89,7 @@ public abstract class AbstractNodesAssert<SELF extends AbstractNodesAssert<SELF,
                 .notNullOrEmpty(expectedLabels, "The iterable of values to look for should not be empty");
         return shouldAllVerify(
                 Predicates.nodeLabelsExists(expectedLabels),
-                (notSatisfies) -> ShouldHaveNodeLabels.elements(actual, labels).notSatisfies(notSatisfies)
+                (notSatisfies) -> ShouldNodeHaveLabels.elements(actual, labels).notSatisfies(notSatisfies)
         );
     }
 

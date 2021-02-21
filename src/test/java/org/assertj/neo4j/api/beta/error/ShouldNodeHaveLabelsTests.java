@@ -26,7 +26,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 /**
  * @author Patrick Allain - 14/11/2020
  */
-public class ShouldHaveNodeLabelsTests {
+public class ShouldNodeHaveLabelsTests {
 
     private static final List<String> LABELS = Randomize.listOf("LBL_1", "LBL_2", "LBL_3", "LBL_4");
 
@@ -39,7 +39,7 @@ public class ShouldHaveNodeLabelsTests {
             final DbNode entity = Models.node().id(42).labels("LBL_4", "LBL_1").build();
 
             // WHEN
-            final ErrorMessageFactory error = ShouldHaveNodeLabels.create(entity, LABELS);
+            final ErrorMessageFactory error = ShouldNodeHaveLabels.create(entity, LABELS);
 
             // THEN
             assertThat(error.create()).isEqualToNormalizingNewlines(
@@ -70,7 +70,7 @@ public class ShouldHaveNodeLabelsTests {
             final List<DbNode> nodes = Randomize.listOf(node1, node2, node3, node4, node5, node6);
 
             // WHEN
-            final ErrorMessageFactory error = ShouldHaveNodeLabels
+            final ErrorMessageFactory error = ShouldNodeHaveLabels
                     .elements(nodes, LABELS)
                     .notSatisfies(Randomize.listOf(node1, node2, node3, node4, node5));
 

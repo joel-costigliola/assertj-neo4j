@@ -20,7 +20,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author patouche - 19/02/2021
  */
-class DbNodeTests {
+class DbRelationshipTests {
 
     @Nested
     class ComparableTests {
@@ -28,11 +28,11 @@ class DbNodeTests {
         @Test
         void should_return_a_negative_value() {
             // GIVEN
-            final DbNode node1 = Models.node().id(11).build();
-            final DbNode node2 = Models.node().id(16).build();
+            final DbRelationship relationship1 = Models.relation().id(11).build();
+            final DbRelationship relationship2 = Models.relation().id(16).build();
 
             // WHEN
-            final int result = node1.compareTo(node2);
+            final int result = relationship1.compareTo(relationship2);
 
             // THEN
             assertThat(result).isLessThan(0);
@@ -41,11 +41,11 @@ class DbNodeTests {
         @Test
         void should_return_a_positive_value() {
             // GIVEN
-            final DbNode node1 = Models.node().id(42).build();
-            final DbNode node2 = Models.node().id(16).build();
+            final DbRelationship relationship1 = Models.relation().id(42).build();
+            final DbRelationship relationship2 = Models.relation().id(16).build();
 
             // WHEN
-            final int result = node1.compareTo(node2);
+            final int result = relationship1.compareTo(relationship2);
 
             // THEN
             assertThat(result).isGreaterThan(0);

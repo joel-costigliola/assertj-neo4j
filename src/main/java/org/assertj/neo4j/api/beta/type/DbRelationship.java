@@ -13,6 +13,7 @@
 package org.assertj.neo4j.api.beta.type;
 
 import org.assertj.neo4j.api.beta.util.Formats;
+import org.assertj.neo4j.api.beta.util.Utils;
 
 import java.util.Comparator;
 import java.util.Map;
@@ -23,8 +24,10 @@ import java.util.Map;
  */
 public class DbRelationship extends DbEntity<DbRelationship> {
 
-    public static final Comparator<DbRelationship> RELATIONSHIP_COMPARATOR =
-            Comparator.comparing(DbRelationship::getId, Comparator.nullsFirst(Comparator.naturalOrder()));
+    private static final Comparator<DbRelationship> RELATIONSHIP_COMPARATOR = Utils.comparators(
+            Representable::objectType,
+            DbRelationship::getId
+    );
 
     private final Long start;
     private final Long end;
@@ -32,7 +35,7 @@ public class DbRelationship extends DbEntity<DbRelationship> {
 
     DbRelationship(final Long id, final String type, final Long start, final Long end,
                    final Map<String, DbValue> properties) {
-        super(ObjectType.RELATIONSHIP, id, properties);
+        super(ObjectType.RELATIONSHIP, DbRelationship.class, id, properties);
         this.start = start;
         this.end = end;
         this.type = type;
@@ -45,6 +48,11 @@ public class DbRelationship extends DbEntity<DbRelationship> {
                + "end=" + end + ", properties=" + properties + '}';
     }
 
+    @Override
+    public int compareTo(final DbRelationship other) {
+        return RELATIONSHIP_COMPARATOR.compare(this, other);
+    }
+
     public String getType() {
         return type;
     }
@@ -55,11 +63,6 @@ public class DbRelationship extends DbEntity<DbRelationship> {
 
     public Long getEnd() {
         return end;
-    }
-
-    @Override
-    public int compareTo(DbRelationship o) {
-        return RELATIONSHIP_COMPARATOR.compare(this, o);
     }
 
     /** Builder for {@link DbRelationship}. */

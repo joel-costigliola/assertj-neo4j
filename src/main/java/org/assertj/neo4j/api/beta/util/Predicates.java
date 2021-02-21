@@ -15,8 +15,10 @@ package org.assertj.neo4j.api.beta.util;
 import org.assertj.core.util.Streams;
 import org.assertj.neo4j.api.beta.type.DbEntity;
 import org.assertj.neo4j.api.beta.type.DbNode;
+import org.assertj.neo4j.api.beta.type.DbObject;
 import org.assertj.neo4j.api.beta.type.DbRelationship;
 import org.assertj.neo4j.api.beta.type.DbValue;
+import org.assertj.neo4j.api.beta.type.ObjectType;
 import org.assertj.neo4j.api.beta.type.ValueType;
 
 import java.util.Arrays;
@@ -136,7 +138,11 @@ public interface Predicates {
         return Arrays.stream(types).map(Predicates::relationshipIsOfType).reduce(x -> false, Predicate::or);
     }
 
-    static Predicate<DbValue> isValueType(final ValueType type) {
-        return (v) -> Objects.equals(v.getType(), type);
+    static <O extends DbObject<O>> Predicate<O> isObjectType(final ObjectType type) {
+        return (v) -> Objects.equals(v.objectType(), type);
+    }
+
+    static Predicate<DbValue> isValueType(final ValueType valueType) {
+        return (v) -> Objects.equals(v.getType(), valueType);
     }
 }

@@ -13,7 +13,6 @@
 package org.assertj.neo4j.api.beta.error;
 
 import org.assertj.core.error.BasicErrorMessageFactory;
-import org.assertj.neo4j.api.beta.type.DbEntity;
 import org.assertj.neo4j.api.beta.type.DbObject;
 
 import java.util.Arrays;
@@ -27,8 +26,7 @@ import java.util.stream.Stream;
  * @param <ACTUAL> the entity type
  * @author Patrick Allain - 03/02/2021
  */
-class BasicDbErrorMessageFactory<ACTUAL extends DbObject<ACTUAL>>
-        extends BasicErrorMessageFactory
+class BasicDbErrorMessageFactory<ACTUAL extends DbObject<ACTUAL>> extends BasicErrorMessageFactory
         implements DbErrorMessageFactory<ACTUAL> {
 
     private final ACTUAL actual;

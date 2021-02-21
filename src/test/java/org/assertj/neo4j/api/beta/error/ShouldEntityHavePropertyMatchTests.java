@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Patrick Allain - 10/02/2021
  */
-class ShouldPropertyMatchTests {
+class ShouldEntityHavePropertyMatchTests {
 
     @Nested
     class CreateTests {
@@ -38,7 +38,7 @@ class ShouldPropertyMatchTests {
             final DbNode actual = Models.node().id(2).property("key", Samples.LOCAL_DATE_TIME).build();
 
             // WHEN
-            final ErrorMessageFactory error = ShouldPropertyMatch.create(actual, "key");
+            final ErrorMessageFactory error = ShouldEntityHavePropertyMatch.create(actual, "key");
 
             // THEN
             assertThat(error.create()).isEqualToNormalizingNewlines(
@@ -63,7 +63,7 @@ class ShouldPropertyMatchTests {
             final List<DbNode> actual = Randomize.listOf(node1, node2, node3);
 
             // WHEN
-            final ErrorMessageFactory error = ShouldPropertyMatch
+            final ErrorMessageFactory error = ShouldEntityHavePropertyMatch
                     .elements(actual, "key")
                     .notSatisfies(Randomize.listOf(node1, node2));
 
@@ -89,4 +89,5 @@ class ShouldPropertyMatchTests {
         }
 
     }
+
 }

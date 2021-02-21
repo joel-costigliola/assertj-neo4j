@@ -13,7 +13,6 @@
 package org.assertj.neo4j.api.beta.type;
 
 import org.neo4j.driver.Record;
-import org.neo4j.driver.Value;
 import org.neo4j.driver.types.Node;
 import org.neo4j.driver.types.Path;
 import org.neo4j.driver.types.Relationship;
@@ -26,27 +25,59 @@ import java.text.Format;
  *
  * @author Patrick Allain - 02/11/2020
  */
-public enum ObjectType {
+public enum ObjectType implements Converter<DbObject<?>> {
 
-    NODE(Node.class, new ChoiceFormat("1#node| 1<nodes")),
-    RELATIONSHIP(Relationship.class, new ChoiceFormat("1#relationship| 1<relationships")),
-    VALUE(Value.class, new ChoiceFormat("1#value| 1<values")),
+    UNDEFINED(Void.class, new ChoiceFormat("1#database object| 1<database objects")),
+
+    NODE(DbNode.class, new ChoiceFormat("1#node| 1<nodes"),
+            new ConverterType<>(
+                    Node.class,
+                    n -> new DbNode(n.id(), n.labels(), DbValue.fromMap(n.asMap()))
+            )
+    ),
+
+    RELATIONSHIP(DbRelationship.class, new ChoiceFormat("1#relationship| 1<relationships"),
+            new ConverterType<>(
+                    Relationship.class,
+                    r -> new DbRelationship(r.id(), r.type(), r.startNodeId(), r.endNodeId(),
+                            DbValue.fromMap(r.asMap()))
+            )
+    ),
+
+    VALUE(DbValue.class, new ChoiceFormat("1#value| 1<values"),
+            new ConverterType<>(Object.class, DbValue::fromObject)
+    ),
 
     // FIXME: NOT USED
     PATH(Path.class, new ChoiceFormat("1#path| 1<paths")),
     RECORD(Record.class, new ChoiceFormat("1#record| 1<records")),
 
     ;
-    private final Class<?> clazz;
+    private final Class<?> targetClass;
     private final Format fmt;
+    private final Converter<? extends DbObject<?>> converter;
 
-    ObjectType(final Class<?> clazz, final Format fmt) {
-        this.clazz = clazz;
+    <T> ObjectType(final Class<T> targetClass, final Format fmt, final Converter<? extends DbObject<?>>... converters) {
+        this.targetClass = targetClass;
         this.fmt = fmt;
+        this.converter = new CompositeConverter<>(converters);
     }
 
     public String format(double i) {
         return fmt.format(i);
     }
 
+    @Override
+    public boolean support(Object object) {
+        return this.converter.support(object);
+    }
+
+    @Override
+    public DbObject<?> convert(Object input) {
+        return this.converter.convert(input);
+    }
+
+    public Class<?> getTargetClass() {
+        return targetClass;
+    }
 }

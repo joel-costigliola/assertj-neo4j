@@ -25,7 +25,8 @@ public class NavigableListAssert<ACTUAL, PARENT extends ParentalAssert, ROOT>
         extends AbstractListAssert<NavigableListAssert<ACTUAL, PARENT, ROOT>, List<ACTUAL>, ACTUAL, ObjectAssert<ACTUAL>>
         implements Navigable<PARENT, ROOT> {
 //@formatter:on
-public NavigableListAssert(List<  ACTUAL> actual) {
+
+    public NavigableListAssert(List<  ACTUAL> actual) {
     super(actual, NavigableListAssert.class);
 }
 

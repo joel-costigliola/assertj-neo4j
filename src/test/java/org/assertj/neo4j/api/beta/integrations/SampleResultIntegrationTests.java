@@ -16,6 +16,8 @@ import org.assertj.neo4j.api.beta.DriverAssertions;
 import org.assertj.neo4j.api.beta.testing.Dataset;
 import org.assertj.neo4j.api.beta.testing.IntegrationTests;
 import org.assertj.neo4j.api.beta.testing.TestTags;
+import org.assertj.neo4j.api.beta.type.ObjectType;
+import org.assertj.neo4j.api.beta.type.ValueType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
@@ -29,6 +31,9 @@ import org.neo4j.driver.Session;
 @Tag(TestTags.INTEGRATION)
 class SampleResultIntegrationTests {
 
+    private static final Query SAMPLE_QUERY =
+            new Query("MATCH (repo:Repo)-[w:WRITTEN]->() RETURN  repo, w AS written, repo.name");
+
     @Nested
     @DisplayName("Should succeed")
     class ShouldSucceedTests extends IntegrationTests.DatasetTests {
@@ -40,56 +45,77 @@ class SampleResultIntegrationTests {
         @Test
         void sample_multi_columns_result() {
             try (final Session session = driver.session()) {
-                session
-                        .readTransaction(tx -> DriverAssertions
-                                .assertThat(tx.run("MATCH (n:Repo)-[w:WRITTEN]->() RETURN n, w, n.name"))
-                        )
+                session.readTransaction(tx -> DriverAssertions.assertThat(tx.run(SAMPLE_QUERY)))
                         .hasRecordSize(13)
                         .hasColumnSize(3)
-                        .hasColumns("n", "w", "n.name")
-                        .isNode("n")
-                        .asListOf(String.class);
+                        .hasColumns("repo", "written", "repo.name")
+                        .haveType("repo", ObjectType.NODE);
             }
         }
 
         @Test
-        void toto3() {
+        void sample_limit_1() {
             try (final Session session = driver.session()) {
-                session.readTransaction(tx -> DriverAssertions.assertThat(tx.run("MATCH (n:Repo) RETURN n.name LIMIT "
-                                                                                 + "1"))
-
-                );
-            }
-        }
-
-        @Test
-        void hasColumnNumber() {
-            // GIVEN
-            final Query query = new Query("MATCH (n:Repo)-[w:WRITTEN]->() RETURN n, w, n.name");
-
-            // WHEN && THEN
-            try (final Session session = driver.session()) {
-                session.readTransaction(tx -> DriverAssertions.assertThat(tx.run(query))
-                        // .hasSize(3)
-                        .hasColumnSize(2)
-                        .isNode("n")
+                session.readTransaction(tx -> DriverAssertions
+                        .assertThat(tx.run("MATCH (n:Repo) RETURN n.name LIMIT 1"))
                         .asListOf(String.class)
                 );
             }
         }
 
         @Test
-        void hasColumns() {
-            // GIVEN
-            // WHEN
-            // THEN
+        void hasColumnSize() {
+            // WHEN && THEN
+            try (final Session session = driver.session()) {
+                session.readTransaction(tx -> DriverAssertions.assertThat(tx.run(SAMPLE_QUERY))
+                        .hasColumnSize(3)
+                );
+            }
         }
 
         @Test
-        void isNode() {
-            // GIVEN
-            // WHEN
-            // THEN
+        void hasRecordSize() {
+            // WHEN && THEN
+            try (final Session session = driver.session()) {
+                session.readTransaction(tx -> DriverAssertions.assertThat(tx.run(SAMPLE_QUERY))
+                        .hasRecordSize(13)
+                );
+            }
+        }
+
+        @Test
+        void hasColumns() {
+            // WHEN && THEN
+            try (final Session session = driver.session()) {
+                session.readTransaction(tx -> DriverAssertions.assertThat(tx.run(SAMPLE_QUERY))
+                        // .hasSize(3)
+                        .hasColumns("repo", "written", "repo.name")
+                );
+            }
+        }
+
+        @Test
+        void haveType() {
+            // WHEN && THEN
+            try (final Session session = driver.session()) {
+                session.readTransaction(tx -> DriverAssertions.assertThat(tx.run(SAMPLE_QUERY))
+                        // .hasSize(3)
+                        .haveType("repo", ObjectType.NODE)
+                        .haveType("written", ObjectType.RELATIONSHIP)
+                        .haveType("repo.name", ObjectType.VALUE)
+                );
+            }
+        }
+
+        @Test
+        void haveValueType() {
+            // WHEN && THEN
+            try (final Session session = driver.session()) {
+                session.readTransaction(tx -> DriverAssertions.assertThat(tx.run(SAMPLE_QUERY))
+                        // .hasSize(3)
+                        .haveValueType("repo.name", ValueType.STRING)
+                );
+            }
         }
 
     }

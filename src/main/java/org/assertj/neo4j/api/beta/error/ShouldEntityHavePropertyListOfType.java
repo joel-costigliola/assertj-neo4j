@@ -26,9 +26,9 @@ import java.util.List;
  * @param <ACTUAL> the entity type
  * @author Patrick ALLAIN  - 29/09/2020
  */
-public class ShouldHavePropertyListOfType<ACTUAL extends DbEntity<ACTUAL>> extends BasicDbErrorMessageFactory<ACTUAL> {
+public class ShouldEntityHavePropertyListOfType<ACTUAL extends DbEntity<ACTUAL>> extends BasicDbErrorMessageFactory<ACTUAL> {
 
-    private ShouldHavePropertyListOfType(final ACTUAL actual, final String key, final ValueType type) {
+    private ShouldEntityHavePropertyListOfType(final ACTUAL actual, final String key, final ValueType type) {
         super(
                 "%nExpected " + actual.objectName(1)
                 + " to have a composite property list named %2$s containing only type:%n  <%3$s>%n"
@@ -48,9 +48,9 @@ public class ShouldHavePropertyListOfType<ACTUAL extends DbEntity<ACTUAL>> exten
         );
     }
 
-    public static <A extends DbEntity<A>> ShouldHavePropertyListOfType<A> create(
+    public static <A extends DbEntity<A>> ShouldEntityHavePropertyListOfType<A> create(
             final A node, final String key, final ValueType type) {
-        return new ShouldHavePropertyListOfType<>(node, key, type);
+        return new ShouldEntityHavePropertyListOfType<>(node, key, type);
     }
 
     public static <A extends DbEntity<A>> GroupingDbErrorFactory<A> elements(

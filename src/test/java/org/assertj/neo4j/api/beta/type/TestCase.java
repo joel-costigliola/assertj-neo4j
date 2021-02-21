@@ -14,7 +14,6 @@ package org.assertj.neo4j.api.beta.type;
 
 import org.assertj.core.util.Preconditions;
 import org.assertj.neo4j.api.beta.testing.Samples;
-import org.junit.jupiter.params.provider.Arguments;
 import org.neo4j.driver.Values;
 import org.neo4j.driver.types.IsoDuration;
 import org.neo4j.driver.types.Point;
@@ -29,8 +28,6 @@ import java.time.Period;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.List;
-
-import static org.assertj.neo4j.api.beta.type.DbValue.propValue;
 
 /**
  * @author patouche - 18/02/2021

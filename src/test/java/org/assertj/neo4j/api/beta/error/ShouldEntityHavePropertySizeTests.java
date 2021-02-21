@@ -27,7 +27,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Patrick Allain - 01/02/2021
  */
-class ShouldHavePropertySizeTests {
+class ShouldEntityHavePropertySizeTests {
 
     @Nested
     class CreateTests {
@@ -38,7 +38,7 @@ class ShouldHavePropertySizeTests {
             final DbNode actual = Models.node().id(42).property("k-2", 3.14).property("k-1", "v-1").build();
 
             // WHEN
-            final ErrorMessageFactory error = ShouldHavePropertySize.create(actual, 3);
+            final ErrorMessageFactory error = ShouldEntityHavePropertySize.create(actual, 3);
 
             // THEN
             assertThat(error.create()).isEqualToNormalizingNewlines(
@@ -85,7 +85,7 @@ class ShouldHavePropertySizeTests {
             final List<DbNode> actual = Randomize.listOf(node1, node2, node3, node4, node5, node6);
 
             // WHEN
-            final ErrorMessageFactory error = ShouldHavePropertySize
+            final ErrorMessageFactory error = ShouldEntityHavePropertySize
                     .elements(actual, 3)
                     .notSatisfies(Randomize.listOf(node1, node2, node3, node4, node5));
 

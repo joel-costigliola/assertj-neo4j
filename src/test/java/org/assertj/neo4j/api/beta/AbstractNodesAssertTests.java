@@ -115,7 +115,7 @@ class AbstractNodesAssertTests {
                     .extracting(DbEntity::getId)
                     .doesNotContainNull();
             Assertions.assertDoesNotThrow(() -> result
-                    .withFullEntityRepresentation()
+                    .withFullRepresentation()
                     .contains(Models.node().labels("lbl", "lbl-1").build())
                     .contains(Models.node().id(35).labels("lbl", "lbl-2").build())
             );

@@ -19,7 +19,6 @@ import org.assertj.neo4j.api.beta.util.Utils;
 import org.neo4j.driver.Query;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * Creates an error message indicating that an assertion that verifies a query should return an empty result list.

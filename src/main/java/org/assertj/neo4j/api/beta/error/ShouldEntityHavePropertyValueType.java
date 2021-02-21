@@ -24,9 +24,9 @@ import java.util.List;
  * @param <ACTUAL> the entity type
  * @author Patrick Allain - 31/01/2021
  */
-public class ShouldHavePropertyValueType<ACTUAL extends DbEntity<ACTUAL>> extends BasicDbErrorMessageFactory<ACTUAL> {
+public class ShouldEntityHavePropertyValueType<ACTUAL extends DbEntity<ACTUAL>> extends BasicDbErrorMessageFactory<ACTUAL> {
 
-    private ShouldHavePropertyValueType(final ACTUAL actual, final String key, final ValueType expectedType) {
+    private ShouldEntityHavePropertyValueType(final ACTUAL actual, final String key, final ValueType expectedType) {
         super(
                 "%nExpecting " + actual.objectName(1) + " to have property value type for key %2$s:%n  <%3$s>%n"
                 + "but actual value type for this property key is:%n  <%4$s>%n%n"
@@ -39,9 +39,9 @@ public class ShouldHavePropertyValueType<ACTUAL extends DbEntity<ACTUAL>> extend
         );
     }
 
-    public static <A extends DbEntity<A>> ShouldHavePropertyValueType<A> create(
+    public static <A extends DbEntity<A>> ShouldEntityHavePropertyValueType<A> create(
             final A actual, final String key, final ValueType expectedType) {
-        return new ShouldHavePropertyValueType<>(actual, key, expectedType);
+        return new ShouldEntityHavePropertyValueType<>(actual, key, expectedType);
     }
 
     public static <A extends DbEntity<A>> GroupingDbErrorFactory<A> elements(

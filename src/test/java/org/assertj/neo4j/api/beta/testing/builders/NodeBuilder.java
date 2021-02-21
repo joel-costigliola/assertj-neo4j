@@ -17,6 +17,7 @@ import org.neo4j.driver.internal.InternalNode;
 import org.neo4j.driver.types.Node;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,8 +38,8 @@ public class NodeBuilder {
         return this;
     }
 
-    public NodeBuilder labels(final String label) {
-        this.labels.add(label);
+    public NodeBuilder labels(final String ... labels) {
+        this.labels.addAll(Arrays.asList(labels));
         return this;
     }
 

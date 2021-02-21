@@ -13,8 +13,8 @@
 package org.assertj.neo4j.api.beta.error;
 
 import org.assertj.core.error.ErrorMessageFactory;
-import org.assertj.neo4j.api.beta.type.DbEntity;
 import org.assertj.neo4j.api.beta.type.DbObject;
+import org.assertj.neo4j.api.beta.type.ObjectType;
 
 import java.util.List;
 
@@ -24,14 +24,36 @@ import java.util.List;
  * @param <ACTUAL> the type of actual elements.
  * @author Patrick Allain - 05/02/2021
  */
-public interface GroupingDbErrorFactory<ACTUAL extends DbObject> {
+public interface GroupingDbErrorFactory<ACTUAL extends DbObject<ACTUAL>> {
 
     /**
-     * Create a new {@link ErrorMessageFactory} for a group of entities.
+     * Create a new {@link ErrorMessageFactory} for a group of database objects.
      *
      * @param notSatisfies a list of entities that don't match the expected assertion condition.
      * @return a new {@link ErrorMessageFactory}
      */
-    ErrorMessageFactory notSatisfies(final List<ACTUAL> notSatisfies);
+    ErrorMessageFactory notSatisfies(List<ACTUAL> notSatisfies);
+
+    interface RawDbErrorFactory {
+
+        /**
+         * Create a new {@link ErrorMessageFactory} for a group of database objects.
+         *
+         * @param notSatisfies a list of entities that don't match the expected assertion condition.
+         * @return a new {@link ErrorMessageFactory}
+         */
+        default ErrorMessageFactory notSatisfies(List<DbObject> notSatisfies) {
+            return notSatisfies(ObjectType.UNDEFINED, notSatisfies);
+        }
+
+        /**
+         * Create a new {@link ErrorMessageFactory} for a group of database objects.
+         *
+         * @param objectType   the object type
+         * @param notSatisfies a list of entities that don't match the expected assertion condition.
+         * @return a new {@link ErrorMessageFactory}
+         */
+        ErrorMessageFactory notSatisfies(ObjectType objectType, List<DbObject> notSatisfies);
+    }
 
 }

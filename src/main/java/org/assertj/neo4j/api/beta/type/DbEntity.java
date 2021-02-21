@@ -14,7 +14,6 @@ package org.assertj.neo4j.api.beta.type;
 
 import org.assertj.neo4j.api.beta.util.Formats;
 
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,14 +28,19 @@ import java.util.stream.Collectors;
  */
 public abstract class DbEntity<I extends DbEntity<I>> extends DbObject<I> {
 
+    protected final Map<String, DbValue> properties;
     protected Long id;
 
-    protected final Map<String, DbValue> properties;
-
-    protected DbEntity(final ObjectType recordType, final Long id, final Map<String, DbValue> properties) {
-        super(recordType);
+    protected DbEntity(final ObjectType recordType, final Class<I> classType, final Long id,
+                       final Map<String, DbValue> properties) {
+        super(recordType, classType);
         this.id = id;
         this.properties = properties;
+    }
+
+    @Override
+    public final String abbreviate() {
+        return objectType + "{id=" + Formats.number(id) + '}';
     }
 
     public Long getId() {
@@ -69,12 +73,6 @@ public abstract class DbEntity<I extends DbEntity<I>> extends DbObject<I> {
     }
 
     @Override
-    public String abbreviate() {
-        return objectType + "{id=" + Formats.number(id) + '}';
-    }
-
-
-    @Override
     public String toString() {
         return detailed();
     }
@@ -96,9 +94,9 @@ public abstract class DbEntity<I extends DbEntity<I>> extends DbObject<I> {
 
     protected static abstract class DbEntityBuilder<T extends DbEntity, B extends DbEntityBuilder<T, B>> {
 
+        protected final Map<String, DbValue> properties = new HashMap<>();
         private final B myself;
         protected Long id = null;
-        protected final Map<String, DbValue> properties = new HashMap<>();
 
         protected DbEntityBuilder(final Class<B> selfType) {
             this.myself = selfType.cast(this);

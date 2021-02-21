@@ -59,12 +59,16 @@ class NodesTests {
         final Nodes nodes = Nodes.of(driver);
         final List<Record> result = Arrays.asList(
                 Builders.record()
-                        .key("key")
-                        .node(Builders.node().labels("Sample").properties("prop-0", Values.value(true)).build())
+                        .node(
+                                "key",
+                                Builders.node().labels("Sample").properties("prop-0", Values.value(true)).build()
+                        )
                         .build(),
                 Builders.record()
-                        .key("key")
-                        .node(Builders.node().id(1).labels("Sample").properties("prop-1", Values.value(false)).build())
+                        .node(
+                                "key",
+                                Builders.node().id(1).labels("Sample").properties("prop-1", Values.value(false)).build()
+                        )
                         .build()
         );
 
@@ -94,14 +98,13 @@ class NodesTests {
         final Nodes nodes = Nodes.of(driver, "Lbl1", "Lbl2");
         final List<Record> result = Arrays.asList(
                 Builders.record()
-                        .key("key")
-                        .node(Builders.node().id(0).labels("Lbl1").labels("Lbl2").properties("prop-0",
-                                Values.value(true)).build())
+                        .node("key",
+                                Builders.node().id(0).labels("Lbl1", "Lbl2").properties("prop-0", Values.value(true)).build())
                         .build(),
                 Builders.record()
-                        .key("key")
-                        .node(Builders.node().id(1).labels("Lbl1").labels("Lbl2").properties("prop-1",
-                                Values.value(false)).build())
+                        .node("key",
+                                Builders.node().id(1).labels("Lbl1", "Lbl2").properties("prop-1",
+                                        Values.value(false)).build())
                         .build()
         );
 
@@ -115,8 +118,8 @@ class NodesTests {
         assertThat(dbNodes)
                 .hasSize(2)
                 .contains(
-                        Models.node().id(0).label("Lbl1").label("Lbl2").property("prop-0", true).build(),
-                        Models.node().id(1).label("Lbl1").label("Lbl2").property("prop-1", false).build()
+                        Models.node().id(0).labels("Lbl1", "Lbl2").property("prop-0", true).build(),
+                        Models.node().id(1).labels("Lbl1", "Lbl2").property("prop-1", false).build()
                 );
         assertThat(nodes.query()).isEqualTo(new Query("MATCH (n :Lbl1:Lbl2) RETURN n"));
 

@@ -20,7 +20,7 @@ import org.assertj.neo4j.api.beta.testing.Version;
 import org.assertj.neo4j.api.beta.type.Models;
 import org.assertj.neo4j.api.beta.type.ValueType;
 import org.assertj.neo4j.api.beta.type.loader.Nodes;
-import org.assertj.neo4j.api.beta.util.EntityRepresentation;
+import org.assertj.neo4j.api.beta.util.DbRepresentation;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Tag;
@@ -161,7 +161,7 @@ class SampleNodesIntegrationTests {
         void withRepresentation() {
             final Nodes nodes = Nodes.of(driver, "Repo");
             DriverAssertions.assertThat(nodes)
-                    .withRepresentation(EntityRepresentation.full())
+                    .withRepresentation(DbRepresentation.full())
                     .hasSize(12)
                     .filteredOnPropertyExists("onboarding_duration")
                     .havePropertyOfType("onboarding_duration", ValueType.STRING);
@@ -182,7 +182,7 @@ class SampleNodesIntegrationTests {
             //@formatter:off
             DriverAssertions.assertThat(nodes)
                     .hasSize(12)
-                    .withFullEntityRepresentation()
+                    .withFullRepresentation()
                     .haveLabels("Repo")
                     .havePropertyKeys("name")
                     .filteredOnPropertyExists("onboarding_duration")

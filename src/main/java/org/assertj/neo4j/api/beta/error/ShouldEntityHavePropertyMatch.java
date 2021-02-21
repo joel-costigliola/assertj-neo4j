@@ -23,9 +23,9 @@ import java.util.List;
  * @param <ACTUAL> the entity type
  * @author Patrick Allain - 10/02/2021
  */
-public class ShouldPropertyMatch<ACTUAL extends DbEntity<ACTUAL>> extends BasicDbErrorMessageFactory<ACTUAL> {
+public class ShouldEntityHavePropertyMatch<ACTUAL extends DbEntity<ACTUAL>> extends BasicDbErrorMessageFactory<ACTUAL> {
 
-    protected ShouldPropertyMatch(final ACTUAL actual, final String key) {
+    protected ShouldEntityHavePropertyMatch(final ACTUAL actual, final String key) {
         super(
                 "%nExpecting " + actual.objectName(1) + " to have property:%n  <%2$s>%n"
                 + "matching the provided condition for its value:%n  <%3$s>%n"
@@ -37,8 +37,8 @@ public class ShouldPropertyMatch<ACTUAL extends DbEntity<ACTUAL>> extends BasicD
         );
     }
 
-    public static <A extends DbEntity<A>> ShouldPropertyMatch<A> create(final A actual, final String key) {
-        return new ShouldPropertyMatch<>(actual, key);
+    public static <A extends DbEntity<A>> ShouldEntityHavePropertyMatch<A> create(final A actual, final String key) {
+        return new ShouldEntityHavePropertyMatch<>(actual, key);
     }
 
     public static <A extends DbEntity<A>> GroupingDbErrorFactory<A> elements(final List<A> actual, final String key) {

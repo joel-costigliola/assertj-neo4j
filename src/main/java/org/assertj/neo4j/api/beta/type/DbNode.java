@@ -14,6 +14,7 @@ package org.assertj.neo4j.api.beta.type;
 
 import org.assertj.core.util.IterableUtil;
 import org.assertj.neo4j.api.beta.util.Formats;
+import org.assertj.neo4j.api.beta.util.Utils;
 
 import java.util.Arrays;
 import java.util.Comparator;
@@ -30,13 +31,15 @@ import java.util.TreeSet;
  */
 public class DbNode extends DbEntity<DbNode> {
 
-    public static final Comparator<DbNode> NODE_COMPARATOR =
-            Comparator.comparing(DbNode::getId, Comparator.nullsFirst(Comparator.naturalOrder()));
+    public static final Comparator<DbNode> NODE_COMPARATOR = Utils.comparators(
+            Representable::objectType,
+            DbNode::getId
+    );
 
     protected SortedSet<String> labels;
 
     DbNode(final Long id, final Iterable<String> labels, final Map<String, DbValue> properties) {
-        super(ObjectType.NODE, id, properties);
+        super(ObjectType.NODE, DbNode.class, id, properties);
         this.labels = new TreeSet<>(IterableUtil.toCollection(labels));
     }
 
@@ -47,13 +50,13 @@ public class DbNode extends DbEntity<DbNode> {
                + "properties=" + properties + '}';
     }
 
-    public SortedSet<String> getLabels() {
-        return labels;
+    @Override
+    public int compareTo(final DbNode other) {
+        return NODE_COMPARATOR.compare(this, other);
     }
 
-    @Override
-    public int compareTo(DbNode o) {
-        return NODE_COMPARATOR.compare(this, o);
+    public SortedSet<String> getLabels() {
+        return labels;
     }
 
     @Override

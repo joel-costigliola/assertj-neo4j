@@ -12,15 +12,18 @@
  */
 package org.assertj.neo4j.api.beta.util;
 
+import org.assertj.core.util.IterableUtil;
 import org.assertj.core.util.Streams;
 import org.assertj.neo4j.api.beta.type.DbEntity;
 import org.assertj.neo4j.api.beta.type.DbNode;
+import org.assertj.neo4j.api.beta.type.DbObject;
 import org.assertj.neo4j.api.beta.type.DbRelationship;
 import org.assertj.neo4j.api.beta.type.DbValue;
 import org.assertj.neo4j.api.beta.type.ObjectType;
 import org.assertj.neo4j.api.beta.type.Representable;
 import org.assertj.neo4j.api.beta.type.ValueType;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -83,7 +86,7 @@ public class DbObjectUtils {
      * @param relationships the relationships to filter
      * @return the filtered list of relationships
      */
-    public static List<DbRelationship> areIncomingForNode(DbNode node, List<DbRelationship> relationships) {
+    public static List<DbRelationship> areIncomingForNode(final DbNode node, final List<DbRelationship> relationships) {
         return relationships.stream()
                 .filter(r -> Objects.equals(r.getEnd(), node.getId()))
                 .sorted()
@@ -97,7 +100,7 @@ public class DbObjectUtils {
      * @param relationships the relationships to filter
      * @return the filtered list of relationships
      */
-    public static List<DbRelationship> areOutgoingForNode(DbNode node, List<DbRelationship> relationships) {
+    public static List<DbRelationship> areOutgoingForNode(final DbNode node, final List<DbRelationship> relationships) {
         return relationships.stream()
                 .filter(r -> Objects.equals(r.getStart(), node.getId()))
                 .sorted()
@@ -144,7 +147,7 @@ public class DbObjectUtils {
      * @param relationships the list of relationships
      * @return the starting node ids
      */
-    public static List<Long> startNodeIds(List<DbRelationship> relationships) {
+    public static List<Long> startNodeIds(final List<DbRelationship> relationships) {
         return relationships.stream()
                 .map(DbRelationship::getStart)
                 .sorted()
@@ -159,13 +162,31 @@ public class DbObjectUtils {
      * @param relationships the list of relationships
      * @return the starting node ids
      */
-    public static List<Long> endNodeIds(List<DbRelationship> relationships) {
+    public static List<Long> endNodeIds(final List<DbRelationship> relationships) {
         return relationships.stream()
                 .map(DbRelationship::getEnd)
                 .sorted()
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Sort mixed database object by their {@link DbObject#objectType()} value first.
+     *
+     * @param iterable the iterable database object.
+     * @return a sorted list of mixed database object.
+     */
+    public static List<DbObject> sortedMixed(final Iterable<DbObject> iterable) {
+        final Map<ObjectType, List<DbObject>> typeObjects = IterableUtil.toCollection(iterable)
+                .stream()
+                .collect(Collectors.groupingBy(DbObject::objectType));
+        return Arrays.stream(ObjectType.values())
+                .map(typeObjects::get)
+                .filter(Objects::nonNull)
+                .flatMap(i -> i.stream().sorted())
+                .collect(Collectors.toList());
+    }
+
     private DbObjectUtils() {
     }
+
 }

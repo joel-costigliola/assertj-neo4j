@@ -41,7 +41,7 @@ public class DbValue extends DbObject<DbValue> {
     }
 
     DbValue(final ObjectType objectType, final ValueType type, final Object content) {
-        super(objectType);
+        super(objectType, DbValue.class);
         this.type = Objects.requireNonNull(type);
         this.content = content;
     }
@@ -94,17 +94,21 @@ public class DbValue extends DbObject<DbValue> {
         return objectType.name();
     }
 
+    @Override
+    public int compareTo(final DbValue other) {
+        Comparator<DbValue> comparator = Comparator.comparing(DbValue::getType);
+        if (this.getType() == other.getType()) {
+            comparator = VALUE_COMPARATOR;
+        }
+        return comparator.compare(this, other);
+    }
+
     public ValueType getType() {
         return type;
     }
 
     public Object getContent() {
         return content;
-    }
-
-    @Override
-    public int compareTo(final DbValue other) {
-        return VALUE_COMPARATOR.compare(this, other);
     }
 
     @Override

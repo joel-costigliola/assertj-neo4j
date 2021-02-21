@@ -31,7 +31,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 /**
  * @author Patrick Allain - 27/12/2020
  */
-class ShouldHavePropertyListOfTypeTests {
+class ShouldEntityHavePropertyListOfTypeTests {
 
     @Nested
     class CreateTests {
@@ -42,7 +42,7 @@ class ShouldHavePropertyListOfTypeTests {
             final DbNode node = Models.node().id(3).property("key", Arrays.asList(3.11, 3.12, 3.13)).build();
 
             // WHEN
-            final ErrorMessageFactory error = ShouldHavePropertyListOfType.create(node, "key", ValueType.INTEGER);
+            final ErrorMessageFactory error = ShouldEntityHavePropertyListOfType.create(node, "key", ValueType.INTEGER);
 
             // THEN
             assertThat(error.create()).isEqualToNormalizingNewlines(
@@ -70,7 +70,7 @@ class ShouldHavePropertyListOfTypeTests {
             final List<DbNode> actual = Randomize.listOf(node1, node2, node3, node4);
 
             // WHEN
-            final ErrorMessageFactory error = ShouldHavePropertyListOfType
+            final ErrorMessageFactory error = ShouldEntityHavePropertyListOfType
                     .elements(actual, "key", ValueType.STRING)
                     .notSatisfies(Randomize.listOf(node3, node4));
 

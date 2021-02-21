@@ -14,6 +14,7 @@ package org.assertj.neo4j.api.beta.util;
 
 import org.assertj.neo4j.api.beta.type.DbNode;
 import org.assertj.neo4j.api.beta.type.DbRelationship;
+import org.assertj.neo4j.api.beta.type.DbValue;
 import org.assertj.neo4j.api.beta.type.Models;
 import org.assertj.neo4j.api.beta.type.ValueType;
 import org.junit.jupiter.api.DisplayName;
@@ -361,6 +362,36 @@ class PredicatesTests {
         }
 
     }
+
+    @Nested
+    class IsValueTypeTests {
+
+        @Test
+        void should_return_false() {
+            // GIVEN
+            final Predicate<DbValue> predicate = Predicates.isValueType(ValueType.FLOAT);
+
+            // WHEN
+            final boolean result = predicate.test(DbValue.fromObject("str"));
+
+            // THEN
+            assertThat(result).isFalse();
+        }
+
+        @Test
+        void should_return_true() {
+            // GIVEN
+            final Predicate<DbValue> predicate = Predicates.isValueType(ValueType.FLOAT);
+
+            // WHEN
+            final boolean result = predicate.test(DbValue.fromObject(3.14));
+
+            // THEN
+            assertThat(result).isTrue();
+        }
+
+    }
+
 
     @Nested
     class XxxTests {

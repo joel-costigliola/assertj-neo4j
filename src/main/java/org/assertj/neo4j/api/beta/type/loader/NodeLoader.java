@@ -14,7 +14,6 @@ package org.assertj.neo4j.api.beta.type.loader;
 
 import org.assertj.neo4j.api.beta.type.DbNode;
 import org.assertj.neo4j.api.beta.type.ObjectType;
-import org.assertj.neo4j.api.beta.type.ValueType;
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.Query;
 import org.neo4j.driver.Record;
@@ -54,7 +53,7 @@ class NodeLoader extends AbstractDataLoader<DbNode> implements Nodes {
                 .map(Record::values)
                 .flatMap(Collection::stream)
                 .map(Value::asNode)
-                .map(ValueType.NODE::convert)
+                .map(ObjectType.NODE::convert)
                 .map(DbNode.class::cast)
                 .collect(Collectors.toList());
     }

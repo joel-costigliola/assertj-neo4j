@@ -33,7 +33,7 @@ import static org.assertj.core.util.Objects.castIfBelongsToType;
  *
  * @author Patrick Allain - 14/02/2021
  */
-public abstract class EntityComparisonStrategy<ENTITY extends DbEntity>
+public abstract class EntityComparisonStrategy<ENTITY extends DbEntity<ENTITY>>
         extends StandardComparisonStrategy
         implements EntityComparisonStrategyPreference {
 
@@ -100,7 +100,7 @@ public abstract class EntityComparisonStrategy<ENTITY extends DbEntity>
     }
 
     //@formatter:off
-    public static abstract class EntityComparisonStrategyBuilder<E extends DbEntity,
+    public static abstract class EntityComparisonStrategyBuilder<E extends DbEntity<E>,
                                                    CS extends EntityComparisonStrategy<E>,
                                                    B extends EntityComparisonStrategyBuilder<E, CS, B>> {
     //@formatter:on

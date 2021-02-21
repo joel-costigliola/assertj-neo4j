@@ -21,23 +21,18 @@ import org.neo4j.driver.types.Node;
 import org.neo4j.driver.types.Relationship;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Patrick Allain - 11/11/2020
  */
 public class RecordBuilder {
 
-    private final List<String> keys = new ArrayList<>();
-
-    private final List<Value> values = new ArrayList<>();
+    private final Map<String, Value> values = new HashMap<>();
 
     public RecordBuilder() {
-    }
-
-    public RecordBuilder key(String key) {
-        this.keys.add(key);
-        return this;
     }
 
     /**
@@ -46,23 +41,24 @@ public class RecordBuilder {
      * @param value the value to add
      * @return the current instance
      */
-    public RecordBuilder value(Value value) {
-        this.values.add(value);
+    public RecordBuilder value(String key, Value value) {
+        this.values.put(key, value);
         return this;
     }
 
-    public RecordBuilder node(Node node) {
-        this.values.add(new NodeValue(node));
+    public RecordBuilder node(String key, Node node) {
+        this.values.put(key, new NodeValue(node));
         return this;
     }
 
-    public RecordBuilder relation(Relationship relationship) {
-        this.values.add(new RelationshipValue(relationship));
+    public RecordBuilder relation(String key, Relationship relationship) {
+        this.values.put(key, new RelationshipValue(relationship));
         return this;
     }
 
     public Record build() {
-        return new InternalRecord(keys, values.toArray(new Value[0]));
+        final List<String> keys = new ArrayList<>(values.keySet());
+        return new InternalRecord(keys, keys.stream().map(values::get).toArray(Value[]::new));
     }
 
 }

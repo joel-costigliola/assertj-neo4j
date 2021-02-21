@@ -18,6 +18,7 @@ import org.assertj.core.internal.Iterables;
 import org.assertj.core.presentation.Representation;
 import org.assertj.core.util.Streams;
 import org.assertj.core.util.VisibleForTesting;
+import org.assertj.neo4j.api.beta.util.DbRepresentation;
 
 import java.util.List;
 import java.util.Objects;
@@ -41,8 +42,7 @@ public abstract class AbstractDbAssert<SELF extends AbstractDbAssert<SELF, ACTUA
                                        PARENT_ASSERT extends ParentalAssert,
                                        ROOT_ASSERT>
         extends AbstractAssert<SELF, ACTUAL>
-        implements Navigable<PARENT_ASSERT, ROOT_ASSERT>,
-                   ParentalAssert {
+        implements Navigable<PARENT_ASSERT, ROOT_ASSERT>, ParentalAssert {
 //@formatter:on
 
     // TODO : As this is an internal object of AssertJ. Check if we can we use it safely ??
@@ -83,6 +83,16 @@ public abstract class AbstractDbAssert<SELF extends AbstractDbAssert<SELF, ACTUA
         }
     }
 
+    /**
+     * Get the actual entities for assertions.
+     *
+     * @return a list of entities.
+     */
+    @VisibleForTesting
+    protected ACTUAL getActual() {
+        return this.actual;
+    }
+
     /** {@inheritDoc} */
     @Override
     @SuppressWarnings("unchecked")
@@ -112,13 +122,21 @@ public abstract class AbstractDbAssert<SELF extends AbstractDbAssert<SELF, ACTUA
     }
 
     /**
-     * Get the actual entities for assertions.
+     * Customize the display of an error message providing the full entity description.
      *
-     * @return a list of entities.
+     * @return {@code this} assertion object.
      */
-    @VisibleForTesting
-    protected ACTUAL getActual() {
-        return this.actual;
+    public SELF withFullRepresentation() {
+        return withRepresentation(DbRepresentation.full());
+    }
+
+    /**
+     * Customize the display of an error message providing an abbreviate entity description.
+     *
+     * @return {@code this} assertion object.
+     */
+    public SELF withAbbreviateRepresentation() {
+        return withRepresentation(DbRepresentation.full());
     }
 
     /**

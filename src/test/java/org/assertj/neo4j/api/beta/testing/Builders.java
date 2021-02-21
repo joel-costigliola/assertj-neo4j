@@ -37,6 +37,7 @@ public interface Builders {
         return new RelationshipBuilder(type);
     }
 
+
     static DbNode.DbNodeBuilder rebuild(DbNode node) {
         return Models.node()
                 .id(node.getId())

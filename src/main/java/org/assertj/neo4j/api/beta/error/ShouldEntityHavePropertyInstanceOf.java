@@ -23,9 +23,9 @@ import java.util.List;
  * @param <ACTUAL> the entity type
  * @author Patrick Allain - 30/01/2021
  */
-public class ShouldHavePropertyInstanceOf<ACTUAL extends DbEntity<ACTUAL>> extends BasicDbErrorMessageFactory<ACTUAL> {
+public class ShouldEntityHavePropertyInstanceOf<ACTUAL extends DbEntity<ACTUAL>> extends BasicDbErrorMessageFactory<ACTUAL> {
 
-    private ShouldHavePropertyInstanceOf(final ACTUAL actual, final String key, final Class<?> expectedClass) {
+    private ShouldEntityHavePropertyInstanceOf(final ACTUAL actual, final String key, final Class<?> expectedClass) {
         super(
                 "%nExpecting " + actual.objectName(1)
                 + " to have property value %2$s instance of:%n  <%3$s>%n"
@@ -40,9 +40,9 @@ public class ShouldHavePropertyInstanceOf<ACTUAL extends DbEntity<ACTUAL>> exten
         );
     }
 
-    public static <A extends DbEntity<A>> ShouldHavePropertyInstanceOf<A> create(
+    public static <A extends DbEntity<A>> ShouldEntityHavePropertyInstanceOf<A> create(
             final A actual, final String key, final Class<?> expectedClass) {
-        return new ShouldHavePropertyInstanceOf<>(actual, key, expectedClass);
+        return new ShouldEntityHavePropertyInstanceOf<>(actual, key, expectedClass);
     }
 
     public static <A extends DbEntity<A>> GroupingDbErrorFactory<A> elements(

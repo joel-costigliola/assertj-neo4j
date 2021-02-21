@@ -17,6 +17,7 @@ import org.assertj.core.api.junit.jupiter.SoftAssertionsExtension;
 import org.assertj.neo4j.api.beta.testing.Randomize;
 import org.assertj.neo4j.api.beta.testing.Samples;
 import org.assertj.neo4j.api.beta.type.DbNode;
+import org.assertj.neo4j.api.beta.type.DbObject;
 import org.assertj.neo4j.api.beta.type.DbRelationship;
 import org.assertj.neo4j.api.beta.type.DbValue;
 import org.assertj.neo4j.api.beta.type.Models;
@@ -219,6 +220,29 @@ class DbObjectUtilsTests {
                             DbValue.fromObject("str-2"),
                             DbValue.fromObject("str-3")
                     );
+        }
+
+    }
+
+    @Nested
+    class SortedMixedTests {
+
+        @Test
+        void should_sort_mixed_db_objects() {
+            // GIVEN
+            final DbNode obj1 = Samples.NODE;
+            final DbRelationship obj2 = Samples.RELATIONSHIP;
+            final DbValue obj3 = DbValue.fromObject("value");
+            final DbValue obj4 = DbValue.fromObject(true);
+            final DbValue obj5 = DbValue.fromObject("other-value");
+            final DbValue obj6 = DbValue.fromObject(3.14);
+            final Iterable<DbObject> iterable = Randomize.listOf(obj1, obj2, obj3, obj4, obj5, obj6);
+
+            // WHEN
+            final List<DbObject> result = DbObjectUtils.sortedMixed(iterable);
+
+            // THEN
+            assertThat(result).containsExactly(obj1, obj2, obj6, obj5, obj3, obj4);
         }
 
     }

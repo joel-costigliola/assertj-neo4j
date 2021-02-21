@@ -22,9 +22,9 @@ import java.util.List;
  *
  * @author Patrick Allain - 29/09/2020
  */
-public class ShouldHaveNodeLabels extends BasicDbErrorMessageFactory<DbNode> {
+public class ShouldNodeHaveLabels extends BasicDbErrorMessageFactory<DbNode> {
 
-    private ShouldHaveNodeLabels(final DbNode actual, final Iterable<String> labels) {
+    private ShouldNodeHaveLabels(final DbNode actual, final Iterable<String> labels) {
         super(
                 "%nExpecting node labels:%n  <%2$s>%nto contain:%n  <%3$s>%n"
                 + "but could not find the following labels:%n  <%4$s>%n",
@@ -35,8 +35,8 @@ public class ShouldHaveNodeLabels extends BasicDbErrorMessageFactory<DbNode> {
         );
     }
 
-    public static ShouldHaveNodeLabels create(final DbNode node, final Iterable<String> labels) {
-        return new ShouldHaveNodeLabels(node, labels);
+    public static ShouldNodeHaveLabels create(final DbNode node, final Iterable<String> labels) {
+        return new ShouldNodeHaveLabels(node, labels);
     }
 
     public static GroupingDbErrorFactory<DbNode> elements(final List<DbNode> actual,
