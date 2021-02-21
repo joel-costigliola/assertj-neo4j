@@ -14,6 +14,7 @@ package org.assertj.neo4j.api.beta;
 
 import org.assertj.core.util.Preconditions;
 import org.assertj.neo4j.api.beta.error.ShouldObjectBeOfType;
+import org.assertj.neo4j.api.beta.error.ShouldValueBeInstanceOf;
 import org.assertj.neo4j.api.beta.error.ShouldValueBeOfType;
 import org.assertj.neo4j.api.beta.type.DbObject;
 import org.assertj.neo4j.api.beta.type.DbResult;
@@ -109,13 +110,33 @@ public class DriverResultAssert
         );
     }
 
+    public <T> DriverResultAssert haveValueInstanceOf(final String columnName, final Class<T> expectedClass) {
+        final List<DbValue> objects = getColumnObjects(columnName, ObjectType.VALUE, DbValue.class);
+        return shouldAllVerify(
+                objects,
+                Predicates.isValueInstanceOf(expectedClass),
+                (notSatisfies) -> ShouldValueBeInstanceOf.elements(objects, expectedClass).notSatisfies(notSatisfies)
+        );
+    }
+
     public DriverNodesAssert asNodesAssert(final String columnName) {
         Wip.TODO(this);
         return null;
     }
 
-    public <T> NavigableListAssert<T, DriverResultAssert, DriverResultAssert> asListOf(Class<T> clazz) {
+    public <T> ChildrenListAssert<T, DriverResultAssert, DriverResultAssert> asListOf(Class<T> clazz) {
         return null;
+    }
+
+    public <T> ChildrenListAssert<T, DriverResultAssert, DriverResultAssert> asListOf(
+            final String columnName, final Class<T> clazz) {
+        haveValueInstanceOf(columnName, clazz);
+        final List<T> objects = getColumnObjects(columnName, ObjectType.VALUE, DbValue.class)
+                .stream()
+                .map(DbValue::getContent)
+                .map(clazz::cast)
+                .collect(Collectors.toList());
+        return new ChildrenListAssert<>(objects, this, this.toRootAssert());
     }
 
 }

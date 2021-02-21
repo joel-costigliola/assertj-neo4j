@@ -145,4 +145,9 @@ public interface Predicates {
     static Predicate<DbValue> isValueType(final ValueType valueType) {
         return (v) -> Objects.equals(v.getType(), valueType);
     }
+
+    static <T> Predicate<DbValue> isValueInstanceOf(final Class<T> clazz) {
+        return (v) -> clazz.isInstance(v.getContent());
+    }
+
 }

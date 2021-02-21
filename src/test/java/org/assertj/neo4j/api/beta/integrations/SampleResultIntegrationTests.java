@@ -44,13 +44,24 @@ class SampleResultIntegrationTests {
 
         @Test
         void sample_multi_columns_result() {
+            //@formatter:off
             try (final Session session = driver.session()) {
                 session.readTransaction(tx -> DriverAssertions.assertThat(tx.run(SAMPLE_QUERY)))
                         .hasRecordSize(13)
                         .hasColumnSize(3)
                         .hasColumns("repo", "written", "repo.name")
-                        .haveType("repo", ObjectType.NODE);
+                        .haveType("repo", ObjectType.NODE)
+                        .haveValueType("repo.name", ValueType.STRING)
+                        .haveValueInstanceOf("repo.name", String.class)
+                        .asListOf("repo.name", String.class)
+                            .contains("assertj-core", "assertj-core", "neo4j", "neo4j", "junit5", "junit5",
+                                    "cli", "cli", "ktor", "kubernetes", "kubernetes", "flask", "click"
+                            )
+                            .toRootAssert()
+                        .hasRecordSize(13)
+                        .hasColumnSize(3);
             }
+            //@formatter:on
         }
 
         @Test

@@ -392,6 +392,35 @@ class PredicatesTests {
 
     }
 
+    @Nested
+    class IsValueInstanceOfTest {
+
+        @Test
+        void should_return_false() {
+            // GIVEN
+            final Predicate<DbValue> predicate = Predicates.isValueInstanceOf(String.class);
+
+            // WHEN
+            final boolean result = predicate.test(DbValue.fromObject(true));
+
+            // THEN
+            assertThat(result).isFalse();
+        }
+
+        @Test
+        void should_return_true() {
+            // GIVEN
+            final Predicate<DbValue> predicate = Predicates.isValueInstanceOf(String.class);
+
+            // WHEN
+            final boolean result = predicate.test(DbValue.fromObject("str"));
+
+            // THEN
+            assertThat(result).isTrue();
+        }
+
+    }
+
 
     @Nested
     class XxxTests {

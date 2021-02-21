@@ -15,6 +15,7 @@ package org.assertj.neo4j.api.beta;
 import org.assertj.neo4j.api.beta.testing.Builders;
 import org.assertj.neo4j.api.beta.testing.builders.RecordBuilder;
 import org.assertj.neo4j.api.beta.type.ObjectType;
+import org.assertj.neo4j.api.beta.type.ValueType;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
@@ -241,10 +242,57 @@ class DriverResultAssertTests {
         }
 
         @Test
-        void should_fail_when_not_the_right_() {
-
+        void should_fail_when_column_is_not_value() {
             // WHEN
-            final Throwable throwable = catchThrowable(() -> assertions.haveType("n.name", ObjectType.RELATIONSHIP));
+            final Throwable throwable = catchThrowable(() -> assertions.haveValueType("n", ValueType.BOOLEAN));
+
+            // THEN
+            assertThat(throwable)
+                    .isInstanceOf(AssertionError.class)
+                    .hasMessageContainingAll(
+                            "Expecting database objects:",
+                            "to be of type:",
+                            "but some database objects are from another type:"
+                    );
+        }
+
+        @Test
+        void should_fail_when_bad_value_type_for_column() {
+            // WHEN
+            final Throwable throwable = catchThrowable(() -> assertions.haveValueType("n.name", ValueType.FLOAT));
+
+            // THEN
+            assertThat(throwable)
+                    .isInstanceOf(AssertionError.class)
+                    .hasMessageContainingAll(
+                            "Expecting values:",
+                            "to have a value type:",
+                            "but some values have a different value type:"
+                    );
+        }
+
+        @Test
+        void should_pass() {
+            // WHEN
+            final DriverResultAssert result = assertions.haveValueType("n.name", ValueType.STRING);
+
+            // THEN
+            assertThat(result).isSameAs(assertions);
+        }
+
+    }
+
+    @Nested
+    class HaveValueInstanceOfTests extends BaseResultTests {
+
+        HaveValueInstanceOfTests() {
+            super(SAMPLE_RECORDS_BUILDERS.toArray(new RecordBuilder[0]));
+        }
+
+        @Test
+        void should_fail_when_column_is_not_value() {
+            // WHEN
+            final Throwable throwable = catchThrowable(() -> assertions.haveValueInstanceOf("n", Double.class));
 
             // THEN
             assertThat(throwable)
@@ -260,7 +308,55 @@ class DriverResultAssertTests {
         void should_fail_when_bad_value_type_for_column() {
 
             // WHEN
-            final Throwable throwable = catchThrowable(() -> assertions.haveType("n.name", ObjectType.RELATIONSHIP));
+            final Throwable throwable = catchThrowable(() -> assertions.haveValueInstanceOf("n.name", Double.class));
+
+            // THEN
+            assertThat(throwable)
+                    .isInstanceOf(AssertionError.class)
+                    .hasMessageContainingAll(
+                            "Expecting values:",
+                            "to have values instance of:",
+                            "but some values have value which are not instance of this class:"
+                    );
+        }
+
+        @Test
+        void should_pass() {
+            // WHEN
+            final DriverResultAssert result = assertions.haveType("n", ObjectType.NODE);
+
+            // THEN
+            assertThat(result).isSameAs(assertions);
+        }
+
+    }
+
+    @Nested
+    class AsListOfTests extends BaseResultTests {
+
+        AsListOfTests() {
+            super(SAMPLE_RECORDS_BUILDERS.toArray(new RecordBuilder[0]));
+        }
+
+        @Test
+        void should_fail_when_column_dont_exists() {
+            // WHEN
+            final Throwable throwable = catchThrowable(() -> assertions.asListOf("bad_column", String.class));
+
+            // THEN
+            assertThat(throwable)
+                    .isInstanceOf(AssertionError.class)
+                    .hasMessageContainingAll(
+                            "Expecting ArrayList:",
+                            "to contain:",
+                            "but could not find the following element(s):"
+                    );
+        }
+
+        @Test
+        void should_fail_when_not_objects_are_not_value() {
+            // WHEN
+            final Throwable throwable = catchThrowable(() -> assertions.asListOf("r", String.class));
 
             // THEN
             assertThat(throwable)
@@ -275,10 +371,22 @@ class DriverResultAssertTests {
         @Test
         void should_pass() {
             // WHEN
-            final DriverResultAssert result = assertions.haveType("n", ObjectType.NODE);
+            final ChildrenListAssert<String, DriverResultAssert, DriverResultAssert> result =
+                    assertions.asListOf("n.name", String.class);
 
             // THEN
-            assertThat(result).isSameAs(assertions);
+            assertThat(result).isNotNull();
+            assertThat(result.getActual()).contains("n-1", "n-2");
+        }
+
+        @Test
+        void should_be_navigable() {
+            // WHEN
+            final ChildrenListAssert<String, DriverResultAssert, DriverResultAssert> result =
+                    assertions.asListOf("n.name", String.class);
+
+            // THEN
+            assertThat(result.toParentAssert()).isSameAs(assertions);
         }
 
     }
