@@ -54,13 +54,17 @@ import java.util.stream.Collectors;
  * @author Patrick Allain - 24/11/2020
  */
 //@formatter:off
-public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert<SELF, ENTITY, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT>,
+public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert<SELF,
+                                                                                 ENTITY,
+                                                                                 NEW_SELF,
+                                                                                 PARENT_ASSERT,
+                                                                                 ROOT_ASSERT>,
                                              ENTITY extends DbEntity<ENTITY>,
                                              NEW_SELF extends Navigable<SELF, ROOT_ASSERT>,
-                                             PARENT_ASSERT extends ParentAssert,
+                                             PARENT_ASSERT extends ParentAssert<ROOT_ASSERT>,
                                              ROOT_ASSERT>
         extends AbstractDbListAssert<SELF, List<ENTITY>, ENTITY, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT>
-        implements Navigable<PARENT_ASSERT, ROOT_ASSERT>, ParentAssert {
+        implements Navigable<PARENT_ASSERT, ROOT_ASSERT>, ParentAssert<ROOT_ASSERT> {
 //@formatter:on
 
     /** The record type */
@@ -154,7 +158,7 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
      * @return {@code this} assertion object.
      */
     public SELF isEmpty() {
-        // OR : iterables.assertEmpty(info,actual);
+        // TODO: OR => iterables.assertEmpty(info,actual);
         return isEmpty((entities) -> ShouldQueryResultBeEmpty.create(entities, dataLoader.query()));
     }
 
@@ -485,7 +489,7 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
                 .map(i -> i.getPropertyValue(key))
                 .map(clazz::cast)
                 .collect(Collectors.toList());
-        return new ChildrenListAssert<>(elements, myself, toRootAssert());
+        return new ChildrenListAssert<>(elements, myself);
     }
 
     /**
@@ -496,10 +500,10 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
      */
     //@formatter:off
     @FunctionalInterface
-    protected interface EntitiesAssertFactory<SELF extends Navigable<PARENT_ASSERT, ROOT_ASSERT> & ParentAssert,
+    protected interface EntitiesAssertFactory<SELF extends Navigable<PARENT_ASSERT, ROOT_ASSERT> & ParentAssert<ROOT_ASSERT>,
                                               ENTITY,
                                               NEW_SELF extends Navigable<SELF,ROOT_ASSERT>,
-                                              PARENT_ASSERT extends ParentAssert,
+                                              PARENT_ASSERT extends ParentAssert<ROOT_ASSERT>,
                                               ROOT_ASSERT> {
     //@formatter:on
 

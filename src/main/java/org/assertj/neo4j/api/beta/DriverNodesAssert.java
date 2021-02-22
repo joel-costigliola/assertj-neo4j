@@ -22,8 +22,13 @@ import java.util.List;
 /**
  * @author Patrick Allain - 08/11/2020
  */
+//@formatter:off
 public final class DriverNodesAssert
-        extends AbstractNodesAssert<DriverNodesAssert, DriverNodesAssert, DriverNodesAssert, DriverNodesAssert> {
+        extends AbstractNodesAssert<DriverNodesAssert,
+                                    DriverNodesAssert,
+                                    DriverNodesAssert,
+                                    DriverNodesAssert> {
+//@formatter:on
 
     /**
      * Create new assertions on {@link Nodes}.

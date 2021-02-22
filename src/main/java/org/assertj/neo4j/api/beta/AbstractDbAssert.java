@@ -39,10 +39,10 @@ import java.util.stream.Collectors;
 public abstract class AbstractDbAssert<SELF extends AbstractDbAssert<SELF, ACTUAL, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT>,
                                        ACTUAL,
                                        NEW_SELF extends Navigable<SELF, ROOT_ASSERT>,
-                                       PARENT_ASSERT extends ParentAssert ,
+                                       PARENT_ASSERT extends ParentAssert<ROOT_ASSERT>,
                                        ROOT_ASSERT>
         extends AbstractAssert<SELF, ACTUAL>
-        implements Navigable<PARENT_ASSERT, ROOT_ASSERT>, ParentAssert {
+        implements Navigable<PARENT_ASSERT, ROOT_ASSERT> {
 //@formatter:on
 
     // TODO : As this is an internal object of AssertJ. Check if we can we use it safely ??
@@ -125,7 +125,7 @@ public abstract class AbstractDbAssert<SELF extends AbstractDbAssert<SELF, ACTUA
      * @param <R>    the root assertion type
      * @return the root assertion based on the parent provided
      */
-    protected static <A extends Navigable<P, R>, P extends ParentAssert, R> R rootAssert(final A parent) {
+    protected static <A extends Navigable<P, R>, P extends ParentAssert<R>, R> R rootAssert(final A parent) {
         return Optional.ofNullable(parent).map(Navigable::toRootAssert).orElse(null);
     }
 
@@ -192,10 +192,10 @@ public abstract class AbstractDbAssert<SELF extends AbstractDbAssert<SELF, ACTUA
      */
     //@formatter:off
     @FunctionalInterface
-    protected interface DbAssertFactory<SELF extends Navigable<PARENT_ASSERT, ROOT_ASSERT> & ParentAssert,
+    protected interface DbAssertFactory<SELF extends Navigable<PARENT_ASSERT, ROOT_ASSERT> & ParentAssert<ROOT_ASSERT>,
                                         ACTUAL,
                                         NEW_SELF extends Navigable<SELF,ROOT_ASSERT>,
-                                        PARENT_ASSERT extends ParentAssert,
+                                        PARENT_ASSERT extends ParentAssert<ROOT_ASSERT>,
                                         ROOT_ASSERT> {
     //@formatter:on
 

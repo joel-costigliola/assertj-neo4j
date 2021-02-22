@@ -21,7 +21,7 @@ import org.assertj.core.presentation.Representation;
  *
  * @author Patrick Allain - 15/02/2021
  */
-public interface ParentAssert {
+public interface ParentAssert<ROOT_ASSERT> {
 
     /**
      * Retrieve the {@link Representation} for render any object in error message.
@@ -29,5 +29,12 @@ public interface ParentAssert {
      * @return the currently use representation.
      */
     Representation representation();
+
+    /**
+     * Return to the root assertion.
+     *
+     * @return the root assertion.
+     */
+    ROOT_ASSERT toRootAssert();
 
 }

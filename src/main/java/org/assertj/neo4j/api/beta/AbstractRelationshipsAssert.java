@@ -25,9 +25,12 @@ import java.util.List;
  * @author Patrick Allain - 24/11/2020
  */
 //@formatter:off
-public abstract class AbstractRelationshipsAssert<SELF extends AbstractRelationshipsAssert<SELF, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT>,
+public abstract class AbstractRelationshipsAssert<SELF extends AbstractRelationshipsAssert<SELF,
+                                                                                           NEW_SELF,
+                                                                                           PARENT_ASSERT,
+                                                                                           ROOT_ASSERT>,
                                                   NEW_SELF extends Navigable<SELF, ROOT_ASSERT>,
-                                                  PARENT_ASSERT extends ParentAssert,
+                                                  PARENT_ASSERT extends ParentAssert<ROOT_ASSERT>,
                                                   ROOT_ASSERT>
         extends AbstractEntitiesAssert<SELF, DbRelationship, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT>
         implements Navigable<PARENT_ASSERT, ROOT_ASSERT> {

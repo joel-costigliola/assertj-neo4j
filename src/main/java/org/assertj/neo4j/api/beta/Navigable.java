@@ -14,10 +14,12 @@ package org.assertj.neo4j.api.beta;
 
 /**
  * Indicate that an assertion can be navigable.
+ * <p/>
+ * To be navigable, a instance should be {@link ParentAssert}.
  *
  * @author Patrick Allain - 01/01/2021
  */
-public interface Navigable<PARENT_ASSERT extends ParentAssert, ROOT_ASSERT> {
+public interface Navigable<PARENT_ASSERT extends ParentAssert<ROOT_ASSERT>, ROOT_ASSERT> extends ParentAssert<ROOT_ASSERT> {
 
     /**
      * Return to the parent assertion.
@@ -25,13 +27,5 @@ public interface Navigable<PARENT_ASSERT extends ParentAssert, ROOT_ASSERT> {
      * @return the parent assertion.
      */
     PARENT_ASSERT toParentAssert();
-
-    /**
-     * Return to the root assertion.
-     *
-     * @return the root assertion.
-     */
-    ROOT_ASSERT toRootAssert();
-
 
 }

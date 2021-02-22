@@ -21,30 +21,32 @@ import java.util.Objects;
  * @author Patrick Allain - 26/01/2021
  */
 //@formatter:off
-public class ChildrenListAssert<ELEMENT, PARENT_ASSERT extends ParentAssert, ROOT_ASSERT>
+public class ChildrenListAssert<ELEMENT, PARENT_ASSERT extends ParentAssert<ROOT_ASSERT>, ROOT_ASSERT>
         extends AbstractDbListAssert<ChildrenListAssert<ELEMENT, PARENT_ASSERT, ROOT_ASSERT>,
                                      List<ELEMENT>,
                                      ELEMENT,
-                                     ChildrenListAssert<ELEMENT, ChildrenListAssert<ELEMENT, PARENT_ASSERT, ROOT_ASSERT>, ROOT_ASSERT>,
+                                     ChildrenListAssert<ELEMENT,
+                                                        ChildrenListAssert<ELEMENT, PARENT_ASSERT, ROOT_ASSERT>,
+                                                        ROOT_ASSERT>,
                                      PARENT_ASSERT,
                                      ROOT_ASSERT>
-        implements Navigable<PARENT_ASSERT, ROOT_ASSERT>, Adoptable<ROOT_ASSERT>, ParentAssert {
+        implements Adoptable<ROOT_ASSERT> {
 //@formatter:on
 
-    ChildrenListAssert(final List<ELEMENT> actual, final PARENT_ASSERT parentAssert, final ROOT_ASSERT rootAssert) {
+    ChildrenListAssert(final List<ELEMENT> actual, final PARENT_ASSERT parentAssert) {
         super(
                 actual,
                 ChildrenListAssert.class,
-                (a, s) -> new ChildrenListAssert<>(a, s, s.toRootAssert()),
+                ChildrenListAssert::new,
                 Objects.requireNonNull(parentAssert, "The parent assertion cannot be null."),
-                Objects.requireNonNull(rootAssert, "The root assertion cannot be null.")
+                Objects.requireNonNull(parentAssert.toRootAssert(), "The root assertion cannot be null.")
         );
     }
 
     /** {@inheritDoc} */
     @Override
-    public <NEW_PARENT extends ParentAssert> ChildrenListAssert<ELEMENT, NEW_PARENT, ROOT_ASSERT> withParent(final NEW_PARENT parentAssert) {
-        return new ChildrenListAssert<>(actual, parentAssert, toRootAssert());
+    public <NEW_PARENT extends ParentAssert<ROOT_ASSERT>> ChildrenListAssert<ELEMENT, NEW_PARENT, ROOT_ASSERT> withParent(final NEW_PARENT parentAssert) {
+        return new ChildrenListAssert<>(actual, parentAssert);
     }
 
 }

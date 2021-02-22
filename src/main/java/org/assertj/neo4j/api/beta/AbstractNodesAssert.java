@@ -29,9 +29,12 @@ import java.util.List;
  * @author Patrick Allain - 08/11/2020
  */
 //@formatter:off
-public abstract class AbstractNodesAssert<SELF extends AbstractNodesAssert<SELF, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT>,
+public abstract class AbstractNodesAssert<SELF extends AbstractNodesAssert<SELF,
+                                                                           NEW_SELF,
+                                                                           PARENT_ASSERT,
+                                                                           ROOT_ASSERT>,
                                           NEW_SELF extends Navigable<SELF, ROOT_ASSERT>,
-                                          PARENT_ASSERT extends ParentAssert,
+                                          PARENT_ASSERT extends ParentAssert<ROOT_ASSERT>,
                                           ROOT_ASSERT>
         extends AbstractEntitiesAssert<SELF, DbNode, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT> {
 //@formatter:on
@@ -102,8 +105,7 @@ public abstract class AbstractNodesAssert<SELF extends AbstractNodesAssert<SELF,
     public ChildrenDriverRelationshipsAssert<SELF, ROOT_ASSERT> incomingRelationships(final String... types) {
         final List<Long> nodeIds = entityIds();
         final Relationships relationships = this.dataLoader.chain(LoaderFactory.relationships(types));
-        return new ChildrenDriverRelationshipsAssert<>(relationships.load(), relationships, myself,
-                toRootAssert())
+        return new ChildrenDriverRelationshipsAssert<>(relationships.load(), relationships, myself)
                 .filteredOn(r -> nodeIds.contains(r.getEnd()))
                 .withParent(myself);
     }
@@ -117,8 +119,7 @@ public abstract class AbstractNodesAssert<SELF extends AbstractNodesAssert<SELF,
     public ChildrenDriverRelationshipsAssert<SELF, ROOT_ASSERT> outgoingRelationships(final String... types) {
         final List<Long> nodeIds = entityIds();
         final Relationships relationships = this.dataLoader.chain(LoaderFactory.relationships(types));
-        return new ChildrenDriverRelationshipsAssert<>(relationships.load(), relationships, myself,
-                toRootAssert())
+        return new ChildrenDriverRelationshipsAssert<>(relationships.load(), relationships, myself)
                 .filteredOn(r -> nodeIds.contains(r.getStart()))
                 .withParent(myself);
     }

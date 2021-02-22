@@ -43,10 +43,9 @@ public abstract class AbstractDbListAssert<SELF extends AbstractDbListAssert<SEL
                                            ACTUAL extends List<ELEMENT>,
                                            ELEMENT,
                                            NEW_SELF extends Navigable<SELF, ROOT_ASSERT>,
-                                           PARENT_ASSERT extends ParentAssert,
+                                           PARENT_ASSERT extends ParentAssert<ROOT_ASSERT>,
                                            ROOT_ASSERT>
-        extends AbstractDbAssert<SELF, List<ELEMENT>, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT>
-        implements Navigable<PARENT_ASSERT, ROOT_ASSERT>, ParentAssert {
+        extends AbstractDbAssert<SELF, List<ELEMENT>, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT> {
 //@formatter:on
 
     /**

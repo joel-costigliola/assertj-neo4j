@@ -42,8 +42,7 @@ public class DriverResultAssert
                                  DbResult,
                                  DriverResultAssert,
                                  DriverResultAssert,
-                                 DriverResultAssert>
-        implements ParentAssert {
+                                 DriverResultAssert> {
 //@formatter:on
 
     public DriverResultAssert(final Result result) {
@@ -56,7 +55,7 @@ public class DriverResultAssert
                 DriverResultAssert.class,
                 DriverResultAssert::new,
                 parent,
-                Navigable.rootAssert(parent)
+                rootAssert(parent)
         );
     }
 
@@ -131,7 +130,7 @@ public class DriverResultAssert
     public ChildrenDriverRelationshipsAssert<DriverResultAssert, DriverResultAssert> asRelationshipAssert(final String columnName) {
         haveType(columnName, ObjectType.RELATIONSHIP);
         final List<DbRelationship> entities = columnObjects(columnName, ObjectType.RELATIONSHIP, DbRelationship.class);
-        return new ChildrenDriverRelationshipsAssert<>(entities, DataLoader.staticDataLoader(), myself, toRootAssert());
+        return new ChildrenDriverRelationshipsAssert<>(entities, DataLoader.staticDataLoader(), myself);
     }
 
     public <T> ChildrenListAssert<T, DriverResultAssert, DriverResultAssert> asListOf(Class<T> clazz) {
@@ -149,7 +148,7 @@ public class DriverResultAssert
                 .map(DbValue::getContent)
                 .map(clazz::cast)
                 .collect(Collectors.toList());
-        return new ChildrenListAssert<>(objects, this, this.toRootAssert());
+        return new ChildrenListAssert<>(objects, this);
     }
 
 }
