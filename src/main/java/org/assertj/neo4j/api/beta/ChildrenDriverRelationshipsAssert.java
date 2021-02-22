@@ -19,6 +19,10 @@ import java.util.List;
 import java.util.Objects;
 
 /**
+ * Children assertion on {@link DbRelationship}.
+ *
+ * @param <ROOT_ASSERT>   the root assertion type
+ * @param <PARENT_ASSERT> the parent assertion type
  * @author Patrick Allain - 02/01/2021
  */
 //@formatter:off

@@ -16,8 +16,11 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Children list assertions.
+ * Children assertion on {@link ELEMENT}.
  *
+ * @param <ELEMENT>       type of elements to be asserted
+ * @param <PARENT_ASSERT> the parent assertion type
+ * @param <ROOT_ASSERT>   the root assertion type
  * @author Patrick Allain - 26/01/2021
  */
 //@formatter:off

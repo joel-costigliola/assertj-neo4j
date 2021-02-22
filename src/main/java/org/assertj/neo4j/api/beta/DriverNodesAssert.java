@@ -20,6 +20,8 @@ import org.assertj.neo4j.api.beta.util.DbRepresentation;
 import java.util.List;
 
 /**
+ * Root assertion for {@link DbNode}.
+ *
  * @author Patrick Allain - 08/11/2020
  */
 //@formatter:off

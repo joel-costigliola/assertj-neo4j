@@ -22,6 +22,12 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
+ * Abstract assertion on {@link DbRelationship}.
+ *
+ * @param <SELF>          the assertion self type
+ * @param <NEW_SELF>      the new self assertion type
+ * @param <ROOT_ASSERT>   the root assert type
+ * @param <PARENT_ASSERT> the parent assertion type
  * @author Patrick Allain - 24/11/2020
  */
 //@formatter:off

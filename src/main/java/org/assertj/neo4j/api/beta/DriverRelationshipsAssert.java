@@ -12,6 +12,7 @@
  */
 package org.assertj.neo4j.api.beta;
 
+import org.assertj.neo4j.api.beta.type.DbNode;
 import org.assertj.neo4j.api.beta.type.DbRelationship;
 import org.assertj.neo4j.api.beta.type.loader.DataLoader;
 import org.assertj.neo4j.api.beta.type.loader.Relationships;
@@ -19,6 +20,8 @@ import org.assertj.neo4j.api.beta.type.loader.Relationships;
 import java.util.List;
 
 /**
+ * Root assertion for {@link DbRelationship}.
+ *
  * @author Patrick Allain - 24/11/2020
  */
 //@formatter:off
