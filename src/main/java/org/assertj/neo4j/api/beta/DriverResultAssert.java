@@ -17,10 +17,12 @@ import org.assertj.neo4j.api.beta.error.ShouldObjectBeOfType;
 import org.assertj.neo4j.api.beta.error.ShouldValueBeInstanceOf;
 import org.assertj.neo4j.api.beta.error.ShouldValueBeOfType;
 import org.assertj.neo4j.api.beta.type.DbObject;
+import org.assertj.neo4j.api.beta.type.DbRelationship;
 import org.assertj.neo4j.api.beta.type.DbResult;
 import org.assertj.neo4j.api.beta.type.DbValue;
 import org.assertj.neo4j.api.beta.type.ObjectType;
 import org.assertj.neo4j.api.beta.type.ValueType;
+import org.assertj.neo4j.api.beta.type.loader.DataLoader;
 import org.assertj.neo4j.api.beta.util.GroupNames;
 import org.assertj.neo4j.api.beta.util.Predicates;
 import org.assertj.neo4j.api.beta.util.Utils;
@@ -41,7 +43,7 @@ public class DriverResultAssert
                                  DriverResultAssert,
                                  DriverResultAssert,
                                  DriverResultAssert>
-        implements ParentalAssert {
+        implements ParentAssert {
 //@formatter:on
 
     public DriverResultAssert(final Result result) {
@@ -90,7 +92,7 @@ public class DriverResultAssert
         );
     }
 
-    private <O extends DbObject<O>> List<O> getColumnObjects(String columnName, ObjectType type, Class<O> targetClass) {
+    private <O extends DbObject<O>> List<O> columnObjects(String columnName, ObjectType type, Class<O> targetClass) {
         Preconditions.checkArgument(
                 Objects.equals(type.getTargetClass(), targetClass),
                 "Object type and target class don't match"
@@ -103,7 +105,7 @@ public class DriverResultAssert
     }
 
     public DriverResultAssert haveValueType(final String columnName, final ValueType valueType) {
-        final List<DbValue> objects = getColumnObjects(columnName, ObjectType.VALUE, DbValue.class);
+        final List<DbValue> objects = columnObjects(columnName, ObjectType.VALUE, DbValue.class);
         return shouldAllVerify(
                 objects,
                 Predicates.isValueType(valueType),
@@ -112,7 +114,7 @@ public class DriverResultAssert
     }
 
     public <T> DriverResultAssert haveValueInstanceOf(final String columnName, final Class<T> expectedClass) {
-        final List<DbValue> objects = getColumnObjects(columnName, ObjectType.VALUE, DbValue.class);
+        final List<DbValue> objects = columnObjects(columnName, ObjectType.VALUE, DbValue.class);
         return shouldAllVerify(
                 objects,
                 Predicates.isValueInstanceOf(expectedClass),
@@ -120,9 +122,16 @@ public class DriverResultAssert
         );
     }
 
+    // FIXME : Create the children for Nodes
     public DriverNodesAssert asNodesAssert(final String columnName) {
         Wip.TODO(this);
         return null;
+    }
+
+    public ChildrenDriverRelationshipsAssert<DriverResultAssert, DriverResultAssert> asRelationshipAssert(final String columnName) {
+        haveType(columnName, ObjectType.RELATIONSHIP);
+        final List<DbRelationship> entities = columnObjects(columnName, ObjectType.RELATIONSHIP, DbRelationship.class);
+        return new ChildrenDriverRelationshipsAssert<>(entities, DataLoader.staticDataLoader(), myself, toRootAssert());
     }
 
     public <T> ChildrenListAssert<T, DriverResultAssert, DriverResultAssert> asListOf(Class<T> clazz) {
@@ -135,7 +144,7 @@ public class DriverResultAssert
     public <T> ChildrenListAssert<T, DriverResultAssert, DriverResultAssert> asListOf(
             final String columnName, final Class<T> clazz) {
         haveValueInstanceOf(columnName, clazz);
-        final List<T> objects = getColumnObjects(columnName, ObjectType.VALUE, DbValue.class)
+        final List<T> objects = columnObjects(columnName, ObjectType.VALUE, DbValue.class)
                 .stream()
                 .map(DbValue::getContent)
                 .map(clazz::cast)

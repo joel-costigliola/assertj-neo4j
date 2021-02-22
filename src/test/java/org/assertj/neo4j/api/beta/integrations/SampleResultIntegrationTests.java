@@ -54,10 +54,14 @@ class SampleResultIntegrationTests {
                         .haveValueType("repo.name", ValueType.STRING)
                         .haveValueInstanceOf("repo.name", String.class)
                         .asListOf("repo.name", String.class)
-                            .contains("assertj-core", "assertj-core", "neo4j", "neo4j", "junit5", "junit5",
-                                    "cli", "cli", "ktor", "kubernetes", "kubernetes", "flask", "click"
-                            )
+                            .contains("assertj-core", "assertj-core", "neo4j", "junit5", "cli", "ktor", "kubernetes", "flask", "click")
                             .toRootAssert()
+                        .asRelationshipAssert("written")
+                            .hasSize(13)
+                            .extractingProperty("percent", Double.class)
+                                .contains(0.3, 99.7, 0.2, 76.8, 2.1, 97.5, 0.2, 99.8, 0.2, 2.8, 90.3, 99.9, 100.0)
+                                .toParentAssert()
+                            .toParentAssert()
                         .hasRecordSize(13)
                         .hasColumnSize(3);
             }

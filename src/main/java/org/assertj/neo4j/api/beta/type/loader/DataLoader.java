@@ -49,4 +49,24 @@ public interface DataLoader<ENTITY> {
      */
     <E, D extends DataLoader<E>> D chain(LoaderFactory<E, D> factory);
 
+    static <E> DataLoader<E> staticDataLoader() {
+        return new DataLoader<E>() {
+            @Override
+            public Query query() {
+                throw new IllegalArgumentException("Query cannot be retrieve query from this data loader.");
+            }
+
+            @Override
+            public List<E> load() {
+                throw new IllegalArgumentException("Query cannot be load from this data loader.");
+            }
+
+            @Override
+            public <OTHER_ENTITY, D extends DataLoader<OTHER_ENTITY>> D chain(LoaderFactory<OTHER_ENTITY, D> factory) {
+                throw new IllegalArgumentException("Query cannot be retrieve from this data loader.");
+            }
+        };
+
+    }
+
 }

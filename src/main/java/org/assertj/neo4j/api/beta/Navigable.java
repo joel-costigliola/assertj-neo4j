@@ -12,14 +12,12 @@
  */
 package org.assertj.neo4j.api.beta;
 
-import java.util.Optional;
-
 /**
  * Indicate that an assertion can be navigable.
  *
  * @author Patrick Allain - 01/01/2021
  */
-public interface Navigable<PARENT_ASSERT extends ParentalAssert, ROOT_ASSERT> {
+public interface Navigable<PARENT_ASSERT extends ParentAssert, ROOT_ASSERT> {
 
     /**
      * Return to the parent assertion.
@@ -35,16 +33,5 @@ public interface Navigable<PARENT_ASSERT extends ParentalAssert, ROOT_ASSERT> {
      */
     ROOT_ASSERT toRootAssert();
 
-    /**
-     * From a parent assertion, retrieve the root assertion or {@code null}, if there is no parent assertion.
-     *
-     * @param parent the parent assertion
-     * @param <A>    the current assertion type
-     * @param <P>    the parent assertion type
-     * @param <R>    the root assertion type
-     * @return the root assertion based on the parent provided
-     */
-    static <A extends Navigable<P, R>, P extends ParentalAssert, R> R rootAssert(final A parent) {
-        return Optional.ofNullable(parent).map(Navigable::toRootAssert).orElse(null);
-    }
+
 }

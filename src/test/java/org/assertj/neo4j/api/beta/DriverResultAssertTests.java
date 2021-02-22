@@ -478,4 +478,52 @@ class DriverResultAssertTests {
 
     }
 
+    @Nested
+    class AsRelationshipAssertTests extends BaseResultTests {
+
+        public AsRelationshipAssertTests() {
+            super(SAMPLE_RECORDS_BUILDERS.toArray(new RecordBuilder[0]));
+        }
+
+        @Test
+        void should_fail_when_column_not_found() {
+            // WHEN
+            final Throwable throwable = catchThrowable(() -> assertions.asRelationshipAssert("bad_column"));
+
+            // THEN
+            assertThat(throwable)
+                    .isInstanceOf(AssertionError.class)
+                    .hasMessageContainingAll(
+                            "Expecting ArrayList:",
+                            "to contain:",
+                            "but could not find the following element(s):"
+                    );
+        }
+
+        @Test
+        void should_fail_when_column_is_not_a_relationship() {
+            // WHEN
+            final Throwable throwable = catchThrowable(() -> assertions.asRelationshipAssert("n"));
+
+            // THEN
+            assertThat(throwable)
+                    .isInstanceOf(AssertionError.class)
+                    .hasMessageContainingAll(
+                            "Expecting database objects:",
+                            "to be of type:",
+                            "but some database objects are from another type:"
+                    );
+        }
+
+        @Test
+        void should_return_a_children_relationship_assert() {
+            // WHEN
+            final ChildrenDriverRelationshipsAssert<DriverResultAssert, DriverResultAssert> result =
+                    assertions.asRelationshipAssert("r");
+
+            // THEN
+            assertThat(result.toParentAssert()).isSameAs(assertions);
+        }
+    }
+
 }

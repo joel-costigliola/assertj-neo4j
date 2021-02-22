@@ -35,10 +35,10 @@ class ChildrenListAssertTests {
 
     private static class BaseChildrenListAssertTests<ACTUAL> {
 
-        protected ChildrenListAssert<ACTUAL, ParentalAssert, ParentalAssert> assertions;
+        protected ChildrenListAssert<ACTUAL, ParentAssert, ParentAssert> assertions;
         protected final List<ACTUAL> actual;
-        protected final ParentalAssert parentalAssert = Mockito.mock(ParentalAssert.class);
-        protected final ParentalAssert rootAssert = Mockito.mock(ParentalAssert.class);
+        protected final ParentAssert parentAssert = Mockito.mock(ParentAssert.class);
+        protected final ParentAssert rootAssert = Mockito.mock(ParentAssert.class);
 
         @SafeVarargs
         BaseChildrenListAssertTests(ACTUAL... elements) {
@@ -47,14 +47,14 @@ class ChildrenListAssertTests {
 
         @BeforeEach
         void setUp() {
-            when(parentalAssert.representation()).thenReturn(StandardRepresentation.STANDARD_REPRESENTATION);
-            this.assertions = new ChildrenListAssert<>(this.actual, this.parentalAssert, this.rootAssert);
+            when(parentAssert.representation()).thenReturn(StandardRepresentation.STANDARD_REPRESENTATION);
+            this.assertions = new ChildrenListAssert<>(this.actual, this.parentAssert, this.rootAssert);
         }
 
         @AfterEach
         void tearDown() {
-            verify(parentalAssert).representation();
-            Mockito.verifyNoMoreInteractions(parentalAssert, rootAssert);
+            verify(parentAssert).representation();
+            Mockito.verifyNoMoreInteractions(parentAssert, rootAssert);
         }
     }
 
@@ -68,11 +68,11 @@ class ChildrenListAssertTests {
         @Test
         void should_create_new_with_parent() {
             // GIVEN
-            final ParentalAssert newParentAssert = Mockito.mock(ParentalAssert.class);
+            final ParentAssert newParentAssert = Mockito.mock(ParentAssert.class);
             when(newParentAssert.representation()).thenReturn(StandardRepresentation.STANDARD_REPRESENTATION);
 
             // WHEN
-            ChildrenListAssert<String, ParentalAssert, ParentalAssert> result = assertions.withParent(newParentAssert);
+            ChildrenListAssert<String, ParentAssert, ParentAssert> result = assertions.withParent(newParentAssert);
 
             // THEN
             verify(newParentAssert).representation();

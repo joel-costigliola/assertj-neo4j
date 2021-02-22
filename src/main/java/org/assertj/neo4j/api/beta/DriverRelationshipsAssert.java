@@ -12,7 +12,6 @@
  */
 package org.assertj.neo4j.api.beta;
 
-import org.assertj.core.util.VisibleForTesting;
 import org.assertj.neo4j.api.beta.type.DbRelationship;
 import org.assertj.neo4j.api.beta.type.loader.DataLoader;
 import org.assertj.neo4j.api.beta.type.loader.Relationships;
@@ -39,16 +38,6 @@ public class DriverRelationshipsAssert
         this(relationships.load(), relationships, null);
     }
 
-    /**
-     * FIXME : To be removed.
-     *
-     * @param entities
-     */
-    @VisibleForTesting
-    protected DriverRelationshipsAssert(final List<DbRelationship> entities) {
-        this(entities, null, null);
-    }
-
     private DriverRelationshipsAssert(final List<DbRelationship> entities,
                                       final DataLoader<DbRelationship> loader,
                                       final DriverRelationshipsAssert parent) {
@@ -58,7 +47,7 @@ public class DriverRelationshipsAssert
                 loader,
                 DriverRelationshipsAssert::new,
                 parent,
-                Navigable.rootAssert(parent)
+                rootAssert(parent)
         );
     }
 

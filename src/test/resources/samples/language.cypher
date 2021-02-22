@@ -235,19 +235,19 @@ CREATE
   (KTurner)-[:KNOWS {level: 1}]->(Java)
 
 CREATE
-  (Assertj_AssertjCore)-[:WRITTEN {percent: ['99.7']}]->(Java),
-  (Assertj_AssertjCore)-[:WRITTEN {percent: ['0.3']}]->(Shell),
-  (Neo4j_Neo4j)-[:WRITTEN {percent: ['76.8']}]->(Java),
-  (Neo4j_Neo4j)-[:WRITTEN {percent: ['0.2']}]->(Shell),
-  (JunitTeam_Junit5)-[:WRITTEN {percent: ['97.5']}]->(Java),
-  (JunitTeam_Junit5)-[:WRITTEN {percent: ['2.1']}]->(Kotlin),
-  (Urfave_Cli)-[:WRITTEN {percent: ['99.8']}]->(Go),
-  (Urfave_Cli)-[:WRITTEN {percent: ['0.2']}]->(Shell),
-  (Ktorio_Ktor)-[:WRITTEN {percent: ['0.2']}]->(Shell),
-  (Kubernetes_Kubernetes)-[:WRITTEN {percent: ['90.3']}]->(Go),
-  (Kubernetes_Kubernetes)-[:WRITTEN {percent: ['2.8']}]->(Shell),
-  (Pallets_Click)-[:WRITTEN {percent: ['100']}]->(Python),
-  (Pallets_Flask)-[:WRITTEN {percent: ['99.9']}]->(Python)
+  (Assertj_AssertjCore)-[:WRITTEN {percent: 99.7}]->(Java),
+  (Assertj_AssertjCore)-[:WRITTEN {percent: 0.3}]->(Shell),
+  (Neo4j_Neo4j)-[:WRITTEN {percent: 76.8}]->(Java),
+  (Neo4j_Neo4j)-[:WRITTEN {percent: 0.2}]->(Shell),
+  (JunitTeam_Junit5)-[:WRITTEN {percent: 97.5}]->(Java),
+  (JunitTeam_Junit5)-[:WRITTEN {percent: 2.1}]->(Kotlin),
+  (Urfave_Cli)-[:WRITTEN {percent: 99.8}]->(Go),
+  (Urfave_Cli)-[:WRITTEN {percent: 0.2}]->(Shell),
+  (Ktorio_Ktor)-[:WRITTEN {percent: 0.2}]->(Shell),
+  (Kubernetes_Kubernetes)-[:WRITTEN {percent: 90.3}]->(Go),
+  (Kubernetes_Kubernetes)-[:WRITTEN {percent: 2.8}]->(Shell),
+  (Pallets_Click)-[:WRITTEN {percent: 100.0}]->(Python),
+  (Pallets_Flask)-[:WRITTEN {percent: 99.9}]->(Python)
 
 // Github socials ...
 CREATE

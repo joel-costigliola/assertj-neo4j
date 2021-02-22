@@ -57,10 +57,10 @@ import java.util.stream.Collectors;
 public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert<SELF, ENTITY, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT>,
                                              ENTITY extends DbEntity<ENTITY>,
                                              NEW_SELF extends Navigable<SELF, ROOT_ASSERT>,
-                                             PARENT_ASSERT extends ParentalAssert,
+                                             PARENT_ASSERT extends ParentAssert,
                                              ROOT_ASSERT>
         extends AbstractDbListAssert<SELF, List<ENTITY>, ENTITY, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT>
-        implements Navigable<PARENT_ASSERT, ROOT_ASSERT>, ParentalAssert {
+        implements Navigable<PARENT_ASSERT, ROOT_ASSERT>, ParentAssert {
 //@formatter:on
 
     /** The record type */
@@ -171,7 +171,7 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
      * @return {@code this} assertion object.
      */
     public SELF isNotEmpty() {
-        // TODO: OR => iterables.assertNotEmpty(info, actual); ?
+        // TODO: OR => iterables.assertNotEmpty(info, actual) like ; ?
         if (actual.isEmpty()) {
             throwAssertionError(ShouldQueryResultBeNotEmpty.create(recordType, dataLoader.query()));
         }
@@ -478,6 +478,16 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
         );
     }
 
+    public <ELEMENT> ChildrenListAssert<ELEMENT, SELF, ROOT_ASSERT> extractingProperty(final String key,
+                                                                                       final Class<ELEMENT> clazz) {
+        havePropertyInstanceOf(key, clazz);
+        final List<ELEMENT> elements = actual.stream()
+                .map(i -> i.getPropertyValue(key))
+                .map(clazz::cast)
+                .collect(Collectors.toList());
+        return new ChildrenListAssert<>(elements, myself, toRootAssert());
+    }
+
     /**
      * Factory for creating new {@link SELF} assertions with the another list of entities.
      *
@@ -486,10 +496,10 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
      */
     //@formatter:off
     @FunctionalInterface
-    protected interface EntitiesAssertFactory<SELF extends Navigable<PARENT_ASSERT, ROOT_ASSERT> & ParentalAssert,
+    protected interface EntitiesAssertFactory<SELF extends Navigable<PARENT_ASSERT, ROOT_ASSERT> & ParentAssert,
                                               ENTITY,
                                               NEW_SELF extends Navigable<SELF,ROOT_ASSERT>,
-                                              PARENT_ASSERT extends ParentalAssert,
+                                              PARENT_ASSERT extends ParentAssert,
                                               ROOT_ASSERT> {
     //@formatter:on
 

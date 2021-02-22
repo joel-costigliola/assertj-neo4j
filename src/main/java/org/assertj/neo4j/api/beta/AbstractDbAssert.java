@@ -39,10 +39,10 @@ import java.util.stream.Collectors;
 public abstract class AbstractDbAssert<SELF extends AbstractDbAssert<SELF, ACTUAL, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT>,
                                        ACTUAL,
                                        NEW_SELF extends Navigable<SELF, ROOT_ASSERT>,
-                                       PARENT_ASSERT extends ParentalAssert,
+                                       PARENT_ASSERT extends ParentAssert ,
                                        ROOT_ASSERT>
         extends AbstractAssert<SELF, ACTUAL>
-        implements Navigable<PARENT_ASSERT, ROOT_ASSERT>, ParentalAssert {
+        implements Navigable<PARENT_ASSERT, ROOT_ASSERT>, ParentAssert {
 //@formatter:on
 
     // TODO : As this is an internal object of AssertJ. Check if we can we use it safely ??
@@ -104,8 +104,29 @@ public abstract class AbstractDbAssert<SELF extends AbstractDbAssert<SELF, ACTUA
         return this.parentAssert;
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public ROOT_ASSERT toRootAssert() {
+        return rootAssert().orElseThrow(() -> new IllegalArgumentException("Root assertion shouldn't be null !"));
+    }
+
     protected Optional<ROOT_ASSERT> rootAssert() {
         return Optional.ofNullable(this.rootAssert);
+    }
+
+    /**
+     * From a parent assertion, retrieve the root assertion or {@code null}, if there is no parent assertion.
+     * <p/>
+     * This is intent to be used in constructor of root assertion.
+     *
+     * @param parent the parent assertion
+     * @param <A>    the current assertion type
+     * @param <P>    the parent assertion type
+     * @param <R>    the root assertion type
+     * @return the root assertion based on the parent provided
+     */
+    protected static <A extends Navigable<P, R>, P extends ParentAssert, R> R rootAssert(final A parent) {
+        return Optional.ofNullable(parent).map(Navigable::toRootAssert).orElse(null);
     }
 
     /** {@inheritDoc} */
@@ -123,6 +144,8 @@ public abstract class AbstractDbAssert<SELF extends AbstractDbAssert<SELF, ACTUA
 
     /**
      * Customize the display of an error message providing the full entity description.
+     * <p/>
+     * The display will be forward to all children assertions but this will not impact the parent assertions.
      *
      * @return {@code this} assertion object.
      */
@@ -132,11 +155,13 @@ public abstract class AbstractDbAssert<SELF extends AbstractDbAssert<SELF, ACTUA
 
     /**
      * Customize the display of an error message providing an abbreviate entity description.
+     * <p/>
+     * Reset
      *
      * @return {@code this} assertion object.
      */
     public SELF withAbbreviateRepresentation() {
-        return withRepresentation(DbRepresentation.full());
+        return withRepresentation(DbRepresentation.abbreviate());
     }
 
     /**
@@ -167,10 +192,10 @@ public abstract class AbstractDbAssert<SELF extends AbstractDbAssert<SELF, ACTUA
      */
     //@formatter:off
     @FunctionalInterface
-    protected interface DbAssertFactory<SELF extends Navigable<PARENT_ASSERT, ROOT_ASSERT> & ParentalAssert,
+    protected interface DbAssertFactory<SELF extends Navigable<PARENT_ASSERT, ROOT_ASSERT> & ParentAssert,
                                         ACTUAL,
                                         NEW_SELF extends Navigable<SELF,ROOT_ASSERT>,
-                                        PARENT_ASSERT extends ParentalAssert,
+                                        PARENT_ASSERT extends ParentAssert,
                                         ROOT_ASSERT> {
     //@formatter:on
 

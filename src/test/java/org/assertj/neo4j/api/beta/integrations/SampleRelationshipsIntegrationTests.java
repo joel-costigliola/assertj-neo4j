@@ -17,6 +17,7 @@ import org.assertj.neo4j.api.beta.testing.Dataset;
 import org.assertj.neo4j.api.beta.testing.IntegrationTests;
 import org.assertj.neo4j.api.beta.type.Models;
 import org.assertj.neo4j.api.beta.type.loader.Relationships;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -30,35 +31,40 @@ class SampleRelationshipsIntegrationTests extends IntegrationTests.DatasetTests 
         super(Dataset.GITHUB_LANGUAGE);
     }
 
-    @Test
-    public void full() {
-        final Relationships relationships = Relationships.of(driver, "KNOWS");
-        DriverAssertions.assertThat(relationships)
-                .hasSize(18)
-                .haveType("KNOWS")
-                .havePropertyKeys("level")
-                .usingNoEntityIdComparison()
-                .contains(Models.relation("KNOWS").property("level", 5).build());
-    }
+    @Nested
+    class ShouldSucceed {
 
-    @Test
-    public void usingNoEntityIdComparison() {
-        final Relationships relationships = Relationships.of(driver, "KNOWS");
-        DriverAssertions.assertThat(relationships)
-                .usingNoEntityIdComparison()
-                .contains(Models.relation("KNOWS").property("level", 5).build());
-    }
+        @Test
+        public void full() {
+            final Relationships relationships = Relationships.of(driver, "KNOWS");
+            DriverAssertions.assertThat(relationships)
+                    .hasSize(18)
+                    .haveType("KNOWS")
+                    .havePropertyKeys("level")
+                    .usingNoEntityIdComparison()
+                    .contains(Models.relation("KNOWS").property("level", 5).build());
+        }
 
-    @Test
-    public void haveType() {
-        final Relationships relationships = Relationships.of(driver, "KNOWS");
-        DriverAssertions.assertThat(relationships).haveType("KNOWS");
-    }
+        @Test
+        public void usingNoEntityIdComparison() {
+            final Relationships relationships = Relationships.of(driver, "KNOWS");
+            DriverAssertions.assertThat(relationships)
+                    .usingNoEntityIdComparison()
+                    .contains(Models.relation("KNOWS").property("level", 5).build());
+        }
 
-    @Test
-    public void havePropertyKeys() {
-        final Relationships relationships = Relationships.of(driver, "KNOWS");
-        DriverAssertions.assertThat(relationships).havePropertyKeys("level");
+        @Test
+        public void haveType() {
+            final Relationships relationships = Relationships.of(driver, "KNOWS");
+            DriverAssertions.assertThat(relationships).haveType("KNOWS");
+        }
+
+        @Test
+        public void havePropertyKeys() {
+            final Relationships relationships = Relationships.of(driver, "KNOWS");
+            DriverAssertions.assertThat(relationships).havePropertyKeys("level");
+        }
+
     }
 
 }

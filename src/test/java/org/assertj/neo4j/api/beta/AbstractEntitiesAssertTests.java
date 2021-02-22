@@ -64,7 +64,7 @@ class AbstractEntitiesAssertTests {
                     entities,
                     ConcreteEntitiesAssert::new,
                     parent,
-                    Navigable.rootAssert(parent)
+                    rootAssert(parent)
             );
         }
 
@@ -74,13 +74,13 @@ class AbstractEntitiesAssertTests {
         }
     }
 
-    private static class BaseTests {
+    private static class BaseEntitiesTests {
 
         protected final Nodes dataLoader;
 
         protected ConcreteEntitiesAssert assertions;
 
-        protected BaseTests(DbNode.DbNodeBuilder... builders) {
+        protected BaseEntitiesTests(DbNode.DbNodeBuilder... builders) {
             this.dataLoader = Mockito.mock(Nodes.class);
             testCase(builders);
         }
@@ -102,7 +102,7 @@ class AbstractEntitiesAssertTests {
 
     @Nested
     @DisplayName("filteredOn")
-    class FilteredOnTests extends BaseTests {
+    class FilteredOnTests extends BaseEntitiesTests {
 
         FilteredOnTests() {
             super(
@@ -141,7 +141,7 @@ class AbstractEntitiesAssertTests {
 
     @Nested
     @DisplayName("filteredOnPropertyExists")
-    class FilteredOnPropertyExistsTests extends BaseTests {
+    class FilteredOnPropertyExistsTests extends BaseEntitiesTests {
 
         FilteredOnPropertyExistsTests() {
             super(
@@ -178,7 +178,7 @@ class AbstractEntitiesAssertTests {
 
     @Nested
     @DisplayName("filteredOnPropertyExists")
-    class FilteredOnPropertyValueTests extends BaseTests {
+    class FilteredOnPropertyValueTests extends BaseEntitiesTests {
 
         FilteredOnPropertyValueTests() {
             super(
@@ -215,74 +215,8 @@ class AbstractEntitiesAssertTests {
     }
 
     @Nested
-    @DisplayName("isEmpty")
-    class IsEmptyTests extends BaseTests {
-
-        @Test
-        void should_fail() {
-            // GIVEN
-            testCase(Models.node().id(1));
-            when(dataLoader.query()).thenReturn(new Query("MATCH (n) RETURN n"));
-
-            // WHEN
-            final Throwable result = catchThrowable(() -> assertions.isEmpty());
-
-            // THEN
-            verify(dataLoader).query();
-            assertThat(result)
-                    .isInstanceOf(AssertionError.class)
-                    .hasMessageContainingAll(
-                            "Expecting query:",
-                            "to return an empty list of nodes but got 1 node:"
-                    );
-        }
-
-        @Test
-        void should_pass() {
-            // WHEN
-            final ConcreteEntitiesAssert result = assertions.isEmpty();
-
-            // THEN
-            assertThat(result).isSameAs(assertions);
-        }
-    }
-
-    @Nested
-    @DisplayName("isNotEmpty")
-    class IsNotEmptyTests extends BaseTests {
-
-        @Test
-        void should_fail() {
-            // WHEN
-            final Throwable result = catchThrowable(() -> assertions.isNotEmpty());
-
-            // THEN
-            verify(dataLoader).query();
-            assertThat(result)
-                    .isInstanceOf(AssertionError.class)
-                    .hasMessageContainingAll(
-                            "Expecting query:",
-                            "to return a non empty result list of nodes but got no result."
-                    );
-        }
-
-        @Test
-        void should_pass() {
-            // GIVEN
-            testCase(Models.node().id(1));
-            when(dataLoader.query()).thenReturn(new Query("MATCH (n) RETURN n"));
-
-            // WHEN
-            final ConcreteEntitiesAssert result = assertions.isNotEmpty();
-
-            // THEN
-            assertThat(result).isSameAs(assertions);
-        }
-    }
-
-    @Nested
     @DisplayName("haveListPropertyOfType")
-    class HaveListPropertyOfTypeTest extends BaseTests {
+    class HaveListPropertyOfTypeTest extends BaseEntitiesTests {
 
         HaveListPropertyOfTypeTest() {
             super(
@@ -366,7 +300,7 @@ class AbstractEntitiesAssertTests {
 
     @Nested
     @DisplayName("haveProperty")
-    class HavePropertyTests extends BaseTests {
+    class HavePropertyTests extends BaseEntitiesTests {
 
         HavePropertyTests() {
             super(
@@ -426,7 +360,7 @@ class AbstractEntitiesAssertTests {
 
     @Nested
     @DisplayName("havePropertySize")
-    class HavePropertySizeTests extends BaseTests {
+    class HavePropertySizeTests extends BaseEntitiesTests {
 
         HavePropertySizeTests() {
             super(
@@ -467,7 +401,7 @@ class AbstractEntitiesAssertTests {
 
     @Nested
     @DisplayName("havePropertyInstanceOf")
-    class HavePropertyInstanceOfTests extends BaseTests {
+    class HavePropertyInstanceOfTests extends BaseEntitiesTests {
 
         HavePropertyInstanceOfTests() {
             super(
@@ -530,7 +464,7 @@ class AbstractEntitiesAssertTests {
 
     @Nested
     @DisplayName("havePropertyKeys")
-    class HavePropertyKeysTests extends BaseTests {
+    class HavePropertyKeysTests extends BaseEntitiesTests {
 
         HavePropertyKeysTests() {
             super(
@@ -579,7 +513,7 @@ class AbstractEntitiesAssertTests {
 
     @Nested
     @DisplayName("havePropertyValueMatching(String, Predicate)")
-    class HavePropertyValueMatchingTests extends BaseTests {
+    class HavePropertyValueMatchingTests extends BaseEntitiesTests {
 
         HavePropertyValueMatchingTests() {
             super(
@@ -636,7 +570,7 @@ class AbstractEntitiesAssertTests {
 
     @Nested
     @DisplayName("havePropertyValueMatching(String, Class, Predicate)")
-    class HavePropertyValueMatchingTypedTests extends BaseTests {
+    class HavePropertyValueMatchingTypedTests extends BaseEntitiesTests {
 
         HavePropertyValueMatchingTypedTests() {
             super(
@@ -710,7 +644,7 @@ class AbstractEntitiesAssertTests {
 
     @Nested
     @DisplayName("havePropertyOfType")
-    class HavePropertyOfTypeTests extends BaseTests {
+    class HavePropertyOfTypeTests extends BaseEntitiesTests {
 
         HavePropertyOfTypeTests() {
             super(
@@ -768,6 +702,72 @@ class AbstractEntitiesAssertTests {
 
             // THEN
             assertThat(result).isSameAs(assertions);
+        }
+
+    }
+
+    @Nested
+    @DisplayName("extractingProperty")
+    class ExtractingPropertyTests extends BaseEntitiesTests {
+
+        ExtractingPropertyTests() {
+            super(
+                    Models.node()
+                            .property("prop", "val-1")
+                            .property("mixed", "val"),
+                    Models.node()
+                            .property("prop", "val-2")
+                            .property("mixed", 1.5),
+                    Models.node()
+                            .property("prop", "val-3")
+                            .property("mixed", LocalDate.now())
+                            .property("missing", "val")
+            );
+        }
+
+        @Test
+        void should_fail_when_property_is_missing() {
+            // WHEN
+            final Throwable throwable = catchThrowable(
+                    () -> assertions.extractingProperty("missing", String.class)
+            );
+
+            // THEN
+            assertThat(throwable)
+                    .isInstanceOf(AssertionError.class)
+                    .hasMessageContainingAll(
+                            "Expecting nodes:",
+                            "to have properties with keys:",
+                            "but some nodes don't have this properties:"
+                    );
+        }
+
+        @Test
+        void should_fail_when_property_is_not_instance_of() {
+            // WHEN
+            final Throwable throwable = catchThrowable(
+                    () -> assertions.extractingProperty("prop", Long.class)
+            );
+
+            // THEN
+            assertThat(throwable)
+                    .isInstanceOf(AssertionError.class)
+                    .hasMessageContainingAll(
+                            "Expecting nodes:",
+                            "to have property value \"prop\" instance of:",
+                            "but some nodes have a property value which is not an instance of the expected class:"
+                    );
+        }
+
+        @Test
+        void should_pass() {
+            // WHEN
+            final ChildrenListAssert<String, ConcreteEntitiesAssert, ConcreteEntitiesAssert> result =
+                    assertions.extractingProperty("prop", String.class);
+
+            // THEN
+            assertThat(result.getActual()).contains("val-1", "val-2", "val-3");
+            assertThat(result.toParentAssert()).isSameAs(assertions);
         }
 
     }

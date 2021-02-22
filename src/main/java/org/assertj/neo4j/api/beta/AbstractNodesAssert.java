@@ -31,7 +31,7 @@ import java.util.List;
 //@formatter:off
 public abstract class AbstractNodesAssert<SELF extends AbstractNodesAssert<SELF, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT>,
                                           NEW_SELF extends Navigable<SELF, ROOT_ASSERT>,
-                                          PARENT_ASSERT extends ParentalAssert,
+                                          PARENT_ASSERT extends ParentAssert,
                                           ROOT_ASSERT>
         extends AbstractEntitiesAssert<SELF, DbNode, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT> {
 //@formatter:on

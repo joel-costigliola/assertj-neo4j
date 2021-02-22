@@ -27,7 +27,6 @@ import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.Objects;
 
 /**
@@ -192,20 +191,26 @@ class SampleNodesIntegrationTests {
                     .usingNoEntityIdComparison()
                     .filteredOnPropertyExists("name")
                         .havePropertyValueMatching("creation_date", LocalDateTime.class::isInstance)
-                            .filteredOnPropertyValue("owner", "pallets")
+                        .filteredOnPropertyValue("owner", "pallets")
                             .havePropertyValueMatching("url", String.class, (s) -> s.startsWith("https://github.com/pallets/"))
                             .toRootAssert()
                     .filteredOnPropertyValue("name", "junit5")
                         .hasSize(1)
                         .outgoingRelationships()
                             .usingNoEntityIdComparison()
-                            .contains(Models.relation("WRITTEN").property("percent", Collections.singletonList("97.5")).build())
+                            .contains(Models.relation("WRITTEN").property("percent", 97.5).build())
+                            .extractingProperty("percent", Double.class)
+                                .allMatch(i -> i >= 0.0)
+                                .allMatch(i -> i <= 100.0)
+                                .contains(2.1, 97.5)
+                                .toParentAssert()
                             .toParentAssert()
                         .toParentAssert()
                     .hasSize(12)
                     .haveLabels("Repo")
 //            .havePropertyMatching()
             ;
+
             //@formatter:on
         }
 

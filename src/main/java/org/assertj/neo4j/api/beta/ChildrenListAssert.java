@@ -13,23 +13,22 @@
 package org.assertj.neo4j.api.beta;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
- * Navigable list assertions.
+ * Children list assertions.
  *
  * @author Patrick Allain - 26/01/2021
  */
 //@formatter:off
-public class ChildrenListAssert<ELEMENT,
-                                PARENT_ASSERT extends ParentalAssert,
-                                ROOT_ASSERT>
+public class ChildrenListAssert<ELEMENT, PARENT_ASSERT extends ParentAssert, ROOT_ASSERT>
         extends AbstractDbListAssert<ChildrenListAssert<ELEMENT, PARENT_ASSERT, ROOT_ASSERT>,
                                      List<ELEMENT>,
                                      ELEMENT,
-                                     ChildrenListAssert<ELEMENT, ChildrenListAssert<ELEMENT,PARENT_ASSERT, ROOT_ASSERT>, ROOT_ASSERT>,
+                                     ChildrenListAssert<ELEMENT, ChildrenListAssert<ELEMENT, PARENT_ASSERT, ROOT_ASSERT>, ROOT_ASSERT>,
                                      PARENT_ASSERT,
                                      ROOT_ASSERT>
-        implements Navigable<PARENT_ASSERT, ROOT_ASSERT>, Adoptable<ROOT_ASSERT> , ParentalAssert {
+        implements Navigable<PARENT_ASSERT, ROOT_ASSERT>, Adoptable<ROOT_ASSERT>, ParentAssert {
 //@formatter:on
 
     ChildrenListAssert(final List<ELEMENT> actual, final PARENT_ASSERT parentAssert, final ROOT_ASSERT rootAssert) {
@@ -37,20 +36,15 @@ public class ChildrenListAssert<ELEMENT,
                 actual,
                 ChildrenListAssert.class,
                 (a, s) -> new ChildrenListAssert<>(a, s, s.toRootAssert()),
-                parentAssert,
-                rootAssert
+                Objects.requireNonNull(parentAssert, "The parent assertion cannot be null."),
+                Objects.requireNonNull(rootAssert, "The root assertion cannot be null.")
         );
-    }
-
-    @Override
-    public ROOT_ASSERT toRootAssert() {
-        return this.rootAssert()
-                .orElseThrow(() -> new RuntimeException("Children assertion should have root assertions"));
     }
 
     /** {@inheritDoc} */
     @Override
-    public <NEW_PARENT extends ParentalAssert> ChildrenListAssert<ELEMENT, NEW_PARENT, ROOT_ASSERT> withParent(final NEW_PARENT parentAssert) {
+    public <NEW_PARENT extends ParentAssert> ChildrenListAssert<ELEMENT, NEW_PARENT, ROOT_ASSERT> withParent(final NEW_PARENT parentAssert) {
         return new ChildrenListAssert<>(actual, parentAssert, toRootAssert());
     }
+
 }

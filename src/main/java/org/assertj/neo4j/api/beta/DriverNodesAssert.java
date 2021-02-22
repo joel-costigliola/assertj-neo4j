@@ -44,7 +44,7 @@ public final class DriverNodesAssert
                 nodes,
                 DriverNodesAssert::new,
                 parent,
-                Navigable.rootAssert(parent)
+                rootAssert(parent)
         );
     }
 
