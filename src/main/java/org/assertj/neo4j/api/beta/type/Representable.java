@@ -13,7 +13,7 @@
 package org.assertj.neo4j.api.beta.type;
 
 /**
- * @author patouche - 18/02/2021
+ * @author Patrick Allain - 18/02/2021
  */
 public interface Representable<I extends Representable<I>> extends Comparable<I > {
 

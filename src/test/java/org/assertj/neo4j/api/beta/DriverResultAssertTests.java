@@ -41,19 +41,19 @@ import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 /**
- * @author patouche - 19/02/2021
+ * @author Patrick Allain - 19/02/2021
  */
 class DriverResultAssertTests {
 
     private static final List<RecordBuilder> SAMPLE_RECORDS_BUILDERS = Arrays.asList(
             Builders.record()
-                    .node("n", Builders.node().id(1).properties("name", Values.value("n-1")).build())
+                    .node("n", Builders.node().id(1).property("name", "n-1").build())
                     .relation("r", Builders.relation("KNOWS").id(2).build())
-                    .value("n.name", Values.value("n-1")),
+                    .value("n.name", "n-1"),
             Builders.record()
-                    .node("n", Builders.node().id(3).properties("name", Values.value("n-2")).build())
+                    .node("n", Builders.node().id(3).property("name", "n-2").build())
                     .relation("r", Builders.relation("KNOWS").id(4).build())
-                    .value("n.name", Values.value("n-2"))
+                    .value("n.name", "n-2")
     );
 
     private static class BaseResultTests {
@@ -373,6 +373,93 @@ class DriverResultAssertTests {
             // WHEN
             final ChildrenListAssert<String, DriverResultAssert, DriverResultAssert> result =
                     assertions.asListOf("n.name", String.class);
+
+            // THEN
+            assertThat(result).isNotNull();
+            assertThat(result.getActual()).contains("n-1", "n-2");
+        }
+
+        @Test
+        void should_be_navigable() {
+            // WHEN
+            final ChildrenListAssert<String, DriverResultAssert, DriverResultAssert> result =
+                    assertions.asListOf("n.name", String.class);
+
+            // THEN
+            assertThat(result.toParentAssert()).isSameAs(assertions);
+        }
+
+    }
+
+    @Nested
+    class AsListOfSingleColumnTests extends BaseResultTests {
+
+        AsListOfSingleColumnTests() {
+            super(
+                    Builders.record().value("n.name", "n-1"),
+                    Builders.record().value("n.name", "n-2")
+            );
+        }
+
+        @Test
+        void should_fail_when_multiple_columns() {
+            // GIVEN
+            testCase(
+                    Builders.record().value("n.name", "n-1").value("n.owner", "o-1"),
+                    Builders.record().value("n.name", "n-2").value("n.owner", "o-2")
+            );
+
+            // WHEN
+            final Throwable throwable = catchThrowable(() -> assertions.asListOf(String.class));
+
+            // THEN
+            assertThat(throwable)
+                    .isInstanceOf(AssertionError.class)
+                    .hasMessageContainingAll(
+                            "Expected size:<1> but was:<2> in:"
+                    );
+        }
+
+        @Test
+        void should_fail_when_column_is_not_value() {
+            // GIVEN
+            testCase(
+                    Builders.record().node("n", Builders.node().id(1).property("k", "val-1").build()),
+                    Builders.record().node("n", Builders.node().id(2).property("k", "val-2").build())
+            );
+
+            // WHEN
+            final Throwable throwable = catchThrowable(() -> assertions.asListOf(String.class));
+
+            // THEN
+            assertThat(throwable)
+                    .isInstanceOf(AssertionError.class)
+                    .hasMessageContainingAll(
+                            "Expecting database objects:",
+                            "to be of type:"
+                    );
+        }
+
+        @Test
+        void should_fail_when_value_is_not_instance_of() {
+            // WHEN
+            final Throwable throwable = catchThrowable(() -> assertions.asListOf(Long.class));
+
+            // THEN
+            assertThat(throwable)
+                    .isInstanceOf(AssertionError.class)
+                    .hasMessageContainingAll(
+                            "Expecting values:",
+                            "to have values instance of:",
+                            "but some values have value which are not instance of this class:"
+                    );
+        }
+
+        @Test
+        void should_pass() {
+            // WHEN
+            final ChildrenListAssert<String, DriverResultAssert, DriverResultAssert> result =
+                    assertions.asListOf(String.class);
 
             // THEN
             assertThat(result).isNotNull();

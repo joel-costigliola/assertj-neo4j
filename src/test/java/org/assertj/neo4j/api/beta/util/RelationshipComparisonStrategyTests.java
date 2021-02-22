@@ -23,7 +23,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.neo4j.api.beta.util.RelationshipComparisonStrategy.builder;
 
 /**
- * @author patouche - 17/02/2021
+ * @author Patrick Allain - 17/02/2021
  */
 class RelationshipComparisonStrategyTests {
 

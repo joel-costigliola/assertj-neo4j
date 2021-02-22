@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * @author patouche - 20/02/2021
+ * @author Patrick Allain - 20/02/2021
  */
 @Disabled("ASSERTJ IMPROVEMENTS")
 class AssertJTests {

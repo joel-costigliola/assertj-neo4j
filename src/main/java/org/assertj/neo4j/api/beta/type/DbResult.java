@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * @author patouche - 17/02/2021
+ * @author Patrick Allain - 17/02/2021
  */
 public class DbResult {
 

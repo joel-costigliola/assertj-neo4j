@@ -30,7 +30,7 @@ class ChecksTests {
 
     @Nested
     @DisplayName("notNullOrEmpty(Object[],String)")
-    class NotNullOrEmptyOnArrays {
+    class NotNullOrEmptyOnArraysTests {
 
         @Test
         void should_failed_when_null() {
@@ -46,7 +46,6 @@ class ChecksTests {
                     .hasMessage("error message");
         }
 
-
         @Test
         void should_failed_when_empty() {
             // GIVEN
@@ -60,7 +59,6 @@ class ChecksTests {
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("error message");
         }
-
 
         @Test
         void should_success_when_not_empty() {
@@ -79,7 +77,7 @@ class ChecksTests {
 
     @Nested
     @DisplayName("notNullOrEmpty(Iterable,String)")
-    class NotNullOrEmptyOnIterable {
+    class NotNullOrEmptyOnIterableTests {
 
         @Test
         void should_failed_when_null() {
@@ -95,7 +93,6 @@ class ChecksTests {
                     .hasMessage("error message");
         }
 
-
         @Test
         void should_failed_when_empty() {
             // GIVEN
@@ -109,7 +106,6 @@ class ChecksTests {
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("error message");
         }
-
 
         @Test
         void should_success_when_not_empty() {
@@ -126,6 +122,37 @@ class ChecksTests {
         }
     }
 
+    @Nested
+    @DisplayName("nonNullElementsIn(Iterable)")
+    class NonNullElementsInOnIterableTests {
 
+        @Test
+        void should_fail_when_contains_null() {
+            // GIVEN
+            final Iterable<String> iterable = Arrays.asList("str-1",null, "str-3");
+
+            // WHEN
+            final Throwable throwable = catchThrowable(() -> Checks.nonNullElementsIn(iterable, "message"));
+
+            // THEN
+            assertThat(throwable)
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("message");
+        }
+
+        @Test
+        void should_pass() {
+            // GIVEN
+            final Iterable<String> iterable = Arrays.asList("str-1","str-2", "str-3");
+
+            // WHEN
+            final List<String> result = Checks.nonNullElementsIn(iterable, "message");
+
+            // THEN
+            assertThat(result)
+                    .hasSize(3)
+                    .containsExactly("str-1", "str-2", "str-3");
+        }
+    }
 
 }

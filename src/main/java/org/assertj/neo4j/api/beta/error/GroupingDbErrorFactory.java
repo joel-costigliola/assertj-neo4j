@@ -54,6 +54,7 @@ public interface GroupingDbErrorFactory<ACTUAL extends DbObject<ACTUAL>> {
          * @return a new {@link ErrorMessageFactory}
          */
         ErrorMessageFactory notSatisfies(ObjectType objectType, List<DbObject> notSatisfies);
+
     }
 
 }

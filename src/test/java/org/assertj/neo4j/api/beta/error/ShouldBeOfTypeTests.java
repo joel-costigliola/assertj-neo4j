@@ -29,7 +29,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * @author patouche - 20/02/2021
+ * @author Patrick Allain - 20/02/2021
  */
 class ShouldBeOfTypeTests {
 

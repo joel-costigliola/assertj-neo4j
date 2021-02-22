@@ -41,7 +41,8 @@ public class ShouldEntityHavePropertyMatch<ACTUAL extends DbEntity<ACTUAL>> exte
         return new ShouldEntityHavePropertyMatch<>(actual, key);
     }
 
-    public static <A extends DbEntity<A>> GroupingDbErrorFactory<A> elements(final List<A> actual, final String key) {
+    public static <A extends DbEntity<A>> GroupingDbErrorFactory<A> elements(
+            final List<A> actual, final String key) {
         return new BasicDbGroupingErrorFactory<>(
                 actual,
                 (a) -> create(a, key),

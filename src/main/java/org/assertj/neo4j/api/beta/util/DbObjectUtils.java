@@ -41,7 +41,7 @@ public class DbObjectUtils {
      * @param <E>      the type of entity
      * @return the record type.
      */
-    public static <E extends Representable<E>> ObjectType objectType(final Iterable<E> iterable) {
+    public static <E extends Representable<E>> ObjectType objectType(final Iterable<? extends E> iterable) {
         return Streams.stream(iterable)
                 .map(Representable::objectType)
                 .findFirst()
@@ -68,15 +68,10 @@ public class DbObjectUtils {
         return (List<DbValue>) content;
     }
 
-    public static <E extends DbEntity<E>> ValueType properlyLisType(final E entity, final String key) {
-        return propertyList(entity, key).stream()
-                .map(DbValue::getType)
-                .findFirst()
-                .orElse(null);
-    }
-
     public static <E extends DbEntity<E>> List<Object> properlyListValues(final E entity, final String key) {
-        return propertyList(entity, key).stream().map(DbValue::getContent).collect(Collectors.toList());
+        return propertyList(entity, key).stream()
+                .map(DbValue::getContent)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -86,7 +81,8 @@ public class DbObjectUtils {
      * @param relationships the relationships to filter
      * @return the filtered list of relationships
      */
-    public static List<DbRelationship> areIncomingForNode(final DbNode node, final List<DbRelationship> relationships) {
+    public static List<DbRelationship> areIncomingForNode(
+            final DbNode node, final List<? extends DbRelationship> relationships) {
         return relationships.stream()
                 .filter(r -> Objects.equals(r.getEnd(), node.getId()))
                 .sorted()
@@ -100,7 +96,8 @@ public class DbObjectUtils {
      * @param relationships the relationships to filter
      * @return the filtered list of relationships
      */
-    public static List<DbRelationship> areOutgoingForNode(final DbNode node, final List<DbRelationship> relationships) {
+    public static List<DbRelationship> areOutgoingForNode(final DbNode node,
+                                                          final List<? extends DbRelationship> relationships) {
         return relationships.stream()
                 .filter(r -> Objects.equals(r.getStart(), node.getId()))
                 .sorted()
@@ -114,8 +111,8 @@ public class DbObjectUtils {
      * @param relationships the relationships
      * @return the filtered nodes
      */
-    public static List<DbNode> havingIncomingRelationships(final List<DbNode> nodes,
-                                                           final List<DbRelationship> relationships) {
+    public static List<DbNode> havingIncomingRelationships(final List<? extends DbNode> nodes,
+                                                           final List<? extends DbRelationship> relationships) {
         final List<Long> endNodeIds = DbObjectUtils.endNodeIds(relationships);
         return nodes.stream()
                 .filter(n -> endNodeIds.contains(n.getId()))
@@ -130,8 +127,8 @@ public class DbObjectUtils {
      * @param relationships the relationships
      * @return the filtered nodes
      */
-    public static List<DbNode> havingOutgoingRelationships(final List<DbNode> nodes,
-                                                           final List<DbRelationship> relationships) {
+    public static List<DbNode> havingOutgoingRelationships(final List<? extends DbNode> nodes,
+                                                           final List<? extends DbRelationship> relationships) {
         final List<Long> startNodeIds = DbObjectUtils.startNodeIds(relationships);
         return nodes.stream()
                 .filter(n -> startNodeIds.contains(n.getId()))
@@ -147,7 +144,7 @@ public class DbObjectUtils {
      * @param relationships the list of relationships
      * @return the starting node ids
      */
-    public static List<Long> startNodeIds(final List<DbRelationship> relationships) {
+    public static List<Long> startNodeIds(final List<? extends DbRelationship> relationships) {
         return relationships.stream()
                 .map(DbRelationship::getStart)
                 .sorted()
@@ -162,7 +159,7 @@ public class DbObjectUtils {
      * @param relationships the list of relationships
      * @return the starting node ids
      */
-    public static List<Long> endNodeIds(final List<DbRelationship> relationships) {
+    public static List<Long> endNodeIds(final List<? extends DbRelationship> relationships) {
         return relationships.stream()
                 .map(DbRelationship::getEnd)
                 .sorted()
@@ -175,7 +172,7 @@ public class DbObjectUtils {
      * @param iterable the iterable database object.
      * @return a sorted list of mixed database object.
      */
-    public static List<DbObject> sortedMixed(final Iterable<DbObject> iterable) {
+    public static List<DbObject> sortedMixed(final Iterable<? extends DbObject> iterable) {
         final Map<ObjectType, List<DbObject>> typeObjects = IterableUtil.toCollection(iterable)
                 .stream()
                 .collect(Collectors.groupingBy(DbObject::objectType));

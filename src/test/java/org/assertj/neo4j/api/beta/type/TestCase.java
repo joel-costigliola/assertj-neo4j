@@ -30,7 +30,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * @author patouche - 18/02/2021
+ * @author Patrick Allain - 18/02/2021
  */
 class TestCase {
 

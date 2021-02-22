@@ -17,7 +17,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * @author patouche - 19/02/2021
+ * @author Patrick Allain - 19/02/2021
  */
 public final class GroupNames {
 

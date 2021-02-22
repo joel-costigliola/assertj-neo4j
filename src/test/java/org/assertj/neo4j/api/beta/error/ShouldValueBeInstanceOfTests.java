@@ -23,7 +23,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * @author patouche - 21/02/2021
+ * @author Patrick Allain - 21/02/2021
  */
 class ShouldValueBeInstanceOfTests {
 

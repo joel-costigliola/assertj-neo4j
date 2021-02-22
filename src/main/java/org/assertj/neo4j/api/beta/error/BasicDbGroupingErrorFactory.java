@@ -63,7 +63,7 @@ public class BasicDbGroupingErrorFactory<ACTUAL extends DbObject<ACTUAL>> implem
      * @param arguments any other remaining arguments
      */
     public BasicDbGroupingErrorFactory(
-            final List<ACTUAL> actual,
+            final List< ACTUAL> actual,
             final Function<ACTUAL, DbErrorMessageFactory<ACTUAL>> mapper,
             final String format,
             final Object... arguments) {

@@ -17,7 +17,7 @@ import java.util.List;
 
 /**
  * @param <O> the output type
- * @author patouche - 18/02/2021
+ * @author Patrick Allain - 18/02/2021
  */
 public interface Converter<O> {
 

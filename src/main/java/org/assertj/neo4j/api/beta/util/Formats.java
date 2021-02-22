@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * @author patouche - 16/02/2021
+ * @author Patrick Allain - 16/02/2021
  */
 public class Formats {
 

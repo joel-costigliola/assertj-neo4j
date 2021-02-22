@@ -18,7 +18,7 @@ import org.assertj.neo4j.api.beta.type.ObjectType;
 import java.util.List;
 
 /**
- * @author patouche - 18/02/2021
+ * @author Patrick Allain - 18/02/2021
  */
 public class ShouldObjectBeOfType<ACTUAL extends DbObject<ACTUAL>> extends BasicDbErrorMessageFactory<ACTUAL> {
 

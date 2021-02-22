@@ -23,6 +23,7 @@ import org.assertj.neo4j.api.beta.type.ObjectType;
 import org.assertj.neo4j.api.beta.type.ValueType;
 import org.assertj.neo4j.api.beta.util.GroupNames;
 import org.assertj.neo4j.api.beta.util.Predicates;
+import org.assertj.neo4j.api.beta.util.Utils;
 import org.assertj.neo4j.api.beta.util.Wip;
 import org.neo4j.driver.Result;
 
@@ -83,7 +84,7 @@ public class DriverResultAssert
         final List<DbObject> values = actual.getRecords().stream()
                 .map(m -> m.get(columnName))
                 .collect(Collectors.toList());
-        return shouldAllVerify(values,
+        return this.<DbObject>shouldAllVerify(values,
                 Predicates.isObjectType(type),
                 (notSatisfies) -> ShouldObjectBeOfType.elements(values, type).notSatisfies(notSatisfies)
         );
@@ -125,7 +126,10 @@ public class DriverResultAssert
     }
 
     public <T> ChildrenListAssert<T, DriverResultAssert, DriverResultAssert> asListOf(Class<T> clazz) {
-        return null;
+        iterables.assertHasSize(info, actual.getColumns(), 1);
+        final String columnName = Utils.first(actual.getColumns());
+        haveValueInstanceOf(columnName, clazz);
+        return asListOf(columnName, clazz);
     }
 
     public <T> ChildrenListAssert<T, DriverResultAssert, DriverResultAssert> asListOf(

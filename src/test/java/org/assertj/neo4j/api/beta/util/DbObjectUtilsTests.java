@@ -21,7 +21,6 @@ import org.assertj.neo4j.api.beta.type.DbObject;
 import org.assertj.neo4j.api.beta.type.DbRelationship;
 import org.assertj.neo4j.api.beta.type.DbValue;
 import org.assertj.neo4j.api.beta.type.Models;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -194,12 +193,11 @@ class DbObjectUtilsTests {
     }
 
     @Nested
-    @DisplayName("getPropertyList")
     @ExtendWith(SoftAssertionsExtension.class)
     class PropertyListTests {
 
         @Test
-        void should_throw_an_exception() {
+        void should_throw_an_exception_when_value_type_is_not_a_list() {
             // WHEN & THEN
             assertThatThrownBy(() -> DbObjectUtils.propertyList(Samples.NODE_LIST, "key_doesnt_exist"))
                     .hasMessage("Property key \"key_doesnt_exist\" doesn't exist")
@@ -222,6 +220,24 @@ class DbObjectUtilsTests {
                     );
         }
 
+    }
+
+    @Nested
+    class ProperlyListValuesTests {
+
+        @Test
+        void should_return_the_object() {
+            // GIVEN
+            final DbNode entity = Samples.NODE_LIST;
+
+            // WHEN
+            final List<Object> result = DbObjectUtils.properlyListValues(entity, "list_string");
+
+            // THEN
+            assertThat(result)
+                    .hasSize(3)
+                    .containsExactly("str-1", "str-2", "str-3");
+        }
     }
 
     @Nested

@@ -65,11 +65,12 @@ class SampleResultIntegrationTests {
         }
 
         @Test
-        void sample_limit_1() {
+        void sample_limit_1_of_single_column() {
             try (final Session session = driver.session()) {
                 session.readTransaction(tx -> DriverAssertions
                         .assertThat(tx.run("MATCH (n:Repo) RETURN n.name LIMIT 1"))
                         .asListOf(String.class)
+                        .hasSize(1)
                 );
             }
         }

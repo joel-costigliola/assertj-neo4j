@@ -28,7 +28,7 @@ import java.util.List;
  */
 public class ShouldQueryResultBeEmpty<ACTUAL extends DbEntity<ACTUAL>> extends BasicErrorMessageFactory {
 
-    private ShouldQueryResultBeEmpty(final List<ACTUAL> actual, final Query query) {
+    private ShouldQueryResultBeEmpty(final List<? extends ACTUAL> actual, final Query query) {
         super(
                 "%nExpecting query:%n  <%s>%n"
                 + "to return an empty list of %s but got %s %s:%n  <%s>%n",
@@ -40,7 +40,7 @@ public class ShouldQueryResultBeEmpty<ACTUAL extends DbEntity<ACTUAL>> extends B
         );
     }
 
-    public static <A extends DbEntity<A>> ShouldQueryResultBeEmpty<A> create(final List<A> actual, final Query query) {
+    public static <A extends DbEntity<A>> ShouldQueryResultBeEmpty<A> create(final List<? extends A> actual, final Query query) {
         return new ShouldQueryResultBeEmpty<>(actual, query);
     }
 

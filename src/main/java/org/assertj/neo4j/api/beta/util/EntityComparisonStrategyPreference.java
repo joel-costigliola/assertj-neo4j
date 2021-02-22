@@ -15,7 +15,7 @@ package org.assertj.neo4j.api.beta.util;
 import org.assertj.core.internal.ComparisonStrategy;
 
 /**
- * @author patouche - 17/02/2021
+ * @author Patrick Allain - 17/02/2021
  */
 public interface EntityComparisonStrategyPreference extends ComparisonStrategy {
 

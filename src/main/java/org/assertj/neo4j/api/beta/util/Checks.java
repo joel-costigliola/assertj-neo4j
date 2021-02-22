@@ -59,18 +59,6 @@ public final class Checks {
     /**
      * Check that an array is not null or empty and check that it doesn't contains any null elements.
      *
-     * @param array   the array to check
-     * @param message the exception message
-     * @param <T>     the type of elements
-     * @return a list of all elements
-     */
-    public static <T> List<T> nonNullElementsIn(final T[] array, final String message) {
-        return nonNullElementsIn(notNullOrEmpty(array, message), message);
-    }
-
-    /**
-     * Check that an array is not null or empty and check that it doesn't contains any null elements.
-     *
      * @param iterable the iterable to check
      * @param message  the exception message
      * @param <T>      the type of elements
@@ -84,7 +72,4 @@ public final class Checks {
         return list;
     }
 
-    public static <T> T first(final Iterable<T> items, final String message) {
-        return Streams.stream(items).findFirst().orElseThrow(() -> new IllegalArgumentException(message));
-    }
 }

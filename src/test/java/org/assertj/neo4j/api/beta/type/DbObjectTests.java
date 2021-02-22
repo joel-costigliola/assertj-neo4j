@@ -32,7 +32,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.params.provider.Arguments.arguments;
 
 /**
- * @author patouche - 20/02/2021
+ * @author Patrick Allain - 20/02/2021
  */
 public class DbObjectTests {
 
@@ -87,7 +87,7 @@ public class DbObjectTests {
             final Node node = Builders.node()
                     .id(1)
                     .labels("lbl-1", "lbl-2")
-                    .properties("key", Values.value("val"))
+                    .property("key", Values.value("val"))
                     .build();
             final Value value = Values.value(node);
 

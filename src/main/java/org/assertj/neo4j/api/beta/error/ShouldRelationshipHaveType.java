@@ -53,8 +53,8 @@ public class ShouldRelationshipHaveType extends BasicDbErrorMessageFactory<DbRel
         return new ShouldRelationshipHaveType(actual, types);
     }
 
-    public static GroupingDbErrorFactory<DbRelationship> elements(
-            final List<DbRelationship> actual, final String type) {
+    public static GroupingDbErrorFactory<DbRelationship> elements(final List<DbRelationship> actual,
+                                                                  final String type) {
         return new BasicDbGroupingErrorFactory<>(
                 actual,
                 (r) -> create(r, type),
@@ -65,8 +65,8 @@ public class ShouldRelationshipHaveType extends BasicDbErrorMessageFactory<DbRel
         );
     }
 
-    public static GroupingDbErrorFactory<DbRelationship> elements(
-            final List<DbRelationship> actual, final List<String> types) {
+    public static GroupingDbErrorFactory<DbRelationship> elements(final List<DbRelationship> actual,
+                                                                  final List<String> types) {
         return new BasicDbGroupingErrorFactory<>(
                 actual,
                 (r) -> create(r, types),

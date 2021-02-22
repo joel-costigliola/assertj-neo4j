@@ -19,7 +19,7 @@ import org.assertj.neo4j.api.beta.type.ValueType;
 import java.util.List;
 
 /**
- * @author patouche - 21/02/2021
+ * @author Patrick Allain - 21/02/2021
  */
 public class ShouldValueBeOfType extends BasicDbErrorMessageFactory<DbValue> {
 

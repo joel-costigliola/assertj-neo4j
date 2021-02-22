@@ -29,79 +29,107 @@ class EntityComparisonStrategyTests {
     @Nested
     class CompositeTests {
 
-        @Test
-        void should_return_true_when_node_without_id_comparison() {
-            // GIVEN
-            final DbNode obj1 = Builders.rebuild(Samples.NODE).id(22).build();
-            final DbNode obj2 = Builders.rebuild(Samples.NODE).id(29).build();
-            final NodeComparisonStrategy s1 = NodeComparisonStrategy.builder().ignoreId(true).build();
-            final RelationshipComparisonStrategy s2 = RelationshipComparisonStrategy.builder().ignoreId(false).build();
+        @Nested
+        class IsStandardTests {
+            @Test
+            void should_return_false() {
+                // GIVEN
+                final NodeComparisonStrategy s1 = NodeComparisonStrategy.builder().ignoreId(true).build();
+                final RelationshipComparisonStrategy s2 =
+                        RelationshipComparisonStrategy.builder().ignoreId(false).build();
 
-            // WHEN
-            final boolean result = EntityComparisonStrategy.composite(s1, s2).areEqual(obj1, obj2);
+                // WHEN
+                final boolean result = EntityComparisonStrategy.composite(s1, s2).isStandard();
 
-            // THEN
-            assertThat(result).isTrue();
+                // THEN
+                assertThat(result).isFalse();
+
+            }
         }
 
-        @Test
-        void should_return_true_when_relationship_without_id_comparison() {
-            // GIVEN
-            final DbRelationship obj1 = Builders.rebuild(Samples.RELATIONSHIP).id(22).build();
-            final DbRelationship obj2 = Builders.rebuild(Samples.RELATIONSHIP).id(29).build();
-            final NodeComparisonStrategy s1 = NodeComparisonStrategy.builder().ignoreId(false).build();
-            final RelationshipComparisonStrategy s2 = RelationshipComparisonStrategy.builder().ignoreId(true).build();
+        @Nested
+        class AreEqualTests {
 
-            // WHEN
-            final boolean result = EntityComparisonStrategy.composite(s1, s2).areEqual(obj1, obj2);
+            @Test
+            void should_return_true_when_node_without_id_comparison() {
+                // GIVEN
+                final DbNode obj1 = Builders.rebuild(Samples.NODE).id(22).build();
+                final DbNode obj2 = Builders.rebuild(Samples.NODE).id(29).build();
+                final NodeComparisonStrategy s1 = NodeComparisonStrategy.builder().ignoreId(true).build();
+                final RelationshipComparisonStrategy s2 =
+                        RelationshipComparisonStrategy.builder().ignoreId(false).build();
 
-            // THEN
-            assertThat(result).isTrue();
-        }
+                // WHEN
+                final boolean result = EntityComparisonStrategy.composite(s1, s2).areEqual(obj1, obj2);
 
-        @Test
-        void should_return_false_when_node_without_id_comparison() {
-            // GIVEN
-            final DbNode obj1 = Builders.rebuild(Samples.NODE).id(22).labels("OTHER").build();
-            final DbNode obj2 = Builders.rebuild(Samples.NODE).id(29).build();
-            final NodeComparisonStrategy s1 = NodeComparisonStrategy.builder().ignoreId(false).build();
-            final RelationshipComparisonStrategy s2 = RelationshipComparisonStrategy.builder().ignoreId(true).build();
+                // THEN
+                assertThat(result).isTrue();
+            }
 
-            // WHEN
-            final boolean result = EntityComparisonStrategy.composite(s1, s2).areEqual(obj1, obj2);
+            @Test
+            void should_return_true_when_relationship_without_id_comparison() {
+                // GIVEN
+                final DbRelationship obj1 = Builders.rebuild(Samples.RELATIONSHIP).id(22).build();
+                final DbRelationship obj2 = Builders.rebuild(Samples.RELATIONSHIP).id(29).build();
+                final NodeComparisonStrategy s1 = NodeComparisonStrategy.builder().ignoreId(false).build();
+                final RelationshipComparisonStrategy s2 =
+                        RelationshipComparisonStrategy.builder().ignoreId(true).build();
 
-            // THEN
-            assertThat(result).isFalse();
-        }
+                // WHEN
+                final boolean result = EntityComparisonStrategy.composite(s1, s2).areEqual(obj1, obj2);
 
-        @Test
-        void should_return_true_when_fallback_to_standard_strategy() {
-            // GIVEN
-            final String obj1 = "TEST";
-            final String obj2 = "TEST";
-            final NodeComparisonStrategy s1 = NodeComparisonStrategy.builder().ignoreId(false).build();
-            final RelationshipComparisonStrategy s2 = RelationshipComparisonStrategy.builder().ignoreId(true).build();
+                // THEN
+                assertThat(result).isTrue();
+            }
 
-            // WHEN
-            final boolean result = EntityComparisonStrategy.composite(s1, s2).areEqual(obj1, obj2);
+            @Test
+            void should_return_false_when_node_without_id_comparison() {
+                // GIVEN
+                final DbNode obj1 = Builders.rebuild(Samples.NODE).id(22).labels("OTHER").build();
+                final DbNode obj2 = Builders.rebuild(Samples.NODE).id(29).build();
+                final NodeComparisonStrategy s1 = NodeComparisonStrategy.builder().ignoreId(false).build();
+                final RelationshipComparisonStrategy s2 =
+                        RelationshipComparisonStrategy.builder().ignoreId(true).build();
 
-            // THEN
-            assertThat(result).isTrue();
-        }
+                // WHEN
+                final boolean result = EntityComparisonStrategy.composite(s1, s2).areEqual(obj1, obj2);
 
-        @Test
-        void should_return_false_when_fallback_to_standard_strategy() {
-            // GIVEN
-            final String obj1 = "TEST-1";
-            final String obj2 = "TEST-2";
-            final NodeComparisonStrategy s1 = NodeComparisonStrategy.builder().ignoreId(false).build();
-            final RelationshipComparisonStrategy s2 = RelationshipComparisonStrategy.builder().ignoreId(true).build();
+                // THEN
+                assertThat(result).isFalse();
+            }
 
-            // WHEN
-            final boolean result = EntityComparisonStrategy.composite(s1, s2).areEqual(obj1, obj2);
+            @Test
+            void should_return_true_when_fallback_to_standard_strategy() {
+                // GIVEN
+                final String obj1 = "TEST";
+                final String obj2 = "TEST";
+                final NodeComparisonStrategy s1 = NodeComparisonStrategy.builder().ignoreId(false).build();
+                final RelationshipComparisonStrategy s2 =
+                        RelationshipComparisonStrategy.builder().ignoreId(true).build();
 
-            // THEN
-            assertThat(result).isFalse();
+                // WHEN
+                final boolean result = EntityComparisonStrategy.composite(s1, s2).areEqual(obj1, obj2);
+
+                // THEN
+                assertThat(result).isTrue();
+            }
+
+            @Test
+            void should_return_false_when_fallback_to_standard_strategy() {
+                // GIVEN
+                final String obj1 = "TEST-1";
+                final String obj2 = "TEST-2";
+                final NodeComparisonStrategy s1 = NodeComparisonStrategy.builder().ignoreId(false).build();
+                final RelationshipComparisonStrategy s2 =
+                        RelationshipComparisonStrategy.builder().ignoreId(true).build();
+
+                // WHEN
+                final boolean result = EntityComparisonStrategy.composite(s1, s2).areEqual(obj1, obj2);
+
+                // THEN
+                assertThat(result).isFalse();
+            }
+
         }
     }
 

@@ -14,6 +14,7 @@ package org.assertj.neo4j.api.beta.testing.builders;
 
 import org.neo4j.driver.Record;
 import org.neo4j.driver.Value;
+import org.neo4j.driver.Values;
 import org.neo4j.driver.internal.InternalRecord;
 import org.neo4j.driver.internal.value.NodeValue;
 import org.neo4j.driver.internal.value.RelationshipValue;
@@ -44,6 +45,16 @@ public class RecordBuilder {
     public RecordBuilder value(String key, Value value) {
         this.values.put(key, value);
         return this;
+    }
+
+    /**
+     * Use {@link org.neo4j.driver.Values} to build your values.
+     *
+     * @param value the value to add
+     * @return the current instance
+     */
+    public RecordBuilder value(String key, Object value) {
+        return this.value(key, Values.value(value));
     }
 
     public RecordBuilder node(String key, Node node) {

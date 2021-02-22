@@ -150,7 +150,7 @@ public abstract class AbstractDbAssert<SELF extends AbstractDbAssert<SELF, ACTUA
      * @return {@code this} assertion object.
      */
     protected <T> SELF shouldAllVerify(
-            final Iterable<T> iterable, final Predicate<T> predicate, final DbMessageCallback<T> callback) {
+            final Iterable<? extends T> iterable, final Predicate<T> predicate, final DbMessageCallback<T> callback) {
         // TODO : OR => iterables.assertAllMatch(info, actual, predicate, new PredicateDescription("TOTO"));?
         final List<T> notSatisfies = Streams.stream(iterable).filter(predicate.negate()).collect(Collectors.toList());
         if (!notSatisfies.isEmpty()) {
@@ -175,19 +175,25 @@ public abstract class AbstractDbAssert<SELF extends AbstractDbAssert<SELF, ACTUA
     //@formatter:on
 
         /**
-         * Create a new assertions on a restricted part of entities.
+         * Create a new assertions on a restricted part of actual.
          *
-         * @param actual  the actual object
-         * @param current the current assertions
+         * @param actual the actual object
+         * @param self   the current assertion
          * @return a new assertion of the current type
          */
-        NEW_SELF create(ACTUAL actual, SELF current);
+        NEW_SELF create(ACTUAL actual, SELF self);
 
     }
 
     @FunctionalInterface
     protected interface DbMessageCallback<I> {
 
+        /**
+         * Create the error message factory providing from a list of elements.
+         *
+         * @param notSatisfies the elements that cause the failing case
+         * @return a new {@link ErrorMessageFactory}
+         */
         ErrorMessageFactory create(final List<I> notSatisfies);
 
     }

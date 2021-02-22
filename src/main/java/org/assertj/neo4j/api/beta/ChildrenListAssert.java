@@ -12,57 +12,45 @@
  */
 package org.assertj.neo4j.api.beta;
 
-import org.assertj.core.api.AbstractListAssert;
-import org.assertj.core.api.ObjectAssert;
-import org.assertj.core.util.VisibleForTesting;
-
 import java.util.List;
 
 /**
+ * Navigable list assertions.
+ *
  * @author Patrick Allain - 26/01/2021
  */
 //@formatter:off
-public class ChildrenListAssert<ACTUAL, PARENT_ASSERT extends ParentalAssert, ROOT_ASSERT>
-        extends AbstractListAssert<ChildrenListAssert<ACTUAL, PARENT_ASSERT, ROOT_ASSERT>, List<ACTUAL>, ACTUAL, ObjectAssert<ACTUAL>>
-        implements Navigable<PARENT_ASSERT, ROOT_ASSERT>, Adoptable<ROOT_ASSERT> {private final PARENT_ASSERT parentAssert;private final ROOT_ASSERT rootAssert;
+public class ChildrenListAssert<ELEMENT,
+                                PARENT_ASSERT extends ParentalAssert,
+                                ROOT_ASSERT>
+        extends AbstractDbListAssert<ChildrenListAssert<ELEMENT, PARENT_ASSERT, ROOT_ASSERT>,
+                                     List<ELEMENT>,
+                                     ELEMENT,
+                                     ChildrenListAssert<ELEMENT, ChildrenListAssert<ELEMENT,PARENT_ASSERT, ROOT_ASSERT>, ROOT_ASSERT>,
+                                     PARENT_ASSERT,
+                                     ROOT_ASSERT>
+        implements Navigable<PARENT_ASSERT, ROOT_ASSERT>, Adoptable<ROOT_ASSERT> , ParentalAssert {
 //@formatter:on
 
-    public ChildrenListAssert(List<ACTUAL> actual, PARENT_ASSERT parentAssert, ROOT_ASSERT rootAssert) {
-        super(actual, ChildrenListAssert.class);
-        this.parentAssert = parentAssert;
-        this.rootAssert = rootAssert;
+    ChildrenListAssert(final List<ELEMENT> actual, final PARENT_ASSERT parentAssert, final ROOT_ASSERT rootAssert) {
+        super(
+                actual,
+                ChildrenListAssert.class,
+                (a, s) -> new ChildrenListAssert<>(a, s, s.toRootAssert()),
+                parentAssert,
+                rootAssert
+        );
     }
 
-    @VisibleForTesting
-    public List<ACTUAL> getActual() {
-        return this.actual;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public PARENT_ASSERT toParentAssert() {
-        return this.parentAssert;
-    }
-
-    /** {@inheritDoc} */
     @Override
     public ROOT_ASSERT toRootAssert() {
-        return this.rootAssert;
+        return this.rootAssert()
+                .orElseThrow(() -> new RuntimeException("Children assertion should have root assertions"));
     }
 
+    /** {@inheritDoc} */
     @Override
-    protected ObjectAssert<ACTUAL> toAssert(ACTUAL value, String description) {
-        return null;
-    }
-
-    @Override
-    protected ChildrenListAssert<ACTUAL, PARENT_ASSERT, ROOT_ASSERT> newAbstractIterableAssert(Iterable<?
-            extends ACTUAL> iterable) {
-        return null;
-    }
-
-    @Override
-    public <NEW_PARENT extends ParentalAssert> Navigable<NEW_PARENT, ROOT_ASSERT> withParent(NEW_PARENT parentAssert) {
+    public <NEW_PARENT extends ParentalAssert> ChildrenListAssert<ELEMENT, NEW_PARENT, ROOT_ASSERT> withParent(final NEW_PARENT parentAssert) {
         return new ChildrenListAssert<>(actual, parentAssert, toRootAssert());
     }
 }

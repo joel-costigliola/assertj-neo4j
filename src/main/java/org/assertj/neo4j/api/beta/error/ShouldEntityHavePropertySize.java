@@ -41,7 +41,8 @@ public class ShouldEntityHavePropertySize<ACTUAL extends DbEntity<ACTUAL>> exten
         return new ShouldEntityHavePropertySize<>(actual, size);
     }
 
-    public static <A extends DbEntity<A>> GroupingDbErrorFactory<A> elements(final List<A> actual, final int size) {
+    public static <A extends DbEntity<A>> GroupingDbErrorFactory<A> elements(
+            final List<A> actual, final int size) {
         return new BasicDbGroupingErrorFactory<>(
                 actual,
                 (a) -> create(a, size),

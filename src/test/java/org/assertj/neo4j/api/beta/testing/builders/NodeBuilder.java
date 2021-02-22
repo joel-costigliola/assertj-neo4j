@@ -13,6 +13,7 @@
 package org.assertj.neo4j.api.beta.testing.builders;
 
 import org.neo4j.driver.Value;
+import org.neo4j.driver.Values;
 import org.neo4j.driver.internal.InternalNode;
 import org.neo4j.driver.types.Node;
 
@@ -43,9 +44,13 @@ public class NodeBuilder {
         return this;
     }
 
-    public NodeBuilder properties(final String key, final Value value) {
+    public NodeBuilder property(final String key, final Value value) {
         this.properties.put(key, value);
         return this;
+    }
+
+    public NodeBuilder property(final String key, final Object value) {
+        return this.property(key, Values.value(value));
     }
 
     public Node build() {

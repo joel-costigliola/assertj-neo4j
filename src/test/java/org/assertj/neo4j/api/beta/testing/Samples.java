@@ -38,6 +38,9 @@ import java.util.stream.IntStream;
  */
 public final class Samples {
 
+    public static final List<String> STRING_LIST =
+            IntStream.rangeClosed(0, 10).mapToObj(i -> "str-" + i).collect(Collectors.toList());
+
     public static final ZonedDateTime ZONED_DATE_TIME = ZonedDateTime
             .of(2020, 2, 3, 4, 5, 6, 7, ZoneId.of("Australia/Sydney"));
 

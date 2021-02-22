@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 import static org.assertj.core.api.Assertions.assertThat;
 
 /**
- * @author patouche - 19/02/2021
+ * @author Patrick Allain - 19/02/2021
  */
 class DbRelationshipTests {
 

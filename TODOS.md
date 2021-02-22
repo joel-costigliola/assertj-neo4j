@@ -28,10 +28,16 @@ class SampleTests {
 ### Goals
 
 * [ ] Provider assertions on the main "raw" Java Bold driver types (Records...)
-  * [ ] `haveColumnSize`
-  * [ ] `isNode`
-  * [ ] `isRelationships`
-  * [ ] ``
+  * [X] `hasRecordSize` : Verify that the number of records match the expected one
+  * [X] `hasColumnSize` : Verify that the number of columns match the expected one
+  * [X] `hasColumns` : Verify that the column names exists
+  * [X] `haveType` : Verify that a column is of type NODE, RELATIONSHIP or VALUE
+  * [X] `haveValueType` : Verify that a column is of type VALUE and contains value type
+  * [X] `haveValueInstanceOf` : Verify that a column is of type VALUE and contains values instance of
+  * [X] `asListOf(Class)` : Verify that a single column is return containing values instance of and create a new assertion for this column values
+  * [X] `asListOf(String, Class)` : Verify that the column name exist and create a new assertion for this column values
+  * [ ] `asNodeAssert` : Verify 
+  * [ ] `asRelationshipAsssert` : Verify 
 * [ ] Provider assertions on query results
   * [ ] Should support both String
   * [ ] Cypher-DSL constructs

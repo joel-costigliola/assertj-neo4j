@@ -31,9 +31,6 @@ import java.util.stream.Collectors;
  */
 public final class Utils {
 
-    private Utils() {
-    }
-
     /**
      * Transform a iterable into a list.
      *
@@ -106,14 +103,26 @@ public final class Utils {
     public static <I> Comparator<I> comparators(final Function<I, ?>... functions) {
         return (o1, o2) -> Arrays.stream(functions)
                 .map(Utils::comparableResultFunction)
-                .map(Comparator::comparing)
+                .map(f -> Comparator.comparing(f, Comparator.nullsFirst(Comparator.naturalOrder())))
                 .reduce((l, r) -> 0, Comparator::thenComparing)
                 .compare(o1, o2);
     }
 
     @SuppressWarnings("unchecked")
     private static <I, U extends Comparable<U>> Function<I, U> comparableResultFunction(final Function<I, ?> function) {
-        return (i) -> (U) Optional.ofNullable(function.apply(i)).filter(Comparable.class::isInstance).orElse(null);
+        return (i) -> (U) Optional
+                .ofNullable(function.apply(i))
+                .filter(Comparable.class::isInstance)
+                .orElse(null);
+    }
+
+    public static <T> T first(Iterable<T> iterable) {
+        return Streams.stream(iterable)
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("Cannot retrieve first element of an empty iterable."));
+    }
+
+    private Utils() {
     }
 
 }

@@ -18,10 +18,10 @@ import org.assertj.core.internal.Iterables;
 import org.assertj.neo4j.api.beta.error.ShouldEntityHavePropertyInstanceOf;
 import org.assertj.neo4j.api.beta.error.ShouldEntityHavePropertyKeys;
 import org.assertj.neo4j.api.beta.error.ShouldEntityHavePropertyListOfType;
+import org.assertj.neo4j.api.beta.error.ShouldEntityHavePropertyMatch;
 import org.assertj.neo4j.api.beta.error.ShouldEntityHavePropertySize;
 import org.assertj.neo4j.api.beta.error.ShouldEntityHavePropertyValue;
 import org.assertj.neo4j.api.beta.error.ShouldEntityHavePropertyValueType;
-import org.assertj.neo4j.api.beta.error.ShouldEntityHavePropertyMatch;
 import org.assertj.neo4j.api.beta.error.ShouldQueryResultBeEmpty;
 import org.assertj.neo4j.api.beta.error.ShouldQueryResultBeNotEmpty;
 import org.assertj.neo4j.api.beta.type.DbEntity;
@@ -59,9 +59,8 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
                                              NEW_SELF extends Navigable<SELF, ROOT_ASSERT>,
                                              PARENT_ASSERT extends ParentalAssert,
                                              ROOT_ASSERT>
-        extends AbstractDbAssert<SELF, List<ENTITY>, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT>
-        implements Navigable<PARENT_ASSERT, ROOT_ASSERT>,
-                   ParentalAssert {
+        extends AbstractDbListAssert<SELF, List<ENTITY>, ENTITY, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT>
+        implements Navigable<PARENT_ASSERT, ROOT_ASSERT>, ParentalAssert {
 //@formatter:on
 
     /** The record type */
@@ -93,8 +92,6 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
         this.recordType = Objects.requireNonNull(recordType);
         this.dataLoader = dataLoader;
     }
-
-
 
     /**
      * Using a comparison without any entity ids. This provide a easy way to create new assertions on the current list
@@ -151,19 +148,14 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
      * <pre><code class='java'> Nodes nodes = new Nodes(driver, "Person");
      * assertThat(nodes).isEmpty();
      * </code></pre>
+     * <p/>
+     * FIXME : Improve error message providing all path to the current query result
      *
      * @return {@code this} assertion object.
      */
     public SELF isEmpty() {
         // OR : iterables.assertEmpty(info,actual);
         return isEmpty((entities) -> ShouldQueryResultBeEmpty.create(entities, dataLoader.query()));
-    }
-
-    protected SELF isEmpty(final DbMessageCallback<ENTITY> callback) {
-        if (!actual.isEmpty()) {
-            throwAssertionError(callback.create(actual));
-        }
-        return myself;
     }
 
     /**
@@ -173,6 +165,8 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
      * <pre><code class='java'> Nodes nodes = new Nodes(driver, "Person");
      * assertThat(nodes).isNotEmpty();
      * </code></pre>
+     * <p/>
+     * FIXME : Improve error message providing all path to the current query result
      *
      * @return {@code this} assertion object.
      */
@@ -182,69 +176,6 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
             throwAssertionError(ShouldQueryResultBeNotEmpty.create(recordType, dataLoader.query()));
         }
         return myself;
-    }
-
-    /**
-     * Verifies that actual entities (nodes or relationships) retrieve have the expected size.
-     * <p/>
-     * Example:
-     * <pre><code class='java'> Nodes nodes = new Nodes(driver, "Person");
-     * assertThat(nodes).hasSize(12);
-     * </code></pre>
-     *
-     * @param expectedSize the expected size
-     * @return {@code this} assertion object.
-     */
-    public SELF hasSize(final int expectedSize) {
-        iterables.assertHasSize(info, actual, expectedSize);
-        return myself;
-    }
-
-    /**
-     * Verifies that actual entities (nodes or relationships) contains the expected entities.
-     * <p/>
-     * Example:
-     * <pre><code class='java'>
-     * // assertions on nodes
-     * Nodes nodes = new Nodes(driver, "Person");
-     * assertThat(nodes).contains(
-     *   node().id(24)
-     *         .property("name", "James Bond")
-     *         .property("alias", "007")
-     *         .build(),
-     *   node().id(42)
-     *         .property("name", "Miles Messervy")
-     *         .property("alias", "M")
-     *         .build()
-     * );
-     * </code></pre>
-     *
-     * @param expectedEntities the expected entities
-     * @return {@code this} assertion object.
-     * @throws AssertionError if one of the expected entities cannot be found in the actual list of entities
-     */
-    public SELF contains(final ENTITY... expectedEntities) {
-        iterables.assertContains(info, actual, expectedEntities);
-        return myself;
-    }
-
-    /**
-     * Filtered entities to create a new {@link SELF} assertions.
-     * <p/>
-     * Example:
-     * <pre><code class='java'> Nodes nodes = new Nodes(driver, "Person");
-     * assertThat(nodes)
-     *   .hasSize(10)
-     *   .filteredOn(n -> Objects.equals(n.getProperty("civility"), "Mrs"))
-     *   .hasSize(5)
-     * </code></pre>
-     *
-     * @param predicate the predicate that entities should match.
-     * @return a new assertion object
-     */
-    public NEW_SELF filteredOn(final Predicate<ENTITY> predicate) {
-        final List<ENTITY> entities = this.actual.stream().filter(predicate).collect(Collectors.toList());
-        return newSelfFactory.create(entities, myself);
     }
 
     /**
@@ -567,10 +498,10 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
          *
          * @param entities the filtered entities
          * @param loader   the data loader
-         * @param current  the current assertions
+         * @param self     the current assertions
          * @return a new assertion of the current type
          */
-        NEW_SELF create(List<ENTITY> entities, DataLoader<ENTITY> loader, SELF current);
+        NEW_SELF create(List<ENTITY> entities, DataLoader<ENTITY> loader, SELF self);
 
     }
 

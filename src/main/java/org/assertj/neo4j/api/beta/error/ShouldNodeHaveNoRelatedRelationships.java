@@ -71,8 +71,8 @@ public class ShouldNodeHaveNoRelatedRelationships extends BasicDbErrorMessageFac
         );
     }
 
-    public static GroupingDbErrorFactory<DbNode> outgoingElements(
-            final List<DbNode> actual, final List<DbRelationship> relationships) {
+    public static GroupingDbErrorFactory<DbNode> outgoingElements(final List<DbNode> actual,
+                                                                  final List<DbRelationship> relationships) {
         return elements(
                 actual, "outgoing",
                 (e) -> createOutgoing(e, DbObjectUtils.areOutgoingForNode(e, relationships)),

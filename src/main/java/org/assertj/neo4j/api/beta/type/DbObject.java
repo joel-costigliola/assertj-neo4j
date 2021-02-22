@@ -30,7 +30,7 @@ import java.util.Objects;
  * </ul>
  *
  * @param <I> the type of db object
- * @author patouche - 18/02/2021
+ * @author Patrick Allain - 18/02/2021
  */
 public abstract class DbObject<I extends DbObject<I>> implements Representable<I> {
 

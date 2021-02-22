@@ -61,13 +61,13 @@ class NodesTests {
                 Builders.record()
                         .node(
                                 "key",
-                                Builders.node().labels("Sample").properties("prop-0", Values.value(true)).build()
+                                Builders.node().labels("Sample").property("prop-0", Values.value(true)).build()
                         )
                         .build(),
                 Builders.record()
                         .node(
                                 "key",
-                                Builders.node().id(1).labels("Sample").properties("prop-1", Values.value(false)).build()
+                                Builders.node().id(1).labels("Sample").property("prop-1", Values.value(false)).build()
                         )
                         .build()
         );
@@ -99,11 +99,11 @@ class NodesTests {
         final List<Record> result = Arrays.asList(
                 Builders.record()
                         .node("key",
-                                Builders.node().id(0).labels("Lbl1", "Lbl2").properties("prop-0", Values.value(true)).build())
+                                Builders.node().id(0).labels("Lbl1", "Lbl2").property("prop-0", Values.value(true)).build())
                         .build(),
                 Builders.record()
                         .node("key",
-                                Builders.node().id(1).labels("Lbl1", "Lbl2").properties("prop-1",
+                                Builders.node().id(1).labels("Lbl1", "Lbl2").property("prop-1",
                                         Values.value(false)).build())
                         .build()
         );
