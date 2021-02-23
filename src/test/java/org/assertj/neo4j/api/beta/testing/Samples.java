@@ -14,7 +14,7 @@ package org.assertj.neo4j.api.beta.testing;
 
 import org.assertj.neo4j.api.beta.type.DbNode;
 import org.assertj.neo4j.api.beta.type.DbRelationship;
-import org.assertj.neo4j.api.beta.type.Models;
+import org.assertj.neo4j.api.beta.type.Entities;
 import org.neo4j.driver.Values;
 
 import java.time.Duration;
@@ -56,7 +56,7 @@ public final class Samples {
 
     public static final List<String> LABELS = Randomize.listOf("LBL_1", "LBL_2", "LBL_3", "LBL_4");
 
-    public static final DbNode NODE = Models.node()
+    public static final DbNode NODE = Entities.node()
             .id(42)
             .labels(LABELS.toArray(new String[0]))
             .property("boolean", true)
@@ -73,7 +73,7 @@ public final class Samples {
             .property("point_3d", Values.point(0, 42L, 12L, 69L).asObject())
             .build();
 
-    public static final DbRelationship RELATIONSHIP = Models.relation()
+    public static final DbRelationship RELATIONSHIP = Entities.relationship()
             .id(42)
             .type("SAMPLE_TYPE")
             .property("boolean", true)
@@ -90,7 +90,7 @@ public final class Samples {
             .property("point_3d", Values.point(0, 42L, 12L, 69L).asObject())
             .build();
 
-    public static final DbNode NODE_LIST = Models.node()
+    public static final DbNode NODE_LIST = Entities.node()
             .id(69)
             .labels(LABELS.toArray(new String[0]))
             .property("list_boolean", Arrays.asList(true, false))

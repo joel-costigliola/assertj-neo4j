@@ -16,7 +16,7 @@ import org.assertj.core.error.ErrorMessageFactory;
 import org.assertj.neo4j.api.beta.testing.Randomize;
 import org.assertj.neo4j.api.beta.testing.Samples;
 import org.assertj.neo4j.api.beta.type.DbNode;
-import org.assertj.neo4j.api.beta.type.Models;
+import org.assertj.neo4j.api.beta.type.Entities;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -35,7 +35,7 @@ class ShouldEntityHavePropertySizeTests {
         @Test
         void should_generate_error_message() {
             // GIVEN
-            final DbNode actual = Models.node().id(42).property("k-2", 3.14).property("k-1", "v-1").build();
+            final DbNode actual = Entities.node().id(42).property("k-2", 3.14).property("k-1", "v-1").build();
 
             // WHEN
             final ErrorMessageFactory error = ShouldEntityHavePropertySize.create(actual, 3);
@@ -58,25 +58,25 @@ class ShouldEntityHavePropertySizeTests {
         @Test
         void should_generate_an_aggregate_error_message() {
             // GIVEN
-            final DbNode node1 = Models.node().id(1).property("k-1", "v-1").build();
-            final DbNode node2 = Models.node().id(2).property("k-1", "v-2").property("k-2", 3.14).build();
-            final DbNode node3 = Models.node().id(3)
+            final DbNode node1 = Entities.node().id(1).property("k-1", "v-1").build();
+            final DbNode node2 = Entities.node().id(2).property("k-1", "v-2").property("k-2", 3.14).build();
+            final DbNode node3 = Entities.node().id(3)
                     .property("k-1", "v-3")
                     .property("k-2", 6.12)
                     .property("k-3", false)
                     .property("k-4", "some-prop")
                     .build();
-            final DbNode node4 = Models.node().id(4)
+            final DbNode node4 = Entities.node().id(4)
                     .property("k-1", "v-4")
                     .property("k-4", "some-other-prop")
                     .build();
-            final DbNode node5 = Models.node().id(5)
+            final DbNode node5 = Entities.node().id(5)
                     .property("k-1", "v-5")
                     .property("k-2", 2.0)
                     .property("k-3", true)
                     .property("k-5", Samples.ZONED_DATE_TIME)
                     .build();
-            final DbNode node6 = Models.node().id(6)
+            final DbNode node6 = Entities.node().id(6)
                     .property("k-1", "v-6")
                     .property("k-2", 8.5)
                     .property("k-3", true)

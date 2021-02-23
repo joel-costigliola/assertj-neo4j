@@ -17,7 +17,7 @@ import org.assertj.neo4j.api.beta.testing.Dataset;
 import org.assertj.neo4j.api.beta.testing.IntegrationTests;
 import org.assertj.neo4j.api.beta.testing.TestTags;
 import org.assertj.neo4j.api.beta.testing.Version;
-import org.assertj.neo4j.api.beta.type.Models;
+import org.assertj.neo4j.api.beta.type.Entities;
 import org.assertj.neo4j.api.beta.type.ValueType;
 import org.assertj.neo4j.api.beta.type.loader.Nodes;
 import org.assertj.neo4j.api.beta.util.DbRepresentation;
@@ -47,7 +47,7 @@ class SampleNodesIntegrationTests {
         public void contains() {
             final Nodes nodes = Nodes.of(driver, "Language");
             DriverAssertions.assertThat(nodes)
-                    .contains(Models.node().id(6).labels("Language").property("name", "Scala").build());
+                    .contains(Entities.node().id(6).labels("Language").property("name", "Scala").build());
         }
 
     }
@@ -198,7 +198,7 @@ class SampleNodesIntegrationTests {
                         .hasSize(1)
                         .outgoingRelationships()
                             .usingNoEntityIdComparison()
-                            .contains(Models.relation("WRITTEN").property("percent", 97.5).build())
+                            .contains(Entities.relationship("WRITTEN").property("percent", 97.5).build())
                             .extractingProperty("percent", Double.class)
                                 .allMatch(i -> i >= 0.0)
                                 .allMatch(i -> i <= 100.0)
@@ -219,7 +219,7 @@ class SampleNodesIntegrationTests {
             final Nodes nodes = Nodes.of(driver, "Language");
             DriverAssertions.assertThat(nodes)
                     .usingNoEntityIdComparison()
-                    .contains(Models.node().labels("Language").property("name", "Scala").build());
+                    .contains(Entities.node().labels("Language").property("name", "Scala").build());
         }
 
         @Test

@@ -14,7 +14,7 @@ package org.assertj.neo4j.api.beta;
 
 import org.assertj.neo4j.api.beta.testing.Builders;
 import org.assertj.neo4j.api.beta.type.DbNode;
-import org.assertj.neo4j.api.beta.type.Models;
+import org.assertj.neo4j.api.beta.type.Entities;
 import org.assertj.neo4j.api.beta.type.loader.DataLoader;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -65,8 +65,8 @@ class ChildrenDriverNodeAssertTests {
 
         public WithParentTests() {
             super(
-                    Models.node().id(1).labels("lbl-1"),
-                    Models.node().id(2).labels("lbl-2")
+                    Entities.node().id(1).labels("lbl-1"),
+                    Entities.node().id(2).labels("lbl-2")
             );
         }
 

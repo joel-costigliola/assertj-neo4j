@@ -18,7 +18,7 @@ import org.assertj.neo4j.api.beta.testing.builders.RecordBuilder;
 import org.assertj.neo4j.api.beta.testing.builders.RelationshipBuilder;
 import org.assertj.neo4j.api.beta.type.DbNode;
 import org.assertj.neo4j.api.beta.type.DbRelationship;
-import org.assertj.neo4j.api.beta.type.Models;
+import org.assertj.neo4j.api.beta.type.Entities;
 import org.assertj.neo4j.api.beta.util.DbObjectUtils;
 
 /**
@@ -39,14 +39,14 @@ public interface Builders {
     }
 
     static DbNode.DbNodeBuilder rebuild(DbNode node) {
-        return Models.node()
+        return Entities.node()
                 .id(node.getId())
                 .labels(node.getLabels().toArray(new String[0]))
                 .properties(DbObjectUtils.propertyObjects(node));
     }
 
     static DbRelationship.DbRelationshipBuilder rebuild(DbRelationship relationship) {
-        return Models.relation()
+        return Entities.relationship()
                 .id(relationship.getId())
                 .type(relationship.getType())
                 .start(relationship.getStart())

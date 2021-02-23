@@ -15,7 +15,7 @@ package org.assertj.neo4j.api.beta.util;
 import org.assertj.neo4j.api.beta.type.DbNode;
 import org.assertj.neo4j.api.beta.type.DbRelationship;
 import org.assertj.neo4j.api.beta.type.DbValue;
-import org.assertj.neo4j.api.beta.type.Models;
+import org.assertj.neo4j.api.beta.type.Entities;
 import org.assertj.neo4j.api.beta.type.ValueType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -42,7 +42,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("Predicates")
 class PredicatesTests {
 
-    private static final DbNode SAMPLE_ENTITY = Models.node()
+    private static final DbNode SAMPLE_ENTITY = Entities.node()
             .id(42)
             .property("key-boolean", true)
             .property("key-long", 42L)
@@ -56,12 +56,12 @@ class PredicatesTests {
             .property("key-list-long", IntStream.range(0, 42).boxed().collect(Collectors.toList()))
             .build();
 
-    private static final DbNode SAMPLE_NODE = Models.node()
+    private static final DbNode SAMPLE_NODE = Entities.node()
             .id(69)
             .labels("LABEL_1", "LABEL_2", "LABEL_3")
             .build();
 
-    private static final DbRelationship SAMPLE_RELATIONSHIP = Models.relation("TYPE")
+    private static final DbRelationship SAMPLE_RELATIONSHIP = Entities.relationship("TYPE")
             .id(42)
             .build();
 
@@ -72,7 +72,7 @@ class PredicatesTests {
         void should_return_false() {
             // GIVEN
             final String key = "other-key";
-            final DbNode entity = Models.node().property("key", "value").build();
+            final DbNode entity = Entities.node().property("key", "value").build();
             final Predicate<DbNode> predicate = Predicates.<DbNode>propertyKeyExists(key);
 
             // WHEN
@@ -86,7 +86,7 @@ class PredicatesTests {
         void should_return_true() {
             // GIVEN
             final String key = "key";
-            final DbNode entity = Models.node().property("key", "value").build();
+            final DbNode entity = Entities.node().property("key", "value").build();
             final Predicate<DbNode> predicate = Predicates.<DbNode>propertyKeyExists(key);
 
             // WHEN

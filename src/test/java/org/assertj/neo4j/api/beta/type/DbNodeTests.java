@@ -28,8 +28,8 @@ class DbNodeTests {
         @Test
         void should_return_a_negative_value() {
             // GIVEN
-            final DbNode node1 = Models.node().id(11).build();
-            final DbNode node2 = Models.node().id(16).build();
+            final DbNode node1 = Entities.node().id(11).build();
+            final DbNode node2 = Entities.node().id(16).build();
 
             // WHEN
             final int result = node1.compareTo(node2);
@@ -41,8 +41,8 @@ class DbNodeTests {
         @Test
         void should_return_a_positive_value() {
             // GIVEN
-            final DbNode node1 = Models.node().id(42).build();
-            final DbNode node2 = Models.node().id(16).build();
+            final DbNode node1 = Entities.node().id(42).build();
+            final DbNode node2 = Entities.node().id(16).build();
 
             // WHEN
             final int result = node1.compareTo(node2);

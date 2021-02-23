@@ -15,7 +15,7 @@ package org.assertj.neo4j.api.beta.util;
 import org.assertj.neo4j.api.beta.testing.Builders;
 import org.assertj.neo4j.api.beta.testing.Samples;
 import org.assertj.neo4j.api.beta.type.DbNode;
-import org.assertj.neo4j.api.beta.type.Models;
+import org.assertj.neo4j.api.beta.type.Entities;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -27,7 +27,7 @@ import static org.assertj.neo4j.api.beta.util.NodeComparisonStrategy.builder;
  */
 class NodeComparisonStrategyTests {
 
-    private static final DbNode SAMPLE_NODE = Models.node()
+    private static final DbNode SAMPLE_NODE = Entities.node()
             .id(22)
             .labels("LBL_1", "LBL_2", "LBL_3")
             .property("prop-1", "val-1")

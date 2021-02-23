@@ -15,7 +15,7 @@ package org.assertj.neo4j.api.beta.util;
 import org.assertj.neo4j.api.beta.testing.Builders;
 import org.assertj.neo4j.api.beta.testing.Samples;
 import org.assertj.neo4j.api.beta.type.DbRelationship;
-import org.assertj.neo4j.api.beta.type.Models;
+import org.assertj.neo4j.api.beta.type.Entities;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -27,7 +27,7 @@ import static org.assertj.neo4j.api.beta.util.RelationshipComparisonStrategy.bui
  */
 class RelationshipComparisonStrategyTests {
 
-    public static final DbRelationship SAMPLE_RELATIONSHIP = Models.relation()
+    public static final DbRelationship SAMPLE_RELATIONSHIP = Entities.relationship()
             .id(22)
             .type("TYPE")
             .property("prop-1", "val-1")

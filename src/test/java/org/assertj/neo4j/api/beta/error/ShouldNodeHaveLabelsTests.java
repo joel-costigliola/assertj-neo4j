@@ -15,7 +15,7 @@ package org.assertj.neo4j.api.beta.error;
 import org.assertj.core.error.ErrorMessageFactory;
 import org.assertj.neo4j.api.beta.testing.Randomize;
 import org.assertj.neo4j.api.beta.type.DbNode;
-import org.assertj.neo4j.api.beta.type.Models;
+import org.assertj.neo4j.api.beta.type.Entities;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
@@ -36,7 +36,7 @@ public class ShouldNodeHaveLabelsTests {
         @Test
         void should_generate_error_message() {
             // GIVEN
-            final DbNode entity = Models.node().id(42).labels("LBL_4", "LBL_1").build();
+            final DbNode entity = Entities.node().id(42).labels("LBL_4", "LBL_1").build();
 
             // WHEN
             final ErrorMessageFactory error = ShouldNodeHaveLabels.create(entity, LABELS);
@@ -60,12 +60,12 @@ public class ShouldNodeHaveLabelsTests {
         @Test
         void should_generate_an_aggregate_error_message() {
             // GIVEN
-            final DbNode node1 = Models.node().id(12).labels("LBL_1").build();
-            final DbNode node2 = Models.node().id(18).labels("LBL_2").build();
-            final DbNode node3 = Models.node().id(42).labels("LBL_3").build();
-            final DbNode node4 = Models.node().id(51).labels("LBL_4", "LBL_1").build();
-            final DbNode node5 = Models.node().id(69).labels("LBL_4", "LBL_2").build();
-            final DbNode node6 = Models.node().id(95).labels("LBL_1", "LBL_2", "LBL_3", "LBL_4").build();
+            final DbNode node1 = Entities.node().id(12).labels("LBL_1").build();
+            final DbNode node2 = Entities.node().id(18).labels("LBL_2").build();
+            final DbNode node3 = Entities.node().id(42).labels("LBL_3").build();
+            final DbNode node4 = Entities.node().id(51).labels("LBL_4", "LBL_1").build();
+            final DbNode node5 = Entities.node().id(69).labels("LBL_4", "LBL_2").build();
+            final DbNode node6 = Entities.node().id(95).labels("LBL_1", "LBL_2", "LBL_3", "LBL_4").build();
 
             final List<DbNode> nodes = Randomize.listOf(node1, node2, node3, node4, node5, node6);
 

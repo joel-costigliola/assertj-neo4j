@@ -16,7 +16,7 @@ import org.assertj.neo4j.api.beta.testing.Loaders;
 import org.assertj.neo4j.api.beta.type.DbEntity;
 import org.assertj.neo4j.api.beta.type.DbNode;
 import org.assertj.neo4j.api.beta.type.DbRelationship;
-import org.assertj.neo4j.api.beta.type.Models;
+import org.assertj.neo4j.api.beta.type.Entities;
 import org.assertj.neo4j.api.beta.type.loader.DataLoader;
 import org.assertj.neo4j.api.beta.type.loader.LoaderFactory;
 import org.assertj.neo4j.api.beta.type.loader.Relationships;
@@ -100,8 +100,8 @@ class AbstractRelationshipsAssertTests {
     class UsingNoEntityIdComparisonTests extends BaseRelationshipsTests {
         UsingNoEntityIdComparisonTests() {
             super(
-                    Models.relation("KNOWS_1").id(22),
-                    Models.relation("KNOWS_2").id(56)
+                    Entities.relationship("KNOWS_1").id(22),
+                    Entities.relationship("KNOWS_2").id(56)
             );
         }
 
@@ -116,8 +116,8 @@ class AbstractRelationshipsAssertTests {
                     .extracting(DbEntity::getId)
                     .doesNotContainNull();
             Assertions.assertDoesNotThrow(() -> result
-                    .contains(Models.relation("KNOWS_1").build())
-                    .contains(Models.relation("KNOWS_2").id(29).build())
+                    .contains(Entities.relationship("KNOWS_1").build())
+                    .contains(Entities.relationship("KNOWS_2").id(29).build())
             );
         }
 
@@ -129,10 +129,10 @@ class AbstractRelationshipsAssertTests {
 
         HaveTypeTests() {
             super(
-                    Models.relation("KNOWS"),
-                    Models.relation("KNOWS"),
-                    Models.relation("KNOWS"),
-                    Models.relation("KNOWS")
+                    Entities.relationship("KNOWS"),
+                    Entities.relationship("KNOWS"),
+                    Entities.relationship("KNOWS"),
+                    Entities.relationship("KNOWS")
             );
         }
 
@@ -170,10 +170,10 @@ class AbstractRelationshipsAssertTests {
 
         HaveAnyOfTypesTests() {
             super(
-                    Models.relation("KNOWS_1"),
-                    Models.relation("KNOWS_2"),
-                    Models.relation("KNOWS_1"),
-                    Models.relation("KNOWS_3")
+                    Entities.relationship("KNOWS_1"),
+                    Entities.relationship("KNOWS_2"),
+                    Entities.relationship("KNOWS_1"),
+                    Entities.relationship("KNOWS_3")
             );
         }
 
@@ -211,24 +211,24 @@ class AbstractRelationshipsAssertTests {
 
         StartingNodesTests() {
             super(
-                    Models.relation().start(11),
-                    Models.relation().start(12),
-                    Models.relation().start(13),
-                    Models.relation().start(14),
-                    Models.relation().start(15),
-                    Models.relation().start(16)
+                    Entities.relationship().start(11),
+                    Entities.relationship().start(12),
+                    Entities.relationship().start(13),
+                    Entities.relationship().start(14),
+                    Entities.relationship().start(15),
+                    Entities.relationship().start(16)
             );
         }
 
         @Test
         void should_pass() {
             // GIVEN
-            final DbNode node1 = Models.node().id(11).labels("lbl-1", "lbl-2").build();
-            final DbNode node2 = Models.node().id(12).labels("lbl-2", "lbl-3").build();
-            final DbNode node3 = Models.node().id(13).labels("lbl-2", "lbl-4").build();
-            final DbNode node4 = Models.node().id(14).labels("lbl-3").build();
-            final DbNode node5 = Models.node().id(15).labels("lbl-4").build();
-            final DbNode node6 = Models.node().id(16).build();
+            final DbNode node1 = Entities.node().id(11).labels("lbl-1", "lbl-2").build();
+            final DbNode node2 = Entities.node().id(12).labels("lbl-2", "lbl-3").build();
+            final DbNode node3 = Entities.node().id(13).labels("lbl-2", "lbl-4").build();
+            final DbNode node4 = Entities.node().id(14).labels("lbl-3").build();
+            final DbNode node5 = Entities.node().id(15).labels("lbl-4").build();
+            final DbNode node6 = Entities.node().id(16).build();
             when(dataLoader.chain(any())).thenReturn(Loaders.nodes(node1, node2, node3, node4, node5, node6));
 
             // WHEN
@@ -255,24 +255,24 @@ class AbstractRelationshipsAssertTests {
 
         EndingNodesTests() {
             super(
-                    Models.relation().end(11),
-                    Models.relation().end(12),
-                    Models.relation().end(13),
-                    Models.relation().end(14),
-                    Models.relation().end(15),
-                    Models.relation().end(16)
+                    Entities.relationship().end(11),
+                    Entities.relationship().end(12),
+                    Entities.relationship().end(13),
+                    Entities.relationship().end(14),
+                    Entities.relationship().end(15),
+                    Entities.relationship().end(16)
             );
         }
 
         @Test
         void should_pass() {
             // GIVEN
-            final DbNode node1 = Models.node().id(11).labels("lbl-1", "lbl-2").build();
-            final DbNode node2 = Models.node().id(12).labels("lbl-2", "lbl-3").build();
-            final DbNode node3 = Models.node().id(13).labels("lbl-2", "lbl-4").build();
-            final DbNode node4 = Models.node().id(14).labels("lbl-3").build();
-            final DbNode node5 = Models.node().id(15).labels("lbl-4").build();
-            final DbNode node6 = Models.node().id(16).build();
+            final DbNode node1 = Entities.node().id(11).labels("lbl-1", "lbl-2").build();
+            final DbNode node2 = Entities.node().id(12).labels("lbl-2", "lbl-3").build();
+            final DbNode node3 = Entities.node().id(13).labels("lbl-2", "lbl-4").build();
+            final DbNode node4 = Entities.node().id(14).labels("lbl-3").build();
+            final DbNode node5 = Entities.node().id(15).labels("lbl-4").build();
+            final DbNode node6 = Entities.node().id(16).build();
             when(dataLoader.chain(any())).thenReturn(Loaders.nodes(node1, node2, node3, node4, node5, node6));
 
             // WHEN
@@ -299,24 +299,24 @@ class AbstractRelationshipsAssertTests {
 
         HaveNoStartingNodesTests() {
             super(
-                    Models.relation().start(11),
-                    Models.relation().start(12),
-                    Models.relation().start(13),
-                    Models.relation().start(14),
-                    Models.relation().start(15),
-                    Models.relation().start(16)
+                    Entities.relationship().start(11),
+                    Entities.relationship().start(12),
+                    Entities.relationship().start(13),
+                    Entities.relationship().start(14),
+                    Entities.relationship().start(15),
+                    Entities.relationship().start(16)
             );
         }
 
         @Test
         void should_fail() {
             // GIVEN
-            final DbNode node1 = Models.node().id(11).labels("lbl", "lbl-1", "lbl-other-1").build();
-            final DbNode node2 = Models.node().id(12).labels("lbl", "lbl-2", "lbl-other-2").build();
-            final DbNode node3 = Models.node().id(13).labels("lbl", "lbl-3", "lbl-other-3").build();
-            final DbNode node4 = Models.node().id(14).labels("lbl-other-4").build();
-            final DbNode node5 = Models.node().id(15).labels("lbl-other-5").build();
-            final DbNode node6 = Models.node().id(16).build();
+            final DbNode node1 = Entities.node().id(11).labels("lbl", "lbl-1", "lbl-other-1").build();
+            final DbNode node2 = Entities.node().id(12).labels("lbl", "lbl-2", "lbl-other-2").build();
+            final DbNode node3 = Entities.node().id(13).labels("lbl", "lbl-3", "lbl-other-3").build();
+            final DbNode node4 = Entities.node().id(14).labels("lbl-other-4").build();
+            final DbNode node5 = Entities.node().id(15).labels("lbl-other-5").build();
+            final DbNode node6 = Entities.node().id(16).build();
             when(dataLoader.chain(any())).thenReturn(Loaders.nodes(node1, node2, node3, node4, node5, node6));
 
             // WHEN
@@ -339,12 +339,12 @@ class AbstractRelationshipsAssertTests {
         @Test
         void should_pass() {
             // GIVEN
-            final DbNode node1 = Models.node().id(11).labels("lbl", "lbl-1", "lbl-other-1").build();
-            final DbNode node2 = Models.node().id(12).labels("lbl", "lbl-2", "lbl-other-2").build();
-            final DbNode node3 = Models.node().id(13).labels("lbl", "lbl-3", "lbl-other-3").build();
-            final DbNode node4 = Models.node().id(14).labels("lbl-other-4").build();
-            final DbNode node5 = Models.node().id(15).labels("lbl-other-5").build();
-            final DbNode node6 = Models.node().id(16).labels("lbl-other-6").build();
+            final DbNode node1 = Entities.node().id(11).labels("lbl", "lbl-1", "lbl-other-1").build();
+            final DbNode node2 = Entities.node().id(12).labels("lbl", "lbl-2", "lbl-other-2").build();
+            final DbNode node3 = Entities.node().id(13).labels("lbl", "lbl-3", "lbl-other-3").build();
+            final DbNode node4 = Entities.node().id(14).labels("lbl-other-4").build();
+            final DbNode node5 = Entities.node().id(15).labels("lbl-other-5").build();
+            final DbNode node6 = Entities.node().id(16).labels("lbl-other-6").build();
             when(dataLoader.chain(any())).thenReturn(Loaders.nodes(node1, node2, node3, node4, node5, node6));
 
             // WHEN
@@ -367,24 +367,24 @@ class AbstractRelationshipsAssertTests {
 
         HaveNoEndingNodesTests() {
             super(
-                    Models.relation().end(11),
-                    Models.relation().end(12),
-                    Models.relation().end(13),
-                    Models.relation().end(14),
-                    Models.relation().end(15),
-                    Models.relation().end(16)
+                    Entities.relationship().end(11),
+                    Entities.relationship().end(12),
+                    Entities.relationship().end(13),
+                    Entities.relationship().end(14),
+                    Entities.relationship().end(15),
+                    Entities.relationship().end(16)
             );
         }
 
         @Test
         void should_fail() {
             // GIVEN
-            final DbNode node1 = Models.node().id(11).labels("lbl", "lbl-1", "lbl-other-1").build();
-            final DbNode node2 = Models.node().id(12).labels("lbl", "lbl-2", "lbl-other-2").build();
-            final DbNode node3 = Models.node().id(13).labels("lbl", "lbl-3", "lbl-other-3").build();
-            final DbNode node4 = Models.node().id(14).labels("lbl-other-4").build();
-            final DbNode node5 = Models.node().id(15).labels("lbl-other-5").build();
-            final DbNode node6 = Models.node().id(15).build();
+            final DbNode node1 = Entities.node().id(11).labels("lbl", "lbl-1", "lbl-other-1").build();
+            final DbNode node2 = Entities.node().id(12).labels("lbl", "lbl-2", "lbl-other-2").build();
+            final DbNode node3 = Entities.node().id(13).labels("lbl", "lbl-3", "lbl-other-3").build();
+            final DbNode node4 = Entities.node().id(14).labels("lbl-other-4").build();
+            final DbNode node5 = Entities.node().id(15).labels("lbl-other-5").build();
+            final DbNode node6 = Entities.node().id(15).build();
             when(dataLoader.chain(any())).thenReturn(Loaders.nodes(node1, node2, node3, node4, node5, node6));
 
             // WHEN
@@ -407,12 +407,12 @@ class AbstractRelationshipsAssertTests {
         @Test
         void should_pass() {
             // GIVEN
-            final DbNode node1 = Models.node().id(11).labels("lbl", "lbl-1", "lbl-other-1").build();
-            final DbNode node2 = Models.node().id(12).labels("lbl", "lbl-2", "lbl-other-2").build();
-            final DbNode node3 = Models.node().id(13).labels("lbl", "lbl-3", "lbl-other-3").build();
-            final DbNode node4 = Models.node().id(14).labels("lbl-other-4").build();
-            final DbNode node5 = Models.node().id(15).labels("lbl-other-5").build();
-            final DbNode node6 = Models.node().id(15).labels("lbl-other-6").build();
+            final DbNode node1 = Entities.node().id(11).labels("lbl", "lbl-1", "lbl-other-1").build();
+            final DbNode node2 = Entities.node().id(12).labels("lbl", "lbl-2", "lbl-other-2").build();
+            final DbNode node3 = Entities.node().id(13).labels("lbl", "lbl-3", "lbl-other-3").build();
+            final DbNode node4 = Entities.node().id(14).labels("lbl-other-4").build();
+            final DbNode node5 = Entities.node().id(15).labels("lbl-other-5").build();
+            final DbNode node6 = Entities.node().id(15).labels("lbl-other-6").build();
             when(dataLoader.chain(any())).thenReturn(Loaders.nodes(node1, node2, node3, node4, node5, node6));
 
             // WHEN

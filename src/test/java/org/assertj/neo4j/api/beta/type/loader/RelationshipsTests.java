@@ -14,7 +14,7 @@ package org.assertj.neo4j.api.beta.type.loader;
 
 import org.assertj.neo4j.api.beta.testing.Builders;
 import org.assertj.neo4j.api.beta.type.DbRelationship;
-import org.assertj.neo4j.api.beta.type.Models;
+import org.assertj.neo4j.api.beta.type.Entities;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -82,8 +82,8 @@ class RelationshipsTests {
         assertThat(dbRelationships)
                 .hasSize(2)
                 .contains(
-                        Models.relation("SAMPLE").id(1).property("prop-0", true).build(),
-                        Models.relation("SAMPLE").id(2).property("prop-1", false).build()
+                        Entities.relationship("SAMPLE").id(1).property("prop-0", true).build(),
+                        Entities.relationship("SAMPLE").id(2).property("prop-1", false).build()
                 );
         assertThat(relationships.query()).isEqualTo(new Query("MATCH ()-[r :KNOWS]->() RETURN r"));
 

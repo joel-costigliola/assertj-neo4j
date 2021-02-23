@@ -16,7 +16,7 @@ import org.assertj.core.error.ErrorMessageFactory;
 import org.assertj.neo4j.api.beta.testing.Randomize;
 import org.assertj.neo4j.api.beta.testing.Samples;
 import org.assertj.neo4j.api.beta.type.DbNode;
-import org.assertj.neo4j.api.beta.type.Models;
+import org.assertj.neo4j.api.beta.type.Entities;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.neo4j.driver.Values;
@@ -36,7 +36,7 @@ class ShouldEntityHavePropertyValueTests {
         @Test
         void should_generate_error_message() {
             // GIVEN
-            final DbNode actual = Models.node().id(1).property("key", "value").build();
+            final DbNode actual = Entities.node().id(1).property("key", "value").build();
 
             // WHEN
             final ErrorMessageFactory error = ShouldEntityHavePropertyValue.create(actual, "key", "other-value");
@@ -58,12 +58,12 @@ class ShouldEntityHavePropertyValueTests {
         @Test
         void should_generate_an_aggregate_error_message() {
             // GIVEN
-            final DbNode node1 = Models.node().id(1).property("key", "value-1").build();
-            final DbNode node2 = Models.node().id(2).property("key", Samples.LOCAL_DATE_TIME).build();
-            final DbNode node3 = Models.node().id(3).property("key", 1).build();
-            final DbNode node4 = Models.node().id(4).property("key", Values.point(1, 22.29, 56.35).asObject()).build();
-            final DbNode node5 = Models.node().id(5).property("key", Samples.ZONED_DATE_TIME).build();
-            final DbNode node6 = Models.node().id(6).property("key", true).build();
+            final DbNode node1 = Entities.node().id(1).property("key", "value-1").build();
+            final DbNode node2 = Entities.node().id(2).property("key", Samples.LOCAL_DATE_TIME).build();
+            final DbNode node3 = Entities.node().id(3).property("key", 1).build();
+            final DbNode node4 = Entities.node().id(4).property("key", Values.point(1, 22.29, 56.35).asObject()).build();
+            final DbNode node5 = Entities.node().id(5).property("key", Samples.ZONED_DATE_TIME).build();
+            final DbNode node6 = Entities.node().id(6).property("key", true).build();
             final List<DbNode> actual = Randomize.listOf(node1, node2, node3, node4, node5, node6);
 
             // WHEN

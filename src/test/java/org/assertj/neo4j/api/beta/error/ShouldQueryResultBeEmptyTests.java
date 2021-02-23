@@ -15,7 +15,7 @@ package org.assertj.neo4j.api.beta.error;
 import org.assertj.core.error.ErrorMessageFactory;
 import org.assertj.neo4j.api.beta.testing.Randomize;
 import org.assertj.neo4j.api.beta.type.DbNode;
-import org.assertj.neo4j.api.beta.type.Models;
+import org.assertj.neo4j.api.beta.type.Entities;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.neo4j.driver.Query;
@@ -36,10 +36,10 @@ class ShouldQueryResultBeEmptyTests {
         void should_generate_an_aggregate_error_message() {
             // GIVEN
             final Query query = new Query("MATCH (n) RETURN n");
-            final DbNode node1 = Models.node().id(22).build();
-            final DbNode node2 = Models.node().id(29).build();
-            final DbNode node3 = Models.node().id(35).build();
-            final DbNode node4 = Models.node().id(56).build();
+            final DbNode node1 = Entities.node().id(22).build();
+            final DbNode node2 = Entities.node().id(29).build();
+            final DbNode node3 = Entities.node().id(35).build();
+            final DbNode node4 = Entities.node().id(56).build();
             final List<DbNode> actual = Randomize.listOf(node1, node2, node3, node4);
 
             // WHEN

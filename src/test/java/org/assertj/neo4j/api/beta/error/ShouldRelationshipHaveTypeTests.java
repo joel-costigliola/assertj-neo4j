@@ -15,7 +15,7 @@ package org.assertj.neo4j.api.beta.error;
 import org.assertj.core.error.ErrorMessageFactory;
 import org.assertj.neo4j.api.beta.testing.Randomize;
 import org.assertj.neo4j.api.beta.type.DbRelationship;
-import org.assertj.neo4j.api.beta.type.Models;
+import org.assertj.neo4j.api.beta.type.Entities;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -37,7 +37,7 @@ class ShouldRelationshipHaveTypeTests {
         void should_generate_error_message() {
             // GIVEN
             final String type = "TYPE";
-            final DbRelationship relationship = Models.relation("BAD_TYPE").id(2).build();
+            final DbRelationship relationship = Entities.relationship("BAD_TYPE").id(2).build();
 
             // WHEN
             final ShouldRelationshipHaveType error = ShouldRelationshipHaveType.create(relationship, type);
@@ -61,12 +61,12 @@ class ShouldRelationshipHaveTypeTests {
         void should_generate_an_aggregate_error_message() {
             // GIVEN
             final String type = "TYPE";
-            final DbRelationship relationship1 = Models.relation("TYPE").id(1).build();
-            final DbRelationship relationship2 = Models.relation("OTHER_TYPE_1").id(2).build();
-            final DbRelationship relationship3 = Models.relation("TYPE").id(3).build();
-            final DbRelationship relationship4 = Models.relation("OTHER_TYPE_2").id(4).build();
-            final DbRelationship relationship5 = Models.relation("OTHER_TYPE_3").id(5).build();
-            final DbRelationship relationship6 = Models.relation("TYPE").id(6).build();
+            final DbRelationship relationship1 = Entities.relationship("TYPE").id(1).build();
+            final DbRelationship relationship2 = Entities.relationship("OTHER_TYPE_1").id(2).build();
+            final DbRelationship relationship3 = Entities.relationship("TYPE").id(3).build();
+            final DbRelationship relationship4 = Entities.relationship("OTHER_TYPE_2").id(4).build();
+            final DbRelationship relationship5 = Entities.relationship("OTHER_TYPE_3").id(5).build();
+            final DbRelationship relationship6 = Entities.relationship("TYPE").id(6).build();
             final List<DbRelationship> relationships = Randomize
                     .listOf(relationship1, relationship2, relationship3, relationship4, relationship5, relationship6);
 
@@ -110,7 +110,7 @@ class ShouldRelationshipHaveTypeTests {
         void should_generate_error_message() {
             // GIVEN
             final List<String> types = Randomize.listOf("TYPE_1", "TYPE_2", "TYPE_3");
-            final DbRelationship relationship = Models.relation("BAD_TYPE").id(2).build();
+            final DbRelationship relationship = Entities.relationship("BAD_TYPE").id(2).build();
 
             // WHEN
             final ShouldRelationshipHaveType error = ShouldRelationshipHaveType.create(relationship, types);
@@ -134,12 +134,12 @@ class ShouldRelationshipHaveTypeTests {
         void should_generate_an_aggregate_error_message() {
             // GIVEN
             final List<String> types = Randomize.listOf("TYPE_1", "TYPE_2", "TYPE_3");
-            final DbRelationship relationship1 = Models.relation("TYPE_1").id(1).build();
-            final DbRelationship relationship2 = Models.relation("OTHER_TYPE_1").id(2).build();
-            final DbRelationship relationship3 = Models.relation("TYPE_2").id(3).build();
-            final DbRelationship relationship4 = Models.relation("OTHER_TYPE_2").id(4).build();
-            final DbRelationship relationship5 = Models.relation("OTHER_TYPE_3").id(5).build();
-            final DbRelationship relationship6 = Models.relation("TYPE_3").id(6).build();
+            final DbRelationship relationship1 = Entities.relationship("TYPE_1").id(1).build();
+            final DbRelationship relationship2 = Entities.relationship("OTHER_TYPE_1").id(2).build();
+            final DbRelationship relationship3 = Entities.relationship("TYPE_2").id(3).build();
+            final DbRelationship relationship4 = Entities.relationship("OTHER_TYPE_2").id(4).build();
+            final DbRelationship relationship5 = Entities.relationship("OTHER_TYPE_3").id(5).build();
+            final DbRelationship relationship6 = Entities.relationship("TYPE_3").id(6).build();
             final List<DbRelationship> relationships = Randomize
                     .listOf(relationship1, relationship2, relationship3, relationship4, relationship5, relationship6);
 

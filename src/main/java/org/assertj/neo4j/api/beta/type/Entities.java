@@ -17,7 +17,7 @@ package org.assertj.neo4j.api.beta.type;
  *
  * @author Patrick Allain - 27/11/2020
  */
-public final class Models {
+public final class Entities {
 
     /**
      * Create a new {@link DbNode.DbNodeBuilder} to compare with the node you have in the database.
@@ -34,7 +34,7 @@ public final class Models {
      *
      * @return a new {@link DbRelationship.DbRelationshipBuilder} instance
      */
-    public static DbRelationship.DbRelationshipBuilder relation() {
+    public static DbRelationship.DbRelationshipBuilder relationship() {
         return new DbRelationship.DbRelationshipBuilder();
     }
 
@@ -45,10 +45,10 @@ public final class Models {
      * @param type the relationships type
      * @return a new {@link DbRelationship.DbRelationshipBuilder} instance
      */
-    public static DbRelationship.DbRelationshipBuilder relation(final String type) {
-        return relation().type(type);
+    public static DbRelationship.DbRelationshipBuilder relationship(final String type) {
+        return relationship().type(type);
     }
 
-    private Models() {}
+    private Entities() {}
 
 }

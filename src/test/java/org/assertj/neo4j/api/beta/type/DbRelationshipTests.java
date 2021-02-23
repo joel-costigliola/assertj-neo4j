@@ -28,8 +28,8 @@ class DbRelationshipTests {
         @Test
         void should_return_a_negative_value() {
             // GIVEN
-            final DbRelationship relationship1 = Models.relation().id(11).build();
-            final DbRelationship relationship2 = Models.relation().id(16).build();
+            final DbRelationship relationship1 = Entities.relationship().id(11).build();
+            final DbRelationship relationship2 = Entities.relationship().id(16).build();
 
             // WHEN
             final int result = relationship1.compareTo(relationship2);
@@ -41,8 +41,8 @@ class DbRelationshipTests {
         @Test
         void should_return_a_positive_value() {
             // GIVEN
-            final DbRelationship relationship1 = Models.relation().id(42).build();
-            final DbRelationship relationship2 = Models.relation().id(16).build();
+            final DbRelationship relationship1 = Entities.relationship().id(42).build();
+            final DbRelationship relationship2 = Entities.relationship().id(16).build();
 
             // WHEN
             final int result = relationship1.compareTo(relationship2);

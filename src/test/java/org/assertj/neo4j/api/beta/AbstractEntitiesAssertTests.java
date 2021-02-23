@@ -14,7 +14,7 @@ package org.assertj.neo4j.api.beta;
 
 import org.assertj.neo4j.api.beta.type.DbEntity;
 import org.assertj.neo4j.api.beta.type.DbNode;
-import org.assertj.neo4j.api.beta.type.Models;
+import org.assertj.neo4j.api.beta.type.Entities;
 import org.assertj.neo4j.api.beta.type.ObjectType;
 import org.assertj.neo4j.api.beta.type.ValueType;
 import org.assertj.neo4j.api.beta.type.loader.DataLoader;
@@ -103,9 +103,9 @@ class AbstractEntitiesAssertTests {
 
         FilteredOnTests() {
             super(
-                    Models.node(),
-                    Models.node().property("prop", "v-2"),
-                    Models.node().property("prop", "v-3")
+                    Entities.node(),
+                    Entities.node().property("prop", "v-2"),
+                    Entities.node().property("prop", "v-3")
             );
         }
 
@@ -142,9 +142,9 @@ class AbstractEntitiesAssertTests {
 
         FilteredOnPropertyExistsTests() {
             super(
-                    Models.node(),
-                    Models.node().property("prop", "val-2"),
-                    Models.node().property("prop", "val-3")
+                    Entities.node(),
+                    Entities.node().property("prop", "val-2"),
+                    Entities.node().property("prop", "val-3")
             );
         }
 
@@ -179,10 +179,10 @@ class AbstractEntitiesAssertTests {
 
         FilteredOnPropertyValueTests() {
             super(
-                    Models.node(),
-                    Models.node().property("prop", "other-val-1"),
-                    Models.node().property("prop", "val"),
-                    Models.node().property("prop", "other-val-2")
+                    Entities.node(),
+                    Entities.node().property("prop", "other-val-1"),
+                    Entities.node().property("prop", "val"),
+                    Entities.node().property("prop", "other-val-2")
             );
         }
 
@@ -217,15 +217,15 @@ class AbstractEntitiesAssertTests {
 
         HaveListPropertyOfTypeTest() {
             super(
-                    Models.node()
+                    Entities.node()
                             .property("prop", Arrays.asList(1, 2))
                             .property("mixed", 1)
                             .property("mixed-list", Arrays.asList(1.1, 1.2)),
-                    Models.node()
+                    Entities.node()
                             .property("prop", Arrays.asList(1, 2, 3))
                             .property("mixed", "val")
                             .property("mixed-list", Arrays.asList(true, false, true)),
-                    Models.node()
+                    Entities.node()
                             .property("prop", Arrays.asList(1, 2, 3, 4))
                             .property("mixed", Arrays.asList(1, 2))
                             .property("mixed-list", Arrays.asList(1, 2, 3, 4))
@@ -301,13 +301,13 @@ class AbstractEntitiesAssertTests {
 
         HavePropertyTests() {
             super(
-                    Models.node()
+                    Entities.node()
                             .property("prop", "val")
                             .property("prop-1", "val-1"),
-                    Models.node()
+                    Entities.node()
                             .property("prop", "val")
                             .property("prop-1", "val-1"),
-                    Models.node()
+                    Entities.node()
                             .property("prop", "val")
                             .property("prop-1", "val-1")
                             .property("missing", "val")
@@ -361,9 +361,9 @@ class AbstractEntitiesAssertTests {
 
         HavePropertySizeTests() {
             super(
-                    Models.node().property("p-1", "v-1.1").property("p-2", "v-2.1"),
-                    Models.node().property("p-1", "v-1.1").property("p-2", "v-2.1"),
-                    Models.node().property("p-1", "v-1.1").property("p-2", "v-2.1").property("p-3", "v-3.1")
+                    Entities.node().property("p-1", "v-1.1").property("p-2", "v-2.1"),
+                    Entities.node().property("p-1", "v-1.1").property("p-2", "v-2.1"),
+                    Entities.node().property("p-1", "v-1.1").property("p-2", "v-2.1").property("p-3", "v-3.1")
             );
         }
 
@@ -402,13 +402,13 @@ class AbstractEntitiesAssertTests {
 
         HavePropertyInstanceOfTests() {
             super(
-                    Models.node()
+                    Entities.node()
                             .property("prop", LocalDateTime.now().plusDays(1))
                             .property("mixed", "val"),
-                    Models.node()
+                    Entities.node()
                             .property("prop", LocalDateTime.now().plusDays(2))
                             .property("mixed", 1.5),
-                    Models.node()
+                    Entities.node()
                             .property("prop", LocalDateTime.now().plusDays(3))
                             .property("mixed", LocalDate.now())
                             .property("missing", "val")
@@ -465,9 +465,9 @@ class AbstractEntitiesAssertTests {
 
         HavePropertyKeysTests() {
             super(
-                    Models.node().property("prop", "val-1"),
-                    Models.node().property("prop", "val-2"),
-                    Models.node().property("prop", "val-3")
+                    Entities.node().property("prop", "val-1"),
+                    Entities.node().property("prop", "val-2"),
+                    Entities.node().property("prop", "val-3")
             );
         }
 
@@ -514,9 +514,9 @@ class AbstractEntitiesAssertTests {
 
         HavePropertyValueMatchingTests() {
             super(
-                    Models.node().property("prop", "val").property("prop-inc", "val-1"),
-                    Models.node().property("prop", "val").property("prop-inc", "val-2"),
-                    Models.node().property("prop", "val").property("prop-inc", "val-3").property("missing", true)
+                    Entities.node().property("prop", "val").property("prop-inc", "val-1"),
+                    Entities.node().property("prop", "val").property("prop-inc", "val-2"),
+                    Entities.node().property("prop", "val").property("prop-inc", "val-3").property("missing", true)
             );
         }
 
@@ -571,9 +571,9 @@ class AbstractEntitiesAssertTests {
 
         HavePropertyValueMatchingTypedTests() {
             super(
-                    Models.node().property("prop", 1).property("prop-mixed", true),
-                    Models.node().property("prop", 2).property("prop-mixed", 3.14),
-                    Models.node().property("prop", 3).property("prop-mixed", "val").property("missing", true)
+                    Entities.node().property("prop", 1).property("prop-mixed", true),
+                    Entities.node().property("prop", 2).property("prop-mixed", 3.14),
+                    Entities.node().property("prop", 3).property("prop-mixed", "val").property("missing", true)
             );
         }
 
@@ -645,13 +645,13 @@ class AbstractEntitiesAssertTests {
 
         HavePropertyOfTypeTests() {
             super(
-                    Models.node()
+                    Entities.node()
                             .property("prop", "val-1")
                             .property("mixed", "val"),
-                    Models.node()
+                    Entities.node()
                             .property("prop", "val-2")
                             .property("mixed", 1.5),
-                    Models.node()
+                    Entities.node()
                             .property("prop", "val-3")
                             .property("mixed", LocalDate.now())
                             .property("missing", "val")
@@ -709,13 +709,13 @@ class AbstractEntitiesAssertTests {
 
         ExtractingPropertyTests() {
             super(
-                    Models.node()
+                    Entities.node()
                             .property("prop", "val-1")
                             .property("mixed", "val"),
-                    Models.node()
+                    Entities.node()
                             .property("prop", "val-2")
                             .property("mixed", 1.5),
-                    Models.node()
+                    Entities.node()
                             .property("prop", "val-3")
                             .property("mixed", LocalDate.now())
                             .property("missing", "val")
