@@ -19,7 +19,7 @@ package org.assertj.neo4j.api.beta;
  *
  * @author Patrick Allain - 01/01/2021
  */
-public interface Navigable<PARENT_ASSERT extends ParentAssert<ROOT_ASSERT>, ROOT_ASSERT> extends ParentAssert<ROOT_ASSERT> {
+interface Navigable<PARENT_ASSERT extends ParentAssert<ROOT_ASSERT>, ROOT_ASSERT> extends ParentAssert<ROOT_ASSERT> {
 
     /**
      * Return to the parent assertion.

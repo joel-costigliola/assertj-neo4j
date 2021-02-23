@@ -10,7 +10,7 @@
  *
  * Copyright 2013-2020 the original author or authors.
  */
-package org.assertj.neo4j.api.beta.testing;
+package org.assertj.neo4j.api.beta;
 
 import org.assertj.core.presentation.Representation;
 import org.assertj.core.presentation.StandardRepresentation;

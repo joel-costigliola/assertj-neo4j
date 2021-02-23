@@ -27,9 +27,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.neo4j.api.beta.testing.Bases.ConcreteParentAssert;
-import static org.assertj.neo4j.api.beta.testing.Bases.ConcreteRootAssert;
-import static org.assertj.neo4j.api.beta.testing.Bases.ROOT_ASSERT;
+import static org.assertj.neo4j.api.beta.Bases.ConcreteParentAssert;
+import static org.assertj.neo4j.api.beta.Bases.ConcreteRootAssert;
+import static org.assertj.neo4j.api.beta.Bases.ROOT_ASSERT;
 
 /**
  * @author Patrick Allain - 22/02/2021

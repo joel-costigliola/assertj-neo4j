@@ -14,7 +14,7 @@ package org.assertj.neo4j.api.beta.testing.builders;
 
 import org.assertj.core.presentation.Representation;
 import org.assertj.core.presentation.StandardRepresentation;
-import org.assertj.neo4j.api.beta.testing.Bases;
+import org.assertj.neo4j.api.beta.Bases;
 
 /**
  * @author Patrick Allain - 22/02/2021

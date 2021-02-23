@@ -17,7 +17,7 @@ package org.assertj.neo4j.api.beta;
  *
  * @author Patrick Allain - 27/01/2021
  */
-public interface Adoptable<ROOT_ASSERT> {
+interface Adoptable<ROOT_ASSERT> {
 
     /**
      * Set the parent of a children assertion.
