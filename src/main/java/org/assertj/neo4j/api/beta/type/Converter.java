@@ -19,7 +19,7 @@ import java.util.List;
  * @param <O> the output type
  * @author Patrick Allain - 18/02/2021
  */
-public interface Converter<O> {
+interface Converter<O> {
 
     /**
      * Check if the converter support this object.
