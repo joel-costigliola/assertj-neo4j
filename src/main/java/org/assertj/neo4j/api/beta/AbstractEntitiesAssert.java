@@ -75,26 +75,25 @@ public abstract class AbstractEntitiesAssert<SELF extends AbstractEntitiesAssert
 
     /**
      * Class constructor.
-     *
-     * @param recordType     the record type
-     * @param selfType       the self class type
-     * @param dataLoader     the data loader
+     *  @param recordType     the record type
      * @param entities       the entities
+     * @param selfType       the self class type
+     * @param loader     the data loader
      * @param newSelfFactory the factory to chain from the current assertion
      * @param parentAssert   the parent assertion for navigation
      * @param rootAssert     the parent assertion for navigation
      */
     protected AbstractEntitiesAssert(
             final ObjectType recordType,
-            final Class<?> selfType,
-            final DataLoader<ENTITY> dataLoader,
             final List<ENTITY> entities,
+            final Class<?> selfType,
+            final DataLoader<ENTITY> loader,
             final EntitiesAssertFactory<SELF, ENTITY, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT> newSelfFactory,
             final PARENT_ASSERT parentAssert,
             final ROOT_ASSERT rootAssert) {
-        super(entities, selfType, (a, c) -> newSelfFactory.create(a, dataLoader, c), parentAssert, rootAssert);
+        super(entities, selfType, (a, c) -> newSelfFactory.create(a, loader, c), parentAssert, rootAssert);
         this.recordType = Objects.requireNonNull(recordType);
-        this.dataLoader = dataLoader;
+        this.dataLoader = loader;
     }
 
     /**

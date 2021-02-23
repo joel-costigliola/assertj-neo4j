@@ -169,6 +169,29 @@ class DbObjectUtilsTests {
     }
 
     @Nested
+    class ArrayStartNodeIdsTests {
+
+        @Test
+        void should_return_the_start_node_ids() {
+            // GIVEN
+            final DbRelationship relationship1 = Models.relation().id(1).start(22).build();
+            final DbRelationship relationship2 = Models.relation().id(2).start(29).build();
+            final DbRelationship relationship3 = Models.relation().id(3).start(35).build();
+            final DbRelationship relationship4 = Models.relation().id(4).start(42).build();
+            final DbRelationship relationship5 = Models.relation().id(5).start(56).build();
+            final DbRelationship relationship6 = Models.relation().id(6).start(42).build();
+            final List<DbRelationship> relationships = Randomize
+                    .listOf(relationship1, relationship2, relationship3, relationship4, relationship5, relationship6);
+
+            // WHEN
+            final Long[] result = DbObjectUtils.arrayStartNodeIds(relationships);
+
+            // THEN
+            assertThat(result).containsExactly(22L, 29L, 35L, 42L, 42L, 56L);
+        }
+    }
+
+    @Nested
     class EndNodeIdsTests {
 
         @Test
@@ -185,6 +208,30 @@ class DbObjectUtilsTests {
 
             // WHEN
             final List<Long> result = DbObjectUtils.endNodeIds(relationships);
+
+            // THEN
+            assertThat(result).containsExactly(22L, 29L, 35L, 42L, 42L, 56L);
+        }
+
+    }
+
+    @Nested
+    class ArrayEndNodeIdsTests {
+
+        @Test
+        void should_return_the_end_node_ids() {
+            // GIVEN
+            final DbRelationship relationship1 = Models.relation().id(1).end(22).build();
+            final DbRelationship relationship2 = Models.relation().id(2).end(29).build();
+            final DbRelationship relationship3 = Models.relation().id(3).end(35).build();
+            final DbRelationship relationship4 = Models.relation().id(4).end(42).build();
+            final DbRelationship relationship5 = Models.relation().id(5).end(56).build();
+            final DbRelationship relationship6 = Models.relation().id(6).end(42).build();
+            final List<DbRelationship> relationships = Randomize
+                    .listOf(relationship1, relationship2, relationship3, relationship4, relationship5, relationship6);
+
+            // WHEN
+            final Long[] result = DbObjectUtils.arrayEndNodeIds(relationships);
 
             // THEN
             assertThat(result).containsExactly(22L, 29L, 35L, 42L, 42L, 56L);

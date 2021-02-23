@@ -24,7 +24,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 
 /**
- * @author patouche - 22/02/2021
+ * @author Patrick Allain - 22/02/2021
  */
 class AbstractDbListAssertTests {
 

@@ -82,13 +82,8 @@ public class DbNode extends DbEntity<DbNode> {
             super(DbNodeBuilder.class);
         }
 
-        public DbNodeBuilder label(final String label) {
-            this.labels.add(label);
-            return this;
-        }
-
         public DbNodeBuilder labels(final String... labels) {
-            Arrays.stream(labels).forEach(this::label);
+            this.labels.addAll(Arrays.asList(labels));
             return this;
         }
 

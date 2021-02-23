@@ -62,9 +62,11 @@ class SampleTests {
     * [X] `extractingProperty` : Extract property by the property key and create an assertion on a list
     * [ ] Add negative assertions
   * [ ] Nodes :
-    * [ ] `toRootAssert` : Retrieve the root assertion
+    * [X] `toRootAssert` : Retrieve the root assertion
     * [X] `haveLabels` : Verify that the nodes have the expected labels
     * [X] `filteredOnLabels` : Filter on nodes having the labels
+    * [X] `filteredOnLabelMatchingAny` : Filter on nodes having the labels
+    * [X] `filteredOnLabelMatchingAll` : Filter on nodes having the labels
     * [X] `Drivers.node()....`
     * [X] `incomingRelationships`
     * [X] `outgoindRelationships`
@@ -72,14 +74,14 @@ class SampleTests {
     * [X] `haveNoOutgoingRelationships`
     * [ ] Add negative assertions
   * [ ] Relationships :
-    * [ ] `toRootAssert` : Retrieve the root assertion
+    * [X] `toRootAssert` : Retrieve the root assertion
     * [X] `haveType` : Verify that a relationships if of the expected type
     * [X] `Drivers.relationship()....`
-    * [ ] `toParent`
-    * [ ] `startingNodes`
-    * [ ] `endingNodes`
-    * [ ] `haveNoStartingNodes`
-    * [ ] `haveNoEndingNodes`
+    * [X] `toParent`
+    * [X] `startingNodes`
+    * [X] `endingNodes`
+    * [X] `haveNoStartingNodes`
+    * [X] `haveNoEndingNodes`
     * [ ] ``
     * [ ] Add negative assertions
   * [ ] Request : See bellow

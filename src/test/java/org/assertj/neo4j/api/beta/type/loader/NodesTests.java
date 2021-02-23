@@ -82,8 +82,8 @@ class NodesTests {
         assertThat(dbNodes)
                 .hasSize(2)
                 .contains(
-                        Models.node().id(0).label("Sample").property("prop-0", true).build(),
-                        Models.node().id(1).label("Sample").property("prop-1", false).build()
+                        Models.node().id(0).labels("Sample").property("prop-0", true).build(),
+                        Models.node().id(1).labels("Sample").property("prop-1", false).build()
                 );
         assertThat(nodes.query()).isEqualTo(new Query("MATCH (n ) RETURN n"));
 

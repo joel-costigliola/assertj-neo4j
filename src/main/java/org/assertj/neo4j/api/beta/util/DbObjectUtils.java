@@ -27,7 +27,9 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Patrick Allain - 13/02/2021
@@ -136,6 +138,11 @@ public class DbObjectUtils {
                 .collect(Collectors.toList());
     }
 
+    private static Stream<Long> nodeIds(final List<? extends DbRelationship> relationships,
+                                        final Function<DbRelationship, Long> function) {
+        return relationships.stream().map(function).sorted();
+    }
+
     /**
      * For a relationships list, return the starting node ids.
      * <p/>
@@ -145,10 +152,19 @@ public class DbObjectUtils {
      * @return the starting node ids
      */
     public static List<Long> startNodeIds(final List<? extends DbRelationship> relationships) {
-        return relationships.stream()
-                .map(DbRelationship::getStart)
-                .sorted()
-                .collect(Collectors.toList());
+        return nodeIds(relationships, DbRelationship::getStart).collect(Collectors.toList());
+    }
+
+    /**
+     * For a relationships list, return the starting node ids.
+     * <p/>
+     * For a relationship, this is the node id where the relationship is starting.
+     *
+     * @param relationships the list of relationships
+     * @return the starting node ids as array
+     */
+    public static Long[] arrayStartNodeIds(final List<? extends DbRelationship> relationships) {
+        return nodeIds(relationships, DbRelationship::getStart).toArray(Long[]::new);
     }
 
     /**
@@ -160,10 +176,19 @@ public class DbObjectUtils {
      * @return the starting node ids
      */
     public static List<Long> endNodeIds(final List<? extends DbRelationship> relationships) {
-        return relationships.stream()
-                .map(DbRelationship::getEnd)
-                .sorted()
-                .collect(Collectors.toList());
+        return nodeIds(relationships, DbRelationship::getEnd).collect(Collectors.toList());
+    }
+
+    /**
+     * For a relationships list, return the ending node ids.
+     * <p/>
+     * For a relationship, this is the node id where the relationship is ending.
+     *
+     * @param relationships the list of relationships
+     * @return the starting node ids as array
+     */
+    public static Long[] arrayEndNodeIds(final List<? extends DbRelationship> relationships) {
+        return nodeIds(relationships, DbRelationship::getEnd).toArray(Long[]::new);
     }
 
     /**

@@ -12,7 +12,9 @@
  */
 package org.assertj.neo4j.api.beta;
 
+import org.assertj.neo4j.api.beta.testing.Loaders;
 import org.assertj.neo4j.api.beta.type.DbEntity;
+import org.assertj.neo4j.api.beta.type.DbNode;
 import org.assertj.neo4j.api.beta.type.DbRelationship;
 import org.assertj.neo4j.api.beta.type.Models;
 import org.assertj.neo4j.api.beta.type.loader.DataLoader;
@@ -28,14 +30,20 @@ import org.mockito.Mockito;
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.Query;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
+import static org.assertj.core.api.Assertions.entry;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
+import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -68,16 +76,21 @@ class AbstractRelationshipsAssertTests {
         }
 
         protected void testCase(final List<DbRelationship> nodes) {
+            reset(this.dataLoader);
             when(this.dataLoader.load()).thenReturn(nodes);
             this.assertions = new DriverRelationshipsAssert(dataLoader);
         }
 
-        protected LoaderFactory<Object, DataLoader<Object>> argQuery(final String query) {
-            return argThat(d -> Objects.equals(d.create(this.driver).query(), new Query(query)));
+        protected LoaderFactory<Object, DataLoader<Object>> argQuery(final String query,
+                                                                     final Entry<String, Object>... params) {
+            final Map<String, Object> parameters = Arrays.stream(params)
+                    .collect(Collectors.toMap(Entry::getKey, Entry::getValue));
+            return argThat(d -> Objects.equals(d.create(this.driver).query(), new Query(query, parameters)));
         }
 
         @AfterEach
         void tearDown() {
+            verify(this.dataLoader).load();
             verifyNoMoreInteractions(this.dataLoader);
         }
     }
@@ -187,6 +200,230 @@ class AbstractRelationshipsAssertTests {
 
             // THEN
             verify(dataLoader).load();
+            assertThat(result).isSameAs(assertions);
+        }
+
+    }
+
+    @Nested
+    @DisplayName("startingNodes")
+    class StartingNodesTests extends BaseRelationshipsTests {
+
+        StartingNodesTests() {
+            super(
+                    Models.relation().start(11),
+                    Models.relation().start(12),
+                    Models.relation().start(13),
+                    Models.relation().start(14),
+                    Models.relation().start(15),
+                    Models.relation().start(16)
+            );
+        }
+
+        @Test
+        void should_pass() {
+            // GIVEN
+            final DbNode node1 = Models.node().id(11).labels("lbl-1", "lbl-2").build();
+            final DbNode node2 = Models.node().id(12).labels("lbl-2", "lbl-3").build();
+            final DbNode node3 = Models.node().id(13).labels("lbl-2", "lbl-4").build();
+            final DbNode node4 = Models.node().id(14).labels("lbl-3").build();
+            final DbNode node5 = Models.node().id(15).labels("lbl-4").build();
+            final DbNode node6 = Models.node().id(16).build();
+            when(dataLoader.chain(any())).thenReturn(Loaders.nodes(node1, node2, node3, node4, node5, node6));
+
+            // WHEN
+            final ChildrenDriverNodeAssert<DriverRelationshipsAssert, DriverRelationshipsAssert> result =
+                    this.assertions.startingNodes("lbl-1", "lbl-3");
+
+            // THEN
+            verify(dataLoader).chain(
+                    argQuery("MATCH (n) WHERE id(n) IN $ids RETURN n",
+                            entry("ids", Arrays.asList(11, 12, 13, 14, 15, 16))
+                    )
+            );
+            assertThat(result.toParentAssert()).isSameAs(assertions);
+            assertThat(result.toRootAssert()).isSameAs(assertions.toRootAssert());
+            assertThat(result.getActual())
+                    .hasSize(4)
+                    .extracting(DbEntity::getId).contains(11L, 12L, 14L, 16L);
+        }
+    }
+
+    @Nested
+    @DisplayName("endingNodes")
+    class EndingNodesTests extends BaseRelationshipsTests {
+
+        EndingNodesTests() {
+            super(
+                    Models.relation().end(11),
+                    Models.relation().end(12),
+                    Models.relation().end(13),
+                    Models.relation().end(14),
+                    Models.relation().end(15),
+                    Models.relation().end(16)
+            );
+        }
+
+        @Test
+        void should_pass() {
+            // GIVEN
+            final DbNode node1 = Models.node().id(11).labels("lbl-1", "lbl-2").build();
+            final DbNode node2 = Models.node().id(12).labels("lbl-2", "lbl-3").build();
+            final DbNode node3 = Models.node().id(13).labels("lbl-2", "lbl-4").build();
+            final DbNode node4 = Models.node().id(14).labels("lbl-3").build();
+            final DbNode node5 = Models.node().id(15).labels("lbl-4").build();
+            final DbNode node6 = Models.node().id(16).build();
+            when(dataLoader.chain(any())).thenReturn(Loaders.nodes(node1, node2, node3, node4, node5, node6));
+
+            // WHEN
+            final ChildrenDriverNodeAssert<DriverRelationshipsAssert, DriverRelationshipsAssert> result =
+                    this.assertions.endingNodes("lbl-1", "lbl-3");
+
+            // THEN
+            verify(dataLoader).chain(
+                    argQuery("MATCH (n) WHERE id(n) IN $ids RETURN n",
+                            entry("ids", Arrays.asList(11, 12, 13, 14, 15, 16))
+                    )
+            );
+            assertThat(result.toParentAssert()).isSameAs(assertions);
+            assertThat(result.toRootAssert()).isSameAs(assertions.toRootAssert());
+            assertThat(result.getActual())
+                    .hasSize(4)
+                    .extracting(DbEntity::getId).contains(11L, 12L, 14L, 16L);
+        }
+    }
+
+    @Nested
+    @DisplayName("haveNoStartingNodes")
+    class HaveNoStartingNodesTests extends BaseRelationshipsTests {
+
+        HaveNoStartingNodesTests() {
+            super(
+                    Models.relation().start(11),
+                    Models.relation().start(12),
+                    Models.relation().start(13),
+                    Models.relation().start(14),
+                    Models.relation().start(15),
+                    Models.relation().start(16)
+            );
+        }
+
+        @Test
+        void should_fail() {
+            // GIVEN
+            final DbNode node1 = Models.node().id(11).labels("lbl", "lbl-1", "lbl-other-1").build();
+            final DbNode node2 = Models.node().id(12).labels("lbl", "lbl-2", "lbl-other-2").build();
+            final DbNode node3 = Models.node().id(13).labels("lbl", "lbl-3", "lbl-other-3").build();
+            final DbNode node4 = Models.node().id(14).labels("lbl-other-4").build();
+            final DbNode node5 = Models.node().id(15).labels("lbl-other-5").build();
+            final DbNode node6 = Models.node().id(16).build();
+            when(dataLoader.chain(any())).thenReturn(Loaders.nodes(node1, node2, node3, node4, node5, node6));
+
+            // WHEN
+            final Throwable throwable = catchThrowable(() -> this.assertions.haveNoStartingNodes("lbl", "lbl-4"));
+
+            // THEN
+            verify(dataLoader).chain(
+                    argQuery("MATCH (n) WHERE id(n) IN $ids RETURN n",
+                            entry("ids", Arrays.asList(11, 12, 13, 14, 15, 16))
+                    )
+            );
+            assertThat(throwable)
+                    .isInstanceOf(AssertionError.class)
+                    .hasMessageContainingAll(
+                            "Expecting query:",
+                            "to return an empty list of nodes but got 4 nodes:"
+                    );
+        }
+
+        @Test
+        void should_pass() {
+            // GIVEN
+            final DbNode node1 = Models.node().id(11).labels("lbl", "lbl-1", "lbl-other-1").build();
+            final DbNode node2 = Models.node().id(12).labels("lbl", "lbl-2", "lbl-other-2").build();
+            final DbNode node3 = Models.node().id(13).labels("lbl", "lbl-3", "lbl-other-3").build();
+            final DbNode node4 = Models.node().id(14).labels("lbl-other-4").build();
+            final DbNode node5 = Models.node().id(15).labels("lbl-other-5").build();
+            final DbNode node6 = Models.node().id(16).labels("lbl-other-6").build();
+            when(dataLoader.chain(any())).thenReturn(Loaders.nodes(node1, node2, node3, node4, node5, node6));
+
+            // WHEN
+            final DriverRelationshipsAssert result = this.assertions.haveNoStartingNodes("lbl-other", "lbl-4");
+
+            // THEN
+            verify(dataLoader).chain(
+                    argQuery("MATCH (n) WHERE id(n) IN $ids RETURN n",
+                            entry("ids", Arrays.asList(11, 12, 13, 14, 15, 16))
+                    )
+            );
+            assertThat(result).isSameAs(assertions);
+        }
+
+    }
+
+    @Nested
+    @DisplayName("haveNoEndingNodes")
+    class HaveNoEndingNodesTests extends BaseRelationshipsTests {
+
+        HaveNoEndingNodesTests() {
+            super(
+                    Models.relation().end(11),
+                    Models.relation().end(12),
+                    Models.relation().end(13),
+                    Models.relation().end(14),
+                    Models.relation().end(15),
+                    Models.relation().end(16)
+            );
+        }
+
+        @Test
+        void should_fail() {
+            // GIVEN
+            final DbNode node1 = Models.node().id(11).labels("lbl", "lbl-1", "lbl-other-1").build();
+            final DbNode node2 = Models.node().id(12).labels("lbl", "lbl-2", "lbl-other-2").build();
+            final DbNode node3 = Models.node().id(13).labels("lbl", "lbl-3", "lbl-other-3").build();
+            final DbNode node4 = Models.node().id(14).labels("lbl-other-4").build();
+            final DbNode node5 = Models.node().id(15).labels("lbl-other-5").build();
+            final DbNode node6 = Models.node().id(15).build();
+            when(dataLoader.chain(any())).thenReturn(Loaders.nodes(node1, node2, node3, node4, node5, node6));
+
+            // WHEN
+            final Throwable throwable = catchThrowable(() -> this.assertions.haveNoEndingNodes("lbl", "lbl-4"));
+
+            // THEN
+            verify(dataLoader).chain(
+                    argQuery("MATCH (n) WHERE id(n) IN $ids RETURN n",
+                            entry("ids", Arrays.asList(11, 12, 13, 14, 15, 16))
+                    )
+            );
+            assertThat(throwable)
+                    .isInstanceOf(AssertionError.class)
+                    .hasMessageContainingAll(
+                            "Expecting query:",
+                            "to return an empty list of nodes but got 4 nodes:"
+                    );
+        }
+
+        @Test
+        void should_pass() {
+            // GIVEN
+            final DbNode node1 = Models.node().id(11).labels("lbl", "lbl-1", "lbl-other-1").build();
+            final DbNode node2 = Models.node().id(12).labels("lbl", "lbl-2", "lbl-other-2").build();
+            final DbNode node3 = Models.node().id(13).labels("lbl", "lbl-3", "lbl-other-3").build();
+            final DbNode node4 = Models.node().id(14).labels("lbl-other-4").build();
+            final DbNode node5 = Models.node().id(15).labels("lbl-other-5").build();
+            final DbNode node6 = Models.node().id(15).labels("lbl-other-6").build();
+            when(dataLoader.chain(any())).thenReturn(Loaders.nodes(node1, node2, node3, node4, node5, node6));
+
+            // WHEN
+            final DriverRelationshipsAssert result = this.assertions.haveNoEndingNodes("lbl-other", "lbl-4");
+
+            // THEN
+            verify(dataLoader).chain(
+                    argQuery("MATCH (n) WHERE id(n) IN $ids RETURN n",
+                            entry("ids", Arrays.asList(11, 12, 13, 14, 15, 16))
+                    )
+            );
             assertThat(result).isSameAs(assertions);
         }
 

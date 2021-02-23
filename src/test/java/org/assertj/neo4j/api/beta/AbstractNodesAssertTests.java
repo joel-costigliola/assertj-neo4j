@@ -31,6 +31,7 @@ import org.mockito.Mockito;
 import org.neo4j.driver.Driver;
 import org.neo4j.driver.Query;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -50,6 +51,15 @@ import static org.mockito.Mockito.when;
  * @author Patrick Allain - 10/02/2021
  */
 class AbstractNodesAssertTests {
+
+    private static final List<DbNode.DbNodeBuilder> LABELLED_NODE_BUILDERS = Arrays.asList(
+            Models.node().id(1).labels("lbl-1", "lbl-2"),
+            Models.node().id(2).labels("lbl-2", "lbl-3", "other"),
+            Models.node().id(3).labels("lbl-1", "lbl-3", "other"),
+            Models.node().id(4).labels("lbl-2", "lbl-4"),
+            Models.node().id(5).labels("other"),
+            Models.node().id(6)
+    );
 
     private static class BaseNodesTests {
 
@@ -89,6 +99,7 @@ class AbstractNodesAssertTests {
 
         @AfterEach
         void tearDown() {
+            verify(dataLoader).load();
             verifyNoMoreInteractions(this.dataLoader);
         }
     }
@@ -110,7 +121,6 @@ class AbstractNodesAssertTests {
             final DriverNodesAssert result = assertions.usingNoEntityIdComparison();
 
             // THEN
-            verify(dataLoader).load();
             assertThat(result.getActual())
                     .extracting(DbEntity::getId)
                     .doesNotContainNull();
@@ -119,6 +129,123 @@ class AbstractNodesAssertTests {
                     .contains(Models.node().labels("lbl", "lbl-1").build())
                     .contains(Models.node().id(35).labels("lbl", "lbl-2").build())
             );
+        }
+    }
+
+    @Nested
+    @DisplayName("filteredOnLabels")
+    class FilteredOnLabelsTests extends BaseNodesTests {
+
+        public FilteredOnLabelsTests() {
+            super(LABELLED_NODE_BUILDERS.toArray(new DbNode.DbNodeBuilder[0]));
+        }
+
+        @Test
+        void should_filter_nodes_having_at_least_one_labels_matching_the_predicate() {
+            // WHEN
+            final DriverNodesAssert result = this.assertions.filteredOnLabels("lbl-1");
+
+            // THEN
+            assertThat(result.getActual())
+                    .hasSize(3)
+                    .extracting(DbEntity::getId).contains(1L, 3L, 6L);
+        }
+
+        @Test
+        void should_filter_nodes_having_at_least_one_labels_matching_the_predicate_without_no_labels() {
+            // WHEN
+            final DriverNodesAssert result = this.assertions.filteredOnLabels(true, "lbl-1");
+
+            // THEN
+            assertThat(result.getActual())
+                    .hasSize(2)
+                    .extracting(DbEntity::getId).contains(1L, 3L);
+        }
+    }
+
+    @Nested
+    @DisplayName("filteredOnNonEmptyLabels")
+    class FilteredOnNonEmptyLabelsTests extends BaseNodesTests {
+
+        public FilteredOnNonEmptyLabelsTests() {
+            super(LABELLED_NODE_BUILDERS.toArray(new DbNode.DbNodeBuilder[0]));
+        }
+
+        @Test
+        void should_filter_nodes_having_no_labels() {
+            // WHEN
+            final DriverNodesAssert result = this.assertions.filteredOnNonEmptyLabels();
+
+            // THEN
+            assertThat(result.getActual())
+                    .hasSize(5)
+                    .extracting(DbEntity::getId).contains(1L, 2L, 3L, 4L, 5L);
+        }
+
+    }
+
+    @Nested
+    @DisplayName("filteredOnLabelMatchingAny")
+    class FilteredOnLabelMatchingAnyTests extends BaseNodesTests {
+
+        public FilteredOnLabelMatchingAnyTests() {
+            super(LABELLED_NODE_BUILDERS.toArray(new DbNode.DbNodeBuilder[0]));
+        }
+
+        @Test
+        void should_filter_nodes_having_at_least_one_labels_matching_the_predicate() {
+            // WHEN
+            final DriverNodesAssert result = this.assertions.filteredOnLabelMatchingAny(l -> l.startsWith("lbl-"));
+
+            // THEN
+            assertThat(result.getActual())
+                    .hasSize(5)
+                    .extracting(DbEntity::getId).containsExactlyInAnyOrder(1L, 2L, 3L, 4L, 6L);
+        }
+
+        @Test
+        void should_filter_nodes_having_at_least_one_labels_matching_the_predicate_without_no_labels() {
+            // WHEN
+            final DriverNodesAssert result = this.assertions
+                    .filteredOnLabelMatchingAny(l -> l.startsWith("lbl-"), true);
+
+            // THEN
+            assertThat(result.getActual())
+                    .hasSize(4)
+                    .extracting(DbEntity::getId).containsExactlyInAnyOrder(1L, 2L, 3L, 4L);
+        }
+    }
+
+    @Nested
+    @DisplayName("filteredOnLabelMatchingAll")
+    class FilteredOnLabelMatchingAllTests extends BaseNodesTests {
+
+        public FilteredOnLabelMatchingAllTests() {
+            super(LABELLED_NODE_BUILDERS.toArray(new DbNode.DbNodeBuilder[0]));
+        }
+
+        @Test
+        void should_filter_nodes_having_at_least_one_labels_matching_the_predicate() {
+            // WHEN
+            final DriverNodesAssert result = this.assertions
+                    .filteredOnLabelMatchingAll(l -> l.startsWith("lbl-"));
+
+            // THEN
+            assertThat(result.getActual())
+                    .hasSize(3)
+                    .extracting(DbEntity::getId).containsExactlyInAnyOrder(1L, 4L, 6L);
+        }
+
+        @Test
+        void should_filter_nodes_having_at_least_one_labels_matching_the_predicate_without_no_labels() {
+            // WHEN
+            final DriverNodesAssert result = this.assertions
+                    .filteredOnLabelMatchingAll(l -> l.startsWith("lbl-"), true);
+
+            // THEN
+            assertThat(result.getActual())
+                    .hasSize(2)
+                    .extracting(DbEntity::getId).containsExactlyInAnyOrder(1L, 4L);
         }
     }
 
@@ -142,7 +269,6 @@ class AbstractNodesAssertTests {
             final Throwable throwable = catchThrowable(assertions::haveLabels);
 
             // THEN
-            verify(dataLoader).load();
             assertThat(throwable)
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("The labels to look for should not be null or empty");
@@ -154,7 +280,6 @@ class AbstractNodesAssertTests {
             final Throwable throwable = catchThrowable(() -> assertions.haveLabels(Collections.emptyList()));
 
             // THEN
-            verify(dataLoader).load();
             assertThat(throwable)
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("The iterable of values to look for should not be empty");
@@ -166,7 +291,6 @@ class AbstractNodesAssertTests {
             final Throwable throwable = catchThrowable(() -> assertions.haveLabels("missing"));
 
             // THEN
-            verify(dataLoader).load();
             assertThat(throwable)
                     .isInstanceOf(AssertionError.class)
                     .hasMessageContainingAll(
@@ -182,7 +306,6 @@ class AbstractNodesAssertTests {
             final DriverNodesAssert result = assertions.haveLabels("all");
 
             // THEN
-            verify(dataLoader).load();
             assertThat(result).isSameAs(assertions);
         }
 
@@ -214,7 +337,6 @@ class AbstractNodesAssertTests {
                     assertions.incomingRelationships("KNOWS", "DISCOVER");
 
             // THEN
-            verify(dataLoader).load();
             verify(dataLoader).chain(argQuery("MATCH ()-[r :DISCOVER|KNOWS]->() RETURN r"));
 
             assertThat(result.getActual())
@@ -250,7 +372,6 @@ class AbstractNodesAssertTests {
                     assertions.outgoingRelationships("KNOWS", "DISCOVER");
 
             // THEN
-            verify(dataLoader).load();
             verify(dataLoader).chain(argQuery("MATCH ()-[r :DISCOVER|KNOWS]->() RETURN r"));
 
             assertThat(result.getActual())
@@ -284,7 +405,6 @@ class AbstractNodesAssertTests {
             final Throwable throwable = catchThrowable(() -> assertions.haveNoIncomingRelationships());
 
             // THEN
-            verify(dataLoader).load();
             verify(dataLoader).chain(argQuery("MATCH ()-[r]->() RETURN r"));
 
             assertThat(throwable)
@@ -310,7 +430,6 @@ class AbstractNodesAssertTests {
             final DriverNodesAssert result = assertions.haveNoIncomingRelationships("KNOWS", "DISCOVER");
 
             // THEN
-            verify(dataLoader).load();
             verify(dataLoader).chain(argQuery("MATCH ()-[r :DISCOVER|KNOWS]->() RETURN r"));
 
             assertThat(result).isSameAs(assertions);
@@ -343,7 +462,6 @@ class AbstractNodesAssertTests {
             final Throwable throwable = catchThrowable(() -> assertions.haveNoOutgoingRelationships());
 
             // THEN
-            verify(dataLoader).load();
             verify(dataLoader).chain(argQuery("MATCH ()-[r]->() RETURN r"));
 
             assertThat(throwable)
@@ -369,7 +487,6 @@ class AbstractNodesAssertTests {
             final DriverNodesAssert result = assertions.haveNoOutgoingRelationships("KNOWS", "DISCOVER");
 
             // THEN
-            verify(dataLoader).load();
             verify(dataLoader).chain(argQuery("MATCH ()-[r :DISCOVER|KNOWS]->() RETURN r"));
 
             assertThat(result).isSameAs(assertions);

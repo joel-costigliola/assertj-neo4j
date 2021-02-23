@@ -68,7 +68,7 @@ class NodeComparisonStrategyTests {
         @Test
         void should_return_false_when_ignore_ids() {
             // GIVEN
-            final DbNode other = Builders.rebuild(SAMPLE_NODE).id(42).label("LBL_4").build();
+            final DbNode other = Builders.rebuild(SAMPLE_NODE).id(42).labels("LBL_4").build();
             final NodeComparisonStrategy strategy = builder().ignoreId(true).build();
 
             // WHEN

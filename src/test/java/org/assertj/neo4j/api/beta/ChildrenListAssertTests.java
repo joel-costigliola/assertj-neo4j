@@ -13,8 +13,8 @@
 package org.assertj.neo4j.api.beta;
 
 import org.assertj.core.presentation.StandardRepresentation;
+import org.assertj.neo4j.api.beta.testing.Builders;
 import org.assertj.neo4j.api.beta.testing.Samples;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
@@ -24,6 +24,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.neo4j.api.beta.testing.Bases.ConcreteParentAssert;
+import static org.assertj.neo4j.api.beta.testing.Bases.ConcreteRootAssert;
+import static org.assertj.neo4j.api.beta.testing.Bases.ROOT_ASSERT;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
@@ -33,15 +36,10 @@ import static org.mockito.Mockito.when;
  */
 class ChildrenListAssertTests {
 
-    private static class TestRootAssert {
-    }
-
     private static class BaseChildrenListAssertTests<ACTUAL> {
 
-        protected ChildrenListAssert<ACTUAL, ParentAssert<TestRootAssert>, TestRootAssert> assertions;
+        protected ChildrenListAssert<ACTUAL, ConcreteParentAssert, ConcreteRootAssert> assertions;
         protected final List<ACTUAL> actual;
-        protected final ParentAssert<TestRootAssert> parentAssert = Mockito.mock(ParentAssert.class);
-        protected final TestRootAssert rootAssert = new TestRootAssert();
 
         @SafeVarargs
         BaseChildrenListAssertTests(ACTUAL... elements) {
@@ -50,17 +48,9 @@ class ChildrenListAssertTests {
 
         @BeforeEach
         void setUp() {
-            when(parentAssert.representation()).thenReturn(StandardRepresentation.STANDARD_REPRESENTATION);
-            when(parentAssert.toRootAssert()).thenReturn(rootAssert);
-            this.assertions = new ChildrenListAssert<>(this.actual, this.parentAssert);
+            this.assertions = new ChildrenListAssert<>(this.actual, Builders.parent().build());
         }
 
-        @AfterEach
-        void tearDown() {
-            verify(parentAssert).representation();
-            verify(parentAssert).toRootAssert();
-            Mockito.verifyNoMoreInteractions(parentAssert);
-        }
     }
 
     @Nested
@@ -73,12 +63,12 @@ class ChildrenListAssertTests {
         @Test
         void should_create_new_with_parent() {
             // GIVEN
-            final ParentAssert<TestRootAssert> newParentAssert = Mockito.mock(ParentAssert.class);
-            when(newParentAssert.toRootAssert()).thenReturn(rootAssert);
+            final ConcreteParentAssert newParentAssert = Mockito.mock(ConcreteParentAssert.class);
+            when(newParentAssert.toRootAssert()).thenReturn(ROOT_ASSERT);
             when(newParentAssert.representation()).thenReturn(StandardRepresentation.STANDARD_REPRESENTATION);
 
             // WHEN
-            ChildrenListAssert<String, ParentAssert<TestRootAssert>, TestRootAssert> result =
+            ChildrenListAssert<String, ConcreteParentAssert, ConcreteRootAssert> result =
                     assertions.withParent(newParentAssert);
 
             // THEN

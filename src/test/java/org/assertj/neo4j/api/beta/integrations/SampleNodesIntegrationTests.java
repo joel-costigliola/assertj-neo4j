@@ -47,7 +47,7 @@ class SampleNodesIntegrationTests {
         public void contains() {
             final Nodes nodes = Nodes.of(driver, "Language");
             DriverAssertions.assertThat(nodes)
-                    .contains(Models.node().id(6).label("Language").property("name", "Scala").build());
+                    .contains(Models.node().id(6).labels("Language").property("name", "Scala").build());
         }
 
     }
@@ -219,7 +219,7 @@ class SampleNodesIntegrationTests {
             final Nodes nodes = Nodes.of(driver, "Language");
             DriverAssertions.assertThat(nodes)
                     .usingNoEntityIdComparison()
-                    .contains(Models.node().label("Language").property("name", "Scala").build());
+                    .contains(Models.node().labels("Language").property("name", "Scala").build());
         }
 
         @Test

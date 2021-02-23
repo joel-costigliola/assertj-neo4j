@@ -25,7 +25,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-import org.neo4j.driver.Query;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -38,7 +37,6 @@ import java.util.stream.IntStream;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowable;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 /**
  * @author Patrick Allain - 12/11/2020
@@ -59,9 +57,8 @@ class AbstractEntitiesAssertTests {
                                          ConcreteEntitiesAssert parent) {
             super(
                     ObjectType.NODE,
-                    ConcreteEntitiesAssert.class,
+                    entities, ConcreteEntitiesAssert.class,
                     loader,
-                    entities,
                     ConcreteEntitiesAssert::new,
                     parent,
                     rootAssert(parent)

@@ -23,7 +23,10 @@ import org.assertj.neo4j.api.beta.util.Checks;
 import org.assertj.neo4j.api.beta.util.DbObjectUtils;
 import org.assertj.neo4j.api.beta.util.Predicates;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * Abstract assertion on {@link DbNode}.
@@ -46,13 +49,166 @@ public abstract class AbstractNodesAssert<SELF extends AbstractNodesAssert<SELF,
 //@formatter:on
 
     protected AbstractNodesAssert(
-            final Class<SELF> selfType,
+            final Class<?> selfType,
             final List<DbNode> entities,
             final DataLoader<DbNode> dataLoader,
             final EntitiesAssertFactory<SELF, DbNode, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT> newSelfFactory,
             final PARENT_ASSERT parentAssert,
             final ROOT_ASSERT rootAssert) {
-        super(ObjectType.NODE, selfType, dataLoader, entities, newSelfFactory, parentAssert, rootAssert);
+        super(ObjectType.NODE, entities, selfType, dataLoader, newSelfFactory, parentAssert, rootAssert);
+    }
+
+    private static Predicate<DbNode> emptyLabels(final boolean excludeNoLabels,
+                                                 final Predicate<Set<String>> predicate) {
+        if (excludeNoLabels) {
+            return (n) -> !n.getLabels().isEmpty() && predicate.test(n.getLabels());
+        }
+        return n -> n.getLabels().isEmpty() || predicate.test(n.getLabels());
+    }
+
+    /**
+     * Filter nodes having at least one of the provided labels.
+     * <p/>
+     * By default, if a node has no labels, it will be in the actual entities of the created assertion. To change this
+     * behavior, you can specify use the method {@link #filteredOnLabels(boolean, String...)}.
+     * <p/>
+     * Example:
+     * <pre><code class='java'>
+     * Nodes nodes = new Nodes(driver);
+     * assertThat(nodes)
+     *   .hasSize(14)
+     *   .filteredOnNonEmptyLabels()
+     *   .hasSize(12)
+     * </code></pre>
+     *
+     * @return a new assertion
+     */
+    public NEW_SELF filteredOnNonEmptyLabels() {
+        return filteredOn(n -> !n.getLabels().isEmpty());
+    }
+
+    /**
+     * Filter nodes having at least one of the provided labels.
+     * <p/>
+     * By default, if a node has no labels, it will be in the actual entities of the created assertion. To change this
+     * behavior, you can specify use the method {@link #filteredOnLabels(boolean, String...)}.
+     * <p/>
+     * Example:
+     * <pre><code class='java'>
+     * Nodes nodes = new Nodes(driver, "Person");
+     * assertThat(nodes)
+     *   .hasSize(14)
+     *   .filteredOnLabels("TeamMember", "TeamOwner")
+     *   .hasSize(9)
+     * </code></pre>
+     *
+     * @param labels the labels that any node should have
+     * @return a new assertion
+     */
+    public NEW_SELF filteredOnLabels(final String... labels) {
+        return filteredOnLabels(false, labels);
+    }
+
+
+    /**
+     * Filter nodes having at least one of the provided labels.
+     * <p/>
+     * Example:
+     * <pre><code class='java'>
+     * Nodes nodes = new Nodes(driver, "Person");
+     * assertThat(nodes)
+     *   .hasSize(14)
+     *   .filteredOnLabels(l -> l.startWith("Team"))
+     *   .hasSize(9)
+     * </code></pre>
+     *
+     * @param labels the labels that any node should have
+     * @return a new assertion
+     */
+    public NEW_SELF filteredOnLabels(final boolean excludeNoLabels, final String... labels) {
+        return filteredOnLabelMatchingAny(l -> Arrays.asList(labels).contains(l), excludeNoLabels);
+    }
+
+    /**
+     * Filter nodes having at least one labels matching the predicate.
+     * <p/>
+     * By default, if a node has no labels, it will be in the result list of actual entities. To change this behavior,
+     * you can specify use the method {@link #filteredOnLabelMatchingAny(Predicate, boolean)}.
+     * <p/>
+     * Example:
+     * <pre><code class='java'>
+     * Nodes nodes = new Nodes(driver, "Person");
+     * assertThat(nodes)
+     *   .hasSize(14)
+     *   .filteredOnAllLabels(l -> l.startWith("Team"))
+     *   .hasSize(9)
+     * </code></pre>
+     *
+     * @param predicate the predicate that the label should match
+     * @return a new assertion
+     */
+    public NEW_SELF filteredOnLabelMatchingAny(final Predicate<String> predicate) {
+        return filteredOnLabelMatchingAny(predicate, false);
+    }
+
+    /**
+     * Filter nodes having at least one labels matching the predicate.
+     * <p/>
+     * Example:
+     * <pre><code class='java'>
+     * Nodes nodes = new Nodes(driver);
+     * assertThat(nodes)
+     *   .hasSize(14)
+     *   .filteredOnAllLabels(l -> l.startWith("Team"), true)
+     *   .hasSize(7)
+     * </code></pre>
+     *
+     * @param predicate the predicate that the label should match
+     * @return a new assertion
+     */
+    public NEW_SELF filteredOnLabelMatchingAny(final Predicate<String> predicate, boolean excludeNoLabels) {
+        return filteredOn(emptyLabels(excludeNoLabels, (l) -> l.stream().anyMatch(predicate)));
+    }
+
+    /**
+     * Filter nodes having all labels matching the predicate.
+     * <p/>
+     * By default, if a node has no labels, it will be in the result list of actual entities. To change this behavior,
+     * you can specify use the method {@link #filteredOnLabelMatchingAll(Predicate, boolean)}.
+     * <p/>
+     * Example:
+     * <pre><code class='java'>
+     * Nodes nodes = new Nodes(driver, "AssertJ_Team");
+     * assertThat(nodes)
+     *   .hasSize(14)
+     *   .filteredOnAllLabels(l -> l.startWith("AssertJ_"))
+     *   .hasSize(7)
+     * </code></pre>
+     *
+     * @param predicate the predicate that the label should match
+     * @return a new assertion
+     */
+    public NEW_SELF filteredOnLabelMatchingAll(final Predicate<String> predicate) {
+        return filteredOnLabelMatchingAll(predicate, false);
+    }
+
+    /**
+     * Filter nodes having all labels matching the predicate.
+     * <p/>
+     * Example:
+     * <pre><code class='java'>
+     * Nodes nodes = new Nodes(driver, "AssertJ_Team");
+     * assertThat(nodes)
+     *   .hasSize(14)
+     *   .filteredOnAllLabels(l -> l.startWith("AssertJ_"))
+     *   .hasSize(7)
+     * </code></pre>
+     *
+     * @param predicate the predicate that the label should match
+     * @return a new assertion
+     */
+    public NEW_SELF filteredOnLabelMatchingAll(final Predicate<String> predicate, boolean excludeNoLabels) {
+        return filteredOn(emptyLabels(excludeNoLabels, (l) -> l.stream().allMatch(predicate)));
     }
 
     /**

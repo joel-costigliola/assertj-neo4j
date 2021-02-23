@@ -526,4 +526,53 @@ class DriverResultAssertTests {
         }
     }
 
+
+    @Nested
+    class AsNodeAssertTests extends BaseResultTests {
+
+        public AsNodeAssertTests() {
+            super(SAMPLE_RECORDS_BUILDERS.toArray(new RecordBuilder[0]));
+        }
+
+        @Test
+        void should_fail_when_column_not_found() {
+            // WHEN
+            final Throwable throwable = catchThrowable(() -> assertions.asNodeAssert("bad_column"));
+
+            // THEN
+            assertThat(throwable)
+                    .isInstanceOf(AssertionError.class)
+                    .hasMessageContainingAll(
+                            "Expecting ArrayList:",
+                            "to contain:",
+                            "but could not find the following element(s):"
+                    );
+        }
+
+        @Test
+        void should_fail_when_column_is_not_a_relationship() {
+            // WHEN
+            final Throwable throwable = catchThrowable(() -> assertions.asNodeAssert("r"));
+
+            // THEN
+            assertThat(throwable)
+                    .isInstanceOf(AssertionError.class)
+                    .hasMessageContainingAll(
+                            "Expecting database objects:",
+                            "to be of type:",
+                            "but some database objects are from another type:"
+                    );
+        }
+
+        @Test
+        void should_return_a_children_node_assert() {
+            // WHEN
+            final ChildrenDriverNodeAssert<DriverResultAssert, DriverResultAssert> result =
+                    assertions.asNodeAssert("n");
+
+            // THEN
+            assertThat(result.toParentAssert()).isSameAs(assertions);
+        }
+    }
+
 }

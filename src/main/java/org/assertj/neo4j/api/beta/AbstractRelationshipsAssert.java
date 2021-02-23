@@ -16,6 +16,9 @@ import org.assertj.neo4j.api.beta.error.ShouldRelationshipHaveType;
 import org.assertj.neo4j.api.beta.type.DbRelationship;
 import org.assertj.neo4j.api.beta.type.ObjectType;
 import org.assertj.neo4j.api.beta.type.loader.DataLoader;
+import org.assertj.neo4j.api.beta.type.loader.LoaderFactory;
+import org.assertj.neo4j.api.beta.type.loader.Nodes;
+import org.assertj.neo4j.api.beta.util.DbObjectUtils;
 import org.assertj.neo4j.api.beta.util.Predicates;
 
 import java.util.Arrays;
@@ -38,18 +41,17 @@ public abstract class AbstractRelationshipsAssert<SELF extends AbstractRelations
                                                   NEW_SELF extends Navigable<SELF, ROOT_ASSERT>,
                                                   PARENT_ASSERT extends ParentAssert<ROOT_ASSERT>,
                                                   ROOT_ASSERT>
-        extends AbstractEntitiesAssert<SELF, DbRelationship, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT>
-        implements Navigable<PARENT_ASSERT, ROOT_ASSERT> {
+        extends AbstractEntitiesAssert<SELF, DbRelationship, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT> {
 //@formatter:on
 
     protected AbstractRelationshipsAssert(
             final Class<?> selfType,
-            final List<DbRelationship> dbRelationships,
-            final DataLoader<DbRelationship> dbData,
-            final EntitiesAssertFactory<SELF, DbRelationship, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT> factory,
+            final List<DbRelationship> entities,
+            final DataLoader<DbRelationship> loader,
+            final EntitiesAssertFactory<SELF, DbRelationship, NEW_SELF, PARENT_ASSERT, ROOT_ASSERT> newSelfFactory,
             final PARENT_ASSERT parentAssert,
             final ROOT_ASSERT rootAssert) {
-        super(ObjectType.RELATIONSHIP, selfType, dbData, dbRelationships, factory, parentAssert, rootAssert);
+        super(ObjectType.RELATIONSHIP, entities, selfType, loader, newSelfFactory, parentAssert, rootAssert);
     }
 
     /**
@@ -78,6 +80,58 @@ public abstract class AbstractRelationshipsAssert<SELF extends AbstractRelations
                         .elements(actual, Arrays.asList(types))
                         .notSatisfies(notSatisfies))
         );
+    }
+
+    /**
+     * Retrieve all nodes that are the start node of any actual relationships.
+     * <p/>
+     * Example:
+     * <pre><code class='java'>
+     * Relationships relationships = new Relationships(driver, "KNOWS");
+     * assertThat(relationships)
+     *   .startingNodes("Person")
+     *   .haveLabels("TeamMember")
+     * </code></pre>
+     *
+     * @param labels
+     * @return
+     */
+    public ChildrenDriverNodeAssert<SELF, ROOT_ASSERT> startingNodes(final String... labels) {
+        final Nodes nodes = dataLoader.chain(LoaderFactory.nodeByIds(DbObjectUtils.arrayStartNodeIds(actual)));
+        return new ChildrenDriverNodeAssert<>(nodes.load(), nodes, myself)
+                .filteredOnLabels(labels)
+                .withParent(myself);
+    }
+
+    /**
+     * Retrieve all nodes that are the end node of any actual relationships.
+     * <p/>
+     * Example:
+     * <pre><code class='java'>
+     * Relationships relationships = new Relationships(driver, "KNOWS");
+     * assertThat(relationships)
+     *   .endingNodes("Person")
+     *   .haveLabels("TeamMember")
+     * </code></pre>
+     *
+     * @param labels
+     * @return
+     */
+    public ChildrenDriverNodeAssert<SELF, ROOT_ASSERT> endingNodes(final String... labels) {
+        final Nodes nodes = dataLoader.chain(LoaderFactory.nodeByIds(DbObjectUtils.arrayEndNodeIds(actual)));
+        return new ChildrenDriverNodeAssert<>(nodes.load(), nodes, myself)
+                .filteredOnLabels(labels)
+                .withParent(myself);
+    }
+
+    public SELF haveNoStartingNodes(final String... labels) {
+        startingNodes(labels).isEmpty();
+        return myself;
+    }
+
+    public SELF haveNoEndingNodes(final String... labels) {
+        endingNodes(labels).isEmpty();
+        return myself;
     }
 
 }

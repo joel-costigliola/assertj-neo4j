@@ -12,6 +12,7 @@
  */
 package org.assertj.neo4j.api.beta.type.loader;
 
+import org.assertj.neo4j.api.beta.type.DbNode;
 import org.assertj.neo4j.api.beta.type.DbRelationship;
 import org.neo4j.driver.Driver;
 
@@ -19,6 +20,8 @@ import org.neo4j.driver.Driver;
  * Factory for creating new instance of {@link DataLoader}.
  * <p/>
  * This interface prevent to expose internal constructor of {@link DataLoader} implementation.
+ * <p/>
+ * FIXME: This will be much more clean if the driver was directly in the Assertions. To be simplify ?
  *
  * @author Patrick Allain - 10/02/2021
  */
@@ -38,8 +41,18 @@ public interface LoaderFactory<ENTITY, LOADER extends DataLoader<ENTITY>> {
      * @param types the type of relationships
      * @return a new loader factory instance.
      */
-    static LoaderFactory<DbRelationship, Relationships> relationships(String... types) {
+    static LoaderFactory<DbRelationship, Relationships> relationships(final String... types) {
         return new LoaderFactoryGeneric<>(Queries.relationships(types), RelationshipLoader::new);
+    }
+
+    /**
+     * Create a new {@link LoaderFactory} for {@link DbNode}.
+     *
+     * @param ids the ids of the relationships
+     * @return a new loader factory instance.
+     */
+    static LoaderFactory<DbNode, Nodes> nodeByIds(final Long... ids) {
+        return new LoaderFactoryGeneric<>(Queries.nodeByIds(ids), NodeLoader::new);
     }
 
 }

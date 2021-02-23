@@ -12,6 +12,7 @@
  */
 package org.assertj.neo4j.api.beta.testing;
 
+import org.assertj.neo4j.api.beta.testing.builders.ConcreteParentAssertBuilder;
 import org.assertj.neo4j.api.beta.testing.builders.NodeBuilder;
 import org.assertj.neo4j.api.beta.testing.builders.RecordBuilder;
 import org.assertj.neo4j.api.beta.testing.builders.RelationshipBuilder;
@@ -37,7 +38,6 @@ public interface Builders {
         return new RelationshipBuilder(type);
     }
 
-
     static DbNode.DbNodeBuilder rebuild(DbNode node) {
         return Models.node()
                 .id(node.getId())
@@ -53,5 +53,10 @@ public interface Builders {
                 .end(relationship.getEnd())
                 .properties(DbObjectUtils.propertyObjects(relationship));
     }
+
+    static ConcreteParentAssertBuilder parent() {
+        return new ConcreteParentAssertBuilder();
+    }
+
 
 }

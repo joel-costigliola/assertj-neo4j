@@ -16,6 +16,7 @@ import org.assertj.core.util.Preconditions;
 import org.assertj.neo4j.api.beta.error.ShouldObjectBeOfType;
 import org.assertj.neo4j.api.beta.error.ShouldValueBeInstanceOf;
 import org.assertj.neo4j.api.beta.error.ShouldValueBeOfType;
+import org.assertj.neo4j.api.beta.type.DbNode;
 import org.assertj.neo4j.api.beta.type.DbObject;
 import org.assertj.neo4j.api.beta.type.DbRelationship;
 import org.assertj.neo4j.api.beta.type.DbResult;
@@ -26,7 +27,6 @@ import org.assertj.neo4j.api.beta.type.loader.DataLoader;
 import org.assertj.neo4j.api.beta.util.GroupNames;
 import org.assertj.neo4j.api.beta.util.Predicates;
 import org.assertj.neo4j.api.beta.util.Utils;
-import org.assertj.neo4j.api.beta.util.Wip;
 import org.neo4j.driver.Result;
 
 import java.util.List;
@@ -121,10 +121,10 @@ public class DriverResultAssert
         );
     }
 
-    // FIXME : Create the children for Nodes
-    public DriverNodesAssert asNodesAssert(final String columnName) {
-        Wip.TODO(this);
-        return null;
+    public ChildrenDriverNodeAssert<DriverResultAssert, DriverResultAssert> asNodeAssert(final String columnName) {
+        haveType(columnName, ObjectType.NODE);
+        final List<DbNode> entities = columnObjects(columnName, ObjectType.NODE, DbNode.class);
+        return new ChildrenDriverNodeAssert<>(entities, DataLoader.staticDataLoader(), myself);
     }
 
     public ChildrenDriverRelationshipsAssert<DriverResultAssert, DriverResultAssert> asRelationshipAssert(final String columnName) {

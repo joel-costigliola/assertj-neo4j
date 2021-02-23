@@ -12,8 +12,11 @@
  */
 package org.assertj.neo4j.api.beta.testing;
 
+import org.assertj.neo4j.api.beta.testing.builders.NodesLoaderBuilder;
 import org.assertj.neo4j.api.beta.testing.builders.RelationshipsLoaderBuilder;
+import org.assertj.neo4j.api.beta.type.DbNode;
 import org.assertj.neo4j.api.beta.type.DbRelationship;
+import org.assertj.neo4j.api.beta.type.loader.Nodes;
 import org.assertj.neo4j.api.beta.type.loader.Relationships;
 
 /**
@@ -27,5 +30,13 @@ public interface Loaders {
 
     static Relationships relationships(DbRelationship... entities) {
         return relationships().entities(entities).build();
+    }
+
+    static NodesLoaderBuilder nodes() {
+        return new NodesLoaderBuilder();
+    }
+
+    static Nodes nodes(DbNode ... entities) {
+        return nodes().entities(entities).build();
     }
 }

@@ -12,6 +12,7 @@
  */
 package org.assertj.neo4j.api.beta.type.loader;
 
+import org.assertj.core.util.Maps;
 import org.neo4j.driver.Query;
 
 import java.util.Arrays;
@@ -34,4 +35,7 @@ public interface Queries {
         return new Query(String.format("MATCH (n %s) RETURN n", queryLabels));
     }
 
+    static Query nodeByIds(final Long... ids) {
+        return new Query("MATCH (n) WHERE id(n) IN $ids RETURN n", Maps.newHashMap("ids", Arrays.asList(ids)));
+    }
 }
