@@ -40,7 +40,7 @@
     <dependency>
       <groupId>org.neo4j</groupId>
       <artifactId>neo4j</artifactId>
-      <version>3.0.0</version>
+      <version>5.26.21</version>
     </dependency>
     <!-- test dependencies -->
     <dependency>
